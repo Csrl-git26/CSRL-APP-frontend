@@ -40,8 +40,10 @@ function authHeaders() {
 
 async function handleResponse(res) {
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `API error (${res.status})`);
+    const errData = await res.json().catch(() => ({}));
+    const error = new Error(errData.message || `API error (${res.status})`);
+    if (errData.validationErrors) error.validationErrors = errData.validationErrors;
+    throw error;
   }
   return res.json();
 }
