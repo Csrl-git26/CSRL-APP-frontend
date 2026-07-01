@@ -104,7 +104,7 @@ export default function WeakTopicCard({ subject, strongWeak = [], mediumWeak = [
                 letterSpacing:0.5,
                 marginBottom: 6,
               }}>
-                🔴 Strong Weak
+                🔴 Weakest
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {strongWeak.map((item) => renderPill(item, 'strong'))}
@@ -123,7 +123,7 @@ export default function WeakTopicCard({ subject, strongWeak = [], mediumWeak = [
                 letterSpacing:0.5,
                 marginBottom: 6,
               }}>
-                🟡 Medium Weak
+                🟡 Weak
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {mediumWeak.map((item) => renderPill(item, 'medium'))}

@@ -138,7 +138,7 @@ export default function StudentOverallWeakTopics({ studentId }) {
                     fontSize: 11, fontWeight: 700, color: '#c0392b',
                     textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6,
                   }}>
-                    🔴 Strong Weak
+                    🔴 Weakest
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {subjData.strongWeak.map((topic) => renderPill(topic, 'strong'))}
@@ -152,7 +152,7 @@ export default function StudentOverallWeakTopics({ studentId }) {
                     fontSize: 11, fontWeight: 700, color: '#b45309',
                     textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6,
                   }}>
-                    🟡 Medium Weak
+                    🟡 Weak
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {subjData.mediumWeak.map((topic) => renderPill(topic, 'medium'))}

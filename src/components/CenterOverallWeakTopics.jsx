@@ -142,7 +142,7 @@ export default function CenterOverallWeakTopics({ centerId }) {
                     fontSize: 11, fontWeight: 700, color: '#c0392b',
                     textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
                   }}>
-                    🔴 Strong Weak
+                    🔴 Weakest
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {subjData.strongWeak.map((entry) => renderPill(entry, 'strong'))}
@@ -156,7 +156,7 @@ export default function CenterOverallWeakTopics({ centerId }) {
                     fontSize: 11, fontWeight: 700, color: '#b45309',
                     textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
                   }}>
-                    🟡 Medium Weak
+                    🟡 Weak
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {subjData.mediumWeak.map((entry) => renderPill(entry, 'medium'))}
