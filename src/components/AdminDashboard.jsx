@@ -109,10 +109,34 @@ function mapExcelStudentToProfile(row) {
 
 function mapExcelMarkRow(row, testKey) {
   const roll = normalizeRollKey(getRowField(row, ['roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY']));
+  
+  const updateObj = {};
+  
+  // Extract all columns that are NOT the roll number
+  for (const [key, val] of Object.entries(row)) {
+    const lowerKey = key.trim().toLowerCase();
+    if (!lowerKey || ['roll_number', 'roll number', 'roll', 'roll_key'].includes(lowerKey)) continue;
+    
+    // If they just named the column "marks" or "score", map it to the dropdown testKey
+    if (['marks', 'score'].includes(lowerKey)) {
+      updateObj[testKey] = normalizeCellValue(val);
+    } else {
+      // Otherwise, the column header itself IS the test/subject key!
+      updateObj[key.trim()] = normalizeCellValue(val);
+    }
+  }
+
+  // Remove empty values so we don't accidentally overwrite existing scores with blanks
+  for (const k of Object.keys(updateObj)) {
+    if (updateObj[k] === '' || updateObj[k] === null || updateObj[k] === undefined) {
+      delete updateObj[k];
+    }
+  }
+
   return {
     roll,
-    test:  testKey,
-    value: normalizeCellValue(getRowField(row, ['marks', 'score', 'Score', testKey])),
+    test: testKey,
+    updateObj
   };
 }
 
@@ -548,9 +572,19 @@ export default function AdminDashboard() {
           const mapped = mapExcelMarkRow(row, uploadTestKey);
           if (!mapped.roll)                    return { row: idx + 2, status: 'err', reason: 'Missing roll_number' };
           if (!existingRolls.has(mapped.roll)) return { row: idx + 2, status: 'err', reason: 'Roll not found',    roll: mapped.roll };
-          if (mapped.value === '')             return { row: idx + 2, status: 'err', reason: 'Missing marks',     roll: mapped.roll };
+          
+          const colsFound = Object.keys(mapped.updateObj).length;
+          if (colsFound === 0)                 return { row: idx + 2, status: 'err', reason: 'Missing marks columns', roll: mapped.roll };
+          
           const exists = existingMarks.has(mapped.roll);
-          return { row: idx + 2, status: exists ? 'update' : 'new', reason: exists ? 'Will update score' : 'Will create score', roll: mapped.roll, marks: mapped.value, payload: mapped };
+          return { 
+            row: idx + 2, 
+            status: exists ? 'update' : 'new', 
+            reason: exists ? 'Will update score' : 'Will create score', 
+            roll: mapped.roll, 
+            marks: `${colsFound} subject(s)`, 
+            payload: mapped 
+          };
         }));
       }
     } catch (e) {
@@ -584,9 +618,10 @@ export default function AdminDashboard() {
           const rowRoll = normalizeRollKey(row.payload.roll);
           const existing = data.tests.find((t) => normalizeRollKey(t.ROLL_KEY) === rowRoll);
           const profile = data.profiles.find((p) => normalizeRollKey(p.ROLL_KEY) === rowRoll);
-          const prev       = existing?.[uploadTestKey];
-          await upsertTestScoresApi(null, rowRoll, { [uploadTestKey]: row.payload.value }, profile?.centerCode);
-          if (prev === undefined || prev === null || prev === '') newCount++;
+          
+          await upsertTestScoresApi(null, rowRoll, row.payload.updateObj, profile?.centerCode);
+          
+          if (!existing) newCount++;
           else updateCount++;
         }
         triggerRefresh();
@@ -1152,7 +1187,7 @@ export default function AdminDashboard() {
                 <Upload size={32} style={{ margin: '0 auto 10px', color: 'var(--gray-400)' }} aria-hidden="true" />
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>Click to upload Excel / CSV</div>
                 <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
-                  {importMode === 'students' ? 'Use the template headers for best column mapping.' : 'File must contain roll_number and a marks/score column.'}
+                  {importMode === 'students' ? 'Use the template headers for best column mapping.' : 'File must contain roll_number. You can upload multiple subject columns at once.'}
                 </div>
                 <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={(e) => handleImportFile(e.target.files?.[0])} />
               </div>
