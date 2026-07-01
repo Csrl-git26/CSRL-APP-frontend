@@ -112,14 +112,24 @@ function mapExcelMarkRow(row, testKey) {
   
   const updateObj = {};
   
-  // Extract all columns that are NOT the roll number
+  // Extract test key from row if available, otherwise fallback to dropdown selection
+  const rowTestKey = getRowField(row, ['test_key', 'test key', 'Test Key']) || testKey;
+
+  // Metadata columns that should not be inserted as test scores
+  const ignoreCols = [
+    'roll_number', 'roll number', 'roll', 'roll_key',
+    'name', 'student name', 'student_name', 'student',
+    'stream', 'centre', 'center', 'test_key', 'test key',
+    'rank', 's.no.', 'sno', 'sl no', 's.no'
+  ];
+
   for (const [key, val] of Object.entries(row)) {
     const lowerKey = key.trim().toLowerCase();
-    if (!lowerKey || ['roll_number', 'roll number', 'roll', 'roll_key'].includes(lowerKey)) continue;
+    if (!lowerKey || ignoreCols.includes(lowerKey)) continue;
     
-    // If they just named the column "marks" or "score", map it to the dropdown testKey
-    if (['marks', 'score'].includes(lowerKey)) {
-      updateObj[testKey] = normalizeCellValue(val);
+    // Map generic marks columns to the specific test key
+    if (['marks', 'score', 'total marks', 'total_marks', 'total'].includes(lowerKey)) {
+      updateObj[rowTestKey] = normalizeCellValue(val);
     } else {
       // Otherwise, the column header itself IS the test/subject key!
       updateObj[key.trim()] = normalizeCellValue(val);
@@ -132,6 +142,7 @@ function mapExcelMarkRow(row, testKey) {
       delete updateObj[k];
     }
   }
+
 
   return {
     roll,
