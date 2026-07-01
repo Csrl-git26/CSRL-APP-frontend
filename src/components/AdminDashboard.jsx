@@ -64,7 +64,10 @@ function normalizeRollKey(v) {
 }
 
 function normalizeCenterCode(v) {
-  return normalizeCellValue(v).toUpperCase();
+  const code = normalizeCellValue(v).toUpperCase();
+  if (code === 'KNP' || code === 'KANPUR') return 'GAIL';
+  if (code === 'JDP' || code === 'JODHPUR') return 'OIL_INDIA';
+  return code;
 }
 
 function getRowField(row, keys) {
@@ -147,7 +150,10 @@ function mapExcelMarkRow(row, testKey) {
   return {
     roll,
     test: testKey,
-    updateObj
+    updateObj,
+    centre: getRowField(row, ['centre', 'center', 'centerCode']),
+    stream: getRowField(row, ['stream', 'Stream', 'STREAM']),
+    name: getRowField(row, ['name', 'Name', "STUDENT'S NAME"])
   };
 }
 
@@ -633,7 +639,10 @@ export default function AdminDashboard() {
             const existing = data.tests.find((t) => normalizeRollKey(t.ROLL_KEY) === rowRoll);
             const profile = data.profiles.find((p) => normalizeRollKey(p.ROLL_KEY) === rowRoll);
             
-            await upsertTestScoresApi(null, rowRoll, row.payload.updateObj, profile?.centerCode);
+            const fallbackCenter = normalizeCenterCode(row.payload.centre);
+            const centerCodeToUse = profile?.centerCode || fallbackCenter;
+            
+            await upsertTestScoresApi(null, rowRoll, row.payload.updateObj, centerCodeToUse);
             
             if (!existing) newCount++;
             else updateCount++;
