@@ -81,26 +81,13 @@ export async function getCenterWeakTopics(centerId, testId = null) {
 }
 
 /**
- * uploadTopicMap — upload a Topic Map CSV for admin.
- * @param {FormData} formData - fields: testId, paper, paperCount, file
+ * uploadTestSheet — upload a single unified test sheet CSV for admin.
+ * @param {FormData} formData - fields: testId, file
  */
-export async function uploadTopicMap(formData) {
-  const res = await fetch(`${BASE}/api/admin/weak-topics/upload-topic-map`, {
+export async function uploadTestSheet(formData) {
+  const res = await fetch(`${BASE}/api/admin/weak-topics/upload-test-sheet`, {
     method:  'POST',
     headers: authHeaders(), // Do NOT set Content-Type — browser sets multipart boundary
-    body:    formData,
-  });
-  return handleResponse(res);
-}
-
-/**
- * uploadMarks — upload a Marks Awarded CSV for admin.
- * @param {FormData} formData - fields: testId, paper, paperCount, file
- */
-export async function uploadMarks(formData) {
-  const res = await fetch(`${BASE}/api/admin/weak-topics/upload-marks`, {
-    method:  'POST',
-    headers: authHeaders(),
     body:    formData,
   });
   return handleResponse(res);

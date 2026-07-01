@@ -106,7 +106,7 @@ export default function CenterWeakTopics({ centerId, activeTestKey }) {
               fontWeight:   700,
             }}>
               <Users size={12} />
-              Total Students: {currentDoc.totalStudents}
+              Total Students: {currentDoc.totalStudentsTested}
             </div>
           )}
         </div>

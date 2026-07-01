@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl } from '../services/dataService';
+import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 
 function InfoRow({ label, value }) {
   return (
@@ -12,6 +13,19 @@ function InfoRow({ label, value }) {
 }
 
 export default function StudentProfileView({ profile, studentTests, testColumns }) {
+  const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
+
+  React.useEffect(() => {
+    const studentId = profile?.['ROLL NO.'] || profile?.ROLL_KEY;
+    if (studentId) {
+      getStudentOverallWeakTopics(studentId).then((res) => {
+        if (res.success && res.data?.overallWeakSubjects) {
+          setOverallWeakSubjects(res.data.overallWeakSubjects);
+        }
+      });
+    }
+  }, [profile]);
+
   const stream = profile?.stream || 'JEE';
   const school10 = profile?.['10th SCHOOL NAME'] || profile?.['10th SCHOOL'] || profile?.['SCHOOL NAME'] || profile?.SCHOOL || '';
   const school12 = profile?.['12th SCHOOL NAME'] || profile?.['12th SCHOOL'] || school10 || '';
@@ -177,9 +191,31 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           </div>
           <div className="divider" style={{ margin: '4px 0' }} />
           <div className="section-title" style={{ marginBottom: 6 }}>🧠 Weak Subject Analysis</div>
-          <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', border: '1px solid var(--gray-200)' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', textTransform: 'uppercase', marginBottom: 4 }}>From Test Performance</div>
-            <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--gray-800)' }}>{weakSubject}</div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', border: '1px solid var(--gray-200)' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', textTransform: 'uppercase', marginBottom: 4 }}>By Avg Score</div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--gray-800)' }}>{weakSubject}</div>
+            </div>
+
+            <div style={{ background: '#fdf2f8', borderRadius: 8, padding: '12px', border: '1px solid #fbcfe8' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#9d174d', textTransform: 'uppercase', marginBottom: 4 }}>By Accuracy (Weakest)</div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: '#831843' }}>
+                {(() => {
+                  if (!overallWeakSubjects) return 'Loading...';
+                  const weakest = [];
+                  Object.keys(overallWeakSubjects).forEach(sub => {
+                    if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+                  });
+                  if (weakest.length === 0) {
+                    Object.keys(overallWeakSubjects).forEach(sub => {
+                      if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Medium)`);
+                    });
+                  }
+                  return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
+                })()}
+              </div>
+            </div>
           </div>
         </div>
 

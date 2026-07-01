@@ -1,124 +1,67 @@
 import { useState } from 'react';
-import { Upload, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
-import { uploadTopicMap, uploadMarks } from '../services/weakTopicApi';
-
-const STATUS = {
-  IDLE:      'idle',
-  UPLOADING: 'uploading',
-  DONE:      'done',
-  ERROR:     'error',
-};
-
-function StatusIcon({ status, error }) {
-  if (status === STATUS.UPLOADING) return <Loader2 size={16} className="spin" style={{ color: '#1a4fa0' }} />;
-  if (status === STATUS.DONE)      return <CheckCircle2 size={16} style={{ color: '#1a6e3b' }} />;
-  if (status === STATUS.ERROR)     return <XCircle size={16} style={{ color: '#c0392b' }} />;
-  return null;
-}
+import { Upload, FileText, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { uploadTestSheet } from '../services/weakTopicApi';
 
 export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }) {
-  const [testId,      setTestId]      = useState('');
-  const [paperCount,  setPaperCount]  = useState(2); // 1 or 2
-
-  const [statusP1Map,   setStatusP1Map]   = useState(STATUS.IDLE);
-  const [statusP2Map,   setStatusP2Map]   = useState(STATUS.IDLE);
-  const [statusP1Marks, setStatusP1Marks] = useState(STATUS.IDLE);
-  const [statusP2Marks, setStatusP2Marks] = useState(STATUS.IDLE);
-  const [errorP1Map,    setErrorP1Map]    = useState('');
-  const [errorP2Map,    setErrorP2Map]    = useState('');
-  const [errorP1Marks,  setErrorP1Marks]  = useState('');
-  const [errorP2Marks,  setErrorP2Marks]  = useState('');
-
-  const isAllDone = () => {
-    const p1MapDone   = statusP1Map   === STATUS.DONE;
-    const p1MarksDone = statusP1Marks === STATUS.DONE;
-    if (paperCount === 1) return p1MapDone && p1MarksDone;
-    const p2MapDone   = statusP2Map   === STATUS.DONE;
-    const p2MarksDone = statusP2Marks === STATUS.DONE;
-    return p1MapDone && p2MapDone && p1MarksDone && p2MarksDone;
-  };
+  const [testId, setTestId] = useState('');
+  
+  // Single upload state
+  const [file, setFile] = useState(null);
+  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [errorMsg, setErrorMsg] = useState('');
+  const [validationErrors, setValidationErrors] = useState([]);
+  const [warnings, setWarnings] = useState([]);
 
   const disabled = !testId.trim();
 
-  const handleFileUpload = async (file, uploadFn, paper, setStatus, setError) => {
-    if (!file) return;
-    setStatus(STATUS.UPLOADING);
-    setError('');
-    try {
-      const formData = new FormData();
-      formData.append('testId',      testId.trim());
-      formData.append('paper',       paper);
-      formData.append('paperCount',  String(paperCount));
-      formData.append('file',        file);
-      await uploadFn(formData);
-      setStatus(STATUS.DONE);
-    } catch (e) {
-      setStatus(STATUS.ERROR);
-      setError(e.message || 'Upload failed');
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      setStatus('idle');
+      setErrorMsg('');
+      setValidationErrors([]);
+      setWarnings([]);
     }
   };
 
-  const UploadRow = ({ label, paper, uploadFn, status, setStatus, error, setError }) => (
-    <div style={{
-      display:       'flex',
-      alignItems:    'center',
-      gap:           12,
-      padding:       '12px 14px',
-      borderRadius:  8,
-      background:    status === STATUS.DONE ? '#f0fdf4' : status === STATUS.ERROR ? '#fef2f2' : 'var(--gray-50)',
-      border:        `1px solid ${status === STATUS.DONE ? '#bbf7d0' : status === STATUS.ERROR ? '#fecaca' : 'var(--gray-200)'}`,
-      marginBottom:  10,
-    }}>
-      <div style={{ flexShrink: 0, width: 20, textAlign: 'center' }}>
-        <StatusIcon status={status} error={error} />
-      </div>
+  const handleUpload = async () => {
+    if (!file) {
+      setErrorMsg('Please select a file first.');
+      return;
+    }
+    
+    setStatus('loading');
+    setErrorMsg('');
+    setValidationErrors([]);
+    setWarnings([]);
 
-      <div style={{ flex: 1, fontSize: 13, fontWeight: 600, color: 'var(--gray-700)' }}>
-        {label}
-        {error && (
-          <div style={{ fontSize: 11, fontWeight: 400, color: '#c0392b', marginTop: 2 }}>
-            {error}
-          </div>
-        )}
-      </div>
+    const formData = new FormData();
+    formData.append('testId', testId.trim());
+    formData.append('file', file);
 
-      <label style={{
-        display:      'inline-flex',
-        alignItems:   'center',
-        gap:          6,
-        padding:      '6px 14px',
-        borderRadius: 6,
-        border:       '1px solid var(--gray-300)',
-        background:   disabled ? 'var(--gray-100)' : '#fff',
-        color:        disabled ? 'var(--gray-400)' : 'var(--gray-700)',
-        fontSize:     13,
-        fontWeight:   600,
-        cursor:       disabled ? 'not-allowed' : 'pointer',
-        transition:   'all 0.15s',
-      }}>
-        <Upload size={13} />
-        Choose CSV
-        <input
-          type="file"
-          accept=".csv"
-          disabled={disabled}
-          style={{ display: 'none' }}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleFileUpload(file, uploadFn, paper, setStatus, setError);
-            e.target.value = '';
-          }}
-        />
-      </label>
-    </div>
-  );
-
-  const marksStep1 = paperCount === 1 ? 2 : 3;
-  const marksStep2 = 4;
+    try {
+      const res = await uploadTestSheet(formData);
+      if (res.success) {
+        setStatus('success');
+        if (res.warnings && res.warnings.length > 0) {
+          setWarnings(res.warnings);
+        }
+      } else {
+        setStatus('error');
+        setErrorMsg(res.message || 'Upload failed');
+        if (res.validationErrors) {
+          setValidationErrors(res.validationErrors);
+        }
+      }
+    } catch (err) {
+      setStatus('error');
+      setErrorMsg(err.message || 'Network error occurred.');
+    }
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 700 }} onClick={(e) => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 650 }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Upload size={16} aria-hidden="true" />
@@ -129,43 +72,30 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
         
         <div className="modal-body">
           <div style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 20 }}>
-            Upload topic maps and marks Award Sheets CSVs to automatically identify centers and compute weak subjects.
+            Upload a single unified CSV test sheet (combining headers, topics, answer key, and student marks) to compute center and student weak subjects.
           </div>
 
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 20 }}>
-            <div style={{ flex: 1, minWidth: 180 }}>
-              <label className="label" style={{ fontSize: 12, fontWeight: 700 }}>
-                Test Name / ID <span style={{ color: '#c0392b' }}>*</span>
-              </label>
-              <input
-                className="input"
-                type="text"
-                placeholder="e.g. CAT-1(TEST)"
-                value={testId}
-                onChange={(e) => setTestId(e.target.value)}
-                list="test-list-options"
-                style={{ marginTop: 4 }}
-              />
-              <datalist id="test-list-options">
-                {testOptions.map((opt) => (
-                  <option key={opt} value={opt} />
-                ))}
-              </datalist>
-            </div>
-            <div style={{ minWidth: 150 }}>
-              <label className="label" style={{ fontSize: 12, fontWeight: 700 }}>
-                Number of Papers
-              </label>
-              <select
-                className="input select"
-                value={paperCount}
-                onChange={(e) => setPaperCount(parseInt(e.target.value, 10))}
-                style={{ marginTop: 4 }}
-              >
-                <option value={1}>1 Paper</option>
-                <option value={2}>2 Papers</option>
-              </select>
-            </div>
+          <div style={{ marginBottom: 20 }}>
+            <label className="label" style={{ fontSize: 12, fontWeight: 700 }}>
+              Test Name / ID <span style={{ color: '#c0392b' }}>*</span>
+            </label>
+            <input
+              className="input"
+              type="text"
+              placeholder="e.g. CAT-1(TEST)"
+              value={testId}
+              onChange={(e) => {
+                setTestId(e.target.value);
+                setStatus('idle');
+              }}
+              list="test-list-options"
+              style={{ marginTop: 4, maxWidth: 300 }}
+            />
+            <datalist id="test-list-options">
+              {testOptions.map((opt) => (
+                <option key={opt} value={opt} />
+              ))}
+            </datalist>
           </div>
 
           {disabled && (
@@ -179,102 +109,104 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
               marginBottom: 16,
               fontWeight:   600,
             }}>
-              ⚠️ Please enter a Test Name / ID before uploading files.
+              ⚠️ Please enter a Test Name / ID before uploading a file.
             </div>
           )}
 
-          <UploadRow
-            label="Step 1 — Upload Topic Map CSV for Paper 1"
-            paper="paper1"
-            uploadFn={uploadTopicMap}
-            status={statusP1Map}
-            setStatus={setStatusP1Map}
-            error={errorP1Map}
-            setError={setErrorP1Map}
-          />
-
-          {paperCount === 2 && (
-            <UploadRow
-              label="Step 2 — Upload Topic Map CSV for Paper 2"
-              paper="paper2"
-              uploadFn={uploadTopicMap}
-              status={statusP2Map}
-              setStatus={setStatusP2Map}
-              error={errorP2Map}
-              setError={setErrorP2Map}
-            />
-          )}
-
-          <UploadRow
-            label={`Step ${marksStep1} — Upload Paper 1 Marks Award Sheet CSV`}
-            paper="paper1"
-            uploadFn={uploadMarks}
-            status={statusP1Marks}
-            setStatus={setStatusP1Marks}
-            error={errorP1Marks}
-            setError={setErrorP1Marks}
-          />
-
-          {paperCount === 2 && (
-            <UploadRow
-              label={`Step ${marksStep2} — Upload Paper 2 Marks Award Sheet CSV`}
-              paper="paper2"
-              uploadFn={uploadMarks}
-              status={statusP2Marks}
-              setStatus={setStatusP2Marks}
-              error={errorP2Marks}
-              setError={setErrorP2Marks}
-            />
-          )}
-
-          {isAllDone() && (
-            <div style={{
-              marginTop:    16,
-              padding:      '12px 16px',
-              borderRadius: 8,
-              background:   '#f0fdf4',
-              border:       '1px solid #bbf7d0',
-              color:        '#1a6e3b',
-              fontSize:     14,
-              fontWeight:   700,
-              display:      'flex',
-              alignItems:   'center',
-              gap:          8,
-            }}>
-              <CheckCircle2 size={18} />
-              ✅ Weak topics computed successfully for <strong>{testId}</strong>
-            </div>
-          )}
-
+          {/* Upload Box */}
           <div style={{
-            marginTop:  20,
-            padding:    '12px 14px',
+            border: '2px dashed var(--gray-200)',
             borderRadius: 8,
+            padding: 24,
+            textAlign: 'center',
             background: 'var(--gray-50)',
-            border:     '1px solid var(--gray-200)',
-            fontSize:   12,
-            color:      'var(--gray-600)',
+            transition: 'all 0.2s',
+            opacity: disabled ? 0.5 : 1,
+            pointerEvents: disabled ? 'none' : 'auto'
           }}>
-            <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--gray-700)' }}>Required CSV formats:</div>
-            <div style={{ marginBottom: 6 }}>
-              <strong>Topic Map CSV:</strong>{' '}
-              <code style={{ fontSize: 11, background: '#fff', padding: '1px 5px', borderRadius: 3 }}>
-                topic,subject,questions
-              </code>
-              {' · '}questions separated by pipe (|): e.g. <code>Q7|Q9</code>
-            </div>
-            <div>
-              <strong>Marks Award Sheet CSV:</strong>{' '}
-              <code style={{ fontSize: 11, background: '#fff', padding: '1px 5px', borderRadius: 3 }}>
-                centreCode,ROLL_KEY,Name,Q1,Q2,...,Q54
-              </code>
-              {' · '}marks can be positive, 0, or negative (Will auto detect center from centreCode/Location column).
-            </div>
+            {!file ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                <div style={{ padding: 12, background: '#fff', borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                  <FileText size={28} color="var(--gray-400)" />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--gray-800)' }}>Select Test Sheet CSV</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>Row 1=Headers, Row 2=Topics, Row 3=Answers, Row 4+=Marks</div>
+                </div>
+                <label className="button button-outline" style={{ cursor: 'pointer', marginTop: 8 }}>
+                  Browse File
+                  <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileChange} />
+                </label>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                <div style={{ padding: 12, background: '#fff', borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                  <FileText size={28} color="var(--csrl-blue)" />
+                </div>
+                <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--gray-800)', wordBreak: 'break-all' }}>
+                  {file.name}
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                  <label className="button button-outline" style={{ cursor: 'pointer', fontSize: 13, padding: '6px 12px' }}>
+                    Change File
+                    <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileChange} />
+                  </label>
+                  <button 
+                    type="button" 
+                    className="button" 
+                    style={{ background: 'var(--csrl-blue)', color: '#fff', fontSize: 13, padding: '6px 16px' }}
+                    onClick={handleUpload}
+                    disabled={status === 'loading'}
+                  >
+                    {status === 'loading' ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Loader2 size={14} className="spin" /> Uploading...</span>
+                    ) : 'Upload & Compute'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-ghost" onClick={onClose}>Close</button>
+          {/* Feedback Messages */}
+          {status === 'error' && (
+            <div style={{ marginTop: 16, padding: 14, borderRadius: 8, background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: 13 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, marginBottom: validationErrors.length > 0 ? 8 : 0 }}>
+                <AlertTriangle size={16} />
+                {errorMsg}
+              </div>
+              {validationErrors.length > 0 && (
+                <ul style={{ paddingLeft: 24, margin: 0 }}>
+                  {validationErrors.map((err, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>{err}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {status === 'success' && (
+            <div style={{ marginTop: 16, padding: 14, borderRadius: 8, background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}>
+                <CheckCircle2 size={18} />
+                ✅ Weak topics computed successfully for {testId}!
+              </div>
+              
+              {warnings.length > 0 && (
+                <div style={{ marginTop: 12, padding: 10, background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, color: '#92400e', fontSize: 13 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 4 }}>⚠️ Note:</div>
+                  <ul style={{ paddingLeft: 20, margin: 0 }}>
+                    {warnings.map((warn, i) => <li key={i}>{warn}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+          
+          <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+            <button type="button" className="button button-outline" onClick={onClose}>
+              {status === 'success' ? 'Done' : 'Cancel'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

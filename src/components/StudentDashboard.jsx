@@ -13,6 +13,7 @@ import {
   getMaxMarksForSubject,
   resolveStudentPhotoUrl,
 } from '../services/dataService';
+import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import { useAuth } from '../context/AuthContext';
 import TestInsightsPanel from './TestInsightsPanel';
 import StudentWeakTopics from './StudentWeakTopics';
@@ -48,7 +49,19 @@ export default function StudentDashboard() {
   const [analysisTestKey, setAnalysisTestKey] = useState('');
   const [testInsights, setTestInsights] = useState(null);
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
-  const [testInsightsError, setTestInsightsError] = useState('');
+  const [testInsightsError, setTestInsightsError]   = useState('');
+  const [overallWeakSubjects, setOverallWeakSubjects] = useState(null);
+
+  useEffect(() => {
+    if (!auth.id) return;
+    let cancelled = false;
+    getStudentOverallWeakTopics(auth.id).then((res) => {
+      if (!cancelled && res.success && res.data?.overallWeakSubjects) {
+        setOverallWeakSubjects(res.data.overallWeakSubjects);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [auth.id]);
 
   useEffect(() => {
     if (!rankingTestColumns.length) return;
@@ -230,11 +243,38 @@ export default function StudentDashboard() {
         </div>
 
         <div className="card">
-          <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
             <AlertTriangle size={14} color="var(--red)" aria-hidden="true" />
-            Weak subject (from your tests)
+            Weak Subjects Analysis
           </div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--red)', marginBottom: 14 }}>{weakSubject}</div>
+          
+          <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+            <div style={{ flex: 1, background: 'var(--gray-50)', padding: 12, borderRadius: 8, border: '1px solid var(--gray-200)' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', textTransform: 'uppercase', marginBottom: 4 }}>By Avg Score</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--red)' }}>{weakSubject}</div>
+            </div>
+            
+            <div style={{ flex: 1, background: '#fdf2f8', padding: 12, borderRadius: 8, border: '1px solid #fbcfe8' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#9d174d', textTransform: 'uppercase', marginBottom: 4 }}>By Accuracy</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: '#831843' }}>
+                {(() => {
+                  if (!overallWeakSubjects) return 'Loading...';
+                  const weakest = [];
+                  Object.keys(overallWeakSubjects).forEach(sub => {
+                    if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+                  });
+                  if (weakest.length === 0) {
+                    Object.keys(overallWeakSubjects).forEach(sub => {
+                      if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Medium)`);
+                    });
+                  }
+                  return weakest.length > 0 ? weakest.join(', ') : 'None';
+                })()}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-700)', marginBottom: 8 }}>Average Marks by Subject</div>
           {streamCfg.subjects.map((sub) => {
             const avg = chartData.length
               ? Math.round(chartData.reduce((acc, m) => acc + (Number(m[sub]) || 0), 0) / chartData.length)

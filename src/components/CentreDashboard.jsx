@@ -16,6 +16,7 @@ import { CENTERS } from '../config/centers';
 import TestInsightsPanel from './TestInsightsPanel';
 import CenterWeakTopics from './CenterWeakTopics';
 import CenterOverallWeakTopics from './CenterOverallWeakTopics';
+import { getCenterWeakTopics } from '../services/weakTopicApi';
 
 const TABS = [
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
@@ -47,6 +48,7 @@ export default function CentreDashboard() {
   const [testInsights, setTestInsights]         = useState(null);
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError]   = useState('');
+  const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
 
   const centreTitle = CENTERS[auth.centerCode]?.name || auth.name || auth.centerCode;
 
@@ -91,6 +93,33 @@ export default function CentreDashboard() {
     return () => {
       cancelled = true;
     };
+  }, [auth.centerCode, selectedTestKey]);
+
+  useEffect(() => {
+    if (!auth.centerCode || !selectedTestKey) return undefined;
+    let cancelled = false;
+    getCenterWeakTopics(auth.centerCode, selectedTestKey)
+      .then((res) => {
+        if (!cancelled && res.success && res.data && res.data.length > 0) {
+          const doc = res.data.find(d => d.testId === selectedTestKey);
+          if (doc && doc.weakSubjects) {
+            const weakest = [];
+            Object.keys(doc.weakSubjects).forEach(sub => {
+              if (doc.weakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+            });
+            if (weakest.length === 0) {
+              Object.keys(doc.weakSubjects).forEach(sub => {
+                if (doc.weakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Medium)`);
+              });
+            }
+            setAccuracyWeakSubject(weakest.length > 0 ? weakest.join(', ') : 'None');
+          } else {
+            setAccuracyWeakSubject(null);
+          }
+        }
+      })
+      .catch(() => { if (!cancelled) setAccuracyWeakSubject(null); });
+    return () => { cancelled = true; };
   }, [auth.centerCode, selectedTestKey]);
 
   // ── Reload rankings when selectedTestKey changes ──────────────────────────────
@@ -234,14 +263,15 @@ export default function CentreDashboard() {
 
     const statCards = [
       { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#e8f0fc', color: '#1a4fa0' },
-      { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Subject', bg: '#fdecea', color: 'var(--red)' },
+      { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#fdecea', color: 'var(--red)' },
+      { Icon: Brain,         value: accuracyWeakSubject ?? 'N/A', label: 'Weak Sub (Acc)', bg: '#fdf2f8', color: '#9d174d' },
       { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#e6f5ed', color: '#1a6e3b' },
       { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#fff3e0', color: '#b45309' },
     ];
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div className="grid-4">
+        <div className="grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
           {statCards.map(({ Icon, value, label, bg, color }) => (
             <div className="stat-card" key={label}>
               <div className="stat-icon" style={{ background: bg }}>
