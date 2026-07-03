@@ -26,6 +26,14 @@ const TABS = [
   { key: 'weaktopics',  Icon: Brain,         label: 'Weak Topics' },
 ];
 
+function displayCenter(code) {
+  if (!code) return '—';
+  const upper = code.toUpperCase();
+  if (upper === 'GAIL') return 'KNP';
+  if (upper === 'OIL_INDIA') return 'JDH';
+  return code;
+}
+
 const SUBJECT_COLORS = ['#1a4fa0', '#e86b1f', '#1a8a4a', '#7c3aed', '#f5a623'];
 
 function getInitials(name = '') {
@@ -502,7 +510,7 @@ export default function StudentDashboard() {
         <div>
           <h1>{profile["STUDENT'S NAME"]}</h1>
           <p>
-            Roll: {profile.ROLL_KEY} · {profile.centerCode || ''}
+            Roll: {profile.ROLL_KEY} · {displayCenter(profile.centerCode) || ''}
             <span style={{ marginLeft: 8, fontSize: 11, padding: '2px 7px', borderRadius: 4, background: 'rgba(255,255,255,.2)', fontWeight: 600 }}>
               {stream}
             </span>

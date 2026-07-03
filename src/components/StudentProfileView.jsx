@@ -3,6 +3,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 
+function displayCenter(code) {
+  if (!code) return '—';
+  const upper = code.toUpperCase();
+  if (upper === 'GAIL') return 'KNP';
+  if (upper === 'OIL_INDIA') return 'JDH';
+  return code;
+}
+
 function InfoRow({ label, value }) {
   return (
     <div className="info-row">
@@ -136,7 +144,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           </div>
           <div style={{ fontSize: 13, color: 'var(--gray-600)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <span>📋 <strong>{profile['ROLL NO.'] || profile.ROLL_KEY}</strong></span>
-            <span>📍 {profile.centerCode || '—'}</span>
+            <span>📍 {displayCenter(profile.centerCode) || '—'}</span>
             <span>📱 {profile['Mobile No.'] || '—'}</span>
           </div>
         </div>
