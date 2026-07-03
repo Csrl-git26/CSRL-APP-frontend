@@ -247,6 +247,7 @@ export default function AdminDashboard() {
   const [modalStudent, setModalStudent] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [showMarksAwardModal, setShowMarksAwardModal] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
   const [importMode,    setImportMode]    = useState(null);
   const [uploadPreview, setUploadPreview] = useState([]);
@@ -437,6 +438,27 @@ export default function AdminDashboard() {
       showToast(`Student ${rollKey} deleted.`, 'success');
     } catch (e) {
       showToast(e.message, 'error');
+    }
+  };
+
+  const handleBulkDeleteStudents = async () => {
+    if (!selectedStudents.length) return;
+    if (!window.confirm(`Delete ${selectedStudents.length} students? This action cannot be undone.`)) return;
+    try {
+      await Promise.all(selectedStudents.map(roll => {
+        const student = data.profiles.find(p => p.ROLL_KEY === roll);
+        return deleteStudentApi(null, roll, student?.centerCode);
+      }));
+      setData((d) => ({
+        ...d,
+        profiles: d.profiles.filter((p) => !selectedStudents.includes(p.ROLL_KEY)),
+        tests:    d.tests.filter((t)    => !selectedStudents.includes(t.ROLL_KEY)),
+      }));
+      triggerRefresh();
+      setSelectedStudents([]);
+      showToast(`${selectedStudents.length} students deleted successfully.`, 'success');
+    } catch (e) {
+      showToast('Error deleting some students: ' + e.message, 'error');
     }
   };
 
@@ -815,6 +837,11 @@ export default function AdminDashboard() {
           <Users size={15} aria-hidden="true" />Students ({filteredStudents.length})
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
+          {selectedStudents.length > 0 && (
+            <button type="button" className="btn btn-danger btn-sm" onClick={handleBulkDeleteStudents}>
+              <Trash2 size={13} /> Delete Selected ({selectedStudents.length})
+            </button>
+          )}
           <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}>
             <Upload size={13} /> Bulk Upload
           </button>
@@ -844,13 +871,41 @@ export default function AdminDashboard() {
       <div className="table-wrap">
         <table className="table">
           <thead>
-            <tr><th>Roll</th><th>Name</th><th>Centre</th><th>Stream</th><th>Category</th><th>Mobile</th><th>Class 10</th><th>Actions</th></tr>
+            <tr>
+              <th style={{ width: 40, textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={filteredStudents.length > 0 && selectedStudents.length === filteredStudents.length}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedStudents(filteredStudents.map(s => s.ROLL_KEY));
+                    } else {
+                      setSelectedStudents([]);
+                    }
+                  }}
+                />
+              </th>
+              <th>Roll</th><th>Name</th><th>Centre</th><th>Stream</th><th>Category</th><th>Mobile</th><th>Class 10</th><th>Actions</th>
+            </tr>
           </thead>
           <tbody>
             {filteredStudents.map((s) => {
               const photoUrl = s['STUDENT PHOTO URL'] ? resolveStudentPhotoUrl(s['STUDENT PHOTO URL'], 'fallback') : null;
               return (
-              <tr key={s.ROLL_KEY}>
+              <tr key={s.ROLL_KEY} style={{ background: selectedStudents.includes(s.ROLL_KEY) ? 'var(--gray-50)' : 'transparent' }}>
+                <td style={{ textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={selectedStudents.includes(s.ROLL_KEY)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedStudents([...selectedStudents, s.ROLL_KEY]);
+                      } else {
+                        setSelectedStudents(selectedStudents.filter(roll => roll !== s.ROLL_KEY));
+                      }
+                    }}
+                  />
+                </td>
                 <td><strong style={{ color: '#1a4fa0' }}>{s.ROLL_KEY}</strong></td>
                 <td>
                   <div className="student-row">
@@ -894,7 +949,7 @@ export default function AdminDashboard() {
             );
             })}
             {!filteredStudents.length && (
-              <tr><td colSpan={8} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No students found.</td></tr>
+              <tr><td colSpan={9} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No students found.</td></tr>
             )}
           </tbody>
         </table>
