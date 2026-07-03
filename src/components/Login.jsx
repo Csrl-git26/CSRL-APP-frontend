@@ -224,7 +224,7 @@ export default function Login() {
             borderTop: '1px solid #f0f0f0',
             paddingTop: 12,
           }}>
-            Developed by <strong style={{ color: '#1a4fa0' }}>Ajaya Kumar</strong> — Trainee Faculty, CSRL
+            Developed by <strong style={{ color: '#1a4fa0' }}>Ajay Kumar</strong> — Academic officer, CSRL
           </div>
         </div>
       </div>
