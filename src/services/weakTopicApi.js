@@ -112,3 +112,12 @@ export async function getCenterOverallWeakTopics(centerId) {
   const res = await fetch(url, { headers: authHeaders() });
   return handleResponse(res);
 }
+
+/**
+ * clearWeakTopicsApi — Admin only: clear all weak topics data across all collections
+ */
+export async function clearWeakTopicsApi() {
+  const url = `${BASE}/api/admin/weak-topics/clear`;
+  const res = await fetch(url, { method: 'DELETE', headers: authHeaders() });
+  return handleResponse(res);
+}
