@@ -186,7 +186,7 @@ export default function CentreDashboard() {
     return data.profiles.filter((p) =>
       (p["STUDENT'S NAME"] || '').toLowerCase().includes(q) ||
       (p.ROLL_KEY         || '').toLowerCase().includes(q)
-    );
+    ).sort((a, b) => b.ROLL_KEY.localeCompare(a.ROLL_KEY, undefined, { numeric: true }));
   }, [data, searchTerm]);
 
   /** Lowest centre-wide subject average(s) from parsed test marks (same rule as overview KPI). */

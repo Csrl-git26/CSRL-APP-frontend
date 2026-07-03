@@ -341,7 +341,7 @@ export default function AdminDashboard() {
       const matchCenter  = filterCenter   === 'ALL' || p.centerCode === filterCenter;
       const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
       return matchSearch && matchCat && matchCenter && matchStream;
-    });
+    }).sort((a, b) => b.ROLL_KEY.localeCompare(a.ROLL_KEY, undefined, { numeric: true }));
   }, [data, searchTerm, filterCategory, filterCenter, filterStream]);
 
   const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))]], [data]);
