@@ -70,6 +70,21 @@ function normalizeCenterCode(v) {
   return code;
 }
 
+function displayCenter(code) {
+  if (!code) return '—';
+  const upper = code.toUpperCase();
+  if (upper === 'GAIL') return 'KNP';
+  if (upper === 'OIL_INDIA') return 'JDH';
+  return code;
+}
+
+function displaySponsor(code) {
+  if (!code) return '—';
+  const upper = code.toUpperCase();
+  if (upper === 'GAIL' || upper === 'OIL_INDIA') return upper;
+  return '—';
+}
+
 function getRowField(row, keys) {
   for (const key of keys) {
     if (row[key] !== undefined && row[key] !== null && row[key] !== '') return row[key];
@@ -885,7 +900,7 @@ export default function AdminDashboard() {
                   }}
                 />
               </th>
-              <th>Roll</th><th>Name</th><th>Centre</th><th>Stream</th><th>Category</th><th>Mobile</th><th>Class 10</th><th>Actions</th>
+              <th>Roll</th><th>Name</th><th>Centre</th><th>Sponsor</th><th>Stream</th><th>Category</th><th>Mobile</th><th>Class 10</th><th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -920,7 +935,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </td>
-                <td><span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0' }}>{s.centerCode}</span></td>
+                <td><span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0' }}>{displayCenter(s.centerCode)}</span></td>
+                <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a' }}>{displaySponsor(s.centerCode)}</span></td>
                 <td>
                   <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 3, background: s.stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: s.stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 700 }}>
                     {s.stream || 'JEE'}
@@ -949,7 +965,7 @@ export default function AdminDashboard() {
             );
             })}
             {!filteredStudents.length && (
-              <tr><td colSpan={9} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No students found.</td></tr>
+              <tr><td colSpan={10} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No students found.</td></tr>
             )}
           </tbody>
         </table>
@@ -985,7 +1001,7 @@ export default function AdminDashboard() {
         <table className="table table-compact">
           <thead>
             <tr>
-              <th>Roll</th><th>Name</th><th>Centre</th><th>Stream</th><th>Test</th>
+              <th>Roll</th><th>Name</th><th>Centre</th><th>Sponsor</th><th>Stream</th><th>Test</th>
               {allSubjects.map((s) => {
                 const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
                 return <th key={s} title={s}>{abbr}</th>;
@@ -1001,7 +1017,8 @@ export default function AdminDashboard() {
                 <tr key={`${m.roll}-${m.test}`}>
                   <td><strong style={{ color: '#1a4fa0' }}>{m.roll}</strong></td>
                   <td style={{ fontWeight: 500, fontSize: 13 }}>{m.name || '—'}</td>
-                  <td><span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 11 }}>{m.centre || '—'}</span></td>
+                  <td><span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 11 }}>{displayCenter(m.centre)}</span></td>
+                  <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 11 }}>{displaySponsor(m.centre)}</span></td>
                   <td>
                     <span style={{ fontSize: 11, padding: '2px 5px', borderRadius: 3, background: m.stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: m.stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 700 }}>
                       {m.stream}
@@ -1019,7 +1036,7 @@ export default function AdminDashboard() {
               );
             })}
             {!filteredFlatMarks.length && (
-              <tr><td colSpan={allSubjects.length + 7} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks found.</td></tr>
+              <tr><td colSpan={allSubjects.length + 8} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks found.</td></tr>
             )}
           </tbody>
         </table>
@@ -1036,7 +1053,7 @@ export default function AdminDashboard() {
       <table className="table table-compact">
         <thead>
           <tr>
-            <th>#</th><th>Student</th><th>Centre</th><th>Cat.</th>
+            <th>#</th><th>Student</th><th>Centre</th><th>Sponsor</th><th>Cat.</th>
             {allSubjects.map((s) => {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
@@ -1067,7 +1084,10 @@ export default function AdminDashboard() {
                   </div>
                 </td>
                 <td>
-                  <span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 10 }}>{m.center}</span>
+                  <span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 10 }}>{displayCenter(m.center)}</span>
+                </td>
+                <td>
+                  <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 10 }}>{displaySponsor(m.center)}</span>
                 </td>
                 <td>
                   <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
@@ -1082,7 +1102,7 @@ export default function AdminDashboard() {
             );
           })}
           {!topRanked.length && (
-            <tr><td colSpan={allSubjects.length + 4} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1099,7 +1119,7 @@ export default function AdminDashboard() {
       <table className="table table-compact">
         <thead>
           <tr>
-            <th>Rank</th><th>Student</th><th>Centre</th><th>Cat.</th>
+            <th>Rank</th><th>Student</th><th>Centre</th><th>Sponsor</th><th>Cat.</th>
             {allSubjects.map((s) => {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
@@ -1129,7 +1149,10 @@ export default function AdminDashboard() {
                 </div>
               </td>
               <td>
-                <span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 10 }}>{m.center}</span>
+                <span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 10 }}>{displayCenter(m.center)}</span>
+              </td>
+              <td>
+                <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 10 }}>{displaySponsor(m.center)}</span>
               </td>
               <td>
                 <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
@@ -1143,7 +1166,7 @@ export default function AdminDashboard() {
             </tr>
           )})}
           {!bottomRanked.length && (
-            <tr><td colSpan={allSubjects.length + 4} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
