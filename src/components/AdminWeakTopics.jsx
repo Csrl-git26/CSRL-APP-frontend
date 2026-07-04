@@ -82,8 +82,9 @@ export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
             <option value="">-- Select Center --</option>
             {validCenters.map(c => {
               let display = c;
-              if (c === 'GAIL') display = 'KNP';
-              if (c === 'OIL_INDIA') display = 'JDH';
+              const normalized = String(c).trim().toUpperCase();
+              if (normalized === 'GAIL') display = 'KNP';
+              if (normalized === 'OIL_INDIA') display = 'JDH';
               return <option key={c} value={c}>{display}</option>;
             })}
           </select>
