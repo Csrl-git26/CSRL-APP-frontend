@@ -73,15 +73,16 @@ function normalizeCenterCode(v) {
 function displayCenter(code) {
   if (!code) return '—';
   const upper = code.toUpperCase();
-  if (upper === 'GAIL') return 'KNP';
-  if (upper === 'OIL_INDIA') return 'JDH';
+  if (upper === 'GAIL' || upper === 'KNP') return 'KNP';
+  if (upper === 'OIL_INDIA' || upper === 'JDH') return 'JDH';
   return code;
 }
 
 function displaySponsor(code) {
   if (!code) return '—';
   const upper = code.toUpperCase();
-  if (upper === 'GAIL' || upper === 'OIL_INDIA') return upper;
+  if (upper === 'GAIL' || upper === 'KNP') return 'GAIL';
+  if (upper === 'OIL_INDIA' || upper === 'JDH') return 'OIL_INDIA';
   return '—';
 }
 

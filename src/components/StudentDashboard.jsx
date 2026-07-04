@@ -29,8 +29,8 @@ const TABS = [
 function displayCenter(code) {
   if (!code) return '—';
   const upper = code.toUpperCase();
-  if (upper === 'GAIL') return 'KNP';
-  if (upper === 'OIL_INDIA') return 'JDH';
+  if (upper === 'GAIL' || upper === 'KNP') return 'KNP';
+  if (upper === 'OIL_INDIA' || upper === 'JDH') return 'JDH';
   return code;
 }
 
