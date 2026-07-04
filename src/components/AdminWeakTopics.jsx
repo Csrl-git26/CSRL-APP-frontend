@@ -80,9 +80,12 @@ export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
             style={{ marginTop: 4, maxWidth: 240 }}
           >
             <option value="">-- Select Center --</option>
-            {validCenters.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {validCenters.map(c => {
+              let display = c;
+              if (c === 'GAIL') display = 'KNP';
+              if (c === 'OIL_INDIA') display = 'JDH';
+              return <option key={c} value={c}>{display}</option>;
+            })}
           </select>
         </div>
 
