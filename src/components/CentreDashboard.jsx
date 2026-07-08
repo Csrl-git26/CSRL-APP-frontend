@@ -45,6 +45,11 @@ export default function CentreDashboard() {
   const [viewingStudentId, setViewingStudentId] = useState(null);
   const [selectedTestKey,  setSelectedTestKey]  = useState('');
   const [searchTerm,       setSearchTerm]       = useState('');
+  const [filterCategory,   setFilterCategory]   = useState('ALL');
+  const [filterStream,     setFilterStream]     = useState('ALL');
+  const [filterSponsor,    setFilterSponsor]    = useState('ALL');
+  const [filterGender,     setFilterGender]     = useState('ALL');
+  const [filterState,      setFilterState]      = useState('ALL');
   const [testInsights, setTestInsights]         = useState(null);
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError]   = useState('');
@@ -183,11 +188,21 @@ export default function CentreDashboard() {
   const filteredStudents = useMemo(() => {
     if (!data) return [];
     const q = searchTerm.toLowerCase();
-    return data.profiles.filter((p) =>
-      (p["STUDENT'S NAME"] || '').toLowerCase().includes(q) ||
-      (p.ROLL_KEY         || '').toLowerCase().includes(q)
-    ).sort((a, b) => a.ROLL_KEY.localeCompare(b.ROLL_KEY, undefined, { numeric: true }));
-  }, [data, searchTerm]);
+    return data.profiles.filter((p) => {
+      const matchSearch  = !q || (p["STUDENT'S NAME"] || '').toLowerCase().includes(q) || (p.ROLL_KEY || '').toLowerCase().includes(q);
+      const matchCat     = filterCategory === 'ALL' || p.CATEGORY   === filterCategory;
+      const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
+      const matchSponsor = filterSponsor  === 'ALL' || (p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))) === filterSponsor;
+      const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
+      const matchState   = filterState    === 'ALL' || p.STATE === filterState;
+      return matchSearch && matchCat && matchStream && matchSponsor && matchGender && matchState;
+    }).sort((a, b) => a.ROLL_KEY.localeCompare(b.ROLL_KEY, undefined, { numeric: true }));
+  }, [data, searchTerm, filterCategory, filterStream, filterSponsor, filterGender, filterState]);
+
+  const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))]], [data]);
+  const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))).filter(Boolean))]], [data]);
+  const gendersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.GENDER).filter(Boolean))]], [data]);
+  const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))]], [data]);
 
   /** Lowest centre-wide subject average(s) from parsed test marks (same rule as overview KPI). */
   const { minSubjectAvg, weakSubjectFromPerformance } = useMemo(() => {
@@ -517,16 +532,38 @@ export default function CentreDashboard() {
         <Users size={14} aria-hidden="true" />
         All Students ({filteredStudents.length})
       </div>
-      <div style={{ marginBottom: 12, position: 'relative', display: 'inline-block' }}>
-        <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
-        <input
-          className="input"
-          placeholder="Search by name or roll…"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ maxWidth: 280, paddingLeft: 30, width: '100%' }}
-        />
-      </div>
+        <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+          <div style={{ position: 'relative', flex: '1 1 200px' }}>
+            <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
+            <input
+              className="input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by name or roll…"
+              style={{ width: '100%', paddingLeft: 30 }}
+            />
+          </div>
+          <select className="input select" value={filterSponsor} onChange={(e) => setFilterSponsor(e.target.value)} style={{ flex: '1 1 120px' }}>
+            <option value="ALL">All Sponsors</option>
+            {sponsorsList.filter((s) => s !== 'ALL' && s !== '—').map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <select className="input select" value={filterStream}   onChange={(e) => setFilterStream(e.target.value)}   style={{ flex: '1 1 120px' }}>
+            <option value="ALL">All Streams</option>
+            <option value="JEE">JEE</option>
+            <option value="NEET">NEET</option>
+          </select>
+          <select className="input select" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{ flex: '1 1 120px' }}>
+            {categories.map((c) => <option key={c} value={c}>{c === 'ALL' ? 'All Categories' : c}</option>)}
+          </select>
+          <select className="input select" value={filterGender} onChange={(e) => setFilterGender(e.target.value)} style={{ flex: '1 1 100px' }}>
+            <option value="ALL">All Genders</option>
+            {gendersList.filter((g) => g !== 'ALL').map((g) => <option key={g} value={g}>{g}</option>)}
+          </select>
+          <select className="input select" value={filterState} onChange={(e) => setFilterState(e.target.value)} style={{ flex: '1 1 120px' }}>
+            <option value="ALL">All States</option>
+            {statesList.filter((s) => s !== 'ALL').map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
       <div className="table-wrap">
       <table className="table">
         <thead>

@@ -35,11 +35,13 @@ import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const STUDENT_TEMPLATE_COLUMNS = [
-  'roll_number', 'name', 'gender', 'category', 'mobile', 'dob',
-  'parent_name', 'parent_mobile', 'address', 'district', 'state', 'pincode',
-  'school_10', 'board_10', 'percentage_10', 'school_12', 'board_12',
-  'percentage_12', 'future_college', 'weak_subject_manual',
-  'student_photo_url', 'centre', 'stream',
+  'centre', 'stream', 'SPONSOR', 'CENTRE CODE', 'Registration no.', 'name', 
+  'Mode of Selection', 'Written Test Marks (240)', 'Interview Marks (90)', 
+  'HO Score in Final Admission', 'gender', 'category', 'mobile', 'dob', 
+  'parent_name', 'parent_mobile', 'address', 'district', 'state', 'pincode', 
+  'school_10', 'board_10', 'percentage_10', 'DISTRICT_10', 'board_12', 
+  'percentage_12', 'DISTRICT_12', 'STATE_12', 'JEE MAINS 2024-25 Precentille', 
+  'student_photo_url'
 ];
 
 const TABS = [
@@ -94,7 +96,7 @@ function getRowField(row, keys) {
 }
 
 function mapExcelStudentToProfile(row) {
-  const roll   = normalizeRollKey(getRowField(row, ['roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY']));
+  const roll   = normalizeRollKey(getRowField(row, ['Registration no.', 'roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY']));
   const name   = normalizeCellValue(getRowField(row, ['name', 'Name', "STUDENT'S NAME"]));
   const centre = normalizeCenterCode(getRowField(row, ['centre', 'Center', 'center', 'centerCode']));
   const stream = normalizeCellValue(getRowField(row, ['stream', 'Stream', 'STREAM'])).toUpperCase() || 'JEE';
@@ -104,11 +106,18 @@ function mapExcelStudentToProfile(row) {
     "STUDENT'S NAME": name,
     centerCode:                centre,
     stream:                    stream === 'NEET' ? 'NEET' : 'JEE',
+    SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor'])),
+    'CENTRE CODE':             normalizeCellValue(getRowField(row, ['CENTRE CODE', 'centre_code'])),
+    'Mode of Selection':       normalizeCellValue(getRowField(row, ['Mode of Selection', 'mode_of_selection'])),
+    'Written Test Marks (240)':normalizeCellValue(getRowField(row, ['Written Test Marks (240)', 'written_test_marks'])),
+    'Interview Marks (90)':    normalizeCellValue(getRowField(row, ['Interview Marks (90)', 'interview_marks'])),
+    'HO Score in Final Admission': normalizeCellValue(getRowField(row, ['HO Score in Final Admission', 'ho_score'])),
     GENDER:                    normalizeCellValue(getRowField(row, ['gender', 'Gender', 'GENDER'])),
     CATEGORY:                  normalizeCellValue(getRowField(row, ['category', 'Category', 'CATEGORY'])),
     'Mobile No.':              normalizeCellValue(getRowField(row, ['mobile', 'Mobile', 'Mobile No.', 'mobile_no'])),
     'DATE OF BIRTH':           normalizeCellValue(getRowField(row, ['dob', 'Date of Birth', 'DATE OF BIRTH'])),
     "FATHER'S NAME":           normalizeCellValue(getRowField(row, ['parent_name', "FATHER'S NAME", 'father_name'])),
+    'parent_mobile':           normalizeCellValue(getRowField(row, ['parent_mobile', 'Parent Mobile'])),
     "MOTHER'S NAME":           normalizeCellValue(getRowField(row, ['mother_name', "MOTHER'S NAME"])),
     'PARMANENT ADDRESS':       normalizeCellValue(getRowField(row, ['address', 'Address', 'PARMANENT ADDRESS'])),
     DISTRICT:                  normalizeCellValue(getRowField(row, ['district', 'DISTRICT'])),
@@ -117,9 +126,13 @@ function mapExcelStudentToProfile(row) {
     '10th SCHOOL NAME':        normalizeCellValue(getRowField(row, ['school_10', '10th SCHOOL NAME'])),
     '10th BOARD':              normalizeCellValue(getRowField(row, ['board_10', '10th BOARD'])),
     '10th Precentage':         normalizeCellValue(getRowField(row, ['percentage_10', '10th Precentage'])),
+    'DISTRICT_10':             normalizeCellValue(getRowField(row, ['DISTRICT_10', 'district_10'])),
     '12th SCHOOL NAME':        normalizeCellValue(getRowField(row, ['school_12', '12th SCHOOL NAME'])),
     '12th BOARD':              normalizeCellValue(getRowField(row, ['board_12', '12th BOARD'])),
     '12th Precentage':         normalizeCellValue(getRowField(row, ['percentage_12', '12th Precentage'])),
+    'DISTRICT_12':             normalizeCellValue(getRowField(row, ['DISTRICT_12', 'district_12'])),
+    'STATE_12':                normalizeCellValue(getRowField(row, ['STATE_12', 'state_12'])),
+    'JEE MAINS 2024-25 Precentille': normalizeCellValue(getRowField(row, ['JEE MAINS 2024-25 Precentille', 'jee_mains_percentile'])),
     'FUTURE COLLEGE (TARGET)': normalizeCellValue(getRowField(row, ['future_college', 'FUTURE COLLEGE (TARGET)'])),
     'WEAK SUBJECT (MANUAL)':   normalizeCellValue(getRowField(row, ['weak_subject_manual', 'WEAK SUBJECT (MANUAL)'])),
     'STUDENT PHOTO URL':       normalizeCellValue(getRowField(row, ['student_photo_url', 'STUDENT PHOTO URL'])),
@@ -254,6 +267,9 @@ export default function AdminDashboard() {
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [filterCenter,   setFilterCenter]   = useState('ALL');
   const [filterStream,   setFilterStream]   = useState('ALL');
+  const [filterSponsor,  setFilterSponsor]  = useState('ALL');
+  const [filterGender,   setFilterGender]   = useState('ALL');
+  const [filterState,    setFilterState]    = useState('ALL');
 
   const [marksSearch,  setMarksSearch]  = useState('');
   const [marksTestF,   setMarksTestF]   = useState('');
@@ -356,12 +372,18 @@ export default function AdminDashboard() {
       const matchCat     = filterCategory === 'ALL' || p.CATEGORY   === filterCategory;
       const matchCenter  = filterCenter   === 'ALL' || p.centerCode === filterCenter;
       const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
-      return matchSearch && matchCat && matchCenter && matchStream;
+      const matchSponsor = filterSponsor  === 'ALL' || (p.SPONSOR || displaySponsor(p.centerCode)) === filterSponsor;
+      const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
+      const matchState   = filterState    === 'ALL' || p.STATE === filterState;
+      return matchSearch && matchCat && matchCenter && matchStream && matchSponsor && matchGender && matchState;
     }).sort((a, b) => a.ROLL_KEY.localeCompare(b.ROLL_KEY, undefined, { numeric: true }));
-  }, [data, searchTerm, filterCategory, filterCenter, filterStream]);
+  }, [data, searchTerm, filterCategory, filterCenter, filterStream, filterSponsor, filterGender, filterState]);
 
   const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))]], [data]);
   const centersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.centerCode).filter(Boolean))]], [data]);
+  const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || displaySponsor(p.centerCode)).filter(Boolean))]], [data]);
+  const gendersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.GENDER).filter(Boolean))]], [data]);
+  const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))]], [data]);
 
   // All unique subjects across test columns (for dynamic marks table header)
   const allSubjects = useMemo(() => {
@@ -866,22 +888,34 @@ export default function AdminDashboard() {
           </button>
         </div>
       </div>
-      <div className="search-row">
-        <div style={{ position: 'relative' }}>
+      <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+        <div style={{ position: 'relative', flex: '1 1 200px' }}>
           <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
-          <input className="input" placeholder="Name or roll…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ maxWidth: 240, paddingLeft: 30 }} />
+          <input className="input" placeholder="Name or roll…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: '100%', paddingLeft: 30 }} />
         </div>
-        <select className="input select" value={filterCenter}   onChange={(e) => setFilterCenter(e.target.value)}   style={{ maxWidth: 200 }}>
+        <select className="input select" value={filterSponsor} onChange={(e) => setFilterSponsor(e.target.value)} style={{ flex: '1 1 120px' }}>
+          <option value="ALL">All Sponsors</option>
+          {sponsorsList.filter((s) => s !== 'ALL').map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select className="input select" value={filterCenter}   onChange={(e) => setFilterCenter(e.target.value)}   style={{ flex: '1 1 120px' }}>
           <option value="ALL">All Centres</option>
           {centersList.filter((c) => c !== 'ALL').map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select className="input select" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{ maxWidth: 150 }}>
-          {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-        <select className="input select" value={filterStream}   onChange={(e) => setFilterStream(e.target.value)}   style={{ maxWidth: 120 }}>
+        <select className="input select" value={filterStream}   onChange={(e) => setFilterStream(e.target.value)}   style={{ flex: '1 1 120px' }}>
           <option value="ALL">All Streams</option>
           <option value="JEE">JEE</option>
           <option value="NEET">NEET</option>
+        </select>
+        <select className="input select" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{ flex: '1 1 120px' }}>
+          {categories.map((c) => <option key={c} value={c}>{c === 'ALL' ? 'All Categories' : c}</option>)}
+        </select>
+        <select className="input select" value={filterGender} onChange={(e) => setFilterGender(e.target.value)} style={{ flex: '1 1 100px' }}>
+          <option value="ALL">All Genders</option>
+          {gendersList.filter((g) => g !== 'ALL').map((g) => <option key={g} value={g}>{g}</option>)}
+        </select>
+        <select className="input select" value={filterState} onChange={(e) => setFilterState(e.target.value)} style={{ flex: '1 1 120px' }}>
+          <option value="ALL">All States</option>
+          {statesList.filter((s) => s !== 'ALL').map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
       <div className="table-wrap">
