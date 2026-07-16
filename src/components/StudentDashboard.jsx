@@ -64,6 +64,7 @@ export default function StudentDashboard() {
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError]   = useState('');
   const [overallWeakSubjects, setOverallWeakSubjects] = useState(null);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   useEffect(() => {
     if (!auth.id) return;
@@ -231,8 +232,6 @@ export default function StudentDashboard() {
     const map = { Physics: '#1a4fa0', Chemistry: '#e86b1f', Math: '#1a8a4a', Biology: '#7c3aed', Botany: '#059669', Zoology: '#0891b2' };
     return map[sub] || '#374151';
   };
-
-  const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   const exportProfileToPDF = async () => {
     if (!profile) return;
