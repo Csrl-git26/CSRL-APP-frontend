@@ -339,7 +339,7 @@ export default function StudentDashboard() {
               <div style={{ fontWeight: 700, color: '#1a4fa0', fontSize: 13, marginBottom: 8 }}>Competitive Exams</div>
               <div className="info-row">
                 <span className="info-label">JEE Mains 24-25 Percentile</span>
-                <span className="info-val">{profile['JEE MAINS 2024-25 Precentille'] || '-'}</span>
+                <span className="info-val">{getJeePercentile(profile) || '-'}</span>
               </div>
             </div>
           )}

@@ -244,7 +244,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           {stream === 'JEE' && (
             <div style={{ background: '#e8f0fc', borderRadius: 8, padding: '12px' }}>
               <div style={{ fontWeight: 700, color: '#1a4fa0', fontSize: 13, marginBottom: 8 }}>Competitive Exams</div>
-              <InfoRow label="JEE Mains 24-25 Percentile" value={profile['JEE MAINS 2024-25 Precentille'] || '-'} />
+              <InfoRow label="JEE Mains 24-25 Percentile" value={getJeePercentile(profile) || '-'} />
             </div>
           )}
         </div>

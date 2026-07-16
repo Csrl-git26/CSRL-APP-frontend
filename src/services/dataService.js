@@ -308,7 +308,14 @@ export function getJeePercentile(profile) {
   const key = Object.keys(profile).find(
     (k) => k.toLowerCase().includes('jee main') && k.toLowerCase().includes('percentile')
   );
-  return key ? profile[key] : null;
+  if (!key || profile[key] == null) return null;
+  
+  let val = profile[key];
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 0 && num <= 1.0) {
+    val = Number((num * 100).toFixed(4));
+  }
+  return val;
 }
 
 export function getNeetScore(profile) {
