@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 
@@ -22,6 +24,47 @@ function InfoRow({ label, value }) {
 
 export default function StudentProfileView({ profile, studentTests, testColumns }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
+
+  const exportProfileToExcel = () => {
+    if (!profile) return;
+    const wsData = [
+      ['Roll Number', profile.ROLL_KEY || '-'],
+      ['Name', profile["STUDENT'S NAME"] || '-'],
+      ['Centre', profile.centerCode || '-'],
+      ['Stream', profile.stream || '-'],
+      ['Sponsor', profile.SPONSOR || '-'],
+      ['Registration no.', profile['Registration no.'] || profile.ROLL_KEY || '-'],
+      ['Mode of Selection', profile['Mode of Selection'] || '-'],
+      ['Written Test Marks (240)', profile['Written Test Marks (240)'] || '-'],
+      ['Interview Marks (90)', profile['Interview Marks (90)'] || '-'],
+      ['HO Score in Final Admission', profile['HO Score in Final Admission'] || '-'],
+      ['Gender', profile.GENDER || '-'],
+      ['Category', profile.CATEGORY || '-'],
+      ['Parent Mobile', profile.parent_mobile || '-'],
+      ['Date of Birth', profile['DATE OF BIRTH'] || '-'],
+      ['Father Name', profile["FATHER'S NAME"] || '-'],
+      ['Mother Name', profile["MOTHER'S NAME"] || '-'],
+      ['Address', profile['PARMANENT ADDRESS'] || '-'],
+      ['District', profile.DISTRICT || '-'],
+      ['State', profile.STATE || '-'],
+      ['Pincode', profile.PINCODE || '-'],
+      ['10th School', profile['10th SCHOOL NAME'] || '-'],
+      ['10th Board', profile['10th BOARD'] || '-'],
+      ['10th District', profile['DISTRICT_10'] || '-'],
+      ['10th State', profile['STATE_10'] || '-'],
+      ['10th Percentage', profile['10th Precentage'] || '-'],
+      ['12th School', profile['12th SCHOOL NAME'] || '-'],
+      ['12th Board', profile['12th BOARD'] || '-'],
+      ['12th District', profile['DISTRICT_12'] || '-'],
+      ['12th State', profile['STATE_12'] || '-'],
+      ['12th Percentage', profile['12th Precentage'] || '-'],
+      ['JEE Mains 2024-25 Percentile', profile['JEE MAINS 2024-25 Precentille'] || '-']
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Student Profile');
+    XLSX.writeFile(wb, `${profile.ROLL_KEY || 'Student'}_Profile.xlsx`);
+  };
 
   React.useEffect(() => {
     const studentId = profile?.['ROLL NO.'] || profile?.ROLL_KEY;
@@ -141,6 +184,9 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
             <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 4, background: stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 700 }}>
               {stream}
             </span>
+            <button type="button" onClick={exportProfileToExcel} className="btn btn-outline btn-sm" style={{ marginLeft: 'auto' }}>
+              <Download size={13} /> Export to Excel
+            </button>
           </div>
           <div style={{ fontSize: 13, color: 'var(--gray-600)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <span>📋 <strong>{profile['ROLL NO.'] || profile.ROLL_KEY}</strong></span>
@@ -159,14 +205,21 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
       {/* Info Grid */}
       <div className="grid-2">
         <div className="card">
-          <div className="section-title">👨‍👩‍👧 Personal & Family</div>
-          <InfoRow label="Gender"      value={profile.GENDER} />
-          <InfoRow label="Date of Birth" value={profile['DATE OF BIRTH']} />
-          <InfoRow label="Father's Name" value={profile["FATHER'S NAME"]} />
-          <InfoRow label="Mother's Name" value={profile["MOTHER'S NAME"]} />
-          <InfoRow label="Mobile"      value={profile['Mobile No.']} />
+          <div className="section-title">👨‍👩‍👧 Personal & Selection Info</div>
+          <InfoRow label="Registration No." value={profile['Registration no.'] || profile.ROLL_KEY || '-'} />
+          <InfoRow label="Sponsor" value={profile.SPONSOR || '-'} />
+          <InfoRow label="Mode of Selection" value={profile['Mode of Selection'] || '-'} />
+          <InfoRow label="Written Test Marks" value={profile['Written Test Marks (240)'] || '-'} />
+          <InfoRow label="Interview Marks" value={profile['Interview Marks (90)'] || '-'} />
+          <InfoRow label="HO Score" value={profile['HO Score in Final Admission'] || '-'} />
+          <InfoRow label="Gender" value={profile.GENDER || '-'} />
+          <InfoRow label="Date of Birth" value={profile['DATE OF BIRTH'] || '-'} />
+          <InfoRow label="Father's Name" value={profile["FATHER'S NAME"] || '-'} />
+          <InfoRow label="Mother's Name" value={profile["MOTHER'S NAME"] || '-'} />
+          <InfoRow label="Student Mobile" value={profile['Mobile No.'] || '-'} />
+          <InfoRow label="Parent Mobile" value={profile['parent_mobile'] || '-'} />
           <div style={{ marginTop: 10, fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.5 }}>
-            📍 {profile['PARMANENT ADDRESS'] || '—'}, {profile.DISTRICT}, {profile.STATE}{profile.PINCODE ? ` - ${profile.PINCODE}` : ''}
+            📍 {profile['PARMANENT ADDRESS'] || '-'}, {profile.DISTRICT || '-'}, {profile.STATE || '-'}{profile.PINCODE ? ` - ${profile.PINCODE}` : ''}
           </div>
         </div>
 
@@ -174,16 +227,26 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           <div className="section-title">🎓 Education History</div>
           <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', marginBottom: 10 }}>
             <div style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: 13, marginBottom: 8 }}>10th Standard</div>
-            <InfoRow label="School"     value={school10} />
-            <InfoRow label="Board"      value={profile['10th BOARD']} />
-            <InfoRow label="Percentage" value={profile['10th Precentage']} />
+            <InfoRow label="School" value={school10 || '-'} />
+            <InfoRow label="Board" value={profile['10th BOARD'] || '-'} />
+            <InfoRow label="District" value={profile['DISTRICT_10'] || '-'} />
+            <InfoRow label="State" value={profile['STATE_10'] || '-'} />
+            <InfoRow label="Percentage" value={profile['10th Precentage'] || '-'} />
           </div>
-          <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px' }}>
+          <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', marginBottom: 10 }}>
             <div style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: 13, marginBottom: 8 }}>12th Standard</div>
-            <InfoRow label="School"     value={school12} />
-            <InfoRow label="Board"      value={profile['12th BOARD']} />
-            <InfoRow label="Percentage" value={profile['12th Precentage']} />
+            <InfoRow label="School" value={school12 || '-'} />
+            <InfoRow label="Board" value={profile['12th BOARD'] || '-'} />
+            <InfoRow label="District" value={profile['DISTRICT_12'] || '-'} />
+            <InfoRow label="State" value={profile['STATE_12'] || '-'} />
+            <InfoRow label="Percentage" value={profile['12th Precentage'] || '-'} />
           </div>
+          {stream === 'JEE' && (
+            <div style={{ background: '#e8f0fc', borderRadius: 8, padding: '12px' }}>
+              <div style={{ fontWeight: 700, color: '#1a4fa0', fontSize: 13, marginBottom: 8 }}>Competitive Exams</div>
+              <InfoRow label="JEE Mains 24-25 Percentile" value={profile['JEE MAINS 2024-25 Precentille'] || '-'} />
+            </div>
+          )}
         </div>
       </div>
 

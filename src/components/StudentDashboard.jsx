@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { LineChart, Line, XAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { User, BarChart2, BarChart3, AlertTriangle, Loader2, Brain } from 'lucide-react';
+import { User, BarChart2, BarChart3, AlertTriangle, Loader2, Brain, Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import {
   fetchStudentData,
   fetchStudentChart,
@@ -227,27 +228,121 @@ export default function StudentDashboard() {
     return map[sub] || '#374151';
   };
 
+  const exportProfileToExcel = () => {
+    if (!profile) return;
+    const wsData = [
+      ['Roll Number', profile.ROLL_KEY || '-'],
+      ['Name', profile["STUDENT'S NAME"] || '-'],
+      ['Centre', profile.centerCode || '-'],
+      ['Stream', profile.stream || '-'],
+      ['Sponsor', profile.SPONSOR || '-'],
+      ['Registration no.', profile['Registration no.'] || profile.ROLL_KEY || '-'],
+      ['Mode of Selection', profile['Mode of Selection'] || '-'],
+      ['Written Test Marks (240)', profile['Written Test Marks (240)'] || '-'],
+      ['Interview Marks (90)', profile['Interview Marks (90)'] || '-'],
+      ['HO Score in Final Admission', profile['HO Score in Final Admission'] || '-'],
+      ['Gender', profile.GENDER || '-'],
+      ['Category', profile.CATEGORY || '-'],
+      ['Parent Mobile', profile.parent_mobile || '-'],
+      ['Date of Birth', profile['DATE OF BIRTH'] || '-'],
+      ['Father Name', profile["FATHER'S NAME"] || '-'],
+      ['Mother Name', profile["MOTHER'S NAME"] || '-'],
+      ['Address', profile['PARMANENT ADDRESS'] || '-'],
+      ['District', profile.DISTRICT || '-'],
+      ['State', profile.STATE || '-'],
+      ['Pincode', profile.PINCODE || '-'],
+      ['10th School', profile['10th SCHOOL NAME'] || '-'],
+      ['10th Board', profile['10th BOARD'] || '-'],
+      ['10th District', profile['DISTRICT_10'] || '-'],
+      ['10th State', profile['STATE_10'] || '-'],
+      ['10th Percentage', profile['10th Precentage'] || '-'],
+      ['12th School', profile['12th SCHOOL NAME'] || '-'],
+      ['12th Board', profile['12th BOARD'] || '-'],
+      ['12th District', profile['DISTRICT_12'] || '-'],
+      ['12th State', profile['STATE_12'] || '-'],
+      ['12th Percentage', profile['12th Precentage'] || '-'],
+      ['JEE Mains 2024-25 Percentile', profile['JEE MAINS 2024-25 Precentille'] || '-']
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Student Profile');
+    XLSX.writeFile(wb, `${profile.ROLL_KEY || 'Student'}_Profile.xlsx`);
+  };
+
   const ProfileTab = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: -4 }}>
+        <button type="button" onClick={exportProfileToExcel} className="btn btn-outline btn-sm">
+          <Download size={13} /> Export to Excel
+        </button>
+      </div>
       <div className="grid-2">
         <div className="card">
           <div className="section-title">Personal Information</div>
           {[
-            ['Name',     profile["STUDENT'S NAME"]],
-            ['Roll',     profile.ROLL_KEY],
-            ['Stream',   stream],
-            ['Gender',   profile.GENDER],
+            ['Registration No.', profile['Registration no.'] || profile.ROLL_KEY],
+            ['Name', profile["STUDENT'S NAME"]],
+            ['Roll', profile.ROLL_KEY],
+            ['Stream', stream],
+            ['Sponsor', profile.SPONSOR],
+            ['Mode of Selection', profile['Mode of Selection']],
+            ['Written Test Marks', profile['Written Test Marks (240)']],
+            ['Interview Marks', profile['Interview Marks (90)']],
+            ['HO Score', profile['HO Score in Final Admission']],
+            ['Gender', profile.GENDER],
             ['Category', profile.CATEGORY],
-            ['DOB',      profile['DATE OF BIRTH']],
-            ['Mobile',   profile['Mobile No.']],
-            ['Parent',   profile["FATHER'S NAME"]],
-            ['School',   schoolName],
+            ['DOB', profile['DATE OF BIRTH']],
+            ['Student Mobile', profile['Mobile No.']],
+            ['Parent Mobile', profile['parent_mobile']],
+            ['Parent Name', profile["FATHER'S NAME"]],
+            ['Address', `${profile['PARMANENT ADDRESS'] || ''}, ${profile.DISTRICT || ''}, ${profile.STATE || ''} - ${profile.PINCODE || ''}`],
           ].map(([label, value]) => (
             <div className="info-row" key={label}>
               <span className="info-label">{label}</span>
-              <span className="info-val">{value || '\u2014'}</span>
+              <span className="info-val">{value && value !== ', ,  - ' ? value : '-'}</span>
             </div>
           ))}
+          
+          <div className="section-title" style={{ marginTop: 24 }}>Education History</div>
+          <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: 13, marginBottom: 8 }}>10th Standard</div>
+            {[
+              ['School', profile['10th SCHOOL NAME']],
+              ['Board', profile['10th BOARD']],
+              ['District', profile['DISTRICT_10']],
+              ['State', profile['STATE_10']],
+              ['Percentage', profile['10th Precentage']]
+            ].map(([label, value]) => (
+              <div className="info-row" key={label}>
+                <span className="info-label">{label}</span>
+                <span className="info-val">{value || '-'}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: 13, marginBottom: 8 }}>12th Standard</div>
+            {[
+              ['School', profile['12th SCHOOL NAME'] || schoolName],
+              ['Board', profile['12th BOARD']],
+              ['District', profile['DISTRICT_12']],
+              ['State', profile['STATE_12']],
+              ['Percentage', profile['12th Precentage']]
+            ].map(([label, value]) => (
+              <div className="info-row" key={label}>
+                <span className="info-label">{label}</span>
+                <span className="info-val">{value || '-'}</span>
+              </div>
+            ))}
+          </div>
+          {stream === 'JEE' && (
+            <div style={{ background: '#e8f0fc', borderRadius: 8, padding: '12px' }}>
+              <div style={{ fontWeight: 700, color: '#1a4fa0', fontSize: 13, marginBottom: 8 }}>Competitive Exams</div>
+              <div className="info-row">
+                <span className="info-label">JEE Mains 24-25 Percentile</span>
+                <span className="info-val">{profile['JEE MAINS 2024-25 Precentille'] || '-'}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="card">
