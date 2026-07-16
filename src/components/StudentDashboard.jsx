@@ -405,16 +405,6 @@ export default function StudentDashboard() {
             );
           })}
 
-          {examResult && (
-            <div style={{ marginTop: 16, padding: '10px 14px', background: stream === 'JEE' ? '#e8f0fc' : '#e6f5ed', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', textTransform: 'uppercase', letterSpacing: 1 }}>
-                {stream === 'JEE' ? 'JEE Main Percentile' : 'NEET Score'}
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: stream === 'JEE' ? '#1a4fa0' : '#1a6e3b', marginTop: 2 }}>
-                {examResult}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
