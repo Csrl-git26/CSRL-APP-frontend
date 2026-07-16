@@ -13,6 +13,7 @@ import {
   getExamResult,
   getMaxMarksForSubject,
   resolveStudentPhotoUrl,
+  getJeePercentile,
 } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import { useAuth } from '../context/AuthContext';
