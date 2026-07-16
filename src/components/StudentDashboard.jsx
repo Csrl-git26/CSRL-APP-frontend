@@ -3,6 +3,8 @@ import { useOutletContext } from 'react-router-dom';
 import { LineChart, Line, XAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { User, BarChart2, BarChart3, AlertTriangle, Loader2, Brain, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import {
   fetchStudentData,
   fetchStudentChart,
@@ -20,6 +22,7 @@ import { useAuth } from '../context/AuthContext';
 import TestInsightsPanel from './TestInsightsPanel';
 import StudentWeakTopics from './StudentWeakTopics';
 import StudentOverallWeakTopics from './StudentOverallWeakTopics';
+import StudentReportCard from './StudentReportCard';
 
 const TABS = [
   { key: 'profile',     Icon: User,          label: 'Profile'     },
@@ -229,6 +232,34 @@ export default function StudentDashboard() {
     return map[sub] || '#374151';
   };
 
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
+
+  const exportProfileToPDF = async () => {
+    if (!profile) return;
+    setIsExportingPDF(true);
+    
+    setTimeout(async () => {
+      try {
+        const element = document.getElementById('pdf-report-content');
+        if (!element) return;
+        
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${profile.ROLL_KEY || 'Student'}_Report.pdf`);
+      } catch (err) {
+        console.error("Failed to generate PDF", err);
+      } finally {
+        setIsExportingPDF(false);
+      }
+    }, 150);
+  };
+
   const exportProfileToExcel = () => {
     if (!profile) return;
     const wsData = [
@@ -273,9 +304,15 @@ export default function StudentDashboard() {
   const ProfileTab = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: -4 }}>
-        <button type="button" onClick={exportProfileToExcel} className="btn btn-outline btn-sm">
-          <Download size={13} /> Export to Excel
-        </button>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+          <button type="button" onClick={exportProfileToPDF} disabled={isExportingPDF} className="btn btn-outline btn-sm">
+            {isExportingPDF ? <Loader2 size={13} className="spin" /> : <Download size={13} />} 
+            {isExportingPDF ? 'Exporting...' : 'Export PDF'}
+          </button>
+          <button type="button" onClick={exportProfileToExcel} className="btn btn-outline btn-sm">
+            <Download size={13} /> Export Excel
+          </button>
+        </div>
       </div>
       <div className="grid-2">
         <div className="card">
@@ -631,6 +668,21 @@ export default function StudentDashboard() {
           {activePage === 'analysis'    && <AnalysisTab />}
           {activePage === 'weaktopics'  && <StudentWeakTopics studentId={auth.id} />}
         </div>
+      </div>
+      
+      {/* HIDDEN PRINTABLE CONTAINER */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+        <StudentReportCard
+          profile={profile}
+          stream={stream}
+          chartData={chartData}
+          subjects={subjects}
+          overallWeakSubjects={overallWeakSubjects}
+          weakSubject={weakSubject}
+          subjectColor={subjectColor}
+          examResult={examResult}
+          examLabel={stream === 'JEE' ? 'JEE Percentile' : 'NEET Score'}
+        />
       </div>
     </div>
   );

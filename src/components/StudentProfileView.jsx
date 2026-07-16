@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
+import StudentReportCard from './StudentReportCard';
 
 function displayCenter(code) {
   if (!code) return '—';
@@ -24,6 +27,33 @@ function InfoRow({ label, value }) {
 
 export default function StudentProfileView({ profile, studentTests, testColumns }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
+  const [isExportingPDF, setIsExportingPDF] = React.useState(false);
+
+  const exportProfileToPDF = async () => {
+    if (!profile) return;
+    setIsExportingPDF(true);
+    
+    setTimeout(async () => {
+      try {
+        const element = document.getElementById('pdf-report-content');
+        if (!element) return;
+        
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${profile.ROLL_KEY || 'Student'}_Report.pdf`);
+      } catch (err) {
+        console.error("Failed to generate PDF", err);
+      } finally {
+        setIsExportingPDF(false);
+      }
+    }, 150); // slight delay to ensure DOM is fully rendered
+  };
 
   const exportProfileToExcel = () => {
     if (!profile) return;
@@ -184,9 +214,15 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
             <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 4, background: stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 700 }}>
               {stream}
             </span>
-            <button type="button" onClick={exportProfileToExcel} className="btn btn-outline btn-sm" style={{ marginLeft: 'auto' }}>
-              <Download size={13} /> Export to Excel
-            </button>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+              <button type="button" onClick={exportProfileToPDF} disabled={isExportingPDF} className="btn btn-outline btn-sm">
+                {isExportingPDF ? <Loader2 size={13} className="spin" /> : <Download size={13} />} 
+                {isExportingPDF ? 'Exporting...' : 'Export PDF'}
+              </button>
+              <button type="button" onClick={exportProfileToExcel} className="btn btn-outline btn-sm">
+                <Download size={13} /> Export Excel
+              </button>
+            </div>
           </div>
           <div style={{ fontSize: 13, color: 'var(--gray-600)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <span>📋 <strong>{profile['ROLL NO.'] || profile.ROLL_KEY}</strong></span>
@@ -351,6 +387,22 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           </table>
         </div>
       </div>
+      
+      {/* HIDDEN PRINTABLE CONTAINER */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+        <StudentReportCard
+          profile={profile}
+          stream={stream}
+          chartData={chartData}
+          subjects={subjects}
+          overallWeakSubjects={overallWeakSubjects}
+          weakSubject={weakSubject}
+          subjectColor={subjectColor}
+          examResult={examValue}
+          examLabel={examLabel}
+        />
+      </div>
+
     </div>
   );
 }

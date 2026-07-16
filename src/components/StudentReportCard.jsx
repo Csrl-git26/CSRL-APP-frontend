@@ -1,0 +1,171 @@
+import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import { getJeePercentile, getNeetScore } from '../services/dataService';
+
+export default function StudentReportCard({
+  profile,
+  stream,
+  chartData,
+  subjects,
+  overallWeakSubjects,
+  weakSubject,
+  subjectColor,
+  examResult,
+  examLabel,
+}) {
+  if (!profile) return null;
+
+  const schoolName = profile['10th SCHOOL NAME'] || profile['12th SCHOOL NAME'] || profile['10th SCHOOL'] || profile['12th SCHOOL'] || profile['SCHOOL NAME'] || profile.SCHOOL || '';
+  const school10 = profile['10th SCHOOL NAME'] || schoolName;
+  const school12 = profile['12th SCHOOL NAME'] || schoolName;
+
+  const InfoRow = ({ label, value }) => (
+    <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', padding: '6px 0', fontSize: '12px' }}>
+      <span style={{ width: '180px', color: '#64748b', fontWeight: 600 }}>{label}</span>
+      <span style={{ flex: 1, color: '#1e293b', fontWeight: 700 }}>{value && value !== ', ,  - ' ? value : '-'}</span>
+    </div>
+  );
+
+  return (
+    <div id="pdf-report-content" style={{
+      width: '800px',
+      background: 'white',
+      padding: '40px',
+      color: '#0f172a',
+      fontFamily: 'Inter, sans-serif'
+    }}>
+      {/* HEADER */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '3px solid #1a4fa0', paddingBottom: '16px', marginBottom: '24px' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#1a4fa0', margin: 0, textTransform: 'uppercase' }}>
+            CSRL Student Report
+          </h1>
+          <p style={{ color: '#64748b', margin: '4px 0 0 0', fontSize: '14px', fontWeight: 600 }}>
+            Confidential Academic Record
+          </p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: '#1e293b' }}>{profile["STUDENT'S NAME"] || 'Unknown'}</h2>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '6px', fontSize: '13px', color: '#64748b', fontWeight: 600 }}>
+            <span>Roll: {profile['ROLL NO.'] || profile.ROLL_KEY}</span>
+            <span>Stream: {stream}</span>
+            <span>Center: {profile.centerCode}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* TWO COLUMNS */}
+      <div style={{ display: 'flex', gap: '24px', marginBottom: '24px' }}>
+        
+        {/* LEFT COLUMN: Personal Info */}
+        <div style={{ flex: 1 }}>
+          <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+              Personal & Selection Info
+            </h3>
+            <InfoRow label="Registration No." value={profile['Registration no.'] || profile.ROLL_KEY} />
+            <InfoRow label="Sponsor" value={profile.SPONSOR} />
+            <InfoRow label="Mode of Selection" value={profile['Mode of Selection']} />
+            <InfoRow label="Written Test Marks" value={profile['Written Test Marks (240)']} />
+            <InfoRow label="Interview Marks" value={profile['Interview Marks (90)']} />
+            <InfoRow label="HO Score" value={profile['HO Score in Final Admission']} />
+            <InfoRow label="Gender" value={profile.GENDER} />
+            <InfoRow label="Category" value={profile.CATEGORY} />
+            <InfoRow label="Date of Birth" value={profile['DATE OF BIRTH']} />
+            <InfoRow label="Student Mobile" value={profile['Mobile No.']} />
+            <InfoRow label="Parent Mobile" value={profile['parent_mobile']} />
+            <InfoRow label="Father's Name" value={profile["FATHER'S NAME"]} />
+            <InfoRow label="Mother's Name" value={profile["MOTHER'S NAME"]} />
+            <div style={{ marginTop: '10px', fontSize: '11px', color: '#475569', lineHeight: 1.4 }}>
+              <strong>Address:</strong> {profile['PARMANENT ADDRESS'] || '-'}, {profile.DISTRICT || '-'}, {profile.STATE || '-'}{profile.PINCODE ? ` - ${profile.PINCODE}` : ''}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Education & Weak Topics */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+              Education History
+            </h3>
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#1a4fa0', marginBottom: '4px' }}>10th Standard</div>
+              <InfoRow label="School" value={school10} />
+              <InfoRow label="Board" value={profile['10th BOARD']} />
+              <InfoRow label="Dist/State" value={`${profile['DISTRICT_10'] || '-'} / ${profile['STATE_10'] || '-'}`} />
+              <InfoRow label="Percentage" value={profile['10th Precentage']} />
+            </div>
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#1a4fa0', marginBottom: '4px' }}>12th Standard</div>
+              <InfoRow label="School" value={school12} />
+              <InfoRow label="Board" value={profile['12th BOARD']} />
+              <InfoRow label="Dist/State" value={`${profile['DISTRICT_12'] || '-'} / ${profile['STATE_12'] || '-'}`} />
+              <InfoRow label="Percentage" value={profile['12th Precentage']} />
+            </div>
+            
+            {stream === 'JEE' && examResult && (
+              <div style={{ marginTop: '16px', background: '#e8f0fc', padding: '8px 12px', borderRadius: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1a4fa0' }}>JEE Main Percentile: </span>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{examResult}</span>
+              </div>
+            )}
+            {stream === 'NEET' && examResult && (
+              <div style={{ marginTop: '16px', background: '#e6f5ed', padding: '8px 12px', borderRadius: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1a6e3b' }}>NEET Score: </span>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{examResult}</span>
+              </div>
+            )}
+          </div>
+
+          <div style={{ background: '#fff1f2', padding: '16px', borderRadius: '8px', border: '1px solid #fecdd3' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#9f1239', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #fda4af', paddingBottom: '4px' }}>
+              Weak Subjects Analysis
+            </h3>
+            <InfoRow label="By Avg Score" value={weakSubject || 'N/A'} />
+            <InfoRow label="By Accuracy" value={(() => {
+              if (!overallWeakSubjects) return 'N/A';
+              const weakest = [];
+              Object.keys(overallWeakSubjects).forEach(sub => {
+                if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+              });
+              if (weakest.length === 0) {
+                Object.keys(overallWeakSubjects).forEach(sub => {
+                  if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Med)`);
+                });
+              }
+              return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
+            })()} />
+          </div>
+        </div>
+      </div>
+
+      {/* FULL WIDTH: Performance Graph */}
+      <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '16px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+          Performance Trend & Records
+        </h3>
+        
+        {chartData && chartData.length > 0 ? (
+          <div style={{ width: '100%', height: '280px' }}>
+            {/* IMPORTANT: Use explicit dimensions for html2canvas */}
+            <ResponsiveContainer width={760} height={260}>
+              <LineChart data={chartData} margin={{ top: 10, left: 0, bottom: 20, right: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} width={30} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                {subjects.map(sub => (
+                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                ))}
+                <Line type="monotone" dataKey="Total" stroke="#1a4fa0" strokeWidth={2.5} dot={{ r: 3 }} isAnimationActive={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '40px' }}>No performance data available</div>
+        )}
+      </div>
+
+    </div>
+  );
+}
