@@ -27,6 +27,7 @@ function InfoRow({ label, value }) {
 
 export default function StudentProfileView({ profile, studentTests, testColumns }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
+  const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(null);
   const [isExportingPDF, setIsExportingPDF] = React.useState(false);
 
   const exportProfileToPDF = async () => {
@@ -97,15 +98,16 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
   };
 
   React.useEffect(() => {
-    const studentId = profile?.['ROLL NO.'] || profile?.ROLL_KEY;
-    if (studentId) {
-      getStudentOverallWeakTopics(studentId).then((res) => {
-        if (res.success && res.data?.overallWeakSubjects) {
-          setOverallWeakSubjects(res.data.overallWeakSubjects);
-        }
-      });
-    }
-  }, [profile]);
+    if (!profile?.ROLL_KEY) return;
+    let cancelled = false;
+    getStudentOverallWeakTopics(profile.ROLL_KEY).then((res) => {
+      if (!cancelled && res.success && res.data) {
+        if (res.data.overallWeakSubjects) setOverallWeakSubjects(res.data.overallWeakSubjects);
+        setOverallWeakTopicsData(res.data);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [profile?.ROLL_KEY]);
 
   const stream = profile?.stream || 'JEE';
   const school10 = profile?.['10th SCHOOL NAME'] || profile?.['10th SCHOOL'] || profile?.['SCHOOL NAME'] || profile?.SCHOOL || '';
@@ -396,6 +398,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           chartData={chartData}
           subjects={subjects}
           overallWeakSubjects={overallWeakSubjects}
+          overallWeakTopicsData={overallWeakTopicsData}
           weakSubject={weakSubject}
           subjectColor={subjectColor}
           examResult={examValue}

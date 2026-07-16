@@ -64,14 +64,16 @@ export default function StudentDashboard() {
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError]   = useState('');
   const [overallWeakSubjects, setOverallWeakSubjects] = useState(null);
+  const [overallWeakTopicsData, setOverallWeakTopicsData] = useState(null);
   const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   useEffect(() => {
     if (!auth.id) return;
     let cancelled = false;
     getStudentOverallWeakTopics(auth.id).then((res) => {
-      if (!cancelled && res.success && res.data?.overallWeakSubjects) {
-        setOverallWeakSubjects(res.data.overallWeakSubjects);
+      if (!cancelled && res.success && res.data) {
+        if (res.data.overallWeakSubjects) setOverallWeakSubjects(res.data.overallWeakSubjects);
+        setOverallWeakTopicsData(res.data);
       }
     });
     return () => { cancelled = true; };
@@ -677,6 +679,7 @@ export default function StudentDashboard() {
           chartData={chartData}
           subjects={subjects}
           overallWeakSubjects={overallWeakSubjects}
+          overallWeakTopicsData={overallWeakTopicsData}
           weakSubject={weakSubject}
           subjectColor={subjectColor}
           examResult={examResult}
