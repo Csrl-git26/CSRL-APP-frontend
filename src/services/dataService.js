@@ -306,7 +306,10 @@ export async function fetchTestColumns(_token, centerCode) {
 export function getJeePercentile(profile) {
   if (!profile) return null;
   const key = Object.keys(profile).find(
-    (k) => k.toLowerCase().includes('jee main') && k.toLowerCase().includes('percentile')
+    (k) => {
+      const lower = k.toLowerCase();
+      return lower.includes('jee main') && (lower.includes('percent') || lower.includes('precent'));
+    }
   );
   if (!key || profile[key] == null) return null;
   
