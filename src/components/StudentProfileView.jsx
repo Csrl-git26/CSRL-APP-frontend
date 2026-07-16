@@ -7,6 +7,7 @@ import { jsPDF } from 'jspdf';
 import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import StudentReportCard from './StudentReportCard';
+import StudentOverallWeakTopics from './StudentOverallWeakTopics';
 
 function displayCenter(code) {
   if (!code) return '—';
@@ -346,6 +347,10 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
             </ResponsiveContainer>
           </div>
         </div>
+      </div>
+
+      <div style={{ marginTop: '24px' }}>
+        <StudentOverallWeakTopics studentId={profile.ROLL_KEY} />
       </div>
 
       {/* Full Test Records */}
