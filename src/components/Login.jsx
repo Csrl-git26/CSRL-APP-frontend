@@ -33,11 +33,11 @@ export default function Login() {
         if (!id) { setError('Enter your roll number.'); return; }
         await login({ role: 'student', id, password: id });
       } else if (role === 'centre') {
-        if (!password) {
-          setError('Enter centre password.');
+        if (!username.trim() || !password) {
+          setError('Enter username and password.');
           return;
         }
-        await login({ role: 'centre', id: centre, password });
+        await login({ role: 'centre', id: username.trim(), password });
       } else {
         if (!username.trim() || !password) {
           setError('Enter username and password.');
@@ -132,33 +132,30 @@ export default function Login() {
           )}
 
           {role === 'centre' && (
-            <div className="form-group">
-              <label className="label" htmlFor="centre">Select Centre</label>
-              <select
-                id="centre"
-                className="input select"
-                value={centre}
-                onChange={(e) => setCentre(e.target.value)}
-              >
-                {Object.keys(CENTERS).map((c) => (
-                  <option key={c} value={c}>{c} — {CENTERS[c]?.name || c}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {role === 'centre' && (
-            <div className="form-group">
-              <label className="label" htmlFor="centre-password">Password</label>
-              <input
-                id="centre-password"
-                className="input"
-                type="password"
-                placeholder="Enter centre password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label className="label" htmlFor="centre-username">Username</label>
+                <input
+                  id="centre-username"
+                  className="input"
+                  placeholder="Centre username"
+                  autoFocus
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label className="label" htmlFor="centre-password">Password</label>
+                <input
+                  id="centre-password"
+                  className="input"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </>
           )}
 
           {role === 'admin' && (

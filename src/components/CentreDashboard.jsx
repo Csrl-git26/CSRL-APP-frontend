@@ -33,6 +33,7 @@ function getInitials(name = '') {
 export default function CentreDashboard() {
   const { activePage, setActivePage } = useOutletContext();
   const { user: auth } = useAuth();
+  const [selectedCenterCode, setSelectedCenterCode] = useState(() => auth.centerCode || Object.keys(CENTERS)[0] || '');
 
   const [data,             setData]             = useState(null);
   const [overview,         setOverview]         = useState(null);
@@ -55,7 +56,7 @@ export default function CentreDashboard() {
   const [testInsightsError, setTestInsightsError]   = useState('');
   const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
 
-  const centreTitle = CENTERS[auth.centerCode]?.name || auth.name || auth.centerCode;
+  const centreTitle = CENTERS[selectedCenterCode]?.name || auth.name || selectedCenterCode;
 
   // ── Initial load ─────────────────────────────────────────────────────────────
 
@@ -63,8 +64,8 @@ export default function CentreDashboard() {
     const load = async () => {
       try {
         const [d, ov] = await Promise.all([
-          fetchCenterDataApi(null, auth.centerCode),
-          fetchOverview(null, auth.centerCode).catch(() => null),
+          fetchCenterDataApi(null, selectedCenterCode),
+          fetchOverview(null, selectedCenterCode).catch(() => null),
         ]);
         setData(d);
         setOverview(ov);
@@ -82,13 +83,13 @@ export default function CentreDashboard() {
       }
     };
     load();
-  }, [auth.centerCode]);
+  }, [selectedCenterCode]);
 
   // Subject performance + weak subject for the selected test only
   useEffect(() => {
-    if (!auth.centerCode || !selectedTestKey) return undefined;
+    if (!selectedCenterCode || !selectedTestKey) return undefined;
     let cancelled = false;
-    fetchSubjectAverages(null, auth.centerCode, selectedTestKey)
+    fetchSubjectAverages(null, selectedCenterCode, selectedTestKey)
       .then((avgs) => {
         if (!cancelled) setSubjectAvgs(Array.isArray(avgs) ? avgs : []);
       })
@@ -98,12 +99,12 @@ export default function CentreDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [auth.centerCode, selectedTestKey]);
+  }, [selectedCenterCode, selectedTestKey]);
 
   useEffect(() => {
-    if (!auth.centerCode || !selectedTestKey) return undefined;
+    if (!selectedCenterCode || !selectedTestKey) return undefined;
     let cancelled = false;
-    getCenterWeakTopics(auth.centerCode, selectedTestKey)
+    getCenterWeakTopics(selectedCenterCode, selectedTestKey)
       .then((res) => {
         if (!cancelled && res.success && res.data && res.data.length > 0) {
           const doc = res.data.find(d => d.testId === selectedTestKey);
@@ -125,22 +126,22 @@ export default function CentreDashboard() {
       })
       .catch(() => { if (!cancelled) setAccuracyWeakSubject(null); });
     return () => { cancelled = true; };
-  }, [auth.centerCode, selectedTestKey]);
+  }, [selectedCenterCode, selectedTestKey]);
 
   // ── Reload rankings when selectedTestKey changes ──────────────────────────────
 
   useEffect(() => {
     if (!selectedTestKey) return;
     Promise.all([
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: auth.centerCode, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: auth.centerCode, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: auth.centerCode, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom, all]) => {
       setTopRanked(top.ranked    || []);
       setBottomRanked(bottom.ranked || []);
       setAllRanked(all.ranked || []);
     });
-  }, [selectedTestKey, auth.centerCode, data?.profiles?.length]);
+  }, [selectedTestKey, selectedCenterCode, data?.profiles?.length]);
 
   useEffect(() => {
     if (activePage !== 'insights' || !selectedTestKey) return undefined;
@@ -329,7 +330,7 @@ export default function CentreDashboard() {
           </div>
         )}
 
-        <CenterOverallWeakTopics centerId={auth.centerCode} />
+        <CenterOverallWeakTopics centerId={selectedCenterCode} />
       </div>
     );
   };
@@ -631,7 +632,17 @@ export default function CentreDashboard() {
           <h1>{centreTitle}</h1>
           <p>{data.profiles.length} students</p>
         </div>
-        <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
+        <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
+          <select
+            className="input select"
+            value={selectedCenterCode}
+            onChange={(e) => setSelectedCenterCode(e.target.value)}
+            style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 220 }}
+          >
+            {Object.keys(CENTERS).map((c) => (
+              <option key={c} value={c} style={{ color: '#000' }}>{c} — {CENTERS[c]?.name || c}</option>
+            ))}
+          </select>
           <select
             className="input select"
             value={selectedTestKey}
@@ -667,13 +678,13 @@ export default function CentreDashboard() {
               insights={testInsights}
               loading={testInsightsLoading}
               error={testInsightsError}
-              highlightCenter={auth.centerCode}
+              highlightCenter={selectedCenterCode}
               testKey={selectedTestKey}
             />
           )}
           {activePage === 'topbottom'  && <RankingsPair />}
           {activePage === 'students'   && <StudentsSection />}
-          {activePage === 'weaktopics' && <CenterWeakTopics centerId={auth.centerCode} activeTestKey={selectedTestKey} />}
+          {activePage === 'weaktopics' && <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} />}
         </div>
       </div>
     </div>
