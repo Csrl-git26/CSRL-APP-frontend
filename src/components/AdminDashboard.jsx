@@ -630,6 +630,23 @@ export default function AdminDashboard() {
     showToast('Marks exported.', 'success');
   };
 
+  const handleFormatTestData = async () => {
+    if (!selectedTestKey) { showToast('Select a test column first.', 'warning'); return; }
+    if (!window.confirm(`Are you absolutely sure you want to format (delete) all marks and analytics data for "${selectedTestKey}"? This will wipe the test completely and cannot be undone.`)) return;
+
+    try {
+      const res = await apiFetch(`/api/admin/tests/${encodeURIComponent(selectedTestKey)}`, { method: 'DELETE' });
+      if (res.success) {
+        showToast(`Successfully formatted test data for ${selectedTestKey}.`, 'success');
+        setRefreshTrigger((r) => r + 1);
+      } else {
+        showToast(res.message || 'Failed to format test data.', 'error');
+      }
+    } catch (e) {
+      showToast('Error formatting test data: ' + e.message, 'error');
+    }
+  };
+
   const exportCombinedWorkbook = () => {
     if (!data) return;
     const studentsRows = data.profiles.map((p) => ({
@@ -1326,6 +1343,7 @@ export default function AdminDashboard() {
           <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download sample format</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={exportMarksXlsx}><Download size={13} /> Export selected test</button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={exportCombinedWorkbook}><Package size={13} /> Full workbook</button>
+          <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)' }} onClick={handleFormatTestData}><Trash2 size={13} /> Format selected test</button>
         </div>
       </div>
 
