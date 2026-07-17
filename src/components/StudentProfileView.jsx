@@ -148,13 +148,12 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
       const numMarks = Object.values(t.marks).filter((v) => typeof v === 'number');
       if (numMarks.length > 0) {
         t.total = numMarks.reduce((sum, v) => sum + v, 0);
-      } else if (Object.values(t.marks).some((v) => v === 'A')) {
+      } else {
         t.total = 'Absent';
       }
     });
 
     const mappedTestList = Object.values(testsMap)
-      .filter((t) => t.total !== null || Object.keys(t.marks).length > 0)
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 
     let weakSub = 'N/A', minAvg = Infinity;
