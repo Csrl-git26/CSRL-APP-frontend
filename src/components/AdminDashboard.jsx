@@ -505,10 +505,28 @@ export default function AdminDashboard() {
     const dataToExport = data.profiles.filter((p) => selectedStudents.includes(p.ROLL_KEY));
     const cleanData = dataToExport.map(p => {
       const { id, _id, ROLL_KEY, centerCode, ...rest } = p;
-      if (!rest['ROLL NO.']) {
-        rest['ROLL NO.'] = ROLL_KEY;
-      }
-      return rest;
+      
+      const roll = rest['ROLL NO.'] || ROLL_KEY;
+      const name = rest["STUDENT'S NAME"] || '';
+      const category = rest['CATEGORY'] || '';
+      const centre = rest['CENTRE CODE'] || centerCode || '';
+      const sponsor = rest['Sponsor'] || rest['SPONSOR'] || '';
+
+      delete rest['ROLL NO.'];
+      delete rest["STUDENT'S NAME"];
+      delete rest['CATEGORY'];
+      delete rest['CENTRE CODE'];
+      delete rest['Sponsor'];
+      delete rest['SPONSOR'];
+
+      return {
+        "STUDENT'S NAME": name,
+        "ROLL NO.": roll,
+        "CATEGORY": category,
+        "CENTRE CODE": centre,
+        "SPONSOR": sponsor,
+        ...rest
+      };
     });
 
     const worksheet = XLSX.utils.json_to_sheet(cleanData);
