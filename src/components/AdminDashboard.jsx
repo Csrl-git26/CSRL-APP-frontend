@@ -568,12 +568,12 @@ export default function AdminDashboard() {
 
   const downloadMarksSampleFormat = () => {
     const rows = [
-      ['Roll Number', 'Marks', 'Physics', 'Chemistry', 'Mathematics'],
-      ['GAIL-JEE-001', 120, 40, 50, 30],
-      ['GAIL-JEE-002', 150, 50, 60, 40]
+      ['roll_number', 'name', 'stream', 'centre', 'Physics', 'Chemistry', 'Mathematics', 'Marks'],
+      ['GAIL-JEE-001', 'John Doe', 'JEE', 'GAIL', 40, 50, 30, 120],
+      ['GAIL-JEE-002', 'Jane Smith', 'JEE', 'GAIL', 50, 60, 40, 150]
     ];
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{ wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }];
+    ws['!cols'] = [{ wch: 15 }, { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Marks Template');
     XLSX.writeFile(wb, 'CSRL_Marks_Template.xlsx');
