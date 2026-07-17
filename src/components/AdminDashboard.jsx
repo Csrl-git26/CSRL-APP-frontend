@@ -1384,11 +1384,13 @@ export default function AdminDashboard() {
                 </div>
                 <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={(e) => handleImportFile(e.target.files?.[0])} />
               </div>
-              {importMode === 'students' && (
-                <div style={{ marginTop: 10 }}>
+              <div style={{ marginTop: 10 }}>
+                {importMode === 'students' ? (
                   <button type="button" className="btn btn-outline btn-sm" onClick={downloadStudentTemplate}><Download size={13} /> Download Student Template</button>
-                </div>
-              )}
+                ) : (
+                  <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download Marks Template</button>
+                )}
+              </div>
               {uploadLoading && <div style={{ marginTop: 12, color: 'var(--csrl-blue)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}><Loader2 size={14} className="spin" /> Processing file…</div>}
               {uploadError  && <div style={{ marginTop: 12, background: 'var(--red-bg)', color: 'var(--red)', borderRadius: 6, padding: '10px 12px', fontSize: 13 }}>{uploadError}</div>}
               {!!uploadPreview.length && (
