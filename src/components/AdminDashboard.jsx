@@ -1401,9 +1401,18 @@ export default function AdminDashboard() {
               {importMode === 'marks' && (
                 <div className="form-group">
                   <label className="label" htmlFor="importTestKey">Test Column</label>
-                  <select id="importTestKey" className="input select" value={uploadTestKey} onChange={(e) => setUploadTestKey(e.target.value)}>
-                    {allTestOptions.map((col) => <option key={col} value={col}>{col}</option>)}
-                  </select>
+                  <input 
+                    id="importTestKey" 
+                    type="text"
+                    list="testOptions"
+                    className="input" 
+                    value={uploadTestKey} 
+                    onChange={(e) => setUploadTestKey(e.target.value)}
+                    placeholder="Enter new or select existing test (e.g. CAT-1(TEST))"
+                  />
+                  <datalist id="testOptions">
+                    {allTestOptions.map((col) => <option key={col} value={col} />)}
+                  </datalist>
                 </div>
               )}
               <div className="upload-zone" role="button" tabIndex={0} onClick={() => fileRef.current?.click()} onKeyDown={(e) => e.key === 'Enter' && fileRef.current?.click()}>
