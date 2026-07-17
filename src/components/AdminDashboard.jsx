@@ -163,8 +163,13 @@ function mapExcelMarkRow(row, testKey) {
     if (['marks', 'score', 'total marks', 'total_marks', 'total'].includes(lowerKey)) {
       updateObj[rowTestKey] = normalizeCellValue(val);
     } else {
-      // Otherwise, the column header itself IS the test/subject key!
-      updateObj[key.trim()] = normalizeCellValue(val);
+      // If the column is just a subject name (like 'Physics') without an underscore, prepend the test key.
+      const originalKey = key.trim();
+      if (!originalKey.includes('_') && rowTestKey) {
+        updateObj[`${rowTestKey}_${originalKey}`] = normalizeCellValue(val);
+      } else {
+        updateObj[originalKey] = normalizeCellValue(val);
+      }
     }
   }
 
