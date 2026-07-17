@@ -566,6 +566,19 @@ export default function AdminDashboard() {
     XLSX.writeFile(wb, 'CSRL_Students_Template.xlsx');
   };
 
+  const downloadMarksSampleFormat = () => {
+    const rows = [
+      ['Roll Number', 'Marks', 'Physics', 'Chemistry', 'Mathematics'],
+      ['GAIL-JEE-001', 120, 40, 50, 30],
+      ['GAIL-JEE-002', 150, 50, 60, 40]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{ wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Marks Template');
+    XLSX.writeFile(wb, 'CSRL_Marks_Template.xlsx');
+  };
+
   const exportStudentsXlsx = () => {
     if (!data?.profiles?.length) { showToast('No students to export.', 'warning'); return; }
     const rows = data.profiles.map((s) => ({
@@ -1298,6 +1311,7 @@ export default function AdminDashboard() {
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button type="button" className="btn btn-teal" onClick={() => openImportModal('marks')}><Upload size={13} /> Upload Marks</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download sample format</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={exportMarksXlsx}><Download size={13} /> Export selected test</button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={exportCombinedWorkbook}><Package size={13} /> Full workbook</button>
         </div>
