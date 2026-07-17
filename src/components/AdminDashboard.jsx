@@ -692,17 +692,29 @@ export default function AdminDashboard() {
           return { row: idx + 2, status: exists ? 'update' : 'new', reason: exists ? 'Will update' : 'Will insert', roll: mapped.ROLL_KEY, name: mapped["STUDENT'S NAME"], centre: mapped.centerCode, payload: mapped };
         }));
       } else {
-        const existingRolls = new Set((data?.profiles || []).map((p) => normalizeRollKey(p.ROLL_KEY)));
-        const existingMarks = new Set((data?.tests || []).filter((t) => t[uploadTestKey] !== undefined).map((t) => normalizeRollKey(t.ROLL_KEY)));
+        const rollResolver = new Map();
+        (data?.profiles || []).forEach(p => {
+          const rk = normalizeRollKey(p.ROLL_KEY);
+          if (rk) rollResolver.set(rk, p.ROLL_KEY);
+          if (p['ROLL NO.']) rollResolver.set(normalizeRollKey(p['ROLL NO.']), p.ROLL_KEY);
+          if (p['Registration no.']) rollResolver.set(normalizeRollKey(p['Registration no.']), p.ROLL_KEY);
+        });
+
+        const existingMarks = new Set((data?.tests || []).filter((t) => t[uploadTestKey] !== undefined).map((t) => t.ROLL_KEY));
+        
         setUploadPreview(rows.map((row, idx) => {
           const mapped = mapExcelMarkRow(row, uploadTestKey);
-          if (!mapped.roll)                    return { row: idx + 2, status: 'err', reason: 'Missing roll_number' };
-          if (!existingRolls.has(mapped.roll)) return { row: idx + 2, status: 'err', reason: 'Roll not found',    roll: mapped.roll };
+          if (!mapped.roll) return { row: idx + 2, status: 'err', reason: 'Missing roll_number' };
+          
+          const resolvedRollKey = rollResolver.get(mapped.roll);
+          if (!resolvedRollKey) return { row: idx + 2, status: 'err', reason: 'Roll not found', roll: mapped.roll };
+          
+          mapped.roll = resolvedRollKey;
           
           const colsFound = Object.keys(mapped.updateObj).length;
-          if (colsFound === 0)                 return { row: idx + 2, status: 'err', reason: 'Missing marks columns', roll: mapped.roll };
+          if (colsFound === 0) return { row: idx + 2, status: 'err', reason: 'Missing marks columns', roll: mapped.roll };
           
-          const exists = existingMarks.has(mapped.roll);
+          const exists = existingMarks.has(resolvedRollKey);
           return { 
             row: idx + 2, 
             status: exists ? 'update' : 'new', 
