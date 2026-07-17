@@ -258,6 +258,10 @@ export async function upsertTestScoresApi(_token, rollKey, scores, centerCode) {
   });
 }
 
+export function deleteTestApi(dummy, testKey) {
+  return apiFetch(`/api/admin/tests/${encodeURIComponent(testKey)}`, { method: 'DELETE' });
+}
+
 // ── Backend Analytics API calls ────────────────────────────────────────────────
 
 export async function fetchOverview(_token, centerCode) {

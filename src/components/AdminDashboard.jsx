@@ -22,6 +22,7 @@ import {
   getJeePercentile,
   getStreamConfig,
   resolveStudentPhotoUrl,
+  deleteTestApi,
 } from '../services/dataService';
 import { useToast } from '../context/ToastContext';
 import StudentProfileView from './StudentProfileView';
@@ -640,7 +641,7 @@ export default function AdminDashboard() {
     if (!window.confirm(`Are you absolutely sure you want to format (delete) all marks and analytics data for "${selectedTestKey}"? This will wipe the test completely and cannot be undone.`)) return;
 
     try {
-      const res = await apiFetch(`/api/admin/tests/${encodeURIComponent(selectedTestKey)}`, { method: 'DELETE' });
+      const res = await deleteTestApi(null, selectedTestKey);
       if (res.success) {
         showToast(`Successfully formatted test data for ${selectedTestKey}.`, 'success');
         setRefreshTrigger((r) => r + 1);
