@@ -500,6 +500,24 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleExportSelectedStudents = () => {
+    if (!selectedStudents.length) return;
+    const dataToExport = data.profiles.filter((p) => selectedStudents.includes(p.ROLL_KEY));
+    const cleanData = dataToExport.map(p => {
+      const { id, _id, ROLL_KEY, centerCode, ...rest } = p;
+      if (!rest['ROLL NO.']) {
+        rest['ROLL NO.'] = ROLL_KEY;
+      }
+      return rest;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(cleanData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Selected_Students');
+    XLSX.writeFile(workbook, 'Selected_Students_Export.xlsx');
+    showToast(`Exported ${selectedStudents.length} students to Excel.`, 'success');
+  };
+
   const handleSaveTestScores = async (scores) => {
     setModalLoading(true);
     try {
@@ -876,9 +894,14 @@ export default function AdminDashboard() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           {selectedStudents.length > 0 && (
-            <button type="button" className="btn btn-danger btn-sm" onClick={handleBulkDeleteStudents}>
-              <Trash2 size={13} /> Delete Selected ({selectedStudents.length})
-            </button>
+            <>
+              <button type="button" className="btn btn-primary btn-sm" onClick={handleExportSelectedStudents}>
+                <Download size={13} /> Export Selected ({selectedStudents.length})
+              </button>
+              <button type="button" className="btn btn-danger btn-sm" onClick={handleBulkDeleteStudents}>
+                <Trash2 size={13} /> Delete Selected ({selectedStudents.length})
+              </button>
+            </>
           )}
           <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}>
             <Upload size={13} /> Bulk Upload
