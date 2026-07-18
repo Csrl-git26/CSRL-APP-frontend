@@ -36,11 +36,11 @@ import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const STUDENT_TEMPLATE_COLUMNS = [
-  'centre', 'stream', 'SPONSOR', 'CENTRE CODE', 'Registration no.', 'name', 
+  'Roll Number', 'centre', 'stream', 'SPONSOR', 'CENTRE CODE', 'Registration no.', 'name', 
   'Mode of Selection', 'Written Test Marks (240)', 'Interview Marks (90)', 
   'HO Score in Final Admission', 'gender', 'category', 'mobile', 'dob', 
   'parent_name', 'parent_mobile', 'address', 'district', 'state', 'pincode', 
-  'school_10', 'board_10', 'percentage_10', 'DISTRICT_10', 'board_12', 
+  'school_10', 'board_10', 'percentage_10', 'DISTRICT_10', 'STATE_10', 'school_12', 'board_12', 
   'percentage_12', 'DISTRICT_12', 'STATE_12', 'JEE MAINS 2024-25 Precentille', 
   'student_photo_url'
 ];
@@ -561,9 +561,13 @@ export default function AdminDashboard() {
   const downloadStudentTemplate = () => {
     const rows = [
       STUDENT_TEMPLATE_COLUMNS,
-      ['GAIL001', 'Aarav Sharma', 'Male', 'General', '9876543210', '2006-03-15', 'Rajesh Sharma', '9876543200',
-       'Civil Lines', 'Kanpur', 'UP', '208001', 'DPS', 'CBSE', 92.4, 'KV', 'CBSE', 89.1,
-       'IIT Kanpur', 'Chemistry', 'https://example.com/photo.jpg', 'GAIL', 'JEE'],
+      [
+        '2701001', 'KNP', 'JEE', 'GAIL', 'KNP', '2601520', 'Aarav Sharma', 
+        'SSRP', 88, 30, 0, 'Male', 'OBC', '9876543210', '15/03/06', 
+        'Rajesh Sharma', '9876543200', 'Civil Lines', 'Kanpur', 'Uttar Pradesh', '208001', 
+        'DPS', 'CBSE', 92.4, 'Kanpur', 'Uttar Pradesh', 'KV', 'CBSE', 
+        89.1, 'Kanpur', 'Uttar Pradesh', 95.5, 'https://example.com/photo.jpg'
+      ]
     ];
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = STUDENT_TEMPLATE_COLUMNS.map(() => ({ wch: 18 }));
