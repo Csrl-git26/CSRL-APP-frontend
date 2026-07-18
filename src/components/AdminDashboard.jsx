@@ -97,7 +97,7 @@ function getRowField(row, keys) {
 }
 
 function mapExcelStudentToProfile(row) {
-  const roll   = normalizeRollKey(getRowField(row, ['Registration no.', 'roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY']));
+  const roll   = normalizeRollKey(getRowField(row, ['Roll Number', 'roll_number', 'ROLL_NUMBER', 'roll', 'ROLL_KEY', 'Registration no.']));
   const name   = normalizeCellValue(getRowField(row, ['name', 'Name', "STUDENT'S NAME"]));
   const centre = normalizeCenterCode(getRowField(row, ['centre', 'Center', 'center', 'centerCode']));
   const stream = normalizeCellValue(getRowField(row, ['stream', 'Stream', 'STREAM'])).toUpperCase() || 'JEE';
@@ -105,6 +105,7 @@ function mapExcelStudentToProfile(row) {
   return {
     ROLL_KEY: roll,
     "STUDENT'S NAME": name,
+    'Registration no.':        normalizeCellValue(getRowField(row, ['Registration no.', 'registration_no'])),
     centerCode:                centre,
     stream:                    stream === 'NEET' ? 'NEET' : 'JEE',
     SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor'])),
