@@ -29,13 +29,13 @@
 
 // ── Stream / Subject constants ─────────────────────────────────────────────────
 
-/** Exam-style maxima: JEE 360 (120+120+120), NEET 720 (180+180+360). */
+/** Exam-style maxima: JEE 300 (100+100+100), NEET 720 (180+180+360). */
 export const STREAMS = {
   JEE: {
     label: 'JEE',
     subjects: ['Physics', 'Chemistry', 'Math'],
-    maxTotal: 360,
-    maxBySubject: { Physics: 120, Chemistry: 120, Math: 120 },
+    maxTotal: 300,
+    maxBySubject: { Physics: 100, Chemistry: 100, Math: 100 },
   },
   NEET: {
     label: 'NEET',
@@ -53,7 +53,7 @@ export function getStreamConfig(stream) {
 export function getMaxMarksForSubject(streamCfg, subject) {
   const by = streamCfg?.maxBySubject;
   if (by && subject && by[subject] != null) return by[subject];
-  return 120;
+  return 100;
 }
 
 const SUBJECT_ALIASES = {
