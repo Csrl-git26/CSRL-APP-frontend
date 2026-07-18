@@ -574,7 +574,7 @@ export default function AdminDashboard() {
 
   const downloadMarksSampleFormat = () => {
     const rows = [
-      ['roll_number', 'name', 'stream', 'centre', 'Physics', 'Chemistry', 'Mathematics', 'Marks'],
+      ['Roll Number', 'name', 'stream', 'centre', 'Physics', 'Chemistry', 'Mathematics', 'Marks'],
       ['GAIL-JEE-001', 'John Doe', 'JEE', 'GAIL', 40, 50, 30, 120],
       ['GAIL-JEE-002', 'Jane Smith', 'JEE', 'GAIL', 50, 60, 40, 150]
     ];
@@ -588,7 +588,7 @@ export default function AdminDashboard() {
   const exportStudentsXlsx = () => {
     if (!data?.profiles?.length) { showToast('No students to export.', 'warning'); return; }
     const rows = data.profiles.map((s) => ({
-      roll_number:         s.ROLL_KEY || '',
+      'Roll Number':       s.ROLL_KEY || '',
       name:                s["STUDENT'S NAME"] || '',
       stream:              s.stream || 'JEE',
       gender:              s.GENDER || '',
@@ -622,7 +622,7 @@ export default function AdminDashboard() {
     const rows = (data?.profiles || []).map((p) => {
       const scoreDoc = data.tests.find((t) => t.ROLL_KEY === p.ROLL_KEY) || {};
       return {
-        roll_number: p.ROLL_KEY,
+        'Roll Number': p.ROLL_KEY,
         name:        p["STUDENT'S NAME"] || '',
         stream:      p.stream || 'JEE',
         centre:      p.centerCode || '',
@@ -656,7 +656,7 @@ export default function AdminDashboard() {
   const exportCombinedWorkbook = () => {
     if (!data) return;
     const studentsRows = data.profiles.map((p) => ({
-      roll_number:    p.ROLL_KEY,
+      'Roll Number':  p.ROLL_KEY,
       name:           p["STUDENT'S NAME"] || '',
       stream:         p.stream || 'JEE',
       centre:         p.centerCode || '',
@@ -1336,7 +1336,7 @@ export default function AdminDashboard() {
         </div>
         <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px 14px', marginBottom: 14, fontSize: 13 }}>
           <div style={{ fontWeight: 600, marginBottom: 6 }}>Marks import:</div>
-          <div style={{ color: 'var(--gray-600)', fontFamily: 'monospace', fontSize: 11 }}>roll_number · marks/score</div>
+          <div style={{ color: 'var(--gray-600)', fontFamily: 'monospace', fontSize: 11 }}>Roll Number · marks/score</div>
           <div style={{ marginTop: 4, fontSize: 12, color: 'var(--gray-400)' }}>One column at a time (selected test).</div>
           <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {allTestOptions.slice(0, 8).map((t) => (
@@ -1425,7 +1425,7 @@ export default function AdminDashboard() {
                 <Upload size={32} style={{ margin: '0 auto 10px', color: 'var(--gray-400)' }} aria-hidden="true" />
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>Click to upload Excel / CSV</div>
                 <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
-                  {importMode === 'students' ? 'Use the template headers for best column mapping.' : 'File must contain roll_number. You can upload multiple subject columns at once.'}
+                  {importMode === 'students' ? 'Use the template headers for best column mapping.' : 'File must contain Roll Number. You can upload multiple subject columns at once.'}
                 </div>
                 <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={(e) => handleImportFile(e.target.files?.[0])} />
               </div>
