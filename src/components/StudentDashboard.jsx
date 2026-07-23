@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { User, BarChart2, BarChart3, AlertTriangle, Loader2, Brain, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
@@ -504,7 +504,7 @@ export default function StudentDashboard() {
               <LineChart data={chartData} margin={{ top: 10, right: 18, left: 65, bottom: 75 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-600)' }} interval={0} angle={-35} textAnchor="end" />
-                <YAxis axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={45} />
+                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
                 <Tooltip
                   formatter={(value, name) => {
                     if (name === 'Total') return [value ?? '—', `Total / ${streamCfg.maxTotal}`];
@@ -523,9 +523,8 @@ export default function StudentDashboard() {
                     dot={{ r: 3.5, strokeWidth: 1, fill: '#fff' }}
                     activeDot={{ r: 5 }}
                     connectNulls
-                  >
-                    <LabelList dataKey={sub} position="top" style={{ fontSize: 11, fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontWeight: 600 }} />
-                  </Line>
+                    label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 11, fontWeight: 600 }}
+                  />
                 ))}
                 <Line
                   type="monotone"
@@ -535,9 +534,8 @@ export default function StudentDashboard() {
                   dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
                   activeDot={{ r: 6 }}
                   connectNulls
-                >
-                  <LabelList dataKey="Total" position="top" style={{ fontSize: 11, fill: '#a21caf', fontWeight: 700 }} />
-                </Line>
+                  label={{ position: 'top', fill: '#a21caf', fontSize: 11, fontWeight: 700 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </>

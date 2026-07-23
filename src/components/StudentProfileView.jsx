@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Download, Loader2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
@@ -335,17 +335,13 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
               <LineChart data={chartData} margin={{ top: 20, left: 65, bottom: 75, right: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--gray-400)', fontSize: 11 }} angle={-35} textAnchor="end" interval={0} />
-                <YAxis axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={45} />
+                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
                 <Tooltip contentStyle={{ borderRadius: 8, border: 'none', boxShadow: 'var(--shadow-lg)', fontSize: 12 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 {subjects.map((sub) => (
-                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls>
-                    <LabelList dataKey={sub} position="top" style={{ fontSize: 11, fill: subjectColor(sub), fontWeight: 600 }} />
-                  </Line>
+                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls label={{ position: 'top', fill: subjectColor(sub), fontSize: 11, fontWeight: 600 }} />
                 ))}
-                <Line type="monotone" dataKey="Total" stroke="var(--csrl-blue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }}>
-                  <LabelList dataKey="Total" position="top" style={{ fontSize: 11, fill: 'var(--csrl-blue)', fontWeight: 700 }} />
-                </Line>
+                <Line type="monotone" dataKey="Total" stroke="var(--csrl-blue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} label={{ position: 'top', fill: 'var(--csrl-blue)', fontSize: 11, fontWeight: 700 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
