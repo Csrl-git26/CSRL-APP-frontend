@@ -118,7 +118,9 @@ export default function StudentOverallWeakTopics({ studentId }) {
         }}>
           <div style={{ flex: 1, minWidth: 120 }}>
             <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, textTransform: 'uppercase' }}>Total Attempted</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>{data.totalAttempted}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>
+              {data.totalAttempted}{data.totalQuestions ? `/${data.totalQuestions}` : ''}
+            </div>
           </div>
           <div style={{ flex: 1, minWidth: 120 }}>
             <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, textTransform: 'uppercase' }}>Total Correct</div>
@@ -169,7 +171,10 @@ export default function StudentOverallWeakTopics({ studentId }) {
                 }}>
                   <div style={{ flex: 1, minWidth: '45%' }}>
                     <div style={{ color: 'var(--gray-500)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600 }}>Attempted</div>
-                    <div style={{ fontWeight: 700, color: 'var(--gray-700)' }}>{data.overallSubjectMetrics[subject].attempted}</div>
+                    <div style={{ fontWeight: 700, color: 'var(--gray-700)' }}>
+                      {data.overallSubjectMetrics[subject].attempted}
+                      {data.overallSubjectMetrics[subject].totalQuestions ? `/${data.overallSubjectMetrics[subject].totalQuestions}` : ''}
+                    </div>
                   </div>
                   <div style={{ flex: 1, minWidth: '45%' }}>
                     <div style={{ color: 'var(--gray-500)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600 }}>Correct</div>
