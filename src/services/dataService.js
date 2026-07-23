@@ -209,8 +209,7 @@ export async function fetchGlobalData() {
  */
 export async function fetchCenterDataApi(_token, _centreCode) {
   void _token;
-  void _centreCode;
-  return apiFetch('/api/data/center');
+  return apiFetch(`/api/data/center?centerCode=${_centreCode || ''}`);
 }
 
 /**
