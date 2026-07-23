@@ -620,10 +620,8 @@ export default function CentreDashboard() {
     <div className="fade-in dashboard-page">
       <div className="page-header">
         <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
-          {centreTitle?.toUpperCase().includes('OIL') ? (
-            <img src="/OIL_INDIA_logo.png" alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-          ) : centreTitle?.toUpperCase().includes('GAIL') ? (
-            <img src="/GAIL_logo.png" alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+          {CENTERS[selectedCenterCode]?.logo ? (
+            <img src={CENTERS[selectedCenterCode].logo} alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
           ) : (
             <Building2 size={24} color="var(--csrl-blue)" aria-hidden="true" />
           )}
