@@ -332,16 +332,16 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           <div className="section-title">📈 Performance Trend</div>
           <div style={{ height: 280 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 20, left: 65, bottom: 75, right: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--gray-400)', fontSize: 11 }} angle={-35} textAnchor="end" interval={0} />
-                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
+              <LineChart data={chartData} margin={{ top: 20, left: 65, bottom: 75, right: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="#eef0f5" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9097b1', fontSize: 11 }} angle={-35} textAnchor="end" interval={0} />
+                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: '#dde0ea' }} tickLine={false} tick={{ fill: '#5a6282', fontSize: 11 }} width={55} />
                 <Tooltip contentStyle={{ borderRadius: 8, border: 'none', boxShadow: 'var(--shadow-lg)', fontSize: 12 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 {subjects.map((sub) => (
                   <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls isAnimationActive={false} label={{ position: 'top', fill: subjectColor(sub), fontSize: 11, fontWeight: 600 }} />
                 ))}
-                <Line type="monotone" dataKey="Total" stroke="var(--csrl-blue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} isAnimationActive={false} label={{ position: 'top', fill: 'var(--csrl-blue)', fontSize: 11, fontWeight: 700 }} />
+                <Line type="monotone" dataKey="Total" stroke="#1a4fa0" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} isAnimationActive={false} label={{ position: 'top', fill: '#1a4fa0', fontSize: 11, fontWeight: 700 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>

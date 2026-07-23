@@ -147,15 +147,15 @@ export default function StudentReportCard({
           <div style={{ width: '100%', height: '180px' }}>
             {/* IMPORTANT: Use explicit dimensions for html2canvas */}
             <ResponsiveContainer width={760} height={170}>
-              <LineChart data={chartData} margin={{ top: 5, left: 0, bottom: 5, right: 10 }}>
+              <LineChart data={chartData} margin={{ top: 15, left: 0, bottom: 5, right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} width={30} />
+                <YAxis domain={[0, 'dataMax']} tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} width={30} />
                 <Legend wrapperStyle={{ fontSize: 10, marginTop: '-5px' }} />
                 {subjects.map(sub => (
-                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} label={{ position: 'top', fill: subjectColor(sub), fontSize: 9, fontWeight: 600 }} />
                 ))}
-                <Line type="monotone" dataKey="Total" stroke="#1a4fa0" strokeWidth={2.5} dot={{ r: 3 }} isAnimationActive={false} />
+                <Line type="monotone" dataKey="Total" stroke="#1a4fa0" strokeWidth={2.5} dot={{ r: 3 }} isAnimationActive={false} label={{ position: 'top', fill: '#1a4fa0', fontSize: 9, fontWeight: 700 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
