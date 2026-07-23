@@ -107,6 +107,36 @@ export default function StudentOverallWeakTopics({ studentId }) {
         </p>
       </div>
 
+      {data.totalAttempted > 0 && (
+        <div style={{
+          padding: '16px 24px',
+          borderBottom: '1px solid var(--gray-200)',
+          display: 'flex',
+          gap: 24,
+          flexWrap: 'wrap',
+          background: '#f8fafc'
+        }}>
+          <div style={{ flex: 1, minWidth: 120 }}>
+            <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, textTransform: 'uppercase' }}>Total Attempted</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>{data.totalAttempted}</div>
+          </div>
+          <div style={{ flex: 1, minWidth: 120 }}>
+            <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, textTransform: 'uppercase' }}>Total Correct</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#10b981', marginTop: 2 }}>{data.totalCorrect}</div>
+          </div>
+          <div style={{ flex: 1, minWidth: 120 }}>
+            <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, textTransform: 'uppercase' }}>Total Wrong</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#ef4444', marginTop: 2 }}>{data.totalWrong}</div>
+          </div>
+          <div style={{ flex: 1, minWidth: 120 }}>
+            <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, textTransform: 'uppercase' }}>Accuracy</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--csrl-blue)', marginTop: 2 }}>
+              {Math.round((data.totalCorrect / data.totalAttempted) * 100)}%
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ padding: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
         {SUBJECTS.map((subject) => {
           const subjData = data.overallWeakTopics[subject];
