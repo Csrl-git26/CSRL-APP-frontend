@@ -162,6 +162,32 @@ export default function StudentOverallWeakTopics({ studentId }) {
                 </span>
               </div>
 
+              {data.overallSubjectMetrics && data.overallSubjectMetrics[subject] && data.overallSubjectMetrics[subject].attempted > 0 && (
+                <div style={{
+                  display: 'flex', gap: 12, marginBottom: 16, padding: '10px 12px',
+                  background: 'var(--gray-50)', borderRadius: 8, fontSize: 12, flexWrap: 'wrap'
+                }}>
+                  <div style={{ flex: 1, minWidth: '45%' }}>
+                    <div style={{ color: 'var(--gray-500)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600 }}>Attempted</div>
+                    <div style={{ fontWeight: 700, color: 'var(--gray-700)' }}>{data.overallSubjectMetrics[subject].attempted}</div>
+                  </div>
+                  <div style={{ flex: 1, minWidth: '45%' }}>
+                    <div style={{ color: 'var(--gray-500)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600 }}>Correct</div>
+                    <div style={{ fontWeight: 700, color: '#10b981' }}>{data.overallSubjectMetrics[subject].correct}</div>
+                  </div>
+                  <div style={{ flex: 1, minWidth: '45%' }}>
+                    <div style={{ color: 'var(--gray-500)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600 }}>Wrong</div>
+                    <div style={{ fontWeight: 700, color: '#ef4444' }}>{data.overallSubjectMetrics[subject].wrong}</div>
+                  </div>
+                  <div style={{ flex: 1, minWidth: '45%' }}>
+                    <div style={{ color: 'var(--gray-500)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600 }}>Accuracy</div>
+                    <div style={{ fontWeight: 700, color: colors.color }}>
+                      {Math.round((data.overallSubjectMetrics[subject].correct / data.overallSubjectMetrics[subject].attempted) * 100)}%
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {subjData.strongWeak.length > 0 && (
                 <div style={{ marginBottom: subjData.mediumWeak.length ? 10 : 0 }}>
                   <div style={{
