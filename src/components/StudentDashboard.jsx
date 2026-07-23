@@ -523,6 +523,7 @@ export default function StudentDashboard() {
                     dot={{ r: 3.5, strokeWidth: 1, fill: '#fff' }}
                     activeDot={{ r: 5 }}
                     connectNulls
+                    isAnimationActive={false}
                     label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 11, fontWeight: 600 }}
                   />
                 ))}
@@ -534,6 +535,7 @@ export default function StudentDashboard() {
                   dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
                   activeDot={{ r: 6 }}
                   connectNulls
+                  isAnimationActive={false}
                   label={{ position: 'top', fill: '#a21caf', fontSize: 11, fontWeight: 700 }}
                 />
               </LineChart>

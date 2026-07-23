@@ -339,9 +339,9 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
                 <Tooltip contentStyle={{ borderRadius: 8, border: 'none', boxShadow: 'var(--shadow-lg)', fontSize: 12 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 {subjects.map((sub) => (
-                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls label={{ position: 'top', fill: subjectColor(sub), fontSize: 11, fontWeight: 600 }} />
+                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls isAnimationActive={false} label={{ position: 'top', fill: subjectColor(sub), fontSize: 11, fontWeight: 600 }} />
                 ))}
-                <Line type="monotone" dataKey="Total" stroke="var(--csrl-blue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} label={{ position: 'top', fill: 'var(--csrl-blue)', fontSize: 11, fontWeight: 700 }} />
+                <Line type="monotone" dataKey="Total" stroke="var(--csrl-blue)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} isAnimationActive={false} label={{ position: 'top', fill: 'var(--csrl-blue)', fontSize: 11, fontWeight: 700 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
