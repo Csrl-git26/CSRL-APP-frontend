@@ -4,11 +4,10 @@
 export const CENTERS = {
   'GAIL': {
     code: 'GAIL',
-    name: 'GAIL Utkarsh Super 100',
+    name: 'KNP',
   },
   'OIL_INDIA': {
     code: 'OIL_INDIA',
-    name: 'Oil India Super 30',
+    name: 'JDH',
   },
-  // 'JDH': { code: 'JDH', name: 'Jodhpur' },
 };

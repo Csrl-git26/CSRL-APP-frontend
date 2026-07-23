@@ -13,7 +13,7 @@ export default function Navbar({ auth, setAuth, onRefresh }) {
     return (
         <header className="header">
             <div className="brand">
-                GAIL Utkarsh Super 100
+                CSRL Dashboard
             </div>
 
             <div className="flex items-center gap-4">
