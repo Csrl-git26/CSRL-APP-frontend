@@ -213,6 +213,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
       <div className="grid-2">
         <div className="card">
           <div className="section-title">👨‍👩‍👧 Personal & Selection Info</div>
+          <InfoRow label="Year" value={profile.YEAR || '-'} />
           <InfoRow label="Registration No." value={profile['Registration no.'] || profile.ROLL_KEY || '-'} />
           <InfoRow label="Sponsor" value={profile.SPONSOR || '-'} />
           <InfoRow label="Project Name" value={profile['PROJECT NAME'] || '-'} />

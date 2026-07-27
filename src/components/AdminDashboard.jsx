@@ -37,7 +37,8 @@ import { mapProfileToExcelRow } from './exportUtils';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const STUDENT_TEMPLATE_COLUMNS = [
-  'SPONSOR', 'PROJECT NAME', 'CENTRE CODE', 'Roll Number',
+  'YEAR', 'SPONSOR', 'PROJECT NAME', 'CENTRE CODE', 'Roll Number',
+  'Registration No. (SSRP, CBT, CLT)',
   'PEER GROUP (A, B, C, D, ...)', "STUDENT'S NAME", 'GENDER', 'CATEGORY',
   'Embibe Email Id', 'Embibe Mobile No.', 'Mobile No.', 'DATE OF BIRTH',
   'Mode of Selection (SSRP/CBT-01/CBT-02)', 'Written Test Marks (240)',
@@ -120,9 +121,10 @@ function mapExcelStudentToProfile(row) {
   const stream = normalizeCellValue(getRowField(row, ['stream', 'Stream', 'STREAM'])).toUpperCase() || 'JEE';
 
   return {
+    YEAR:                      normalizeCellValue(getRowField(row, ['YEAR', 'Year', 'year'])),
     ROLL_KEY: roll,
     "STUDENT'S NAME": name,
-    'Registration no.':        normalizeCellValue(getRowField(row, ['Registration no.', 'registration_no'])),
+    'Registration no.':        normalizeCellValue(getRowField(row, ['Registration No. (SSRP, CBT, CLT)', 'Registration no.', 'registration_no'])),
     centerCode:                centre,
     stream:                    stream === 'NEET' ? 'NEET' : 'JEE',
     SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor'])),

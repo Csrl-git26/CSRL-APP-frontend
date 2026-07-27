@@ -1,8 +1,10 @@
 export const mapProfileToExcelRow = (s) => ({
+  'YEAR': s.YEAR || '',
   'SPONSOR': s.SPONSOR || '',
   'PROJECT NAME': s['PROJECT NAME'] || '',
   'CENTRE CODE': s['CENTRE CODE'] || '',
   'Roll Number': s.ROLL_KEY || '',
+  'Registration No. (SSRP, CBT, CLT)': s['Registration no.'] || '',
   'PEER GROUP (A, B, C, D, ...)': s['PEER GROUP'] || '',
   "STUDENT'S NAME": s["STUDENT'S NAME"] || '',
   'GENDER': s.GENDER || '',
