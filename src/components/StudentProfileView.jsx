@@ -8,6 +8,7 @@ import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import StudentReportCard from './StudentReportCard';
 import StudentOverallWeakTopics from './StudentOverallWeakTopics';
+import { mapProfileToExcelRow } from './exportUtils';
 
 function displayCenter(code) {
   if (!code) return '—';
@@ -59,40 +60,8 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
 
   const exportProfileToExcel = () => {
     if (!profile) return;
-    const wsData = [
-      ['Roll Number', profile.ROLL_KEY || '-'],
-      ['Name', profile["STUDENT'S NAME"] || '-'],
-      ['Centre', profile.centerCode || '-'],
-      ['Stream', profile.stream || '-'],
-      ['Sponsor', profile.SPONSOR || '-'],
-      ['Registration no.', profile['Registration no.'] || profile.ROLL_KEY || '-'],
-      ['Mode of Selection', profile['Mode of Selection'] || '-'],
-      ['Written Test Marks (240)', profile['Written Test Marks (240)'] || '-'],
-      ['Interview Marks (90)', profile['Interview Marks (90)'] || '-'],
-      ['HO Score in Final Admission', profile['HO Score in Final Admission'] || '-'],
-      ['Gender', profile.GENDER || '-'],
-      ['Category', profile.CATEGORY || '-'],
-      ['Parent Mobile', profile.parent_mobile || '-'],
-      ['Date of Birth', profile['DATE OF BIRTH'] || '-'],
-      ['Father Name', profile["FATHER'S NAME"] || '-'],
-      ['Mother Name', profile["MOTHER'S NAME"] || '-'],
-      ['Address', profile['PARMANENT ADDRESS'] || '-'],
-      ['District', profile.DISTRICT || '-'],
-      ['State', profile.STATE || '-'],
-      ['Pincode', profile.PINCODE || '-'],
-      ['10th School', profile['10th SCHOOL NAME'] || '-'],
-      ['10th Board', profile['10th BOARD'] || '-'],
-      ['10th District', profile['DISTRICT_10'] || '-'],
-      ['10th State', profile['STATE_10'] || '-'],
-      ['10th Percentage', profile['10th Precentage'] || '-'],
-      ['12th School', profile['12th SCHOOL NAME'] || '-'],
-      ['12th Board', profile['12th BOARD'] || '-'],
-      ['12th District', profile['DISTRICT_12'] || '-'],
-      ['12th State', profile['STATE_12'] || '-'],
-      ['12th Percentage', profile['12th Precentage'] || '-'],
-      ['JEE Mains 2024-25 Percentile', profile['JEE MAINS 2024-25 Precentille'] || '-']
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const row = mapProfileToExcelRow(profile);
+    const ws = XLSX.utils.json_to_sheet([row]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Student Profile');
     XLSX.writeFile(wb, `${profile.ROLL_KEY || 'Student'}_Profile.xlsx`);
@@ -246,16 +215,25 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           <div className="section-title">👨‍👩‍👧 Personal & Selection Info</div>
           <InfoRow label="Registration No." value={profile['Registration no.'] || profile.ROLL_KEY || '-'} />
           <InfoRow label="Sponsor" value={profile.SPONSOR || '-'} />
+          <InfoRow label="Project Name" value={profile['PROJECT NAME'] || '-'} />
+          <InfoRow label="Peer Group" value={profile['PEER GROUP'] || '-'} />
           <InfoRow label="Mode of Selection" value={profile['Mode of Selection'] || '-'} />
-          <InfoRow label="Written Test Marks" value={profile['Written Test Marks (240)'] || '-'} />
-          <InfoRow label="Interview Marks" value={profile['Interview Marks (90)'] || '-'} />
-          <InfoRow label="HO Score" value={profile['HO Score in Final Admission'] || '-'} />
+          <InfoRow label="Written Test Marks (240)" value={profile['Written Test Marks (240)'] || '-'} />
+          <InfoRow label="Interview Marks (90)" value={profile['Interview Marks (90)'] || '-'} />
+          <InfoRow label="HO Score in Final Admission" value={profile['HO Score in Final Admission'] || '-'} />
           <InfoRow label="Gender" value={profile.GENDER || '-'} />
           <InfoRow label="Date of Birth" value={profile['DATE OF BIRTH'] || '-'} />
-          <InfoRow label="Father's Name" value={profile["FATHER'S NAME"] || '-'} />
-          <InfoRow label="Mother's Name" value={profile["MOTHER'S NAME"] || '-'} />
+          <InfoRow label="Single Child" value={profile['SINGLE CHILD (YES/NO)'] || '-'} />
+          <InfoRow label="Number of Siblings" value={profile['Number of Siblings'] || '-'} />
           <InfoRow label="Student Mobile" value={profile['Mobile No.'] || '-'} />
-          <InfoRow label="Parent Mobile" value={profile['parent_mobile'] || '-'} />
+          <InfoRow label="Embibe Email" value={profile['Embibe Email Id'] || '-'} />
+          <InfoRow label="Embibe Mobile" value={profile['Embibe Mobile No.'] || '-'} />
+          <InfoRow label="Father's Name" value={profile["FATHER'S NAME"] || '-'} />
+          <InfoRow label="Father's Nature of Work" value={profile['FATHER NATURE OF WORK'] || '-'} />
+          <InfoRow label="Father's Annual Income" value={profile["FATHER'S INCOME (ANNUAL)"] || '-'} />
+          <InfoRow label="Mother's Name" value={profile["MOTHER'S NAME"] || '-'} />
+          <InfoRow label="Mother's Nature of Work" value={profile['MOTHER NATURE OF WORK'] || '-'} />
+          <InfoRow label="Mother's Annual Income" value={profile["MOTHER'S INCOME (ANNUAL)"] || '-'} />
           <div style={{ marginTop: 10, fontSize: 12, color: 'var(--gray-400)', lineHeight: 1.5 }}>
             📍 {profile['PARMANENT ADDRESS'] || '-'}, {profile.DISTRICT || '-'}, {profile.STATE || '-'}{profile.PINCODE ? ` - ${profile.PINCODE}` : ''}
           </div>
@@ -265,24 +243,27 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           <div className="section-title">🎓 Education History</div>
           <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', marginBottom: 10 }}>
             <div style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: 13, marginBottom: 8 }}>10th Standard</div>
-            <InfoRow label="School" value={school10 || '-'} />
+            <InfoRow label="School" value={profile['10th SCHOOL NAME'] || '-'} />
             <InfoRow label="Board" value={profile['10th BOARD'] || '-'} />
-            <InfoRow label="District" value={profile['DISTRICT_10'] || '-'} />
-            <InfoRow label="State" value={profile['STATE_10'] || '-'} />
-            <InfoRow label="Percentage" value={profile['10th Precentage'] || '-'} />
+            <InfoRow label="District" value={profile['10th DISTRICT'] || profile['DISTRICT_10'] || '-'} />
+            <InfoRow label="State" value={profile['10th STATE'] || profile['STATE_10'] || '-'} />
+            <InfoRow label="Percentage" value={profile['10th Precentage'] || profile['10th Percentage'] || '-'} />
           </div>
           <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', marginBottom: 10 }}>
             <div style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: 13, marginBottom: 8 }}>12th Standard</div>
-            <InfoRow label="School" value={school12 || '-'} />
+            <InfoRow label="School" value={profile['12th SCHOOL NAME'] || '-'} />
             <InfoRow label="Board" value={profile['12th BOARD'] || '-'} />
-            <InfoRow label="District" value={profile['DISTRICT_12'] || '-'} />
-            <InfoRow label="State" value={profile['STATE_12'] || '-'} />
-            <InfoRow label="Percentage" value={profile['12th Precentage'] || '-'} />
+            <InfoRow label="District" value={profile['12th DISTRICT'] || profile['DISTRICT_12'] || '-'} />
+            <InfoRow label="State" value={profile['12th STATE'] || profile['STATE_12'] || '-'} />
+            <InfoRow label="Percentage" value={profile['12th Precentage'] || profile['12th Percentage'] || '-'} />
           </div>
           {stream === 'JEE' && (
             <div style={{ background: '#e8f0fc', borderRadius: 8, padding: '12px' }}>
               <div style={{ fontWeight: 700, color: '#1a4fa0', fontSize: 13, marginBottom: 8 }}>Competitive Exams</div>
-              <InfoRow label="JEE Mains 24-25 Percentile" value={getJeePercentile(profile) || '-'} />
+              <InfoRow label="JEE Mains 2024-25 Percentile" value={getJeePercentile(profile) || '-'} />
+              <InfoRow label="JEE Mains Qualification Status" value={profile['JEE Mains Qualification Status'] || '-'} />
+              <InfoRow label="JEE Advanced 2024-25 Marks" value={profile['JEE Advanced Marks'] || '-'} />
+              <InfoRow label="JEE Advanced Qualification Status" value={profile['JEE Advanced Qualification Status'] || '-'} />
             </div>
           )}
         </div>

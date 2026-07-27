@@ -22,6 +22,7 @@ import { useAuth } from '../context/AuthContext';
 import TestInsightsPanel from './TestInsightsPanel';
 import StudentWeakTopics from './StudentWeakTopics';
 import StudentOverallWeakTopics from './StudentOverallWeakTopics';
+import { mapProfileToExcelRow } from './exportUtils';
 import StudentReportCard from './StudentReportCard';
 
 const TABS = [
@@ -263,40 +264,8 @@ export default function StudentDashboard() {
 
   const exportProfileToExcel = () => {
     if (!profile) return;
-    const wsData = [
-      ['Roll Number', profile.ROLL_KEY || '-'],
-      ['Name', profile["STUDENT'S NAME"] || '-'],
-      ['Centre', profile.centerCode || '-'],
-      ['Stream', profile.stream || '-'],
-      ['Sponsor', profile.SPONSOR || '-'],
-      ['Registration no.', profile['Registration no.'] || profile.ROLL_KEY || '-'],
-      ['Mode of Selection', profile['Mode of Selection'] || '-'],
-      ['Written Test Marks (240)', profile['Written Test Marks (240)'] || '-'],
-      ['Interview Marks (90)', profile['Interview Marks (90)'] || '-'],
-      ['HO Score in Final Admission', profile['HO Score in Final Admission'] || '-'],
-      ['Gender', profile.GENDER || '-'],
-      ['Category', profile.CATEGORY || '-'],
-      ['Parent Mobile', profile.parent_mobile || '-'],
-      ['Date of Birth', profile['DATE OF BIRTH'] || '-'],
-      ['Father Name', profile["FATHER'S NAME"] || '-'],
-      ['Mother Name', profile["MOTHER'S NAME"] || '-'],
-      ['Address', profile['PARMANENT ADDRESS'] || '-'],
-      ['District', profile.DISTRICT || '-'],
-      ['State', profile.STATE || '-'],
-      ['Pincode', profile.PINCODE || '-'],
-      ['10th School', profile['10th SCHOOL NAME'] || '-'],
-      ['10th Board', profile['10th BOARD'] || '-'],
-      ['10th District', profile['DISTRICT_10'] || '-'],
-      ['10th State', profile['STATE_10'] || '-'],
-      ['10th Percentage', profile['10th Precentage'] || '-'],
-      ['12th School', profile['12th SCHOOL NAME'] || '-'],
-      ['12th Board', profile['12th BOARD'] || '-'],
-      ['12th District', profile['DISTRICT_12'] || '-'],
-      ['12th State', profile['STATE_12'] || '-'],
-      ['12th Percentage', profile['12th Precentage'] || '-'],
-      ['JEE Mains 2024-25 Percentile', profile['JEE MAINS 2024-25 Precentille'] || '-']
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const row = mapProfileToExcelRow(profile);
+    const ws = XLSX.utils.json_to_sheet([row]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Student Profile');
     XLSX.writeFile(wb, `${profile.ROLL_KEY || 'Student'}_Profile.xlsx`);

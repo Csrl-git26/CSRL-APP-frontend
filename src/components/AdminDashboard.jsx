@@ -32,17 +32,34 @@ import CentreLeaderboard from './CentreLeaderboard';
 import TestInsightsPanel from './TestInsightsPanel';
 import AdminWeakTopics from './AdminWeakTopics';
 import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
+import { mapProfileToExcelRow } from './exportUtils';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const STUDENT_TEMPLATE_COLUMNS = [
-  'Roll Number', 'centre', 'stream', 'SPONSOR', 'CENTRE CODE', 'Registration no.', 'name', 
-  'Mode of Selection', 'Written Test Marks (240)', 'Interview Marks (90)', 
-  'HO Score in Final Admission', 'gender', 'category', 'mobile', 'dob', 
-  'parent_name', 'parent_mobile', 'address', 'district', 'state', 'pincode', 
-  'school_10', 'board_10', 'percentage_10', 'DISTRICT_10', 'STATE_10', 'school_12', 'board_12', 
-  'percentage_12', 'DISTRICT_12', 'STATE_12', 'JEE MAINS 2024-25 Precentille', 
-  'student_photo_url'
+  'SPONSOR', 'PROJECT NAME', 'CENTRE CODE', 'Roll Number',
+  'PEER GROUP (A, B, C, D, ...)', "STUDENT'S NAME", 'GENDER', 'CATEGORY',
+  'Embibe Email Id', 'Embibe Mobile No.', 'Mobile No.', 'DATE OF BIRTH',
+  'Mode of Selection (SSRP/CBT-01/CBT-02)', 'Written Test Marks (240)',
+  'Interview Marks (90)', 'HO Score in Final Admission List (100)',
+  "FATHER'S NAME", 'FATHER NATURE OF WORK', "FATHER'S INCOME (ANNUAL)",
+  "MOTHER'S NAME", 'MOTHER NATURE OF WORK', "MOTHER'S INCOME (ANNUAL)",
+  'SINGLE CHILD (YES/NO)', 'Number of Siblings', 'PERMANENT ADDRESS',
+  'DISTRICT', 'STATE', 'PINCODE',
+  '10th SCHOOL NAME', '10th DISTRICT', '10th STATE', '10th BOARD', '10th Percentage',
+  '12th SCHOOL NAME', '12th BOARD', '12th DISTRICT', '12th STATE', '12th Percentage',
+  'JEE MAINS 2024-25 SCORE CARD (IF ATTEMPTED)',
+  'JEE MAINS 2024-25 Percentile', 'JEE Mains 2024-25 Qualification Status',
+  'JEE Advanced 2024-25 Marks', 'JEE Advanced 2024-25 Qualification Status',
+  'OMR SHEET', 'ADMIT CARD OF CSRL WRITTEN TEST', 'VACCINATION REPORT', 'KYS',
+  'INTERVIEW SHEET A', 'INTERVIEW SHEET B', 'SIGNED TERM & CONDITION',
+  'SIGNED PARENTS CONSENT', 'MEDICAL CERTIFICATE', 'MEDICAL HISTORY',
+  'INDEMNITY CUM DECLARATION', 'DECLARATION CUM AFFIDAVIT',
+  'INCOME CERTIFICATE (Original)', 'BANK STATEMENT',
+  'CLASS 10TH MARKSHEET', 'CLASS 10TH PASSING CERTIFICATE',
+  'CLASS 12TH MARKSHEET', 'CLASS 12TH PASSING CERTIFICATE',
+  'AADHAAR CARD NUMBER', 'CATEGORY CERTIFICATE',
+  'PHYSICAL DISABILITY CERTIFICATE', 'DOMICILE CERTIFICATE', 'Email Id'
 ];
 
 const TABS = [
@@ -98,8 +115,8 @@ function getRowField(row, keys) {
 
 function mapExcelStudentToProfile(row) {
   const roll   = normalizeRollKey(getRowField(row, ['Roll Number', 'roll_number', 'ROLL_NUMBER', 'roll', 'ROLL_KEY', 'Registration no.']));
-  const name   = normalizeCellValue(getRowField(row, ['name', 'Name', "STUDENT'S NAME"]));
-  const centre = normalizeCenterCode(getRowField(row, ['centre', 'Center', 'center', 'centerCode']));
+  const name   = normalizeCellValue(getRowField(row, ["STUDENT'S NAME", 'name', 'Name']));
+  const centre = normalizeCenterCode(getRowField(row, ['CENTRE CODE', 'centre', 'Center', 'center', 'centerCode']));
   const stream = normalizeCellValue(getRowField(row, ['stream', 'Stream', 'STREAM'])).toUpperCase() || 'JEE';
 
   return {
@@ -109,32 +126,73 @@ function mapExcelStudentToProfile(row) {
     centerCode:                centre,
     stream:                    stream === 'NEET' ? 'NEET' : 'JEE',
     SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor'])),
+    'PROJECT NAME':            normalizeCellValue(getRowField(row, ['PROJECT NAME', 'project_name'])),
     'CENTRE CODE':             normalizeCellValue(getRowField(row, ['CENTRE CODE', 'centre_code'])),
-    'Mode of Selection':       normalizeCellValue(getRowField(row, ['Mode of Selection', 'mode_of_selection'])),
+    'Roll Number':             roll,
+    'PEER GROUP':              normalizeCellValue(getRowField(row, ['PEER GROUP', 'PEER GROUP (A, B, C, D, ...)', 'peer_group'])),
+    GENDER:                    normalizeCellValue(getRowField(row, ['GENDER', 'gender', 'Gender'])),
+    CATEGORY:                  normalizeCellValue(getRowField(row, ['CATEGORY', 'category', 'Category'])),
+    'Embibe Email Id':         normalizeCellValue(getRowField(row, ['Embibe Email Id', 'embibe_email_id'])),
+    'Embibe Mobile No.':       normalizeCellValue(getRowField(row, ['Embibe Mobile No.', 'embibe_mobile_no'])),
+    'Mobile No.':              normalizeCellValue(getRowField(row, ['Mobile No.', 'mobile', 'Mobile', 'mobile_no'])),
+    'DATE OF BIRTH':           normalizeCellValue(getRowField(row, ['DATE OF BIRTH', 'dob', 'Date of Birth'])),
+    'Mode of Selection':       normalizeCellValue(getRowField(row, ['Mode of Selection', 'Mode of Selection (SSRP/CBT-01/CBT-02)', 'mode_of_selection'])),
     'Written Test Marks (240)':normalizeCellValue(getRowField(row, ['Written Test Marks (240)', 'written_test_marks'])),
     'Interview Marks (90)':    normalizeCellValue(getRowField(row, ['Interview Marks (90)', 'interview_marks'])),
-    'HO Score in Final Admission': normalizeCellValue(getRowField(row, ['HO Score in Final Admission', 'ho_score'])),
-    GENDER:                    normalizeCellValue(getRowField(row, ['gender', 'Gender', 'GENDER'])),
-    CATEGORY:                  normalizeCellValue(getRowField(row, ['category', 'Category', 'CATEGORY'])),
-    'Mobile No.':              normalizeCellValue(getRowField(row, ['mobile', 'Mobile', 'Mobile No.', 'mobile_no'])),
-    'DATE OF BIRTH':           normalizeCellValue(getRowField(row, ['dob', 'Date of Birth', 'DATE OF BIRTH'])),
-    "FATHER'S NAME":           normalizeCellValue(getRowField(row, ['parent_name', "FATHER'S NAME", 'father_name'])),
+    'HO Score in Final Admission': normalizeCellValue(getRowField(row, ['HO Score in Final Admission', 'HO Score in Final Admission List (100)', 'ho_score'])),
+    "FATHER'S NAME":           normalizeCellValue(getRowField(row, ["FATHER'S NAME", 'parent_name', 'father_name'])),
+    'FATHER NATURE OF WORK':   normalizeCellValue(getRowField(row, ['FATHER NATURE OF WORK', 'father_nature_of_work'])),
+    "FATHER'S INCOME (ANNUAL)":normalizeCellValue(getRowField(row, ["FATHER'S INCOME (ANNUAL)", 'father_income'])),
+    "MOTHER'S NAME":           normalizeCellValue(getRowField(row, ["MOTHER'S NAME", 'mother_name'])),
+    'MOTHER NATURE OF WORK':   normalizeCellValue(getRowField(row, ['MOTHER NATURE OF WORK', 'mother_nature_of_work'])),
+    "MOTHER'S INCOME (ANNUAL)":normalizeCellValue(getRowField(row, ["MOTHER'S INCOME (ANNUAL)", 'mother_income'])),
+    'SINGLE CHILD (YES/NO)':   normalizeCellValue(getRowField(row, ['SINGLE CHILD (YES/NO)', 'single_child'])),
+    'Number of Siblings':      normalizeCellValue(getRowField(row, ['Number of Siblings', 'number_of_siblings'])),
+    'PARMANENT ADDRESS':       normalizeCellValue(getRowField(row, ['PARMANENT ADDRESS', 'PERMANENT ADDRESS', 'address', 'Address'])),
+    DISTRICT:                  normalizeCellValue(getRowField(row, ['DISTRICT', 'district'])),
+    STATE:                     normalizeCellValue(getRowField(row, ['STATE', 'state'])),
+    PINCODE:                   normalizeCellValue(getRowField(row, ['PINCODE', 'pincode'])),
+    '10th SCHOOL NAME':        normalizeCellValue(getRowField(row, ['10th SCHOOL NAME', 'school_10'])),
+    '10th DISTRICT':           normalizeCellValue(getRowField(row, ['10th DISTRICT', 'DISTRICT_10', 'district_10'])),
+    '10th STATE':              normalizeCellValue(getRowField(row, ['10th STATE', 'STATE_10', 'state_10'])),
+    '10th BOARD':              normalizeCellValue(getRowField(row, ['10th BOARD', 'board_10'])),
+    '10th Precentage':         normalizeCellValue(getRowField(row, ['10th Percentage', '10th Precentage', 'percentage_10'])),
+    '12th SCHOOL NAME':        normalizeCellValue(getRowField(row, ['12th SCHOOL NAME', 'school_12'])),
+    '12th BOARD':              normalizeCellValue(getRowField(row, ['12th BOARD', 'board_12'])),
+    '12th DISTRICT':           normalizeCellValue(getRowField(row, ['12th DISTRICT', 'DISTRICT_12', 'district_12'])),
+    '12th STATE':              normalizeCellValue(getRowField(row, ['12th STATE', 'STATE_12', 'state_12'])),
+    '12th Precentage':         normalizeCellValue(getRowField(row, ['12th Percentage', '12th Precentage', 'percentage_12'])),
+    'JEE MAINS SCORE CARD':    normalizeCellValue(getRowField(row, ['JEE MAINS 2024-25 SCORE CARD (IF ATTEMPTED)', 'jee_mains_score_card'])),
+    'JEE MAINS 2024-25 Precentille': normalizeCellValue(getRowField(row, ['JEE MAINS 2024-25 Percentile', 'JEE MAINS 2024-25 Precentille', 'jee_mains_percentile'])),
+    'JEE Mains Qualification Status': normalizeCellValue(getRowField(row, ['JEE Mains 2024-25 Qualification Status', 'jee_mains_qualification_status'])),
+    'JEE Advanced Marks':      normalizeCellValue(getRowField(row, ['JEE Advanced 2024-25 Marks', 'jee_advanced_marks'])),
+    'JEE Advanced Qualification Status': normalizeCellValue(getRowField(row, ['JEE Advanced 2024-25 Qualification Status', 'jee_advanced_qualification_status'])),
+    'OMR SHEET':               normalizeCellValue(getRowField(row, ['OMR SHEET', 'omr_sheet'])),
+    'ADMIT CARD OF CSRL WRITTEN TEST': normalizeCellValue(getRowField(row, ['ADMIT CARD OF CSRL WRITTEN TEST', 'admit_card_csrl_written_test'])),
+    'VACCINATION REPORT':      normalizeCellValue(getRowField(row, ['VACCINATION REPORT', 'vaccination_report'])),
+    'KYS':                     normalizeCellValue(getRowField(row, ['KYS', 'kys'])),
+    'INTERVIEW SHEET A':       normalizeCellValue(getRowField(row, ['INTERVIEW SHEET A', 'interview_sheet_a'])),
+    'INTERVIEW SHEET B':       normalizeCellValue(getRowField(row, ['INTERVIEW SHEET B', 'interview_sheet_b'])),
+    'SIGNED TERM & CONDITION': normalizeCellValue(getRowField(row, ['SIGNED TERM & CONDITION', 'signed_term_condition'])),
+    'SIGNED PARENTS CONSENT':  normalizeCellValue(getRowField(row, ['SIGNED PARENTS CONSENT', 'signed_parents_consent'])),
+    'MEDICAL CERTIFICATE':     normalizeCellValue(getRowField(row, ['MEDICAL CERTIFICATE', 'medical_certificate'])),
+    'MEDICAL HISTORY':         normalizeCellValue(getRowField(row, ['MEDICAL HISTORY', 'medical_history'])),
+    'INDEMNITY CUM DECLARATION': normalizeCellValue(getRowField(row, ['INDEMNITY CUM DECLARATION', 'indemnity_cum_declaration'])),
+    'DECLARATION CUM AFFIDAVIT': normalizeCellValue(getRowField(row, ['DECLARATION CUM AFFIDAVIT', 'declaration_cum_affidavit'])),
+    'INCOME CERTIFICATE (Original)': normalizeCellValue(getRowField(row, ['INCOME CERTIFICATE (Original)', 'income_certificate'])),
+    'BANK STATEMENT':          normalizeCellValue(getRowField(row, ['BANK STATEMENT', 'bank_statement'])),
+    'CLASS 10TH MARKSHEET':    normalizeCellValue(getRowField(row, ['CLASS 10TH MARKSHEET', 'class_10_marksheet'])),
+    'CLASS 10TH PASSING CERTIFICATE': normalizeCellValue(getRowField(row, ['CLASS 10TH PASSING CERTIFICATE', 'class_10_passing_certificate'])),
+    'CLASS 12TH MARKSHEET':    normalizeCellValue(getRowField(row, ['CLASS 12TH MARKSHEET', 'class_12_marksheet'])),
+    'CLASS 12TH PASSING CERTIFICATE': normalizeCellValue(getRowField(row, ['CLASS 12TH PASSING CERTIFICATE', 'class_12_passing_certificate'])),
+    'AADHAAR CARD NUMBER':     normalizeCellValue(getRowField(row, ['AADHAAR CARD NUMBER', 'aadhaar_card_number'])),
+    'CATEGORY CERTIFICATE':    normalizeCellValue(getRowField(row, ['CATEGORY CERTIFICATE', 'category_certificate'])),
+    'PHYSICAL DISABILITY CERTIFICATE': normalizeCellValue(getRowField(row, ['PHYSICAL DISABILITY CERTIFICATE', 'physical_disability_certificate'])),
+    'DOMICILE CERTIFICATE':    normalizeCellValue(getRowField(row, ['DOMICILE CERTIFICATE', 'domicile_certificate'])),
+    'Email Id':                normalizeCellValue(getRowField(row, ['Email Id', 'email_id', 'email'])),
+    
+    // Legacy mapping (just in case)
     'parent_mobile':           normalizeCellValue(getRowField(row, ['parent_mobile', 'Parent Mobile'])),
-    "MOTHER'S NAME":           normalizeCellValue(getRowField(row, ['mother_name', "MOTHER'S NAME"])),
-    'PARMANENT ADDRESS':       normalizeCellValue(getRowField(row, ['address', 'Address', 'PARMANENT ADDRESS'])),
-    DISTRICT:                  normalizeCellValue(getRowField(row, ['district', 'DISTRICT'])),
-    STATE:                     normalizeCellValue(getRowField(row, ['state', 'STATE'])),
-    PINCODE:                   normalizeCellValue(getRowField(row, ['pincode', 'PINCODE'])),
-    '10th SCHOOL NAME':        normalizeCellValue(getRowField(row, ['school_10', '10th SCHOOL NAME'])),
-    '10th BOARD':              normalizeCellValue(getRowField(row, ['board_10', '10th BOARD'])),
-    '10th Precentage':         normalizeCellValue(getRowField(row, ['percentage_10', '10th Precentage'])),
-    'DISTRICT_10':             normalizeCellValue(getRowField(row, ['DISTRICT_10', 'district_10'])),
-    '12th SCHOOL NAME':        normalizeCellValue(getRowField(row, ['school_12', '12th SCHOOL NAME'])),
-    '12th BOARD':              normalizeCellValue(getRowField(row, ['board_12', '12th BOARD'])),
-    '12th Precentage':         normalizeCellValue(getRowField(row, ['percentage_12', '12th Precentage'])),
-    'DISTRICT_12':             normalizeCellValue(getRowField(row, ['DISTRICT_12', 'district_12'])),
-    'STATE_12':                normalizeCellValue(getRowField(row, ['STATE_12', 'state_12'])),
-    'JEE MAINS 2024-25 Precentille': normalizeCellValue(getRowField(row, ['JEE MAINS 2024-25 Precentille', 'jee_mains_percentile'])),
     'FUTURE COLLEGE (TARGET)': normalizeCellValue(getRowField(row, ['future_college', 'FUTURE COLLEGE (TARGET)'])),
     'WEAK SUBJECT (MANUAL)':   normalizeCellValue(getRowField(row, ['weak_subject_manual', 'WEAK SUBJECT (MANUAL)'])),
     'STUDENT PHOTO URL':       normalizeCellValue(getRowField(row, ['student_photo_url', 'STUDENT PHOTO URL'])),
@@ -510,31 +568,7 @@ export default function AdminDashboard() {
   const handleExportSelectedStudents = () => {
     if (!selectedStudents.length) return;
     const dataToExport = data.profiles.filter((p) => selectedStudents.includes(p.ROLL_KEY));
-    const cleanData = dataToExport.map(p => {
-      const { id, _id, ROLL_KEY, centerCode, ...rest } = p;
-      
-      const roll = rest['ROLL NO.'] || ROLL_KEY;
-      const name = rest["STUDENT'S NAME"] || '';
-      const category = rest['CATEGORY'] || '';
-      const centre = rest['CENTRE CODE'] || centerCode || '';
-      const sponsor = rest['Sponsor'] || rest['SPONSOR'] || '';
-
-      delete rest['ROLL NO.'];
-      delete rest["STUDENT'S NAME"];
-      delete rest['CATEGORY'];
-      delete rest['CENTRE CODE'];
-      delete rest['Sponsor'];
-      delete rest['SPONSOR'];
-
-      return {
-        "STUDENT'S NAME": name,
-        "ROLL NO.": roll,
-        "CATEGORY": category,
-        "CENTRE CODE": centre,
-        "SPONSOR": sponsor,
-        ...rest
-      };
-    });
+    const cleanData = dataToExport.map(mapProfileToExcelRow);
 
     const worksheet = XLSX.utils.json_to_sheet(cleanData);
     const workbook = XLSX.utils.book_new();
@@ -563,15 +597,36 @@ export default function AdminDashboard() {
     const rows = [
       STUDENT_TEMPLATE_COLUMNS,
       [
-        '2701001', 'KNP', 'JEE', 'GAIL', 'KNP', '2601520', 'Aarav Sharma', 
-        'SSRP', 88, 30, 0, 'Male', 'OBC', '9876543210', '15/03/06', 
-        'Rajesh Sharma', '9876543200', 'Civil Lines', 'Kanpur', 'Uttar Pradesh', '208001', 
-        'DPS', 'CBSE', 92.4, 'Kanpur', 'Uttar Pradesh', 'KV', 'CBSE', 
-        89.1, 'Kanpur', 'Uttar Pradesh', 95.5, 'https://example.com/photo.jpg'
+        // SPONSOR, PROJECT NAME, CENTRE CODE, Roll Number
+        'GAIL', 'PROJECT XYZ', 'KNP', '2701001',
+        // PEER GROUP, STUDENT'S NAME, GENDER, CATEGORY
+        'A', 'Aarav Sharma', 'Male', 'OBC',
+        // Embibe Email, Embibe Mobile, Mobile No, DATE OF BIRTH
+        'aarav@embibe.com', '9876543210', '9876543210', '15/03/2006',
+        // Mode of Selection, Written Test Marks, Interview Marks, HO Score
+        'SSRP', 88, 30, 75,
+        // FATHER'S NAME, FATHER NATURE, FATHER'S INCOME, MOTHER'S NAME, MOTHER NATURE, MOTHER'S INCOME
+        'Rajesh Sharma', 'Govt. Job', '5,00,000', 'Priya Sharma', 'Housewife', '0',
+        // SINGLE CHILD, Siblings, ADDRESS, DISTRICT, STATE, PINCODE
+        'No', 1, 'Civil Lines, Kanpur', 'Kanpur', 'Uttar Pradesh', '208001',
+        // 10th SCHOOL, 10th DISTRICT, 10th STATE, 10th BOARD, 10th %
+        'DPS Kanpur', 'Kanpur', 'Uttar Pradesh', 'CBSE', 92.4,
+        // 12th SCHOOL, 12th BOARD, 12th DISTRICT, 12th STATE, 12th %
+        'KV Kanpur', 'CBSE', 'Kanpur', 'Uttar Pradesh', 89.1,
+        // JEE Score Card, JEE Percentile, JEE Mains Qual, JEE Advanced Marks, JEE Advanced Qual
+        'Yes', 95.5, 'Qualified', '', '',
+        // OMR, Admit Card, Vacc, KYS, Interview A, Interview B, Signed Term, Signed Parents
+        'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',
+        // Medical Cert, Medical History, Indemnity, Declaration, Income Cert, Bank Stmt
+        'Y', 'N', 'Y', 'Y', 'Y', 'Y',
+        // 10th Marksheet, 10th Pass Cert, 12th Marksheet, 12th Pass Cert
+        'Y', 'Y', 'Y', 'Y',
+        // Aadhaar, Category Cert, Disability Cert, Domicile, Email
+        '1234-5678-9012', 'Y', 'N', 'Y', 'aarav@gmail.com'
       ]
     ];
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = STUDENT_TEMPLATE_COLUMNS.map(() => ({ wch: 18 }));
+    ws['!cols'] = STUDENT_TEMPLATE_COLUMNS.map(() => ({ wch: 22 }));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Students Template');
     XLSX.writeFile(wb, 'CSRL_Students_Template.xlsx');
@@ -592,30 +647,7 @@ export default function AdminDashboard() {
 
   const exportStudentsXlsx = () => {
     if (!data?.profiles?.length) { showToast('No students to export.', 'warning'); return; }
-    const rows = data.profiles.map((s) => ({
-      'Roll Number':       s.ROLL_KEY || '',
-      name:                s["STUDENT'S NAME"] || '',
-      stream:              s.stream || 'JEE',
-      gender:              s.GENDER || '',
-      category:            s.CATEGORY || '',
-      mobile:              s['Mobile No.'] || '',
-      dob:                 s['DATE OF BIRTH'] || '',
-      parent_name:         s["FATHER'S NAME"] || '',
-      address:             s['PARMANENT ADDRESS'] || '',
-      district:            s.DISTRICT || '',
-      state:               s.STATE || '',
-      pincode:             s.PINCODE || '',
-      school_10:           s['10th SCHOOL NAME'] || '',
-      board_10:            s['10th BOARD'] || '',
-      percentage_10:       s['10th Precentage'] || '',
-      school_12:           s['12th SCHOOL NAME'] || '',
-      board_12:            s['12th BOARD'] || '',
-      percentage_12:       s['12th Precentage'] || '',
-      future_college:      s['FUTURE COLLEGE (TARGET)'] || '',
-      weak_subject_manual: s['WEAK SUBJECT (MANUAL)'] || '',
-      student_photo_url:   s['STUDENT PHOTO URL'] || '',
-      centre:              s.centerCode || '',
-    }));
+    const rows = data.profiles.map(mapProfileToExcelRow);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Students');
     XLSX.writeFile(wb, 'CSRL_Students_Export.xlsx');
@@ -660,14 +692,7 @@ export default function AdminDashboard() {
 
   const exportCombinedWorkbook = () => {
     if (!data) return;
-    const studentsRows = data.profiles.map((p) => ({
-      'Roll Number':  p.ROLL_KEY,
-      name:           p["STUDENT'S NAME"] || '',
-      stream:         p.stream || 'JEE',
-      centre:         p.centerCode || '',
-      category:       p.CATEGORY || '',
-      jee_percentile: p['JEE MAIN PERCENTILE'] || '',
-    }));
+    const studentsRows = data.profiles.map(mapProfileToExcelRow);
     const marksRows = data.tests.map((t) => {
       const row = { roll_number: t.ROLL_KEY };
       (data.testColumns || []).forEach((col) => { row[col] = t[col] ?? ''; });
