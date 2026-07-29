@@ -112,6 +112,31 @@ export default function PastYearDataTab({ isAdmin = false }) {
         }
         if (clean.year) { clean.Year = clean.year; delete clean.year; }
         if (clean.YEAR) { clean.Year = clean.YEAR; delete clean.YEAR; }
+
+        // Normalize Sponsor variants
+        const sponsorVal = clean.Sponsor || clean.SPONSOR || clean.sponsor || clean.SPONSER || clean.Sponser || clean.sponser;
+        if (sponsorVal) {
+          clean.Sponsor = sponsorVal;
+          delete clean.SPONSOR; delete clean.sponsor; delete clean.SPONSER; delete clean.Sponser; delete clean.sponser;
+        }
+
+        // Normalize Centre Code variants
+        const centreVal = clean['Centre Code'] || clean['CENTRE CODE'] || clean['centre code'] || clean.Centre || clean.CENTRE || clean.centre;
+        if (centreVal) {
+          clean['Centre Code'] = centreVal;
+          delete clean['CENTRE CODE']; delete clean['centre code']; delete clean.Centre; delete clean.CENTRE; delete clean.centre;
+        }
+
+        // Normalize other key variants if needed (Gender, Category, STATE)
+        const genderVal = clean.Gender || clean.GENDER || clean.gender;
+        if (genderVal) { clean.Gender = genderVal; delete clean.GENDER; delete clean.gender; }
+
+        const catVal = clean.Category || clean.CATEGORY || clean.category;
+        if (catVal) { clean.Category = catVal; delete clean.CATEGORY; delete clean.category; }
+
+        const stateVal = clean.STATE || clean.State || clean.state;
+        if (stateVal) { clean.STATE = stateVal; delete clean.State; delete clean.state; }
+
         return clean;
       });
 
