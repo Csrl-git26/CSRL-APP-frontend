@@ -127,7 +127,7 @@ function mapExcelStudentToProfile(row) {
     'Registration no.':        normalizeCellValue(getRowField(row, ['Registration No. (SSRP, CBT, CLT)', 'Registration no.', 'registration_no'])),
     centerCode:                centre,
     stream:                    stream === 'NEET' ? 'NEET' : 'JEE',
-    SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor'])),
+    SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor', 'SPONSER', 'Sponser', 'sponser'])),
     'PROJECT NAME':            normalizeCellValue(getRowField(row, ['PROJECT NAME', 'project_name'])),
     'CENTRE CODE':             normalizeCellValue(getRowField(row, ['CENTRE CODE', 'centre_code'])),
     'Roll Number':             roll,
