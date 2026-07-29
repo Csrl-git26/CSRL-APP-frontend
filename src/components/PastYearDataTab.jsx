@@ -326,15 +326,57 @@ export default function PastYearDataTab({ isAdmin = false }) {
           <Loader2 size={20} className="spin" /> Loading past year data…
         </div>
       ) : displayed.length === 0 ? (
-        <div style={{
-          textAlign: 'center', padding: '50px 20px', color: 'var(--gray-400)',
-          background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--border)',
-        }}>
-          <Calendar size={36} style={{ marginBottom: 10, opacity: 0.4 }} />
-          <div style={{ fontWeight: 600, marginBottom: 4 }}>No past year data found</div>
-          <div style={{ fontSize: 13 }}>
-            {isAdmin ? 'Upload an Excel sheet to add past year student data.' : 'No data available for the selected filters.'}
-          </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+          {isAdmin && (
+            <div style={{
+              background: 'var(--surface)', padding: 24, borderRadius: 12, border: '1px solid var(--primary)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+            }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 16px 0', color: 'var(--primary)', fontSize: 16 }}>
+                <Upload size={18} /> Upload Past Year Data
+              </h3>
+              <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 16 }}>
+                Expected format for past year student records. Do NOT use the current year student template.
+              </p>
+              <div style={{
+                background: 'var(--bg)', padding: 12, borderRadius: 8, fontSize: 11,
+                color: 'var(--gray-500)', fontFamily: 'monospace', lineHeight: 1.6,
+                maxHeight: 150, overflowY: 'auto', marginBottom: 20, whiteSpace: 'pre-wrap', border: '1px dashed var(--border)'
+              }}>
+                {PAST_YEAR_COLUMNS.join(' • ')}
+              </div>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => {
+                    const ws = XLSX.utils.aoa_to_sheet([PAST_YEAR_COLUMNS]);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'PastYearFormat');
+                    XLSX.writeFile(wb, 'Past_Year_Data_Template.xlsx');
+                  }}
+                  className="btn btn-outline"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, flex: 1, justifyContent: 'center' }}
+                >
+                  <Download size={14} /> Download Template
+                </button>
+                <label className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', flex: 1, justifyContent: 'center' }}>
+                  {uploading ? <Loader2 size={14} className="spin" /> : <Upload size={14} />}
+                  {uploading ? 'Uploading…' : 'Upload Excel'}
+                  <input type="file" accept=".xlsx,.xls,.csv" onChange={handleUpload} hidden disabled={uploading} />
+                </label>
+              </div>
+            </div>
+          )}
+          {!isAdmin && (
+            <div style={{
+              textAlign: 'center', padding: '50px 20px', color: 'var(--gray-400)',
+              background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--border)',
+              gridColumn: '1 / -1'
+            }}>
+              <Calendar size={36} style={{ marginBottom: 10, opacity: 0.4 }} />
+              <div style={{ fontWeight: 600, marginBottom: 4 }}>No past year data found</div>
+              <div style={{ fontSize: 13 }}>No data available for the selected filters.</div>
+            </div>
+          )}
         </div>
       ) : (
         <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid var(--border)' }}>
