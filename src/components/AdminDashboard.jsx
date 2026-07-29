@@ -289,6 +289,7 @@ function buildMarksRows(profiles, tests, testColumns) {
         roll:     profile.ROLL_KEY,
         name:     profile["STUDENT'S NAME"] || '',
         centre:   profile.centerCode || '',
+        sponsor:  profile.SPONSOR || '',
         stream,
         test:     testName,
         subjects,
@@ -1092,7 +1093,7 @@ export default function AdminDashboard() {
                   </div>
                 </td>
                 <td><span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0' }}>{displayCenter(s.centerCode)}</span></td>
-                <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a' }}>{displaySponsor(s.centerCode)}</span></td>
+                <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a' }}>{s.SPONSOR || displaySponsor(s.centerCode)}</span></td>
                 <td>
                   <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 3, background: s.stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: s.stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 700 }}>
                     {s.stream || 'JEE'}
@@ -1174,7 +1175,7 @@ export default function AdminDashboard() {
                   <td><strong style={{ color: '#1a4fa0' }}>{m.roll}</strong></td>
                   <td style={{ fontWeight: 500, fontSize: 13 }}>{m.name || '—'}</td>
                   <td><span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 11 }}>{displayCenter(m.centre)}</span></td>
-                  <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 11 }}>{displaySponsor(m.centre)}</span></td>
+                  <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 11 }}>{m.sponsor || displaySponsor(m.centre)}</span></td>
                   <td>
                     <span style={{ fontSize: 11, padding: '2px 5px', borderRadius: 3, background: m.stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: m.stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 700 }}>
                       {m.stream}
@@ -1243,7 +1244,7 @@ export default function AdminDashboard() {
                   <span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 10 }}>{displayCenter(m.center)}</span>
                 </td>
                 <td>
-                  <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 10 }}>{displaySponsor(m.center)}</span>
+                  <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 10 }}>{profile?.SPONSOR || displaySponsor(m.center)}</span>
                 </td>
                 <td>
                   <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
@@ -1308,7 +1309,7 @@ export default function AdminDashboard() {
                 <span className="badge" style={{ background: '#e8f0fc', color: '#1a4fa0', fontSize: 10 }}>{displayCenter(m.center)}</span>
               </td>
               <td>
-                <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 10 }}>{displaySponsor(m.center)}</span>
+                <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 10 }}>{profile?.SPONSOR || displaySponsor(m.center)}</span>
               </td>
               <td>
                 <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
