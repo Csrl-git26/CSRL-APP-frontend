@@ -212,6 +212,10 @@ export async function fetchCenterDataApi(_token, _centreCode) {
   return apiFetch(`/api/data/center?centerCode=${_centreCode || ''}`);
 }
 
+export async function fetchCentersApi() {
+  return apiFetch('/api/data/centers');
+}
+
 /**
  * Student: fetch own profile + tests (JWT encodes rollKey).
  * The _token / _rollKey args are accepted for backward compat but ignored.

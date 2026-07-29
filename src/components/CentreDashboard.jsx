@@ -9,6 +9,7 @@ import {
   fetchTestInsights,
   parseTestColumn,
   resolveStudentPhotoUrl,
+  fetchCentersApi,
 } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
@@ -33,7 +34,12 @@ function getInitials(name = '') {
 export default function CentreDashboard() {
   const { activePage, setActivePage } = useOutletContext();
   const { user: auth } = useAuth();
-  const [selectedCenterCode, setSelectedCenterCode] = useState(() => auth.centerCode || Object.keys(CENTERS)[0] || '');
+  const [centersList, setCentersList] = useState([
+    { code: 'GAIL', name: 'KNP', sponsor: 'GAIL' },
+    { code: 'OIL_INDIA', name: 'JDH', sponsor: 'OIL_INDIA' }
+  ]);
+
+  const [selectedCenterCode, setSelectedCenterCode] = useState(() => auth.centerCode || 'GAIL');
 
   const [data,             setData]             = useState(null);
   const [overview,         setOverview]         = useState(null);
@@ -56,7 +62,29 @@ export default function CentreDashboard() {
   const [testInsightsError, setTestInsightsError]   = useState('');
   const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
 
-  const centreTitle = CENTERS[selectedCenterCode]?.name || auth.name || selectedCenterCode;
+  useEffect(() => {
+    let active = true;
+    fetchCentersApi()
+      .then((list) => {
+        if (active && Array.isArray(list) && list.length > 0) {
+          setCentersList(list);
+          const codes = list.map(c => c.code);
+          const initialCode = auth.centerCode || list[0].code;
+          if (codes.includes(initialCode)) {
+            setSelectedCenterCode(initialCode);
+          } else {
+            setSelectedCenterCode(list[0].code);
+          }
+        }
+      })
+      .catch((err) => console.error('Failed to fetch centers:', err));
+    return () => { active = false; };
+  }, [auth.centerCode]);
+
+  const activeCenter = centersList.find((c) => c.code === selectedCenterCode);
+  const centreTitle = activeCenter
+    ? (activeCenter.sponsor ? `${activeCenter.sponsor} — ${activeCenter.name}` : activeCenter.name)
+    : (auth.name || selectedCenterCode);
 
   // ── Initial load ─────────────────────────────────────────────────────────────
 
@@ -637,9 +665,14 @@ export default function CentreDashboard() {
             onChange={(e) => setSelectedCenterCode(e.target.value)}
             style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 220 }}
           >
-            {Object.keys(CENTERS).map((c) => (
-              <option key={c} value={c} style={{ color: '#000' }}>{c} — {CENTERS[c]?.name || c}</option>
-            ))}
+            {centersList.map((c) => {
+              const label = c.sponsor ? `${c.sponsor} — ${c.name}` : c.name;
+              return (
+                <option key={c.code} value={c.code} style={{ color: '#000' }}>
+                  {label}
+                </option>
+              );
+            })}
           </select>
           <select
             className="input select"
