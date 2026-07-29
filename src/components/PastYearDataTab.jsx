@@ -59,6 +59,7 @@ export default function PastYearDataTab({ isAdmin = false }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
   // Load filter options on mount
@@ -164,19 +165,31 @@ export default function PastYearDataTab({ isAdmin = false }) {
         return clean;
       });
 
-      const res = await uploadPastYearData(rows);
-      if (res?.success) {
-        toast.success(`Uploaded ${res.inserted} past year records`);
-        loadFilters();
-        loadData();
-      } else {
-        toast.error(res?.message || 'Upload failed');
+      const CHUNK_SIZE = 500;
+      let totalInserted = 0;
+
+      for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+        const chunk = rows.slice(i, i + CHUNK_SIZE);
+        const res = await uploadPastYearData(chunk);
+        
+        if (res?.success) {
+          totalInserted += res.inserted;
+          const percent = Math.round(((i + chunk.length) / rows.length) * 100);
+          setUploadProgress(Math.min(percent, 100));
+        } else {
+          throw new Error(res?.message || 'Chunk upload failed');
+        }
       }
+
+      toast.success(`Successfully uploaded ${totalInserted} past year records`);
+      loadFilters();
+      loadData();
     } catch (err) {
       console.error('Past year upload error:', err);
-      toast.error('Failed to parse or upload the file');
+      toast.error(err.message || 'Failed to parse or upload the file');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
       e.target.value = '';
     }
   };
@@ -255,7 +268,7 @@ export default function PastYearDataTab({ isAdmin = false }) {
                 borderRadius: 8, fontSize: 13, fontWeight: 600,
               }}>
                 {uploading ? <Loader2 size={14} className="spin" /> : <Upload size={14} />}
-                {uploading ? 'Uploading…' : 'Upload Past Data'}
+                {uploading ? `Uploading ${uploadProgress}%` : 'Upload Past Data'}
                 <input type="file" accept=".xlsx,.xls,.csv" onChange={handleUpload} hidden disabled={uploading} />
               </label>
               <button
@@ -384,7 +397,7 @@ export default function PastYearDataTab({ isAdmin = false }) {
                 </button>
                 <label className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', flex: 1, justifyContent: 'center' }}>
                   {uploading ? <Loader2 size={14} className="spin" /> : <Upload size={14} />}
-                  {uploading ? 'Uploading…' : 'Upload Excel'}
+                  {uploading ? `Uploading ${uploadProgress}%` : 'Upload Excel'}
                   <input type="file" accept=".xlsx,.xls,.csv" onChange={handleUpload} hidden disabled={uploading} />
                 </label>
               </div>
