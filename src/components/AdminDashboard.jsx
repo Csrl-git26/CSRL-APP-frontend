@@ -32,6 +32,7 @@ import CentreLeaderboard from './CentreLeaderboard';
 import TestInsightsPanel from './TestInsightsPanel';
 import AdminWeakTopics from './AdminWeakTopics';
 import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
+import PastYearDataTab from './PastYearDataTab';
 import { mapProfileToExcelRow } from './exportUtils';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -72,6 +73,7 @@ const TABS = [
   { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'marks',       Icon: FileText,        label: 'Test Marks'         },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
+  { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -1556,6 +1558,7 @@ export default function AdminDashboard() {
           {activePage === 'import'      && <ImportExportSection />}
           {activePage === 'ranking'     && <RankingsSection />}
           {activePage === 'weaktopics'  && <AdminWeakTopics centersList={centersList} selectedTestKey={selectedTestKey} />}
+          {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'insights' && (
             <TestInsightsPanel
               insights={testInsights}

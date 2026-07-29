@@ -396,3 +396,31 @@ export function computeWeakSubject(studentTests, testColumns) {
     .map(([sub, total]) => ({ sub, avg: total / (counts[sub] || 1) }))
     .sort((a, b) => a.avg - b.avg)[0].sub;
 }
+
+// ── Past Year Data Management (completely separate) ───────────────────────────
+
+export async function uploadPastYearData(rows) {
+  return apiFetch('/api/past-year-data/upload', { method: 'POST', body: { rows } });
+}
+
+export async function fetchPastYearData(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.year) params.set('year', filters.year);
+  if (filters.sponsor) params.set('sponsor', filters.sponsor);
+  if (filters.centre) params.set('centre', filters.centre);
+  if (filters.state) params.set('state', filters.state);
+  if (filters.category) params.set('category', filters.category);
+  if (filters.gender) params.set('gender', filters.gender);
+  return apiFetch(`/api/past-year-data?${params.toString()}`);
+}
+
+export async function fetchPastYearFilters() {
+  return apiFetch('/api/past-year-data/filters');
+}
+
+export async function deletePastYearData(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.year) params.set('year', filters.year);
+  if (filters.sponsor) params.set('sponsor', filters.sponsor);
+  return apiFetch(`/api/past-year-data?${params.toString()}`, { method: 'DELETE' });
+}

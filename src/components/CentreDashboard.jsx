@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Search, Eye, Brain } from 'lucide-react';
+import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Search, Eye, Brain, Package } from 'lucide-react';
 import {
   fetchCenterDataApi,
   fetchOverview,
@@ -18,6 +18,7 @@ import TestInsightsPanel from './TestInsightsPanel';
 import CenterWeakTopics from './CenterWeakTopics';
 import CenterOverallWeakTopics from './CenterOverallWeakTopics';
 import { getCenterWeakTopics } from '../services/weakTopicApi';
+import PastYearDataTab from './PastYearDataTab';
 
 const TABS = [
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
@@ -25,6 +26,7 @@ const TABS = [
   { key: 'insights',   Icon: BarChart3,       label: 'Test analysis' },
   { key: 'weaktopics', Icon: Brain,           label: 'Weak Topics' },
   { key: 'students',   Icon: Users,           label: 'Students'  },
+  { key: 'pastyear',   Icon: Package,         label: 'Past Year Data' },
 ];
 
 function getInitials(name = '') {
@@ -35,8 +37,8 @@ export default function CentreDashboard() {
   const { activePage, setActivePage } = useOutletContext();
   const { user: auth } = useAuth();
   const [centersList, setCentersList] = useState([
-    { code: 'GAIL', name: 'KNP', sponsor: 'GAIL' },
-    { code: 'OIL_INDIA', name: 'JDH', sponsor: 'OIL_INDIA' }
+    { code: 'GAIL', name: 'GAIL-KNP', sponsor: 'GAIL' },
+    { code: 'OIL_INDIA', name: 'OIL_INDIA-JDH', sponsor: 'OIL_INDIA' }
   ]);
 
   const [selectedCenterCode, setSelectedCenterCode] = useState(() => auth.centerCode || 'GAIL');
@@ -82,9 +84,7 @@ export default function CentreDashboard() {
   }, [auth.centerCode]);
 
   const activeCenter = centersList.find((c) => c.code === selectedCenterCode);
-  const centreTitle = activeCenter
-    ? (activeCenter.sponsor ? `${activeCenter.sponsor} — ${activeCenter.name}` : activeCenter.name)
-    : (auth.name || selectedCenterCode);
+  const centreTitle = activeCenter?.name || (auth.name || selectedCenterCode);
 
   // ── Initial load ─────────────────────────────────────────────────────────────
 
@@ -666,7 +666,7 @@ export default function CentreDashboard() {
             style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 220 }}
           >
             {centersList.map((c) => {
-              const label = c.sponsor ? `${c.sponsor} — ${c.name}` : c.name;
+              const label = c.name;
               return (
                 <option key={c.code} value={c.code} style={{ color: '#000' }}>
                   {label}
@@ -716,6 +716,7 @@ export default function CentreDashboard() {
           {activePage === 'topbottom'  && <RankingsPair />}
           {activePage === 'students'   && <StudentsSection />}
           {activePage === 'weaktopics' && <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} />}
+          {activePage === 'pastyear'   && <PastYearDataTab isAdmin={false} />}
         </div>
       </div>
     </div>
