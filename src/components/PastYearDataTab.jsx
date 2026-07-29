@@ -11,16 +11,40 @@ import { useToast } from '../context/ToastContext';
 
 // ── Past Year Data columns (from user's Excel format) ─────────────────────────
 const PAST_YEAR_COLUMNS = [
-  'Sponsor', 'Centre Code', 'Roll Number', 'Student Name', 'Gender',
-  'Mobile No.', 'DATE OF BIRTH', 'Mode of Selection', "FATHER'S NAME",
-  'PARMANENT ADDRESS', 'STATE', 'Category', '12TH STATE', 'ANNUAL INCOME',
+  'YEAR',
+  'Sponsor',
+  'Centre Code',
+  'Roll Number',
+  'Student Name',
+  'Gender',
+  'Mobile No.',
+  'DATE OF BIRTH',
+  'Mode of Selection',
+  "FATHER'S NAME",
+  'PARMANENT ADDRESS',
+  'STATE',
+  'Category',
+  '12TH STATE',
+  'ANNUAL INCOME',
   'JEE MAINS (BEST OF TWO) Percentile Phy',
   'JEE MAINS (BEST OF TWO) Percentile Chem',
   'JEE MAINS (BEST OF TWO) Percentile Math',
   'JEE MAINS (BEST OF TWO) Percentile Total',
-  'JEE MAINS (BEST OF TWO) BEST OF TWO Percentile',
-  'JEE ADVANCED Marks',
-  'JEE ADVANCED RESULT',
+  'JEE MAINS (BEST OF TWO) QUALIFICATION',
+  'JEE MAINS AIR',
+  'JEE MAINS CAT. RANK',
+  'JEE ADVANCED PHYSICS TOTAL',
+  'JEE ADVANCED CHEMISTRY TOTAL',
+  'JEE ADVANCED Mathematics TOTAL',
+  'JEE ADVANCED TOTAL',
+  'JEE ADVANCED Qualification',
+  'JEE ADVANCED India Rank',
+  'JEE ADVANCED Category Rank',
+  'ADMISSION COLLEGE GROUP',
+  'ADMISSION COLLEGE TYPE',
+  'ADMISSION COLLEGE NAME',
+  'ADMISSION BRANCH NAME',
+  'ADMISSION REMARKS',
 ];
 
 export default function PastYearDataTab({ isAdmin = false }) {
@@ -384,56 +408,28 @@ export default function PastYearDataTab({ isAdmin = false }) {
             <thead>
               <tr>
                 <th style={{ position: 'sticky', left: 0, background: 'var(--surface)', zIndex: 2 }}>#</th>
-                <th>Year</th>
-                <th>Sponsor</th>
-                <th>Centre</th>
-                <th>Roll No.</th>
-                <th>Name</th>
-                <th>Gender</th>
-                <th>Category</th>
-                <th>Mobile</th>
-                <th>DOB</th>
-                <th>Mode</th>
-                <th>Father</th>
-                <th>State</th>
-                <th>Address</th>
-                <th>Income</th>
-                <th>12th State</th>
-                <th>JEE Phy</th>
-                <th>JEE Chem</th>
-                <th>JEE Math</th>
-                <th>JEE Total</th>
-                <th>JEE Best</th>
-                <th>JEE Adv Marks</th>
-                <th>JEE Adv Result</th>
+                {PAST_YEAR_COLUMNS.map(col => <th key={col} style={{ whiteSpace: 'nowrap' }}>{col}</th>)}
               </tr>
             </thead>
             <tbody>
               {displayed.map((row, i) => (
                 <tr key={row._id || i}>
                   <td style={{ position: 'sticky', left: 0, background: 'var(--bg)', zIndex: 1, fontWeight: 600, color: 'var(--gray-400)' }}>{i + 1}</td>
-                  <td><span className="badge" style={{ background: '#ede9fe', color: '#5b21b6', fontSize: 11 }}>{row.Year || '—'}</span></td>
-                  <td><span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 11 }}>{row.Sponsor || '—'}</span></td>
-                  <td><span className="badge" style={{ background: '#e0f2fe', color: '#0369a1', fontSize: 11 }}>{row['Centre Code'] || '—'}</span></td>
-                  <td style={{ fontWeight: 600 }}>{row['Roll Number'] || '—'}</td>
-                  <td style={{ fontWeight: 600, maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row['Student Name'] || '—'}</td>
-                  <td>{row.Gender || '—'}</td>
-                  <td>{row.Category || '—'}</td>
-                  <td>{row['Mobile No.'] || '—'}</td>
-                  <td>{row['DATE OF BIRTH'] || '—'}</td>
-                  <td>{row['Mode of Selection'] || '—'}</td>
-                  <td style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row["FATHER'S NAME"] || '—'}</td>
-                  <td>{row.STATE || '—'}</td>
-                  <td style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row['PARMANENT ADDRESS'] || '—'}</td>
-                  <td>{row['ANNUAL INCOME'] || '—'}</td>
-                  <td>{row['12TH STATE'] || '—'}</td>
-                  <td>{row['JEE MAINS (BEST OF TWO) Percentile Phy'] || '—'}</td>
-                  <td>{row['JEE MAINS (BEST OF TWO) Percentile Chem'] || '—'}</td>
-                  <td>{row['JEE MAINS (BEST OF TWO) Percentile Math'] || '—'}</td>
-                  <td>{row['JEE MAINS (BEST OF TWO) Percentile Total'] || '—'}</td>
-                  <td>{row['JEE MAINS (BEST OF TWO) BEST OF TWO Percentile'] || '—'}</td>
-                  <td>{row['JEE ADVANCED Marks'] || '—'}</td>
-                  <td>{row['JEE ADVANCED RESULT'] || '—'}</td>
+                  {PAST_YEAR_COLUMNS.map((col) => {
+                    let val = row[col];
+                    if (col === 'YEAR') val = row.YEAR || row.Year || row.year;
+                    if (col === 'Sponsor') val = row.Sponsor || row.SPONSOR;
+                    if (col === 'Centre Code') val = row['Centre Code'] || row['CENTRE CODE'];
+                    
+                    return (
+                      <td key={col} style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {col === 'Sponsor' ? <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 11 }}>{val || '—'}</span> :
+                         col === 'YEAR' ? <span className="badge" style={{ background: '#ede9fe', color: '#5b21b6', fontSize: 11 }}>{val || '—'}</span> :
+                         col === 'Centre Code' ? <span className="badge" style={{ background: '#e0f2fe', color: '#0369a1', fontSize: 11 }}>{val || '—'}</span> :
+                         (val || '—')}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
