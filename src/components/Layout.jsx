@@ -14,6 +14,7 @@ import {
   BarChart3,
   LogOut,
   Brain,
+  Archive,
 } from 'lucide-react';
 
 const ADMIN_NAV = [
@@ -26,6 +27,7 @@ const ADMIN_NAV = [
   { section: 'Data Management' },
   { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'marks',       Icon: FileText,        label: 'Test Marks'         },
+  { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
   { section: 'Import' },
   { key: 'import',      Icon: Upload,          label: 'Import Excel'       },
 ];
@@ -36,6 +38,7 @@ const CENTRE_NAV = [
   { key: 'insights',   Icon: BarChart3,       label: 'Test analysis' },
   { key: 'weaktopics', Icon: Brain,           label: 'Weak Topics' },
   { key: 'students',   Icon: Users,           label: 'Students'  },
+  { key: 'pastyear',   Icon: Archive,         label: 'Past Year Data' },
 ];
 
 const STUDENT_NAV = [
