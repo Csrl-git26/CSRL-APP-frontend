@@ -418,14 +418,14 @@ export default function PastYearDataTab({ isAdmin = false }) {
           <table className="marks-table" style={{ fontSize: 12, minWidth: 1200 }}>
             <thead>
               <tr>
-                <th style={{ position: 'sticky', left: 0, background: 'var(--surface)', zIndex: 2 }}>#</th>
-                {PAST_YEAR_COLUMNS.map(col => <th key={col} style={{ whiteSpace: 'nowrap' }}>{col}</th>)}
+                <th style={{ position: 'sticky', left: 0, background: 'var(--surface)', zIndex: 2, padding: '12px 16px' }}>#</th>
+                {PAST_YEAR_COLUMNS.map(col => <th key={col} style={{ whiteSpace: 'nowrap', minWidth: 200, padding: '12px 16px' }}>{col}</th>)}
               </tr>
             </thead>
             <tbody>
               {displayed.map((row, i) => (
                 <tr key={row._id || i}>
-                  <td style={{ position: 'sticky', left: 0, background: 'var(--bg)', zIndex: 1, fontWeight: 600, color: 'var(--gray-400)' }}>{i + 1}</td>
+                  <td style={{ position: 'sticky', left: 0, background: 'var(--bg)', zIndex: 1, fontWeight: 600, color: 'var(--gray-400)', padding: '12px 16px' }}>{i + 1}</td>
                   {PAST_YEAR_COLUMNS.map((col) => {
                     let val = row[col];
                     if (col === 'YEAR') val = row.YEAR || row.Year || row.year;
@@ -433,7 +433,7 @@ export default function PastYearDataTab({ isAdmin = false }) {
                     if (col === 'Centre Code') val = row['Centre Code'] || row['CENTRE CODE'];
                     
                     return (
-                      <td key={col} style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <td key={col} style={{ minWidth: 200, maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', padding: '12px 16px' }}>
                         {col === 'Sponsor' ? <span className="badge" style={{ background: '#fce8e8', color: '#a01a1a', fontSize: 11 }}>{val || '—'}</span> :
                          col === 'YEAR' ? <span className="badge" style={{ background: '#ede9fe', color: '#5b21b6', fontSize: 11 }}>{val || '—'}</span> :
                          col === 'Centre Code' ? <span className="badge" style={{ background: '#e0f2fe', color: '#0369a1', fontSize: 11 }}>{val || '—'}</span> :
