@@ -51,10 +51,10 @@ export default function PastYearDataTab({ isAdmin = false }) {
   const toast = useToast();
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
-    years: [], sponsors: [], centres: [], states: [], categories: [], genders: [],
+    years: [], sponsors: [], centres: [], states: [], categories: [], genders: [], remarks: [],
   });
   const [activeFilters, setActiveFilters] = useState({
-    year: '', sponsor: '', centre: '', state: '', category: '', gender: '',
+    year: '', sponsor: '', centre: '', state: '', category: '', gender: '', remark: '',
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
@@ -301,51 +301,49 @@ export default function PastYearDataTab({ isAdmin = false }) {
 
       {/* Filters */}
       <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16,
-        padding: '12px 16px', background: 'var(--surface)', borderRadius: 12,
+        display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16,
+        padding: '10px 14px', background: 'var(--surface)', borderRadius: 12,
         border: '1px solid var(--border)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--gray-500)', fontSize: 13, fontWeight: 600 }}>
           <Filter size={14} /> Filters:
         </div>
-
         <select className="input select" value={activeFilters.year} onChange={(e) => updateFilter('year', e.target.value)}
-          style={{ flex: '1 1 100px', fontSize: 13 }}>
+          style={{ flex: '1 1 90px', fontSize: 13 }}>
           <option value="">All Years</option>
           {filters.years.map((y) => <option key={y} value={y}>{y}</option>)}
         </select>
-
         <select className="input select" value={activeFilters.sponsor} onChange={(e) => updateFilter('sponsor', e.target.value)}
-          style={{ flex: '1 1 120px', fontSize: 13 }}>
+          style={{ flex: '1 1 110px', fontSize: 13 }}>
           <option value="">All Sponsors</option>
           {filters.sponsors.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-
         <select className="input select" value={activeFilters.centre} onChange={(e) => updateFilter('centre', e.target.value)}
-          style={{ flex: '1 1 100px', fontSize: 13 }}>
+          style={{ flex: '1 1 90px', fontSize: 13 }}>
           <option value="">All Centres</option>
           {filters.centres.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-
         <select className="input select" value={activeFilters.state} onChange={(e) => updateFilter('state', e.target.value)}
-          style={{ flex: '1 1 100px', fontSize: 13 }}>
+          style={{ flex: '1 1 90px', fontSize: 13 }}>
           <option value="">All States</option>
           {filters.states.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-
         <select className="input select" value={activeFilters.category} onChange={(e) => updateFilter('category', e.target.value)}
-          style={{ flex: '1 1 100px', fontSize: 13 }}>
+          style={{ flex: '1 1 90px', fontSize: 13 }}>
           <option value="">All Categories</option>
           {filters.categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-
         <select className="input select" value={activeFilters.gender} onChange={(e) => updateFilter('gender', e.target.value)}
-          style={{ flex: '1 1 100px', fontSize: 13 }}>
+          style={{ flex: '1 1 90px', fontSize: 13 }}>
           <option value="">All Genders</option>
           {filters.genders.map((g) => <option key={g} value={g}>{g}</option>)}
         </select>
-
-        <div style={{ position: 'relative', flex: '1 1 180px' }}>
+        <select className="input select" value={activeFilters.remark} onChange={(e) => updateFilter('remark', e.target.value)}
+          style={{ flex: '1 1 110px', fontSize: 13 }}>
+          <option value="">All Remarks</option>
+          {filters.remarks.map((r) => <option key={r} value={r}>{r}</option>)}
+        </select>
+        <div style={{ position: 'relative', flex: '1 1 160px' }}>
           <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
           <input
             className="input"

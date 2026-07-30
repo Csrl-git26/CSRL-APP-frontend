@@ -411,6 +411,7 @@ export async function fetchPastYearData(filters = {}) {
   if (filters.state) params.set('state', filters.state);
   if (filters.category) params.set('category', filters.category);
   if (filters.gender) params.set('gender', filters.gender);
+  if (filters.remark) params.set('remark', filters.remark);
   return apiFetch(`/api/past-year-data?${params.toString()}`);
 }
 
