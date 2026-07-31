@@ -279,6 +279,13 @@ export async function upsertTestScoresApi(_token, rollKey, scores, centerCode) {
   });
 }
 
+export async function bulkUpsertTestScoresApi(_token, marks) {
+  return apiFetch('/api/tests/bulk-upsert', {
+    method: 'POST',
+    body: { marks },
+  });
+}
+
 export function deleteTestApi(dummy, testKey) {
   return apiFetch(`/api/admin/tests/${encodeURIComponent(testKey)}`, { method: 'DELETE' });
 }

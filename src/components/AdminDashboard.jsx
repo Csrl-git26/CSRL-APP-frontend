@@ -20,6 +20,7 @@ import {
   deleteStudentApi,
   bulkDeleteStudentsApi,
   upsertTestScoresApi,
+  bulkUpsertTestScoresApi,
   parseTestColumn,
   getJeePercentile,
   getStreamConfig,
@@ -799,24 +800,23 @@ export default function AdminDashboard() {
         triggerRefresh();
         showToast(`Students imported: ${result.inserted || 0} new, ${result.updated || 0} updated (${result.total || allStudents.length} total).`, 'success');
       } else {
-        // Marks: still chunked (different endpoint structure)
-        let newCount = 0, updateCount = 0;
-        const chunkSize = 25;
-        for (let i = 0; i < valid.length; i += chunkSize) {
-          const chunk = valid.slice(i, i + chunkSize);
-          await Promise.all(chunk.map(async (row) => {
-            const rowRoll = normalizeRollKey(row.payload.roll);
-            const existing = data.tests.find((t) => normalizeRollKey(t.ROLL_KEY) === rowRoll);
-            const profile = data.profiles.find((p) => normalizeRollKey(p.ROLL_KEY) === rowRoll);
-            const fallbackCenter = normalizeCenterCode(row.payload.centre);
-            const centerCodeToUse = profile?.centerCode || fallbackCenter;
-            await upsertTestScoresApi(null, rowRoll, row.payload.updateObj, centerCodeToUse);
-            if (!existing) newCount++;
-            else updateCount++;
-          }));
-        }
+        // ── FAST BULK UPLOAD: send all test marks in ONE request ──
+        const allMarks = valid.map((row) => {
+          const rowRoll = normalizeRollKey(row.payload.roll);
+          const profile = data.profiles.find((p) => normalizeRollKey(p.ROLL_KEY) === rowRoll);
+          const fallbackCenter = normalizeCenterCode(row.payload.centre);
+          const centerCodeToUse = profile?.centerCode || fallbackCenter;
+
+          return {
+            rollKey: rowRoll,
+            centerCode: centerCodeToUse,
+            scores: row.payload.updateObj
+          };
+        });
+
+        const result = await bulkUpsertTestScoresApi(null, allMarks);
         triggerRefresh();
-        showToast(`Marks imported: ${newCount} new, ${updateCount} updated.`, 'success');
+        showToast(`Marks imported: ${result.upsertedCount || 0} new, ${result.modifiedCount || 0} updated (${result.matchedCount + result.upsertedCount} total).`, 'success');
       }
       closeImportModal();
     } catch (e) {
