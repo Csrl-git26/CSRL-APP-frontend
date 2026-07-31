@@ -15,6 +15,7 @@ import {
   fetchCentreLeaderboard,
   fetchTestInsights,
   addStudentApi,
+  bulkUpsertStudentsApi,
   updateStudentApi,
   deleteStudentApi,
   upsertTestScoresApi,
@@ -796,41 +797,32 @@ export default function AdminDashboard() {
     if (!valid.length) { showToast('No valid rows to import.', 'warning'); return; }
     setUploadLoading(true);
     try {
-      let newCount = 0, updateCount = 0;
-      const chunkSize = 25; // Process 25 rows concurrently for speed
-      
-      for (let i = 0; i < valid.length; i += chunkSize) {
-        const chunk = valid.slice(i, i + chunkSize);
-        
-        if (importMode === 'students') {
-          await Promise.all(chunk.map(async (row) => {
-            const rowRoll = normalizeRollKey(row.payload.ROLL_KEY);
-            const rowCenter = normalizeCenterCode(row.payload.centerCode);
-            const exists = data.profiles.find(
-              (p) => normalizeRollKey(p.ROLL_KEY) === rowRoll && normalizeCenterCode(p.centerCode) === rowCenter
-            );
-            if (exists) { await updateStudentApi(null, row.payload.ROLL_KEY, row.payload); updateCount++; }
-            else        { await addStudentApi(null, row.payload); newCount++; }
-          }));
-        } else {
+      if (importMode === 'students') {
+        // ── FAST BULK UPLOAD: send all students in ONE request ──
+        const allStudents = valid.map((row) => row.payload);
+        const result = await bulkUpsertStudentsApi(null, allStudents);
+        triggerRefresh();
+        showToast(`Students imported: ${result.inserted || 0} new, ${result.updated || 0} updated (${result.total || allStudents.length} total).`, 'success');
+      } else {
+        // Marks: still chunked (different endpoint structure)
+        let newCount = 0, updateCount = 0;
+        const chunkSize = 25;
+        for (let i = 0; i < valid.length; i += chunkSize) {
+          const chunk = valid.slice(i, i + chunkSize);
           await Promise.all(chunk.map(async (row) => {
             const rowRoll = normalizeRollKey(row.payload.roll);
             const existing = data.tests.find((t) => normalizeRollKey(t.ROLL_KEY) === rowRoll);
             const profile = data.profiles.find((p) => normalizeRollKey(p.ROLL_KEY) === rowRoll);
-            
             const fallbackCenter = normalizeCenterCode(row.payload.centre);
             const centerCodeToUse = profile?.centerCode || fallbackCenter;
-            
             await upsertTestScoresApi(null, rowRoll, row.payload.updateObj, centerCodeToUse);
-            
             if (!existing) newCount++;
             else updateCount++;
           }));
         }
+        triggerRefresh();
+        showToast(`Marks imported: ${newCount} new, ${updateCount} updated.`, 'success');
       }
-      
-      triggerRefresh();
-      showToast(`${importMode === 'students' ? 'Students' : 'Marks'} imported: ${newCount} new, ${updateCount} updated.`, 'success');
       closeImportModal();
     } catch (e) {
       showToast('Import failed: ' + e.message, 'error');

@@ -232,6 +232,17 @@ export async function addStudentApi(_token, studentData) {
   return apiFetch('/api/students', { method: 'POST', body: studentData });
 }
 
+/**
+ * Bulk upsert students — sends ALL students in a single HTTP request.
+ * Much faster than individual addStudentApi calls (741 requests → 1 request).
+ */
+export async function bulkUpsertStudentsApi(_token, studentsArray) {
+  return apiFetch('/api/students/bulk-upsert', {
+    method: 'POST',
+    body: { students: studentsArray },
+  });
+}
+
 export async function updateStudentApi(_token, rollKey, studentData) {
   const qs = studentData.centerCode
     ? `?centerCode=${encodeURIComponent(studentData.centerCode)}`
