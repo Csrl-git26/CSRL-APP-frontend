@@ -258,6 +258,13 @@ export async function deleteStudentApi(_token, rollKey, centerCode) {
   return apiFetch(`/api/students/${encodeURIComponent(rollKey)}${qs}`, { method: 'DELETE' });
 }
 
+export async function bulkDeleteStudentsApi(_token, rollKeys) {
+  return apiFetch('/api/students/bulk-delete', {
+    method: 'POST',
+    body: { rollKeys }
+  });
+}
+
 /**
  * Upsert test scores for a student.
  * scores — flat object: { "CAT-1(TEST)_Physics": 45, "CAT-1(TEST)": 145, … }

@@ -18,6 +18,7 @@ import {
   bulkUpsertStudentsApi,
   updateStudentApi,
   deleteStudentApi,
+  bulkDeleteStudentsApi,
   upsertTestScoresApi,
   parseTestColumn,
   getJeePercentile,
@@ -554,10 +555,7 @@ export default function AdminDashboard() {
     if (!selectedStudents.length) return;
     if (!window.confirm(`Delete ${selectedStudents.length} students? This action cannot be undone.`)) return;
     try {
-      await Promise.all(selectedStudents.map(roll => {
-        const student = data.profiles.find(p => p.ROLL_KEY === roll);
-        return deleteStudentApi(null, roll, student?.centerCode);
-      }));
+      await bulkDeleteStudentsApi(null, selectedStudents);
       setData((d) => ({
         ...d,
         profiles: d.profiles.filter((p) => !selectedStudents.includes(p.ROLL_KEY)),
@@ -567,7 +565,7 @@ export default function AdminDashboard() {
       setSelectedStudents([]);
       showToast(`${selectedStudents.length} students deleted successfully.`, 'success');
     } catch (e) {
-      showToast('Error deleting some students: ' + e.message, 'error');
+      showToast('Error deleting students: ' + e.message, 'error');
     }
   };
 
