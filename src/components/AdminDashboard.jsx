@@ -110,8 +110,13 @@ function displaySponsor(code) {
 }
 
 function getRowField(row, keys) {
-  for (const key of keys) {
-    if (row[key] !== undefined && row[key] !== null && row[key] !== '') return row[key];
+  const normalizedKeys = keys.map(k => k.toLowerCase().trim());
+  for (const [k, v] of Object.entries(row)) {
+    if (v !== undefined && v !== null && v !== '') {
+      if (normalizedKeys.includes(k.toLowerCase().trim())) {
+        return v;
+      }
+    }
   }
   return '';
 }
@@ -129,7 +134,7 @@ function mapExcelStudentToProfile(row) {
     'Registration no.':        normalizeCellValue(getRowField(row, ['Registration No. (SSRP, CBT, CLT)', 'Registration no.', 'registration_no'])),
     centerCode:                centre,
     stream:                    stream === 'NEET' ? 'NEET' : 'JEE',
-    SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'Sponsor', 'sponsor', 'SPONSER', 'Sponser', 'sponser'])),
+    SPONSOR:                   normalizeCellValue(getRowField(row, ['SPONSOR', 'SPONSER', 'COMPANY', 'PSU', 'ORGANIZATION'])),
     'PROJECT NAME':            normalizeCellValue(getRowField(row, ['PROJECT NAME', 'project_name'])),
     'CENTRE CODE':             normalizeCellValue(getRowField(row, ['CENTRE CODE', 'centre_code'])),
     'Roll Number':             roll,
