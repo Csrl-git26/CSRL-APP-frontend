@@ -89,10 +89,7 @@ function normalizeRollKey(v) {
 }
 
 function normalizeCenterCode(v) {
-  const code = normalizeCellValue(v).toUpperCase();
-  if (code === 'KNP' || code === 'KANPUR') return 'GAIL';
-  if (code === 'JDH' || code === 'JDP' || code === 'JODHPUR') return 'OIL_INDIA';
-  return code;
+  return normalizeCellValue(v).toUpperCase();
 }
 
 function displayCenter(code) {
