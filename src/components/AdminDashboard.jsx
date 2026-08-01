@@ -1515,7 +1515,7 @@ export default function AdminDashboard() {
           </button>
           <button type="button" className="btn btn-warning btn-sm" onClick={() => openImportModal('marks')}><Upload size={13} /> Marks</button>
           <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}><Users size={13} /> Upload Students</button>
-          <button type="button" className="btn btn-purple btn-sm" style={{ background: '#6d28d9' }} onClick={() => setShowMarksAwardModal(true)}><Upload size={13} /> Upload Marks Award Sheet</button>
+          <button type="button" className="btn btn-purple btn-sm" style={{ background: '#6d28d9' }} onClick={() => setShowMarksAwardModal(true)}><Upload size={13} /> Upload Weak Topics Sheet</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={handleAddNewTestOption}>+ New Test</button>
           <select
             className="input select"
