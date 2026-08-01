@@ -536,40 +536,72 @@ export default function StudentDashboard() {
   );
 
   const MarksTab = () => (
-    <div className="card">
+    <div className="card" style={{ paddingBottom: 16 }}>
       <div className="section-title">Test Records</div>
       <div className="table-wrap">
         <table className="table">
           <thead>
             <tr>
               <th>Test</th>
-              {streamCfg.subjects.map((s) => <th key={s}>{s}</th>)}
-              <th>Total</th>
+              {streamCfg.subjects.map((s) => (
+                <th key={s}>
+                  <div>{s}</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+                </th>
+              ))}
+              <th>
+                <div>Total</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+              </th>
               <th>%</th>
             </tr>
           </thead>
           <tbody>
             {chartData.map((row) => {
               const subScores = streamCfg.subjects.map((s) => {
-                const val = row[s];
-                return val !== null && val !== undefined ? val : '—';
+                const mark = row[s];
+                const attempted = row[`${s}_Attempted`];
+                const accuracy = row[`${s}_Accuracy`];
+                return { mark, attempted, accuracy };
               });
               const total  = row.Total;
+              const totalAttempted = row.Total_Attempted;
+              const totalAccuracy = row.Total_Accuracy;
               const maxTot = streamCfg.maxTotal;
               const pct    = total != null && !Number.isNaN(Number(total))
                 ? Math.round((Number(total) / maxTot) * 100)
                 : 0;
+                
+              const renderCell = (v) => {
+                const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+                if (isAbsent) return 'Absent';
+                if (v.mark === null || v.mark === undefined || v.mark === '—') {
+                  if (v.attempted != null) {
+                    return `— | ${v.attempted} | ${v.accuracy}%`;
+                  }
+                  return '—';
+                }
+                const m = v.mark;
+                const at = v.attempted != null ? v.attempted : '—';
+                const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
+                return `${m} | ${at} | ${ac}`;
+              };
+
               return (
                 <tr key={row.name}>
                   <td><strong>{row.name}</strong></td>
-                  {subScores.map((v, i) => (
-                    <td key={i} style={{ color: v === '—' ? 'var(--gray-300)' : 'inherit' }}>
-                      {v !== '—' && v !== 'A' && v !== 'a' && v !== 'Absent' ? `${v}/${getMaxMarksForSubject(streamCfg, streamCfg.subjects[i])}` : v === '—' ? '—' : 'Absent'}
-                    </td>
-                  ))}
-                  <td>
+                  {subScores.map((v, i) => {
+                    const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+                    const isEmpty = (v.mark === null || v.mark === undefined || v.mark === '—') && v.attempted == null;
+                    return (
+                      <td key={i} style={{ color: (isEmpty || isAbsent) ? 'var(--gray-300)' : 'inherit', whiteSpace: 'nowrap' }}>
+                        {renderCell(v)}
+                      </td>
+                    );
+                  })}
+                  <td style={{ whiteSpace: 'nowrap' }}>
                     <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
-                      {total === 'Absent' ? 'Absent' : `${total ?? '—'}/${maxTot}`}
+                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
                     </strong>
                   </td>
                   <td><span className={`chip ${total === 'Absent' ? 'chip-weak' : pct >= 60 ? 'chip-good' : 'chip-weak'}`}>{total === 'Absent' ? '—' : `${pct}%`}</span></td>
@@ -581,6 +613,9 @@ export default function StudentDashboard() {
             )}
           </tbody>
         </table>
+      </div>
+      <div style={{ padding: '0 16px', fontSize: 11, color: 'var(--gray-500)', marginTop: 8 }}>
+        <em>* Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %</em>
       </div>
     </div>
   );
