@@ -10,19 +10,12 @@
 const TOKEN_KEY = 'csrl_token';
 
 function resolveApiBase() {
-  const envBase = String(import.meta.env.VITE_API_BASE_URL || '').trim();
-  if (envBase) return envBase.replace(/\/$/, '');
-
-  if (typeof window !== 'undefined') {
-    const proto = window.location.protocol;
-    const host  = window.location.hostname;
-    if (proto === 'capacitor:' || proto === 'ionic:' || proto === 'file:') {
-      return 'https://csrl-app-backed.onrender.com';
-    }
-    if (host.endsWith('.vercel.app') || host !== 'localhost') {
-      return 'https://csrl-app-backed.onrender.com';
-    }
+  if (import.meta.env.PROD || (typeof window !== 'undefined' && window.location.hostname !== 'localhost')) {
+    return 'https://csrl-app-backed.onrender.com';
   }
+  
+  const envBase = String(import.meta.env.VITE_API_BASE_URL || '').trim();
+  if (envBase && envBase !== '/') return envBase.replace(/\/$/, '');
 
   return '';
 }
