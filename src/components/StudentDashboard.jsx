@@ -463,58 +463,6 @@ export default function StudentDashboard() {
               ))}
             </div>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
-              {subjects.map((sub, i) => {
-                const latest = chartData[chartData.length - 1]?.[sub];
-                const maxSub = getMaxMarksForSubject(streamCfg, sub);
-                return (
-                  <span
-                    key={sub}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      background: '#f8fafc',
-                      border: '1px solid var(--gray-100)',
-                      borderRadius: 999,
-                      padding: '4px 10px',
-                      fontSize: 12,
-                      color: 'var(--gray-700)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: SUBJECT_COLORS[i % SUBJECT_COLORS.length] }} />
-                    {sub}: {latest ?? '—'}
-                  </span>
-                );
-              })}
-              {chartSubjects.includes('Total') && (
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    background: '#fdf4ff',
-                    border: '1px solid #f5d0fe',
-                    borderRadius: 999,
-                    padding: '4px 10px',
-                    fontSize: 12,
-                    color: '#a21caf',
-                    fontWeight: 700,
-                  }}
-                >
-                  <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#a21caf' }} />
-                  Total: {(() => {
-                    const latest = chartData[chartData.length - 1];
-                    if (chartMetric === 'MARKS') return `${latest?.Total ?? '—'}/${streamCfg.maxTotal}`;
-                    if (chartMetric === 'ACCURACY') return latest?.Total_Accuracy !== undefined ? `${latest.Total_Accuracy}%` : '—';
-                    if (chartMetric === 'ATTEMPTED') return latest?.Total_Attempted ?? '—';
-                    if (chartMetric === 'CORRECT') return latest?.Total_Correct ?? '—';
-                    return '—';
-                  })()}
-                </span>
-              )}
-            </div>
 
             <ResponsiveContainer width="100%" height={340}>
               <LineChart data={chartData} margin={{ top: 10, right: 18, left: 65, bottom: 75 }}>
