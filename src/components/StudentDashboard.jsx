@@ -206,7 +206,12 @@ export default function StudentDashboard() {
   );
 
   const subjects = useMemo(
-    () => streamCfg.subjects.filter((sub) => chartData.some((row) => row[sub] != null)),
+    () => streamCfg.subjects.filter((sub) => chartData.some((row) => 
+      row[sub] != null || 
+      row[`${sub}_Accuracy`] != null || 
+      row[`${sub}_Attempted`] != null || 
+      row[`${sub}_Correct`] != null
+    )),
     [chartData, streamCfg.subjects]
   );
 
