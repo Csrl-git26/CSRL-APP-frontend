@@ -68,6 +68,9 @@ export default function StudentDashboard() {
   const [overallWeakTopicsData, setOverallWeakTopicsData] = useState(null);
   const [isExportingPDF, setIsExportingPDF] = useState(false);
 
+  const [chartMetric, setChartMetric] = useState('MARKS');
+  const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
+
   useEffect(() => {
     if (!auth.id) return;
     let cancelled = false;
@@ -425,6 +428,41 @@ export default function StudentDashboard() {
         <div className="section-title">Subject-wise Trend</div>
         {chartData.length > 0 ? (
           <>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+              {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT'].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setChartMetric(m)}
+                  style={{
+                    padding: '6px 14px', borderRadius: 999, border: '1px solid',
+                    borderColor: chartMetric === m ? 'var(--csrl-orange)' : 'var(--gray-200)',
+                    background: chartMetric === m ? 'var(--csrl-orange)' : '#f8fafc',
+                    color: chartMetric === m ? '#fff' : 'var(--gray-600)',
+                    fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: '0.2s'
+                  }}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 16, padding: '8px 12px', background: '#f8fafc', borderRadius: 8, border: '1px solid var(--gray-100)' }}>
+              {[...subjects, 'Total'].map((sub, i) => (
+                <label key={sub} style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontWeight: 600, color: 'var(--gray-700)' }}>
+                  <input
+                    type="checkbox"
+                    checked={chartSubjects.includes(sub)}
+                    onChange={(e) => {
+                      if (e.target.checked) setChartSubjects([...chartSubjects, sub]);
+                      else setChartSubjects(chartSubjects.filter(s => s !== sub));
+                    }}
+                    style={{ accentColor: sub === 'Total' ? '#a21caf' : SUBJECT_COLORS[i % SUBJECT_COLORS.length] }}
+                  />
+                  {sub}
+                </label>
+              ))}
+            </div>
+
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
               {subjects.map((sub, i) => {
                 const latest = chartData[chartData.length - 1]?.[sub];
@@ -446,27 +484,36 @@ export default function StudentDashboard() {
                     }}
                   >
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: SUBJECT_COLORS[i % SUBJECT_COLORS.length] }} />
-                    {sub}: {latest ?? '—'}/{maxSub}
+                    {sub}: {latest ?? '—'}
                   </span>
                 );
               })}
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  background: '#fdf4ff',
-                  border: '1px solid #f5d0fe',
-                  borderRadius: 999,
-                  padding: '4px 10px',
-                  fontSize: 12,
-                  color: '#a21caf',
-                  fontWeight: 700,
-                }}
-              >
-                <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#a21caf' }} />
-                Total: {chartData[chartData.length - 1]?.Total ?? '—'}/{streamCfg.maxTotal}
-              </span>
+              {chartSubjects.includes('Total') && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    background: '#fdf4ff',
+                    border: '1px solid #f5d0fe',
+                    borderRadius: 999,
+                    padding: '4px 10px',
+                    fontSize: 12,
+                    color: '#a21caf',
+                    fontWeight: 700,
+                  }}
+                >
+                  <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#a21caf' }} />
+                  Total: {(() => {
+                    const latest = chartData[chartData.length - 1];
+                    if (chartMetric === 'MARKS') return `${latest?.Total ?? '—'}/${streamCfg.maxTotal}`;
+                    if (chartMetric === 'ACCURACY') return latest?.Total_Accuracy !== undefined ? `${latest.Total_Accuracy}%` : '—';
+                    if (chartMetric === 'ATTEMPTED') return latest?.Total_Attempted ?? '—';
+                    if (chartMetric === 'CORRECT') return latest?.Total_Correct ?? '—';
+                    return '—';
+                  })()}
+                </span>
+              )}
             </div>
 
             <ResponsiveContainer width="100%" height={340}>
@@ -476,37 +523,54 @@ export default function StudentDashboard() {
                 <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
                 <Tooltip
                   formatter={(value, name) => {
-                    if (name === 'Total') return [value ?? '—', `Total / ${streamCfg.maxTotal}`];
-                    return [value ?? '—', `${name} / ${getMaxMarksForSubject(streamCfg, name)}`];
+                    const isTotal = name.startsWith('Total');
+                    const subName = isTotal ? 'Total' : name.split('_')[0];
+                    if (chartMetric === 'MARKS') return [value ?? '—', isTotal ? `Total / ${streamCfg.maxTotal}` : `${subName} / ${getMaxMarksForSubject(streamCfg, subName)}`];
+                    if (chartMetric === 'ACCURACY') return [value !== undefined ? `${value}%` : '—', `${subName} Accuracy`];
+                    if (chartMetric === 'ATTEMPTED') return [value ?? '—', `${subName} Attempted`];
+                    if (chartMetric === 'CORRECT') return [value ?? '—', `${subName} Correct`];
+                    return [value ?? '—', name];
                   }}
                   contentStyle={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, fontSize: 12 }}
                 />
                 <Legend wrapperStyle={{ fontSize: 13 }} />
-                {subjects.map((sub, i) => (
+                {subjects.map((sub, i) => {
+                  if (!chartSubjects.includes(sub)) return null;
+                  let dataKey = sub;
+                  if (chartMetric === 'ACCURACY') dataKey = `${sub}_Accuracy`;
+                  if (chartMetric === 'ATTEMPTED') dataKey = `${sub}_Attempted`;
+                  if (chartMetric === 'CORRECT') dataKey = `${sub}_Correct`;
+
+                  return (
+                    <Line
+                      key={sub}
+                      name={sub}
+                      type="monotone"
+                      dataKey={dataKey}
+                      stroke={SUBJECT_COLORS[i % SUBJECT_COLORS.length]}
+                      strokeWidth={2.3}
+                      dot={{ r: 3.5, strokeWidth: 1, fill: '#fff' }}
+                      activeDot={{ r: 5 }}
+                      connectNulls
+                      isAnimationActive={false}
+                      label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 11, fontWeight: 600, formatter: (val) => chartMetric === 'ACCURACY' && val ? `${val}%` : val }}
+                    />
+                  );
+                })}
+                {chartSubjects.includes('Total') && (
                   <Line
-                    key={sub}
+                    name="Total"
                     type="monotone"
-                    dataKey={sub}
-                    stroke={SUBJECT_COLORS[i % SUBJECT_COLORS.length]}
-                    strokeWidth={2.3}
-                    dot={{ r: 3.5, strokeWidth: 1, fill: '#fff' }}
-                    activeDot={{ r: 5 }}
+                    dataKey={chartMetric === 'MARKS' ? 'Total' : `Total_${chartMetric.charAt(0).toUpperCase() + chartMetric.slice(1).toLowerCase()}`}
+                    stroke="#a21caf"
+                    strokeWidth={3}
+                    dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
+                    activeDot={{ r: 6 }}
                     connectNulls
                     isAnimationActive={false}
-                    label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 11, fontWeight: 600 }}
+                    label={{ position: 'top', fill: '#a21caf', fontSize: 11, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val ? `${val}%` : val }}
                   />
-                ))}
-                <Line
-                  type="monotone"
-                  dataKey="Total"
-                  stroke="#a21caf"
-                  strokeWidth={3}
-                  dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
-                  activeDot={{ r: 6 }}
-                  connectNulls
-                  isAnimationActive={false}
-                  label={{ position: 'top', fill: '#a21caf', fontSize: 11, fontWeight: 700 }}
-                />
+                )}
               </LineChart>
             </ResponsiveContainer>
           </>
