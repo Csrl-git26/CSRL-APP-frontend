@@ -56,6 +56,9 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
     } catch (err) {
       setStatus('error');
       setErrorMsg(err.message || 'Network error occurred.');
+      if (err.validationErrors) {
+        setValidationErrors(err.validationErrors);
+      }
     }
   };
 
