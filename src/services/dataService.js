@@ -131,7 +131,7 @@ const TOKEN_KEY = 'csrl_token';
 
 function resolveApiBase() {
   if (import.meta.env.PROD || (typeof window !== "undefined" && window.location.hostname !== "localhost")) {
-    return "https://csrl-app-backed.onrender.com/api";
+    return "https://csrl-app-backed-1.onrender.com/api";
   }
 
   const envBase = String(import.meta.env.VITE_API_BASE_URL || "").trim();
