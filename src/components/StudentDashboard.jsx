@@ -558,7 +558,7 @@ export default function StudentDashboard() {
           </thead>
           <tbody>
             {chartData.map((row) => {
-              const subScores = streamCfg.subjects.map((s) => {
+              const subScores = subjects.map((s) => {
                 const mark = row[s];
                 const attempted = row[`${s}_Attempted`];
                 const accuracy = row[`${s}_Accuracy`];
