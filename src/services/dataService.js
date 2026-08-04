@@ -180,6 +180,12 @@ async function apiFetch(path, opts = {}) {
   });
 
   if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      localStorage.removeItem(TOKEN_KEY);
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || `API error (${res.status})`);
   }
