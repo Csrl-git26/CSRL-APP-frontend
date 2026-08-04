@@ -316,7 +316,7 @@ export async function fetchTestInsights(_token, testKey, rollKey) {
 }
 
 export async function fetchStudentChart(_token, rollKey, centerCode) {
-  const params = new URLSearchParams({ rollKey });
+  const params = new URLSearchParams({ rollKey, t: Date.now() });
   if (centerCode) params.set('centerCode', centerCode);
   return apiFetch(`/api/analytics/student-chart?${params}`);
 }
