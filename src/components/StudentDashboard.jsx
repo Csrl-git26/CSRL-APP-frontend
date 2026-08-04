@@ -553,7 +553,6 @@ export default function StudentDashboard() {
                 <div>Total</div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
               </th>
-              <th>%</th>
             </tr>
           </thead>
           <tbody>
@@ -604,12 +603,11 @@ export default function StudentDashboard() {
                       {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
                     </strong>
                   </td>
-                  <td><span className={`chip ${total === 'Absent' ? 'chip-weak' : pct >= 60 ? 'chip-good' : 'chip-weak'}`}>{total === 'Absent' ? '—' : `${pct}%`}</span></td>
                 </tr>
               );
             })}
             {!chartData.length && (
-              <tr><td colSpan={streamCfg.subjects.length + 3} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
+              <tr><td colSpan={streamCfg.subjects.length + 2} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
             )}
           </tbody>
         </table>
