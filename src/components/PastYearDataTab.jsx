@@ -253,10 +253,10 @@ export default function PastYearDataTab({ isAdmin = false }) {
         flexWrap: 'wrap', gap: 12, marginBottom: 20,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Calendar size={20} style={{ color: 'var(--primary)' }} />
+          <Calendar size={20} style={{ color: 'var(--csrl-blue)' }} />
           <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Past Year Data</h3>
           <span className="badge" style={{
-            background: 'var(--primary)', color: '#fff', fontSize: 11, padding: '2px 10px',
+            background: 'var(--csrl-blue)', color: '#fff', fontSize: 11, padding: '2px 10px',
           }}>{displayed.length} records</span>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -264,7 +264,7 @@ export default function PastYearDataTab({ isAdmin = false }) {
             <>
               <label className="btn btn-sm" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer',
-                background: 'var(--primary)', color: '#fff', padding: '6px 14px',
+                background: 'var(--csrl-blue)', color: '#fff', padding: '6px 14px',
                 borderRadius: 8, fontSize: 13, fontWeight: 600,
               }}>
                 {uploading ? <Loader2 size={14} className="spin" /> : <Upload size={14} />}
@@ -364,10 +364,10 @@ export default function PastYearDataTab({ isAdmin = false }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
           {isAdmin && (
             <div style={{
-              background: 'var(--surface)', padding: 24, borderRadius: 12, border: '1px solid var(--primary)',
+              background: '#fff', padding: 24, borderRadius: 12, border: '1px solid var(--csrl-blue)',
               boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
             }}>
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 16px 0', color: 'var(--primary)', fontSize: 16 }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 16px 0', color: 'var(--csrl-blue)', fontSize: 16 }}>
                 <Upload size={18} /> Upload Past Year Data
               </h3>
               <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 16 }}>
