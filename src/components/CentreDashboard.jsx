@@ -6,6 +6,7 @@ import {
   fetchOverview,
   fetchRankings,
   fetchSubjectAverages,
+  fetchCentreLeaderboard,
   fetchTestInsights,
   parseTestColumn,
   resolveStudentPhotoUrl,
@@ -13,6 +14,7 @@ import {
 } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
+import CentreLeaderboard from './CentreLeaderboard';
 import { CENTERS } from '../config/centers';
 import TestInsightsPanel from './TestInsightsPanel';
 import CenterWeakTopics from './CenterWeakTopics';
@@ -21,6 +23,7 @@ import { getCenterWeakTopics } from '../services/weakTopicApi';
 import PastYearDataTab from './PastYearDataTab';
 
 const TABS = [
+  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
   { key: 'insights',   Icon: BarChart3,       label: 'Test analysis' },
@@ -59,6 +62,7 @@ export default function CentreDashboard() {
   const [testInsights, setTestInsights]         = useState(null);
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError]   = useState('');
+  const [centreBoard, setCentreBoard] = useState([]);
   const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
 
   useEffect(() => {
@@ -114,6 +118,11 @@ export default function CentreDashboard() {
   useEffect(() => {
     if (!selectedCenterCode || !selectedTestKey) return undefined;
     let cancelled = false;
+    
+    fetchCentreLeaderboard(null, selectedTestKey)
+      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
+      .catch(() => setCentreBoard([]));
+    
     fetchSubjectAverages(null, selectedCenterCode, selectedTestKey)
       .then((avgs) => {
         if (!cancelled) setSubjectAvgs(Array.isArray(avgs) ? avgs : []);
