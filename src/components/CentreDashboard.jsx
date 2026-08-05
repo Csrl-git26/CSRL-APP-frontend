@@ -143,16 +143,35 @@ export default function CentreDashboard() {
         if (!cancelled && res.success && res.data) {
           const doc = res.data;
           if (doc && doc.weakSubjects) {
-            const weakest = [];
+            let highestPercent = -1;
+            let weakestSub = null;
+            let isMedium = false;
+            
             Object.keys(doc.weakSubjects).forEach(sub => {
-              if (doc.weakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+              const strong = doc.weakSubjects[sub]?.strongWeak;
+              if (strong && strong.length > 0 && strong[0].percentage > highestPercent) {
+                highestPercent = strong[0].percentage;
+                weakestSub = sub;
+                isMedium = false;
+              }
             });
-            if (weakest.length === 0) {
+            
+            if (!weakestSub) {
               Object.keys(doc.weakSubjects).forEach(sub => {
-                if (doc.weakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Medium)`);
+                const medium = doc.weakSubjects[sub]?.mediumWeak;
+                if (medium && medium.length > 0 && medium[0].percentage > highestPercent) {
+                  highestPercent = medium[0].percentage;
+                  weakestSub = sub;
+                  isMedium = true;
+                }
               });
             }
-            setAccuracyWeakSubject(weakest.length > 0 ? weakest.join(', ') : 'None');
+            
+            if (weakestSub) {
+              setAccuracyWeakSubject(isMedium ? `${weakestSub} (Medium)` : weakestSub);
+            } else {
+              setAccuracyWeakSubject('None');
+            }
           } else {
             setAccuracyWeakSubject(null);
           }
