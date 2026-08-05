@@ -303,6 +303,20 @@ export default function CentreDashboard() {
 
   // ── Section components ────────────────────────────────────────────────────────
 
+  const LeaderboardSection = () => (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
+            <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedTestKey}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Sorted descending by average score</div>
+        </div>
+      </div>
+      <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} />
+    </div>
+  );
+
   const OverviewSection = () => {
     const totalStudents = overview?.totalStudents ?? data.profiles.length;
     const weakSubject   = weakSubjectFromPerformance ?? overview?.weakSubject ?? 'N/A';
