@@ -250,17 +250,28 @@ export default function StudentDashboard() {
     
     setTimeout(async () => {
       try {
-        const element = document.getElementById('pdf-report-content');
-        if (!element) return;
+        const page1 = document.getElementById('pdf-report-content');
+        const page2 = document.getElementById('pdf-report-page2');
+        if (!page1) return;
         
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const canvas1 = await html2canvas(page1, { scale: 2, useCORS: true });
+        const imgData1 = canvas1.toDataURL('image/jpeg', 1.0);
         
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        const pdfHeight1 = (canvas1.height * pdfWidth) / canvas1.width;
         
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData1, 'JPEG', 0, 0, pdfWidth, pdfHeight1);
+        
+        if (page2) {
+          const canvas2 = await html2canvas(page2, { scale: 2, useCORS: true });
+          const imgData2 = canvas2.toDataURL('image/jpeg', 1.0);
+          const pdfHeight2 = (canvas2.height * pdfWidth) / canvas2.width;
+          
+          pdf.addPage();
+          pdf.addImage(imgData2, 'JPEG', 0, 0, pdfWidth, pdfHeight2);
+        }
+        
         pdf.save(`${profile.ROLL_KEY || 'Student'}_Report.pdf`);
       } catch (err) {
         console.error("Failed to generate PDF", err);

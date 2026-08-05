@@ -28,6 +28,7 @@ export default function StudentReportCard({
   );
 
   return (
+    <>
     <div id="pdf-report-content" style={{
       width: '800px',
       background: 'white',
@@ -224,5 +225,95 @@ export default function StudentReportCard({
       )}
 
     </div>
+    
+    {/* PAGE 2: Performance Table */}
+    <div id="pdf-report-page2" style={{
+      width: '800px',
+      background: 'white',
+      padding: '24px',
+      color: '#0f172a',
+      fontFamily: 'Inter, sans-serif'
+    }}>
+      {/* HEADER */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '3px solid #1a4fa0', paddingBottom: '8px', marginBottom: '16px' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#1a4fa0', margin: 0, textTransform: 'uppercase' }}>
+            CSRL Student Report (Page 2)
+          </h1>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: '#1e293b' }}>{profile["STUDENT'S NAME"] || 'Unknown'}</h2>
+        </div>
+      </div>
+
+      <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+        Performance Test Records
+      </h3>
+
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'left' }}>
+        <thead>
+          <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
+            <th style={{ padding: '10px 8px', fontWeight: 700, color: '#475569' }}>Test</th>
+            {subjects.map((s) => (
+              <th key={s} style={{ padding: '10px 8px', fontWeight: 700, color: '#475569' }}>
+                <div>{s}</div>
+                <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+              </th>
+            ))}
+            <th style={{ padding: '10px 8px', fontWeight: 700, color: '#475569' }}>
+              <div>Total</div>
+              <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {chartData && chartData.map((row, idx) => {
+            const renderCell = (v) => {
+              const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+              if (isAbsent) return 'Absent';
+              if (v.mark === null || v.mark === undefined || v.mark === '—') {
+                if (v.attempted != null) return `— | ${v.attempted} | ${v.accuracy}%`;
+                return '—';
+              }
+              const m = v.mark;
+              const at = v.attempted != null ? v.attempted : '—';
+              const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
+              return `${m} | ${at} | ${ac}`;
+            };
+
+            return (
+              <tr key={row.name} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                <td style={{ padding: '10px 8px', fontWeight: 700 }}>{row.name}</td>
+                {subjects.map((s, i) => {
+                  const mark = row[s];
+                  const attempted = row[`${s}_Attempted`];
+                  const accuracy = row[`${s}_Accuracy`];
+                  const v = { mark, attempted, accuracy };
+                  const isAbsent = mark === 'A' || mark === 'a' || mark === 'Absent';
+                  const isEmpty = (mark === null || mark === undefined || mark === '—') && attempted == null;
+                  return (
+                    <td key={i} style={{ padding: '10px 8px', color: (isEmpty || isAbsent) ? '#94a3b8' : 'inherit', whiteSpace: 'nowrap' }}>
+                      {renderCell(v)}
+                    </td>
+                  );
+                })}
+                <td style={{ padding: '10px 8px', whiteSpace: 'nowrap' }}>
+                  <strong style={{ color: row.Total === 'Absent' ? '#c0392b' : '#1a4fa0' }}>
+                    {renderCell({ mark: row.Total, attempted: row.Total_Attempted, accuracy: row.Total_Accuracy })}
+                  </strong>
+                </td>
+              </tr>
+            );
+          })}
+          {(!chartData || chartData.length === 0) && (
+            <tr><td colSpan={subjects.length + 2} style={{ textAlign: 'center', padding: '24px', color: '#94a3b8' }}>No marks recorded yet.</td></tr>
+          )}
+        </tbody>
+      </table>
+      <div style={{ fontSize: '10px', color: '#64748b', marginTop: '12px', fontStyle: 'italic' }}>
+        * Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %
+      </div>
+    </div>
+    </>
   );
 }
