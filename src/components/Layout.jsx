@@ -33,6 +33,7 @@ const ADMIN_NAV = [
 ];
 
 const CENTRE_NAV = [
+  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
   { key: 'insights',   Icon: BarChart3,       label: 'Test analysis' },
@@ -61,7 +62,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState(() => {
     if (auth?.role === 'ADMIN')   return 'leaderboard';
-    if (auth?.role === 'CENTRE')  return 'overview';
+    if (auth?.role === 'CENTRE')  return 'leaderboard';
     return 'profile';
   });
 
@@ -70,7 +71,7 @@ export default function Layout() {
 
   useEffect(() => {
     if (role === 'ADMIN')   setActivePage('leaderboard');
-    else if (role === 'CENTRE') setActivePage('overview');
+    else if (role === 'CENTRE') setActivePage('leaderboard');
     else if (role === 'STUDENT') setActivePage('profile');
   }, [role]);
 
