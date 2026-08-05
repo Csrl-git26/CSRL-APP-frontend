@@ -355,7 +355,14 @@ const chartData = useMemo(() => {
           </div>
         </div>
 
-        <div className="card">
+        
+      </div>
+
+      <div style={{ marginTop: '24px' }}>
+        <StudentOverallWeakTopics studentId={profile.ROLL_KEY} />
+      </div>
+
+      <div className="card" style={{ marginBottom: '24px' }}>
           <div className="section-title">📈 Performance Trend</div>
           <div style={{ height: 280 }}>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
@@ -453,11 +460,7 @@ const chartData = useMemo(() => {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
 
-      <div style={{ marginTop: '24px' }}>
-        <StudentOverallWeakTopics studentId={profile.ROLL_KEY} />
-      </div>
 
       {/* Full Test Records */}
       <div className="card">
