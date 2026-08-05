@@ -710,6 +710,7 @@ export default function CentreDashboard() {
         </div>
 
         <div className="dashboard-scroll">
+          {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'   && <OverviewSection />}
           {activePage === 'insights' && (
             <TestInsightsPanel
