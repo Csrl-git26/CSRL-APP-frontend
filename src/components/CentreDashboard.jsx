@@ -131,8 +131,8 @@ export default function CentreDashboard() {
     let cancelled = false;
     getCenterWeakTopics(selectedCenterCode, selectedTestKey)
       .then((res) => {
-        if (!cancelled && res.success && res.data && res.data.length > 0) {
-          const doc = res.data.find(d => d.testId === selectedTestKey);
+        if (!cancelled && res.success && res.data) {
+          const doc = res.data;
           if (doc && doc.weakSubjects) {
             const weakest = [];
             Object.keys(doc.weakSubjects).forEach(sub => {
@@ -297,10 +297,11 @@ export default function CentreDashboard() {
   const OverviewSection = () => {
     const totalStudents = overview?.totalStudents ?? data.profiles.length;
     const weakSubject   = weakSubjectFromPerformance ?? overview?.weakSubject ?? 'N/A';
-    const avgScore      = allRanked.length
-      ? Math.round(allRanked.reduce((s, r) => s + r.marks, 0) / allRanked.length)
+    const validScores   = allRanked.filter(r => typeof r.marks === 'number');
+    const avgScore      = validScores.length
+      ? Math.round(validScores.reduce((s, r) => s + r.marks, 0) / validScores.length)
       : 0;
-    const topScore = topRanked.length ? topRanked[0]?.marks ?? 0 : 0;
+    const topScore = topRanked.length && typeof topRanked[0]?.marks === 'number' ? topRanked[0].marks : 0;
 
     const statCards = [
       { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#e8f0fc', color: '#1a4fa0' },
