@@ -4,11 +4,13 @@ import { Download, Loader2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl } from '../services/dataService';
+import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl, fetchStudentChart, buildStudentChartData, getStreamConfig, computeWeakSubject } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import StudentReportCard from './StudentReportCard';
 import StudentOverallWeakTopics from './StudentOverallWeakTopics';
 import { mapProfileToExcelRow } from './exportUtils';
+
+const SUBJECT_COLORS = ['#ea580c', '#16a34a', '#2563eb', '#9333ea', '#0d9488'];
 
 function displayCenter(code) {
   if (!code) return '—';
@@ -31,6 +33,10 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
   const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(null);
   const [isExportingPDF, setIsExportingPDF] = React.useState(false);
+  
+  const [chart, setChart] = React.useState(null);
+  const [chartMetric, setChartMetric] = React.useState('MARKS');
+  const [chartSubjects, setChartSubjects] = React.useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
 
   const exportProfileToPDF = async () => {
     if (!profile) return;
@@ -87,6 +93,11 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
         setOverallWeakTopicsData(res.data);
       }
     });
+    
+    fetchStudentChart(null, profile.ROLL_KEY, null).then((res) => {
+      if (!cancelled && res) setChart(res);
+    }).catch(() => {});
+    
     return () => { cancelled = true; };
   }, [profile?.ROLL_KEY]);
 
@@ -94,61 +105,84 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
   const school10 = profile?.['10th SCHOOL NAME'] || profile?.['10th SCHOOL'] || profile?.['SCHOOL NAME'] || profile?.SCHOOL || '';
   const school12 = profile?.['12th SCHOOL NAME'] || profile?.['12th SCHOOL'] || school10 || '';
 
-  const { mappedTestList, weakSubject, chartData, subjects } = useMemo(() => {
-    const testsMap      = {};
-    const subjectTotals = {};
-    const subjectCounts = {};
+  const streamCfg = getStreamConfig(stream);
+  
+const chartData = useMemo(() => {
+    const rawRows = chart?.chartData ?? buildStudentChartData(studentTests, testColumns);
 
-    (testColumns || []).forEach((col) => {
-      const { testName, subject, isTotal } = parseTestColumn(col);
-      if (!testsMap[testName]) testsMap[testName] = { name: testName, marks: {}, total: null };
+    const toNum = (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
 
-      const rawMark = (studentTests || {})[col];
-      const usable  = rawMark !== undefined && rawMark !== null && rawMark !== '' && String(rawMark).toLowerCase() !== 'absent';
-      if (usable) {
-        const m = parseFloat(rawMark);
-        if (!isNaN(m)) {
-          if (isTotal) {
-            testsMap[testName].total = m;
-          } else {
-            testsMap[testName].marks[subject] = m;
-            subjectTotals[subject] = (subjectTotals[subject] || 0) + m;
-            subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
-          }
+    return (rawRows || []).map((row) => {
+      const normalized = { ...row };
+
+      if (stream === 'NEET') {
+        const physics = toNum(normalized.Physics);
+        const chemistry = toNum(normalized.Chemistry);
+        const biology = toNum(normalized.Biology);
+        const botany = toNum(normalized.Botany);
+        const zoology = toNum(normalized.Zoology);
+
+        const mergedBiology = biology ?? ((botany ?? 0) + (zoology ?? 0) || null);
+        normalized.Biology = mergedBiology;
+        delete normalized.Botany;
+        delete normalized.Zoology;
+
+        const parts = [physics, chemistry, mergedBiology].filter((v) => v !== null);
+        const computedTotal = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) : null;
+        
+        // Handle Absent explicitly
+        const isAbsent = ['a', 'A', 'absent', 'Absent'].includes(String(row.Total).trim()) ||
+          (['a', 'A', 'absent', 'Absent'].includes(String(row.Physics).trim()) &&
+           ['a', 'A', 'absent', 'Absent'].includes(String(row.Chemistry).trim()) &&
+           (['a', 'A', 'absent', 'Absent'].includes(String(row.Biology).trim()) || ['a', 'A', 'absent', 'Absent'].includes(String(row.Botany).trim())));
+        
+        if (isAbsent) {
+          normalized.Total = 'Absent';
+        } else {
+          normalized.Total = computedTotal !== null ? computedTotal : (row.Total ?? null);
         }
-      } else if (!isTotal) {
-        testsMap[testName].marks[subject] = 'A';
-      }
-    });
-
-    // Compute total where missing
-    Object.values(testsMap).forEach((t) => {
-      if (t.total !== null) return;
-      
-      const numMarks = Object.values(t.marks).filter((v) => typeof v === 'number');
-      if (numMarks.length > 0) {
-        t.total = numMarks.reduce((sum, v) => sum + v, 0);
       } else {
-        t.total = 'Absent';
+        const physics = toNum(normalized.Physics);
+        const chemistry = toNum(normalized.Chemistry);
+        const math = toNum(normalized.Math);
+        const parts = [physics, chemistry, math].filter((v) => v !== null);
+        const computedTotal = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) : null;
+        
+        // Handle Absent explicitly
+        const isAbsent = ['a', 'A', 'absent', 'Absent'].includes(String(row.Total).trim()) ||
+          (['a', 'A', 'absent', 'Absent'].includes(String(row.Physics).trim()) &&
+           ['a', 'A', 'absent', 'Absent'].includes(String(row.Chemistry).trim()) &&
+           ['a', 'A', 'absent', 'Absent'].includes(String(row.Math).trim()));
+        
+        if (isAbsent) {
+          normalized.Total = 'Absent';
+        } else {
+          normalized.Total = computedTotal !== null ? computedTotal : (row.Total ?? null);
+        }
       }
+
+      return normalized;
     });
+  }, [chart, studentTests, testColumns, stream]);
 
-    const mappedTestList = Object.values(testsMap)
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  const subjects = useMemo(() => streamCfg.subjects.filter((sub) => chartData.some((row) => 
+      row[sub] != null || 
+      row[`${sub}_Accuracy`] != null || 
+      row[`${sub}_Attempted`] != null || 
+      row[`${sub}_Correct`] != null
+    )), [chartData, streamCfg.subjects]
+  );
+  
+  const mappedTestList = chartData;
 
-    let weakSub = 'N/A', minAvg = Infinity;
-    Object.keys(subjectTotals).forEach((sub) => {
-      const avg = subjectTotals[sub] / subjectCounts[sub];
-      if (avg < minAvg && subjectCounts[sub] > 0) { minAvg = avg; weakSub = sub; }
-    });
-
-    // Collect subjects dynamically
-    const allSubs = new Set();
-    mappedTestList.forEach((t) => Object.keys(t.marks).forEach((s) => allSubs.add(s)));
-
-    const chartData = mappedTestList.map((t) => ({ name: t.name, ...t.marks, Total: t.total }));
-    return { mappedTestList, weakSubject: weakSub, chartData, subjects: Array.from(allSubs) };
-  }, [studentTests, testColumns]);
+  const weakSubject = React.useMemo(
+    () => chart?.weakSubject ?? computeWeakSubject(studentTests, testColumns),
+    [chart, studentTests, testColumns]
+  );
+ // Fallback mapping for older uses if any
 
   if (!profile) return <div style={{ padding: '32px', textAlign: 'center', color: 'var(--gray-400)' }}>Loading profile...</div>;
 
@@ -324,19 +358,100 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
         <div className="card">
           <div className="section-title">📈 Performance Trend</div>
           <div style={{ height: 280 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 20, left: 65, bottom: 75, right: 40 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="#eef0f5" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9097b1', fontSize: 11 }} angle={-35} textAnchor="end" interval={0} />
-                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: '#dde0ea' }} tickLine={false} tick={{ fill: '#5a6282', fontSize: 11 }} width={55} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: 'none', boxShadow: 'var(--shadow-lg)', fontSize: 12 }} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                {subjects.map((sub) => (
-                  <Line key={sub} type="monotone" dataKey={sub} stroke={subjectColor(sub)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls isAnimationActive={false} label={{ position: 'top', fill: subjectColor(sub), fontSize: 11, fontWeight: 600 }} />
-                ))}
-                <Line type="monotone" dataKey="Total" stroke="#1a4fa0" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} isAnimationActive={false} label={{ position: 'top', fill: '#1a4fa0', fontSize: 11, fontWeight: 700 }} />
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+              {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT'].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setChartMetric(m)}
+                  style={{
+                    padding: '6px 14px', borderRadius: 999, border: '1px solid',
+                    borderColor: chartMetric === m ? 'var(--csrl-orange)' : 'var(--gray-200)',
+                    background: chartMetric === m ? 'var(--csrl-orange)' : '#f8fafc',
+                    color: chartMetric === m ? '#fff' : 'var(--gray-600)',
+                    fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: '0.2s'
+                  }}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 16, padding: '8px 12px', background: '#f8fafc', borderRadius: 8, border: '1px solid var(--gray-100)' }}>
+              {[...subjects, 'Total'].map((sub, i) => (
+                <label key={sub} style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontWeight: 600, color: 'var(--gray-700)' }}>
+                  <input
+                    type="checkbox"
+                    checked={chartSubjects.includes(sub)}
+                    onChange={(e) => {
+                      if (e.target.checked) setChartSubjects([...chartSubjects, sub]);
+                      else setChartSubjects(chartSubjects.filter(s => s !== sub));
+                    }}
+                    style={{ accentColor: sub === 'Total' ? '#a21caf' : SUBJECT_COLORS[i % SUBJECT_COLORS.length] }}
+                  />
+                  {sub}
+                </label>
+              ))}
+            </div>
+
+
+            <ResponsiveContainer width="100%" height={340}>
+              <LineChart data={chartData} margin={{ top: 30, right: 30, left: 65, bottom: 75 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-600)' }} interval={0} angle={-35} textAnchor="end" />
+                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
+                <Tooltip
+                  formatter={(value, name) => {
+                    const isTotal = name.startsWith('Total');
+                    const subName = isTotal ? 'Total' : name.split('_')[0];
+                    if (chartMetric === 'MARKS') return [value ?? '—', isTotal ? `Total / ${streamCfg.maxTotal}` : `${subName} / ${getMaxMarksForSubject(streamCfg, subName)}`];
+                    if (chartMetric === 'ACCURACY') return [value !== undefined ? `${value}%` : '—', `${subName} Accuracy`];
+                    if (chartMetric === 'ATTEMPTED') return [value ?? '—', `${subName} Attempted`];
+                    if (chartMetric === 'CORRECT') return [value ?? '—', `${subName} Correct`];
+                    return [value ?? '—', name];
+                  }}
+                  contentStyle={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, fontSize: 12 }}
+                />
+                <Legend wrapperStyle={{ fontSize: 13 }} />
+                {subjects.map((sub, i) => {
+                  if (!chartSubjects.includes(sub)) return null;
+                  let dataKey = sub;
+                  if (chartMetric === 'ACCURACY') dataKey = `${sub}_Accuracy`;
+                  if (chartMetric === 'ATTEMPTED') dataKey = `${sub}_Attempted`;
+                  if (chartMetric === 'CORRECT') dataKey = `${sub}_Correct`;
+
+                  return (
+                    <Line
+                      key={sub}
+                      name={sub}
+                      type="monotone"
+                      dataKey={dataKey}
+                      stroke={SUBJECT_COLORS[i % SUBJECT_COLORS.length]}
+                      strokeWidth={2.3}
+                      dot={{ r: 3.5, strokeWidth: 1, fill: '#fff' }}
+                      activeDot={{ r: 5 }}
+                      connectNulls
+                      isAnimationActive={false}
+                      label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 11, fontWeight: 600, formatter: (val) => chartMetric === 'ACCURACY' && val ? `${val}%` : val }}
+                    />
+                  );
+                })}
+                {chartSubjects.includes('Total') && (
+                  <Line
+                    name="Total"
+                    type="monotone"
+                    dataKey={chartMetric === 'MARKS' ? 'Total' : `Total_${chartMetric.charAt(0).toUpperCase() + chartMetric.slice(1).toLowerCase()}`}
+                    stroke="#a21caf"
+                    strokeWidth={3}
+                    dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
+                    activeDot={{ r: 6 }}
+                    connectNulls
+                    isAnimationActive={false}
+                    label={{ position: 'top', fill: '#a21caf', fontSize: 11, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val ? `${val}%` : val }}
+                  />
+                )}
               </LineChart>
             </ResponsiveContainer>
+          </>
           </div>
         </div>
       </div>
@@ -349,42 +464,79 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
       <div className="card">
         <div className="section-title">📋 Complete Test Records</div>
         <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th style={{ width: '30%' }}>Test Name</th>
-                <th>Subject Breakdown</th>
-                <th style={{ textAlign: 'right', width: '12%' }}>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mappedTestList.map((test, i) => (
-                <tr key={i}>
-                  <td style={{ fontWeight: 600 }}>{test.name}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {Object.entries(test.marks).map(([sub, mark]) => (
-                        <span key={sub} style={{
-                          display: 'inline-flex', alignItems: 'center', gap: 4,
-                          padding: '3px 8px', borderRadius: 4, fontSize: 12,
-                          background: mark === 'A' ? 'var(--red-bg)' : 'var(--csrl-blue-light)',
-                          border: `1px solid ${mark === 'A' ? '#fca5a5' : '#bbd0f8'}`,
-                        }}>
-                          <span style={{ color: 'var(--gray-600)', fontWeight: 500 }}>{sub}:</span>
-                          <span style={{ fontWeight: 700, color: mark === 'A' ? 'var(--red)' : subjectColor(sub) }}>{mark}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--csrl-blue)', fontSize: 16 }}>{test.total ?? '—'}</td>
-                </tr>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Test</th>
+              {streamCfg.subjects.map((s) => (
+                <th key={s}>
+                  <div>{s}</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+                </th>
               ))}
-              {mappedTestList.length === 0 && (
-                <tr><td colSpan={3} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: '32px' }}>No test records found</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              <th>
+                <div>Total</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {chartData.map((row) => {
+              const subScores = subjects.map((s) => {
+                const mark = row[s];
+                const attempted = row[`${s}_Attempted`];
+                const accuracy = row[`${s}_Accuracy`];
+                return { mark, attempted, accuracy };
+              });
+              const total  = row.Total;
+              const totalAttempted = row.Total_Attempted;
+              const totalAccuracy = row.Total_Accuracy;
+              const maxTot = streamCfg.maxTotal;
+              const pct    = total != null && !Number.isNaN(Number(total))
+                ? Math.round((Number(total) / maxTot) * 100)
+                : 0;
+                
+              const renderCell = (v) => {
+                const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+                if (isAbsent) return 'Absent';
+                if (v.mark === null || v.mark === undefined || v.mark === '—') {
+                  if (v.attempted != null) {
+                    return `— | ${v.attempted} | ${v.accuracy}%`;
+                  }
+                  return '—';
+                }
+                const m = v.mark;
+                const at = v.attempted != null ? v.attempted : '—';
+                const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
+                return `${m} | ${at} | ${ac}`;
+              };
+
+              return (
+                <tr key={row.name}>
+                  <td><strong>{row.name}</strong></td>
+                  {subScores.map((v, i) => {
+                    const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+                    const isEmpty = (v.mark === null || v.mark === undefined || v.mark === '—') && v.attempted == null;
+                    return (
+                      <td key={i} style={{ color: (isEmpty || isAbsent) ? 'var(--gray-300)' : 'inherit', whiteSpace: 'nowrap' }}>
+                        {renderCell(v)}
+                      </td>
+                    );
+                  })}
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
+                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
+                    </strong>
+                  </td>
+                </tr>
+              );
+            })}
+            {!chartData.length && (
+              <tr><td colSpan={streamCfg.subjects.length + 2} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
       </div>
       
       {/* HIDDEN PRINTABLE CONTAINER */}
