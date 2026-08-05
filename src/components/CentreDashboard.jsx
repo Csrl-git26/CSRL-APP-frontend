@@ -36,10 +36,7 @@ function getInitials(name = '') {
 export default function CentreDashboard() {
   const { activePage, setActivePage } = useOutletContext();
   const { user: auth } = useAuth();
-  const [centersList, setCentersList] = useState([
-    { code: 'GAIL', name: 'GAIL-KNP', sponsor: 'GAIL' },
-    { code: 'OIL_INDIA', name: 'OIL_INDIA-JDH', sponsor: 'OIL_INDIA' }
-  ]);
+  const [centersList, setCentersList] = useState([]);
 
   const [selectedCenterCode, setSelectedCenterCode] = useState(() => auth.centerCode || 'GAIL');
 
