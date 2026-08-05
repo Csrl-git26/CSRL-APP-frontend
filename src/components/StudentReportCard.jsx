@@ -165,9 +165,33 @@ export default function StudentReportCard({
         )}
       </div>
 
+      {/* FULL WIDTH: Overall Weak Topics MOVED TO PAGE 2 */}
+
+    </div>
+    
+    {/* PAGE 2: Performance Table */}
+    <div id="pdf-report-page2" style={{
+      width: '800px',
+      background: 'white',
+      padding: '24px',
+      color: '#0f172a',
+      fontFamily: 'Inter, sans-serif'
+    }}>
+      {/* HEADER */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '3px solid #1a4fa0', paddingBottom: '8px', marginBottom: '16px' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#1a4fa0', margin: 0, textTransform: 'uppercase' }}>
+            CSRL Student Report (Page 2)
+          </h1>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: '#1e293b' }}>{profile["STUDENT'S NAME"] || 'Unknown'}</h2>
+        </div>
+      </div>
+
       {/* FULL WIDTH: Overall Weak Topics */}
       {overallWeakTopicsData && overallWeakTopicsData.overallWeakTopics && Object.keys(overallWeakTopicsData.overallWeakTopics).length > 0 && (
-        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
             Detailed Weak Topics Analysis <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'none' }}>(Based on {overallWeakTopicsData.totalTests} tests)</span>
           </h3>
@@ -223,28 +247,6 @@ export default function StudentReportCard({
           </div>
         </div>
       )}
-
-    </div>
-    
-    {/* PAGE 2: Performance Table */}
-    <div id="pdf-report-page2" style={{
-      width: '800px',
-      background: 'white',
-      padding: '24px',
-      color: '#0f172a',
-      fontFamily: 'Inter, sans-serif'
-    }}>
-      {/* HEADER */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '3px solid #1a4fa0', paddingBottom: '8px', marginBottom: '16px' }}>
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#1a4fa0', margin: 0, textTransform: 'uppercase' }}>
-            CSRL Student Report (Page 2)
-          </h1>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: '#1e293b' }}>{profile["STUDENT'S NAME"] || 'Unknown'}</h2>
-        </div>
-      </div>
 
       <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
         Performance Test Records
