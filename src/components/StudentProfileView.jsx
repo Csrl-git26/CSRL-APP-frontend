@@ -451,7 +451,6 @@ const chartData = useMemo(() => {
                 )}
               </LineChart>
             </ResponsiveContainer>
-          </>
           </div>
         </div>
       </div>
