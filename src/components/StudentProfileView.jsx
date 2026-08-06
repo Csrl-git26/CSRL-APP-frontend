@@ -366,7 +366,7 @@ const chartData = useMemo(() => {
           <div className="section-title">📈 Performance Trend</div>
           <div style={{ height: 280 }}>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-              {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT'].map((m) => (
+              {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
                 <button
                   key={m}
                   onClick={() => setChartMetric(m)}
@@ -405,7 +405,7 @@ const chartData = useMemo(() => {
               <LineChart data={chartData} margin={{ top: 30, right: 30, left: 65, bottom: 75 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-600)' }} interval={0} angle={-35} textAnchor="end" />
-                <YAxis domain={[0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
+                <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
                 <Tooltip
                   formatter={(value, name) => {
                     const isTotal = name.startsWith('Total');
@@ -414,6 +414,7 @@ const chartData = useMemo(() => {
                     if (chartMetric === 'ACCURACY') return [value !== undefined ? `${value}%` : '—', `${subName} Accuracy`];
                     if (chartMetric === 'ATTEMPTED') return [value ?? '—', `${subName} Attempted`];
                     if (chartMetric === 'CORRECT') return [value ?? '—', `${subName} Correct`];
+                    if (chartMetric === 'RANK') return [value ?? '—', `${subName} Rank`];
                     return [value ?? '—', name];
                   }}
                   contentStyle={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, fontSize: 12 }}
@@ -425,6 +426,7 @@ const chartData = useMemo(() => {
                   if (chartMetric === 'ACCURACY') dataKey = `${sub}_Accuracy`;
                   if (chartMetric === 'ATTEMPTED') dataKey = `${sub}_Attempted`;
                   if (chartMetric === 'CORRECT') dataKey = `${sub}_Correct`;
+                  if (chartMetric === 'RANK') dataKey = `${sub}_Rank`;
 
                   return (
                     <Line
@@ -446,7 +448,7 @@ const chartData = useMemo(() => {
                   <Line
                     name="Total"
                     type="monotone"
-                    dataKey={chartMetric === 'MARKS' ? 'Total' : `Total_${chartMetric.charAt(0).toUpperCase() + chartMetric.slice(1).toLowerCase()}`}
+                    dataKey={chartMetric === 'MARKS' ? 'Total' : (chartMetric === 'RANK' ? 'Total_Rank' : `Total_${chartMetric.charAt(0).toUpperCase() + chartMetric.slice(1).toLowerCase()}`)}
                     stroke="#a21caf"
                     strokeWidth={3}
                     dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
