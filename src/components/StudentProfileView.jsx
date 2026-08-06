@@ -561,14 +561,17 @@ const chartData = useMemo(() => {
                   })}
                   <td style={{ whiteSpace: 'nowrap' }}>
                     <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
-                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
+                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy, rank: totalRank })}
                     </strong>
+                  </td>
+                  <td>
+                    {qualText}
                   </td>
                 </tr>
               );
             })}
             {!chartData.length && (
-              <tr><td colSpan={streamCfg.subjects.length + 2} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
+              <tr><td colSpan={streamCfg.subjects.length + 3} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
             )}
           </tbody>
         </table>
