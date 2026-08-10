@@ -46,7 +46,6 @@ const STUDENT_NAV = [
   { key: 'profile',     Icon: User,          label: 'Profile'     },
   { key: 'performance', Icon: BarChart2,     label: 'Performance & Records' },
   { key: 'analysis',    Icon: BarChart3,     label: 'Test analysis' },
-  { key: 'weaktopics',  Icon: Brain,         label: 'Weak Topics' },
 ];
 
 function centreDisplayName(code) {

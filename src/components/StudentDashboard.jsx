@@ -29,7 +29,6 @@ const TABS = [
   { key: 'profile',     Icon: User,          label: 'Profile'     },
   { key: 'performance', Icon: BarChart2,      label: 'Performance & Records' },
   { key: 'analysis',    Icon: BarChart3,      label: 'Test analysis' },
-  { key: 'weaktopics',  Icon: Brain,         label: 'Weak Topics' },
 ];
 
 function displayCenter(code) {
@@ -438,6 +437,91 @@ export default function StudentDashboard() {
     </div>
   );
 
+  // Removed PerformanceTab from here, it's defined after MarksTab now.
+
+  const MarksTab = () => (
+    <div className="card" style={{ paddingBottom: 16 }}>
+      <div className="section-title">Test Records</div>
+      <div className="table-wrap">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Test</th>
+              {streamCfg.subjects.map((s) => (
+                <th key={s}>
+                  <div>{s}</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+                </th>
+              ))}
+              <th>
+                <div>Total</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {chartData.map((row) => {
+              const subScores = subjects.map((s) => {
+                const mark = row[s];
+                const attempted = row[`${s}_Attempted`];
+                const accuracy = row[`${s}_Accuracy`];
+                return { mark, attempted, accuracy };
+              });
+              const total  = row.Total;
+              const totalAttempted = row.Total_Attempted;
+              const totalAccuracy = row.Total_Accuracy;
+              const maxTot = streamCfg.maxTotal;
+              const pct    = total != null && !Number.isNaN(Number(total))
+                ? Math.round((Number(total) / maxTot) * 100)
+                : 0;
+                
+              const renderCell = (v) => {
+                const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+                if (isAbsent) return 'Absent';
+                if (v.mark === null || v.mark === undefined || v.mark === '—') {
+                  if (v.attempted != null) {
+                    return `— | ${v.attempted} | ${v.accuracy}%`;
+                  }
+                  return '—';
+                }
+                const m = v.mark;
+                const at = v.attempted != null ? v.attempted : '—';
+                const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
+                return `${m} | ${at} | ${ac}`;
+              };
+
+              return (
+                <tr key={row.name}>
+                  <td><strong>{row.name}</strong></td>
+                  {subScores.map((v, i) => {
+                    const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
+                    const isEmpty = (v.mark === null || v.mark === undefined || v.mark === '—') && v.attempted == null;
+                    return (
+                      <td key={i} style={{ color: (isEmpty || isAbsent) ? 'var(--gray-300)' : 'inherit', whiteSpace: 'nowrap' }}>
+                        {renderCell(v)}
+                      </td>
+                    );
+                  })}
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
+                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
+                    </strong>
+                  </td>
+                </tr>
+              );
+            })}
+            {!chartData.length && (
+              <tr><td colSpan={streamCfg.subjects.length + 2} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ padding: '0 16px', fontSize: 11, color: 'var(--gray-500)', marginTop: 8 }}>
+        <em>* Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %</em>
+      </div>
+    </div>
+  );
+
   const PerformanceTab = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div className="card">
@@ -543,88 +627,10 @@ export default function StudentDashboard() {
         )}
       </div>
       <MarksTab />
-    </div>
-  );
-
-  const MarksTab = () => (
-    <div className="card" style={{ paddingBottom: 16 }}>
-      <div className="section-title">Test Records</div>
-      <div className="table-wrap">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Test</th>
-              {streamCfg.subjects.map((s) => (
-                <th key={s}>
-                  <div>{s}</div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
-                </th>
-              ))}
-              <th>
-                <div>Total</div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {chartData.map((row) => {
-              const subScores = subjects.map((s) => {
-                const mark = row[s];
-                const attempted = row[`${s}_Attempted`];
-                const accuracy = row[`${s}_Accuracy`];
-                return { mark, attempted, accuracy };
-              });
-              const total  = row.Total;
-              const totalAttempted = row.Total_Attempted;
-              const totalAccuracy = row.Total_Accuracy;
-              const maxTot = streamCfg.maxTotal;
-              const pct    = total != null && !Number.isNaN(Number(total))
-                ? Math.round((Number(total) / maxTot) * 100)
-                : 0;
-                
-              const renderCell = (v) => {
-                const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
-                if (isAbsent) return 'Absent';
-                if (v.mark === null || v.mark === undefined || v.mark === '—') {
-                  if (v.attempted != null) {
-                    return `— | ${v.attempted} | ${v.accuracy}%`;
-                  }
-                  return '—';
-                }
-                const m = v.mark;
-                const at = v.attempted != null ? v.attempted : '—';
-                const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
-                return `${m} | ${at} | ${ac}`;
-              };
-
-              return (
-                <tr key={row.name}>
-                  <td><strong>{row.name}</strong></td>
-                  {subScores.map((v, i) => {
-                    const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
-                    const isEmpty = (v.mark === null || v.mark === undefined || v.mark === '—') && v.attempted == null;
-                    return (
-                      <td key={i} style={{ color: (isEmpty || isAbsent) ? 'var(--gray-300)' : 'inherit', whiteSpace: 'nowrap' }}>
-                        {renderCell(v)}
-                      </td>
-                    );
-                  })}
-                  <td style={{ whiteSpace: 'nowrap' }}>
-                    <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
-                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
-                    </strong>
-                  </td>
-                </tr>
-              );
-            })}
-            {!chartData.length && (
-              <tr><td colSpan={streamCfg.subjects.length + 2} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No marks recorded yet.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div style={{ padding: '0 16px', fontSize: 11, color: 'var(--gray-500)', marginTop: 8 }}>
-        <em>* Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %</em>
+      
+      <div className="card" style={{ paddingBottom: 16 }}>
+        <div className="section-title">Weak Topics</div>
+        <StudentWeakTopics studentId={auth.id} />
       </div>
     </div>
   );
@@ -702,7 +708,6 @@ export default function StudentDashboard() {
           {activePage === 'profile'     && <ProfileTab />}
           {activePage === 'performance' && <PerformanceTab />}
           {activePage === 'analysis'    && <AnalysisTab />}
-          {activePage === 'weaktopics'  && <StudentWeakTopics studentId={auth.id} />}
         </div>
       </div>
       
