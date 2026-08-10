@@ -8,9 +8,9 @@ function centreLabel(code) {
 function getGradientColor(index, total) {
   if (total <= 1) return '#1a4fa0';
   const factor = index / (total - 1);
-  const r = Math.round(26 + factor * (231 - 26));
-  const g = Math.round(79 + factor * (76 - 79));
-  const b = Math.round(160 + factor * (60 - 160));
+  const r = Math.round(26 + factor * (220 - 26));
+  const g = Math.round(79 + factor * (20 - 79));
+  const b = Math.round(160 + factor * (20 - 160));
   return `rgb(${r}, ${g}, ${b})`;
 }
 
