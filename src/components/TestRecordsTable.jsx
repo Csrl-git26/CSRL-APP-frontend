@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TestRecordsTable({ chartData, streamCfg, stream }) {
+export default function TestRecordsTable({ chartData, streamCfg, stream, isCentre }) {
   const subjects = streamCfg.subjects.filter((sub) => chartData.some((row) => 
     row[sub] !== undefined && row[sub] !== null
   ));
@@ -47,7 +47,15 @@ export default function TestRecordsTable({ chartData, streamCfg, stream }) {
               let isQualified = false;
               let qualText = "—";
 
-              if (total != null && !Number.isNaN(Number(total))) {
+              if (isCentre) {
+                if (row.qualRate != null) {
+                  qualText = (
+                    <span className="badge badge-success" style={{ background: '#f3e8ff', color: '#6b21a8', border: '1px solid #d8b4fe' }}>
+                      {row.qualRate}% Qualified
+                    </span>
+                  );
+                }
+              } else if (total != null && !Number.isNaN(Number(total))) {
                 const tot = Number(total);
                 const p = Number(row.Physics || 0);
                 const c = Number(row.Chemistry || 0);
