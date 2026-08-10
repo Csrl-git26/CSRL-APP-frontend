@@ -67,9 +67,16 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
                 <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>
                   {centre.tested}/{centre.studentCount} tested
                 </span>
-                <span style={{ fontSize: 12, background: 'var(--red-bg)', color: 'var(--red)', padding: '2px 7px', borderRadius: 4, fontWeight: 600, marginLeft: 'auto' }}>
-                  Weak: {centre.weakSubject}
-                </span>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+                  <span style={{ fontSize: 12, background: 'var(--red-bg)', color: 'var(--red)', padding: '2px 7px', borderRadius: 4, fontWeight: 600 }}>
+                    Weak (Avg): {centre.weakSubject}
+                  </span>
+                  {centre.accuracyWeakSubject && (
+                    <span style={{ fontSize: 12, background: '#fdf2f8', color: '#9d174d', padding: '2px 7px', borderRadius: 4, fontWeight: 600 }}>
+                      Weak (Acc): {centre.accuracyWeakSubject}
+                    </span>
+                  )}
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ flex: 1 }}>
