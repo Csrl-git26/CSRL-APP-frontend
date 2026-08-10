@@ -5,20 +5,19 @@ function centreLabel(code) {
   return CENTERS[code]?.name || code;
 }
 
-const RANK_STYLES = [
-  { bg: '#fef9c3', color: '#d97706', border: '#d97706' }, // 1st — gold
-  { bg: '#f3f4f6', color: '#6b7280', border: '#9ca3af' }, // 2nd — silver
-  { bg: '#fff7ed', color: '#c2410c', border: '#c2410c' }, // 3rd — bronze
-];
-
-function getRankStyle(index) {
-  return RANK_STYLES[index] ?? { bg: '#e8f0fc', color: '#1a4fa0', border: 'var(--csrl-blue)' };
+function getGradientColor(index, total) {
+  if (total <= 1) return '#1a4fa0';
+  const factor = index / (total - 1);
+  const r = Math.round(26 + factor * (231 - 26));
+  const g = Math.round(79 + factor * (76 - 79));
+  const b = Math.round(160 + factor * (60 - 160));
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
-function RankBadge({ index }) {
-  const { bg, color } = getRankStyle(index);
+function RankBadge({ index, total }) {
+  const color = getGradientColor(index, total);
   return (
-    <div className="rank-badge" style={{ background: bg, color }} aria-label={`Rank ${index + 1}`}>
+    <div className="rank-badge" style={{ background: '#f8fafc', color }} aria-label={`Rank ${index + 1}`}>
       {index + 1}
     </div>
   );
@@ -50,10 +49,10 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {centreStats.map((centre, index) => {
-        const { color, border } = getRankStyle(index);
+        const color = getGradientColor(index, centreStats.length);
         return (
-          <div key={centre.code} className="centre-rank-card" style={{ borderLeftColor: border }}>
-            <RankBadge index={index} />
+          <div key={centre.code} className="centre-rank-card" style={{ borderLeftColor: color }}>
+            <RankBadge index={index} total={centreStats.length} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                 {centre.code.toUpperCase().includes('OIL') ? (
