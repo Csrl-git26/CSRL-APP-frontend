@@ -11,6 +11,8 @@ import {
   parseTestColumn,
   resolveStudentPhotoUrl,
   fetchCentersApi,
+  fetchCentreChart,
+  getStreamConfig,
 } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
@@ -21,6 +23,8 @@ import CenterWeakTopics from './CenterWeakTopics';
 import CenterOverallWeakTopics from './CenterOverallWeakTopics';
 import { getCenterWeakTopics } from '../services/weakTopicApi';
 import PastYearDataTab from './PastYearDataTab';
+import PerformanceChart from './PerformanceChart';
+import TestRecordsTable from './TestRecordsTable';
 
 const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
@@ -64,6 +68,7 @@ export default function CentreDashboard() {
   const [testInsightsError, setTestInsightsError]   = useState('');
   const [centreBoard, setCentreBoard] = useState([]);
   const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
+  const [centreChartData, setCentreChartData] = useState([]);
 
   useEffect(() => {
     let active = true;
@@ -105,6 +110,10 @@ export default function CentreDashboard() {
           .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
         const candidate   = rankingCols.length ? rankingCols[0] : d.testColumns?.[0];
         if (candidate) setSelectedTestKey(candidate);
+
+        fetchCentreChart(selectedCenterCode)
+          .then(res => setCentreChartData(res?.chartData || []))
+          .catch(e => console.error("Failed to fetch centre chart:", e));
       } catch (err) {
         setError('Failed to load: ' + err.message);
       } finally {
@@ -399,6 +408,11 @@ export default function CentreDashboard() {
         )}
 
         <CenterOverallWeakTopics centerId={selectedCenterCode} />
+
+        <div style={{ marginTop: '24px' }}>
+          <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} />
+          <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} stream={activeCenter?.stream || 'JEE'} />
+        </div>
       </div>
     );
   };

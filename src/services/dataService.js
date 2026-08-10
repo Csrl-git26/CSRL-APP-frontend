@@ -327,6 +327,11 @@ export async function fetchStudentChart(_token, rollKey, centerCode) {
   return apiFetch(`/api/analytics/student-chart?${params}`);
 }
 
+export async function fetchCentreChart(centerCode) {
+  const params = new URLSearchParams({ centerCode, t: Date.now() });
+  return apiFetch(`/api/analytics/centre-chart?${params}`);
+}
+
 export async function fetchTestColumns(_token, centerCode) {
   const qs = centerCode ? `?centerCode=${encodeURIComponent(centerCode)}` : '';
   return apiFetch(`/api/analytics/test-columns${qs}`);
