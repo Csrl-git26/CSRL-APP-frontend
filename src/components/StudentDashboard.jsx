@@ -515,10 +515,6 @@ export default function StudentDashboard() {
             )}
           </tbody>
         </table>
-      </div>
-      <div style={{ padding: '0 16px', fontSize: 11, color: 'var(--gray-500)', marginTop: 8 }}>
-        <em>* Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %</em>
-      </div>
     </div>
   );
 

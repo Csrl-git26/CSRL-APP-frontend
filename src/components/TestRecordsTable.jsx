@@ -128,6 +128,9 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
           </tbody>
         </table>
       </div>
+      <div style={{ padding: '8px 16px', fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>
+        <em>* Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %, RANK = {isCentre ? "Centre's Rank" : "Student's Rank"}</em>
+      </div>
     </div>
   );
 }
