@@ -16,12 +16,16 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
               {streamCfg.subjects.map((s) => (
                 <th key={s}>
                   <div>{s}</div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC. | RANK</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>
+                    M | AT. | AC.{!isCentre && ' | RANK'}
+                  </div>
                 </th>
               ))}
               <th>
                 <div>Total</div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC. | RANK</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>
+                  M | AT. | AC.{!isCentre && ' | RANK'}
+                </div>
               </th>
               <th>
                 <div>Qualification</div>
