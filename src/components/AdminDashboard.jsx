@@ -22,7 +22,6 @@ import {
   upsertTestScoresApi,
   bulkUpsertTestScoresApi,
   parseTestColumn,
-  getJeePercentile,
   getStreamConfig,
   resolveStudentPhotoUrl,
   deleteTestApi,
