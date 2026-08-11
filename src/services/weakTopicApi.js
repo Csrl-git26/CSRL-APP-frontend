@@ -41,21 +41,43 @@ async function handleResponse(res) {
   return res.json();
 }
 
+const apiCache = new Map();
+const CACHE_TTL = 30000; // 30 seconds
+
+async function cachedFetch(urlKey, originalUrl) {
+  const now = Date.now();
+  if (apiCache.has(urlKey)) {
+    const { data, timestamp } = apiCache.get(urlKey);
+    if (now - timestamp < CACHE_TTL) return data;
+  }
+  const promise = fetch(originalUrl, { headers: authHeaders() }).then(handleResponse);
+  apiCache.set(urlKey, { data: promise, timestamp: now });
+  try {
+    await promise;
+  } catch (err) {
+    apiCache.delete(urlKey);
+  }
+  return promise;
+}
+
+export function clearWeakTopicsFrontendCache() {
+  apiCache.clear();
+}
+
 /**
  * getStudentWeakTopics — fetch weak topic data for a student.
  * If testId provided: returns single doc or {}.
  * If not provided: returns array sorted by testId.
  */
 export async function getStudentWeakTopics(studentId, testId = null) {
-  let url = `${BASE}/api/student/weak-topics/${encodeURIComponent(studentId)}`;
+  let urlKey = `${BASE}/api/student/weak-topics/${encodeURIComponent(studentId)}`;
   const params = new URLSearchParams();
   if (testId) params.set('testId', testId);
   const qs = params.toString();
-  if (qs) url += `?${qs}&_t=${Date.now()}`;
-  else url += `?_t=${Date.now()}`;
-
-  const res = await fetch(url, { headers: authHeaders() });
-  return handleResponse(res);
+  if (qs) urlKey += `?${qs}`;
+  
+  const originalUrl = `${urlKey}${qs ? '&' : '?'}_t=${Date.now()}`;
+  return cachedFetch(urlKey, originalUrl);
 }
 
 /**
@@ -64,15 +86,14 @@ export async function getStudentWeakTopics(studentId, testId = null) {
  * If not provided: returns array sorted by testId.
  */
 export async function getCenterWeakTopics(centerId, testId = null) {
-  let url = `${BASE}/api/center/weak-topics/${encodeURIComponent(centerId)}`;
+  let urlKey = `${BASE}/api/center/weak-topics/${encodeURIComponent(centerId)}`;
   const params = new URLSearchParams();
   if (testId) params.set('testId', testId);
   const qs = params.toString();
-  if (qs) url += `?${qs}&_t=${Date.now()}`;
-  else url += `?_t=${Date.now()}`;
+  if (qs) urlKey += `?${qs}`;
 
-  const res = await fetch(url, { headers: authHeaders() });
-  return handleResponse(res);
+  const originalUrl = `${urlKey}${qs ? '&' : '?'}_t=${Date.now()}`;
+  return cachedFetch(urlKey, originalUrl);
 }
 
 /**
@@ -80,6 +101,7 @@ export async function getCenterWeakTopics(centerId, testId = null) {
  * @param {FormData} formData - fields: testId, file
  */
 export async function uploadTestSheet(formData) {
+  clearWeakTopicsFrontendCache();
   const res = await fetch(`${BASE}/api/admin/weak-topics/upload-test-sheet`, {
     method:  'POST',
     headers: authHeaders(), // Do NOT set Content-Type — browser sets multipart boundary
@@ -92,18 +114,18 @@ export async function uploadTestSheet(formData) {
  * getStudentOverallWeakTopics — fetch overall weak topic data for a student.
  */
 export async function getStudentOverallWeakTopics(studentId) {
-  const url = `${BASE}/api/student/overall-weak-topics/${encodeURIComponent(studentId)}?_t=${Date.now()}`;
-  const res = await fetch(url, { headers: authHeaders() });
-  return handleResponse(res);
+  const urlKey = `${BASE}/api/student/overall-weak-topics/${encodeURIComponent(studentId)}`;
+  const originalUrl = `${urlKey}?_t=${Date.now()}`;
+  return cachedFetch(urlKey, originalUrl);
 }
 
 /**
  * getCenterOverallWeakTopics — fetch overall weak topic data for a center.
  */
 export async function getCenterOverallWeakTopics(centerId) {
-  const url = `${BASE}/api/center/overall-weak-topics/${encodeURIComponent(centerId)}?_t=${Date.now()}`;
-  const res = await fetch(url, { headers: authHeaders() });
-  return handleResponse(res);
+  const urlKey = `${BASE}/api/center/overall-weak-topics/${encodeURIComponent(centerId)}`;
+  const originalUrl = `${urlKey}?_t=${Date.now()}`;
+  return cachedFetch(urlKey, originalUrl);
 }
 
 /**

@@ -146,6 +146,13 @@ function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
 
+const frontendApiCache = new Map();
+const FRONTEND_CACHE_TTL = 30000; // 30 seconds
+
+export function clearFrontendDataCache() {
+  frontendApiCache.clear();
+}
+
 /**
  * Central fetch wrapper.
  * Reads the JWT from localStorage automatically — no token argument needed.
@@ -168,28 +175,53 @@ async function apiFetch(path, opts = {}) {
     url = `${API_BASE}${normalizedPath}`;
   }
 
-  // Bypass browser caching for GET requests to prevent stale UI during CRUD operations
-  if (method.toUpperCase() === 'GET') {
-    url += url.includes('?') ? `&_t=${Date.now()}` : `?_t=${Date.now()}`;
-  }
-
-  const res = await fetch(url, {
-    method,
-    headers,
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-  });
-
-  if (!res.ok) {
-    if (res.status === 401 || res.status === 403) {
-      localStorage.removeItem(TOKEN_KEY);
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+  const isGet = method.toUpperCase() === 'GET';
+  const cacheKey = url;
+  
+  if (isGet) {
+    const now = Date.now();
+    if (frontendApiCache.has(cacheKey)) {
+      const { promise, timestamp } = frontendApiCache.get(cacheKey);
+      if (now - timestamp < FRONTEND_CACHE_TTL) {
+        return promise;
       }
     }
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `API error (${res.status})`);
+    url += url.includes('?') ? `&_t=${now}` : `?_t=${now}`;
+  } else {
+    // Clear cache on any mutation
+    clearFrontendDataCache();
   }
-  return res.json();
+
+  const fetchPromise = (async () => {
+    const res = await fetch(url, {
+      method,
+      headers,
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    });
+
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem(TOKEN_KEY);
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+      }
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `API error (${res.status})`);
+    }
+    return res.json();
+  })();
+
+  if (isGet) {
+    frontendApiCache.set(cacheKey, { promise: fetchPromise, timestamp: Date.now() });
+    try {
+      await fetchPromise;
+    } catch (err) {
+      frontendApiCache.delete(cacheKey);
+    }
+  }
+
+  return fetchPromise;
 }
 
 // ── Data-fetching (all via backend cache) ──────────────────────────────────────
