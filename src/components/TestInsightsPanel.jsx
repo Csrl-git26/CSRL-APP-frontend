@@ -303,44 +303,6 @@ export default function TestInsightsPanel({
 
       {!showStudentCard && (
         <>
-          <div className="card">
-            <div className="section-title">Centre rank — average total & qualification</div>
-            <div className="table-wrap">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Centre</th>
-                    <th>Appeared</th>
-                    <th>Qualified</th>
-                    <th>Qual %</th>
-                    {subjects.map((sub) => (
-                      <th key={sub}>Avg {sub}</th>
-                    ))}
-                    <th>Avg total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(insights.centreRows || []).map((row) => (
-                    <tr key={row.code} style={rowHighlight(row.code)}>
-                      <td>{row.rank}</td>
-                      <td>
-                        <strong>{row.code}</strong>
-                        <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{centreLabel(row.code)}</div>
-                      </td>
-                      <td>{row.appeared}</td>
-                      <td>{row.qualified}</td>
-                      <td>{row.qualRate}%</td>
-                      {subjects.map((sub) => (
-                        <td key={sub}>{row.subjectAvgs?.[sub] ?? '—'}</td>
-                      ))}
-                      <td><strong>{row.totalAvg}</strong></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
 
 
           <div className="grid-2">
