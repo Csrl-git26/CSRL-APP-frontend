@@ -356,9 +356,10 @@ export default function CentreDashboard() {
     let accLabel = 'N/A';
     if (accuracyWeakSubject) {
       const { subject, isMedium, percent } = accuracyWeakSubject;
-      const subAvgObj = subjectAvgs.find(s => s.subject === subject);
+      const normSub = subject === 'Mathematics' ? 'Math' : subject;
+      const subAvgObj = subjectAvgs.find(s => s.subject === normSub);
       const subAvgVal = subAvgObj ? subAvgObj.avg : '?';
-      const maxSubVal = getStreamConfig(activeCenter?.stream || 'JEE').maxBySubject?.[subject] || 100;
+      const maxSubVal = getStreamConfig(activeCenter?.stream || 'JEE').maxBySubject?.[normSub] || 100;
       accLabel = `${subject} ${isMedium ? '(Medium) ' : ''}${percent.toFixed(1)}% (${subAvgVal}/${maxSubVal})`;
     }
 
