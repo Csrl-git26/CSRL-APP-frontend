@@ -342,34 +342,6 @@ export default function TestInsightsPanel({
             </div>
           </div>
 
-          <div className="card">
-            <div className="section-title">
-              <TrendingDown size={16} color="var(--red)" aria-hidden="true" />
-              Bottom 5 centres — by avg total
-            </div>
-            <div className="table-wrap">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Centre</th>
-                    <th>Avg total</th>
-                    <th>Qual %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(insights.bottom5Centres || []).map((row) => (
-                    <tr key={row.code} style={rowHighlight(row.code)}>
-                      <td>
-                        <strong>{row.code}</strong> — {centreLabel(row.code)}
-                      </td>
-                      <td>{row.totalAvg}</td>
-                      <td>{row.qualRate}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
 
           <div className="grid-2">
             <div className="card">
@@ -386,22 +358,6 @@ export default function TestInsightsPanel({
                   ))}
                 {!Object.values(insights.notQualifiedOverall || {}).some((n) => n > 0) && (
                   <li style={{ color: 'var(--gray-400)' }}>None</li>
-                )}
-              </ul>
-            </div>
-
-            <div className="card">
-              <div className="section-title" style={{ fontSize: 14 }}>Low qualification rate (≤ 50%)</div>
-              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
-                {(insights.qualificationRateByCentre || [])
-                  .filter((r) => r.qualRate <= 50)
-                  .map((r) => (
-                    <li key={r.code}>
-                      {r.code}: {r.qualRate}%
-                    </li>
-                  ))}
-                {!(insights.qualificationRateByCentre || []).some((r) => r.qualRate <= 50) && (
-                  <li style={{ color: 'var(--gray-400)' }}>No centre at or below 50%</li>
                 )}
               </ul>
             </div>
