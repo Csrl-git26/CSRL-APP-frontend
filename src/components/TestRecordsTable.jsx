@@ -17,14 +17,14 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 <th key={s}>
                   <div>{s}</div>
                   <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>
-                    M | AT. | AC.{!isCentre && ' | RANK'}
+                    M | AT. | AC. | RANK
                   </div>
                 </th>
               ))}
               <th>
                 <div>Total</div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>
-                  M | AT. | AC.{!isCentre && ' | RANK'}
+                  M | AT. | AC. | RANK
                 </div>
               </th>
               <th>
@@ -88,7 +88,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 if (isAbsent) return 'Absent';
                 if (v.mark === null || v.mark === undefined || v.mark === '—') {
                   if (v.attempted != null) {
-                    return `— | ${v.attempted} | ${v.accuracy}% | —`;
+                    return `— | ${v.attempted} | ${v.accuracy != null ? v.accuracy + '%' : '—'} | —`;
                   }
                   return '—';
                 }
