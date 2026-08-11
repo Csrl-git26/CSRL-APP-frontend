@@ -175,7 +175,7 @@ export default function CentreDashboard() {
             }
             
             if (weakestSub) {
-              setAccuracyWeakSubject(isMedium ? `${weakestSub} (Medium)` : weakestSub);
+              setAccuracyWeakSubject(isMedium ? `${weakestSub} (Medium) ${highestPercent.toFixed(1)}%` : `${weakestSub} ${highestPercent.toFixed(1)}%`);
             } else {
               setAccuracyWeakSubject('None');
             }
@@ -270,11 +270,13 @@ export default function CentreDashboard() {
     if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
     const minAvg = Math.min(...subjectAvgs.map((s) => s.avg));
     const tied = subjectAvgs.filter((s) => s.avg === minAvg);
+    const maxSub = getStreamConfig(activeCenter?.stream || 'JEE').maxSubject;
+    const avgLabel = minAvg != null ? `(${minAvg}/${maxSub})` : '';
     const label = tied.length === 1
-      ? tied[0].subject
-      : tied.map((t) => t.subject).join(', ');
+      ? `${tied[0].subject} ${avgLabel}`
+      : `${tied.map((t) => t.subject).join(', ')} ${avgLabel}`;
     return { minSubjectAvg: minAvg, weakSubjectFromPerformance: label };
-  }, [subjectAvgs]);
+  }, [subjectAvgs, activeCenter?.stream]);
 
   // ── Render states ─────────────────────────────────────────────────────────────
 
@@ -391,7 +393,7 @@ export default function CentreDashboard() {
                       {s.subject}
                       {isWeakest && <AlertTriangle size={12} style={{ marginLeft: 5 }} color="var(--red)" aria-hidden="true" />}
                     </span>
-                    <span style={{ fontWeight: 600 }}>{s.avg}</span>
+                    <span style={{ fontWeight: 600 }}>{s.avg}/{getStreamConfig(activeCenter?.stream || 'JEE').maxSubject}</span>
                   </div>
                   <div className="progress-bar">
                     <div
