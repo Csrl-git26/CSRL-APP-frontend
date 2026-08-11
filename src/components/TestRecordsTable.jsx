@@ -85,18 +85,38 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 
               const renderCell = (v) => {
                 const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
-                if (isAbsent) return 'Absent';
+                if (isAbsent) return <strong style={{ fontSize: '1.1em', color: 'var(--red)' }}>Absent</strong>;
                 if (v.mark === null || v.mark === undefined || v.mark === '—') {
                   if (v.attempted != null) {
-                    return `— | ${v.attempted} | ${v.accuracy != null ? v.accuracy + '%' : '—'} | —`;
+                    return (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <strong style={{ fontSize: '1.1em', color: 'var(--gray-500)' }}>—</strong>
+                        <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
+                        <span style={{ color: 'var(--gray-600)' }}>{v.attempted}</span>
+                        <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
+                        <span style={{ color: 'var(--gray-600)' }}>{v.accuracy != null ? v.accuracy + '%' : '—'}</span>
+                        <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
+                        <span style={{ color: 'var(--gray-600)' }}>—</span>
+                      </span>
+                    );
                   }
-                  return '—';
+                  return <strong style={{ fontSize: '1.1em', color: 'var(--gray-400)' }}>—</strong>;
                 }
                 const m = Math.round(v.mark);
                 const at = v.attempted != null ? v.attempted : '—';
                 const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
                 const rnk = v.rank != null ? v.rank : '—';
-                return `${m} | ${at} | ${ac} | ${rnk}`;
+                return (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <strong style={{ fontSize: '1.1em', color: 'var(--csrl-blue)' }}>{m}</strong>
+                    <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
+                    <span style={{ color: 'var(--gray-600)' }}>{at}</span>
+                    <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
+                    <span style={{ color: 'var(--gray-600)' }}>{ac}</span>
+                    <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
+                    <span style={{ color: 'var(--gray-600)' }}>{rnk}</span>
+                  </span>
+                );
               };
 
               return (
@@ -112,9 +132,9 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                     );
                   })}
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
+                    <div style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
                       {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy, rank: totalRank })}
-                    </strong>
+                    </div>
                   </td>
                   <td>
                     {qualText}
