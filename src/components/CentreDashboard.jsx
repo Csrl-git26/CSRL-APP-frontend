@@ -175,12 +175,12 @@ export default function CentreDashboard() {
             }
             
             if (weakestSub) {
-              setAccuracyWeakSubject(isMedium ? `${weakestSub} (Medium) ${highestPercent.toFixed(1)}%` : `${weakestSub} ${highestPercent.toFixed(1)}%`);
+              setAccuracyWeakSubject({ subject: weakestSub, isMedium, percent: highestPercent });
             } else {
-              setAccuracyWeakSubject('None');
+              setAccuracyWeakSubject(null);
             }
           } else {
-            setAccuracyWeakSubject(null);
+              setAccuracyWeakSubject(null);
           }
         }
       })
@@ -270,11 +270,10 @@ export default function CentreDashboard() {
     if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
     const minAvg = Math.min(...subjectAvgs.map((s) => s.avg));
     const tied = subjectAvgs.filter((s) => s.avg === minAvg);
-    const maxSub = getStreamConfig(activeCenter?.stream || 'JEE').maxSubject;
-    const avgLabel = minAvg != null ? `(${minAvg}/${maxSub})` : '';
+    const streamCfg = getStreamConfig(activeCenter?.stream || 'JEE');
     const label = tied.length === 1
-      ? `${tied[0].subject} ${avgLabel}`
-      : `${tied.map((t) => t.subject).join(', ')} ${avgLabel}`;
+      ? `${tied[0].subject} (${minAvg}/${streamCfg.maxBySubject?.[tied[0].subject] || 100})`
+      : `${tied.map((t) => t.subject).join(', ')} (${minAvg}/${streamCfg.maxBySubject?.[tied[0].subject] || 100})`;
     return { minSubjectAvg: minAvg, weakSubjectFromPerformance: label };
   }, [subjectAvgs, activeCenter?.stream]);
 
@@ -354,10 +353,19 @@ export default function CentreDashboard() {
       : 0;
     const topScore = topRanked.length && typeof topRanked[0]?.marks === 'number' ? topRanked[0].marks : 0;
 
+    let accLabel = 'N/A';
+    if (accuracyWeakSubject) {
+      const { subject, isMedium, percent } = accuracyWeakSubject;
+      const subAvgObj = subjectAvgs.find(s => s.subject === subject);
+      const subAvgVal = subAvgObj ? subAvgObj.avg : '?';
+      const maxSubVal = getStreamConfig(activeCenter?.stream || 'JEE').maxBySubject?.[subject] || 100;
+      accLabel = `${subject} ${isMedium ? '(Medium) ' : ''}${percent.toFixed(1)}% (${subAvgVal}/${maxSubVal})`;
+    }
+
     const statCards = [
       { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#e8f0fc', color: '#1a4fa0' },
       { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#fdecea', color: 'var(--red)' },
-      { Icon: Brain,         value: accuracyWeakSubject ?? 'N/A', label: 'Weak Sub (Acc)', bg: '#fdf2f8', color: '#9d174d' },
+      { Icon: Brain,         value: accLabel,      label: 'Weak Sub (Acc)', bg: '#fdf2f8', color: '#9d174d' },
       { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#e6f5ed', color: '#1a6e3b' },
       { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#fff3e0', color: '#b45309' },
     ];
@@ -393,7 +401,7 @@ export default function CentreDashboard() {
                       {s.subject}
                       {isWeakest && <AlertTriangle size={12} style={{ marginLeft: 5 }} color="var(--red)" aria-hidden="true" />}
                     </span>
-                    <span style={{ fontWeight: 600 }}>{s.avg}/{getStreamConfig(activeCenter?.stream || 'JEE').maxSubject}</span>
+                    <span style={{ fontWeight: 600 }}>{s.avg}/{getStreamConfig(activeCenter?.stream || 'JEE').maxBySubject?.[s.subject] || 100}</span>
                   </div>
                   <div className="progress-bar">
                     <div
