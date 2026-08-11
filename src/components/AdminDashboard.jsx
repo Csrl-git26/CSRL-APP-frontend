@@ -945,14 +945,13 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+        
+        <div style={{ marginTop: '24px' }}>
+          <AdminWeakTopics centersList={centersList} selectedTestKey={selectedTestKey} />
+        </div>
       </div>
-      
-      <div style={{ marginTop: '24px' }}>
-        <AdminWeakTopics centersList={centersList} selectedTestKey={selectedTestKey} />
-      </div>
-    </div>
-  );
-};
+    );
+  };
 
   const LeaderboardSection = () => (
     <div>
