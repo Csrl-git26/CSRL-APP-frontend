@@ -402,7 +402,7 @@ export default function AdminDashboard() {
   }, [selectedTestKey, refreshTrigger]);
 
   useEffect(() => {
-    if (activePage !== 'insights' || !selectedTestKey) return undefined;
+    if (activePage !== 'ranking' || !selectedTestKey) return undefined;
     let cancelled = false;
     setTestInsightsLoading(true);
     setTestInsightsError('');

@@ -204,7 +204,7 @@ export default function CentreDashboard() {
   }, [selectedTestKey, selectedCenterCode, data?.profiles?.length]);
 
   useEffect(() => {
-    if (activePage !== 'insights' || !selectedTestKey) return undefined;
+    if (activePage !== 'topbottom' || !selectedTestKey) return undefined;
     let cancelled = false;
     setTestInsightsLoading(true);
     setTestInsightsError('');
@@ -772,15 +772,6 @@ export default function CentreDashboard() {
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'   && <OverviewSection />}
-          {activePage === 'insights' && (
-            <TestInsightsPanel
-              insights={testInsights}
-              loading={testInsightsLoading}
-              error={testInsightsError}
-              highlightCenter={selectedCenterCode}
-              testKey={selectedTestKey}
-            />
-          )}
           {activePage === 'topbottom'  && <RankingsPair />}
           {activePage === 'students'   && <StudentsSection />}
           {activePage === 'pastyear'   && <PastYearDataTab isAdmin={false} />}
