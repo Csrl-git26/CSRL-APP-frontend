@@ -13,7 +13,6 @@ import {
   BarChart2,
   BarChart3,
   LogOut,
-  Brain,
   Archive,
 } from 'lucide-react';
 

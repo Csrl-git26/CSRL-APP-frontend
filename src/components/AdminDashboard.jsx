@@ -5,7 +5,7 @@ import {
   ShieldCheck, Plus, Upload, Download, Package, Pencil, Trash2,
   Search, TrendingUp, TrendingDown, LayoutDashboard, BarChart2,
   Lightbulb, Loader2, CheckCircle2,
-  Eye, BarChart3, Brain,
+  Eye, BarChart3,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import {
@@ -1553,7 +1553,6 @@ export default function AdminDashboard() {
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}
           {activePage === 'ranking'     && <RankingsSection />}
-          {activePage === 'weaktopics'  && <AdminWeakTopics centersList={centersList} selectedTestKey={selectedTestKey} />}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'insights' && (
             <TestInsightsPanel
