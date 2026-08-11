@@ -345,19 +345,30 @@ export default function TestInsightsPanel({
 
           <div className="grid-2">
             <div className="card">
-              <div className="section-title" style={{ fontSize: 14 }}>Low qualification rate (≤ 50%)</div>
-              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
-                {(insights.qualificationRateByCentre || [])
-                  .filter((r) => r.qualRate <= 50)
-                  .map((r) => (
-                    <li key={r.code}>
-                      {r.code}: {r.qualRate}%
-                    </li>
-                  ))}
-                {!(insights.qualificationRateByCentre || []).some((r) => r.qualRate <= 50) && (
-                  <li style={{ color: 'var(--gray-400)' }}>No centre at or below 50%</li>
-                )}
-              </ul>
+              <div className="section-title">Below subject cutoff — count by centre</div>
+              <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
+                Students with a subject mark below their stream&apos;s cutoff ({Math.round((cut?.subjectQualifyRatio ?? 0.35) * 100)}% of that subject&apos;s max — JEE vs NEET differ).
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
+                {subjects.map((sub) => (
+                  <div key={sub} style={{ background: 'var(--gray-50)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--csrl-blue)' }}>{sub}</div>
+                    <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.7 }}>
+                      {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
+                        .filter(([, n]) => n > 0)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([code, n]) => (
+                          <li key={code}>
+                            {code}: {n}
+                          </li>
+                        ))}
+                      {!Object.values((insights.notQualifiedBySubject || {})[sub] || {}).some((n) => n > 0) && (
+                        <li style={{ color: 'var(--gray-400)' }}>None</li>
+                      )}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="card">
@@ -376,33 +387,6 @@ export default function TestInsightsPanel({
                   <li style={{ color: 'var(--gray-400)' }}>None</li>
                 )}
               </ul>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="section-title">Below subject cutoff — count by centre</div>
-            <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
-              Students with a subject mark below their stream&apos;s cutoff ({Math.round((cut?.subjectQualifyRatio ?? 0.35) * 100)}% of that subject&apos;s max — JEE vs NEET differ).
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-              {subjects.map((sub) => (
-                <div key={sub} style={{ background: 'var(--gray-50)', borderRadius: 8, padding: 12 }}>
-                  <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--csrl-blue)' }}>{sub}</div>
-                  <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.7 }}>
-                    {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
-                      .filter(([, n]) => n > 0)
-                      .sort((a, b) => b[1] - a[1])
-                      .map(([code, n]) => (
-                        <li key={code}>
-                          {code}: {n}
-                        </li>
-                      ))}
-                    {!Object.values((insights.notQualifiedBySubject || {})[sub] || {}).some((n) => n > 0) && (
-                      <li style={{ color: 'var(--gray-400)' }}>None</li>
-                    )}
-                  </ul>
-                </div>
-              ))}
             </div>
           </div>
         </>
