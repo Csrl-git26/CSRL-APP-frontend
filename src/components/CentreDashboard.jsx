@@ -31,7 +31,6 @@ const TABS = [
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
   { key: 'insights',   Icon: BarChart3,       label: 'Test analysis' },
-  { key: 'weaktopics', Icon: Brain,           label: 'Weak Topics' },
   { key: 'students',   Icon: Users,           label: 'Students'  },
   { key: 'pastyear',   Icon: Package,         label: 'Past Year Data' },
 ];
@@ -413,6 +412,10 @@ export default function CentreDashboard() {
           <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} />
           <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} stream={activeCenter?.stream || 'JEE'} isCentre={true} />
         </div>
+        
+        <div style={{ marginTop: '24px' }}>
+          <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} />
+        </div>
       </div>
     );
   };
@@ -770,7 +773,6 @@ export default function CentreDashboard() {
           )}
           {activePage === 'topbottom'  && <RankingsPair />}
           {activePage === 'students'   && <StudentsSection />}
-          {activePage === 'weaktopics' && <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} />}
           {activePage === 'pastyear'   && <PastYearDataTab isAdmin={false} />}
         </div>
       </div>
