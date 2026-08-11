@@ -345,6 +345,22 @@ export default function TestInsightsPanel({
 
           <div className="grid-2">
             <div className="card">
+              <div className="section-title" style={{ fontSize: 14 }}>Low qualification rate (≤ 50%)</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
+                {(insights.qualificationRateByCentre || [])
+                  .filter((r) => r.qualRate <= 50)
+                  .map((r) => (
+                    <li key={r.code}>
+                      {r.code}: {r.qualRate}%
+                    </li>
+                  ))}
+                {!(insights.qualificationRateByCentre || []).some((r) => r.qualRate <= 50) && (
+                  <li style={{ color: 'var(--gray-400)' }}>No centre at or below 50%</li>
+                )}
+              </ul>
+            </div>
+
+            <div className="card">
               <div className="section-title" style={{ fontSize: 14 }}>Not qualified (overall) — count by centre</div>
               <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }}>Students who attempted but did not meet qualification rules.</p>
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
