@@ -609,6 +609,17 @@ export default function CentreDashboard() {
           </table>
         </div>
       </div>
+
+      <div className="card" style={{ marginTop: 8 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16, color: 'var(--csrl-blue)' }}>Test Analysis Tab</h2>
+        <TestInsightsPanel
+          insights={testInsights}
+          loading={testInsightsLoading}
+          error={testInsightsError}
+          testKey={selectedTestKey}
+          hideSubjectAverages
+        />
+      </div>
     </div>
   );
 

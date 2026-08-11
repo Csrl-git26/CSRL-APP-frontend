@@ -975,9 +975,21 @@ export default function AdminDashboard() {
   );
 
   const RankingsSection = () => (
-    <div className="grid-2">
-      <Top30Section />
-      <Bottom30Section />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="grid-2">
+        <Top30Section />
+        <Bottom30Section />
+      </div>
+      <div className="card" style={{ marginTop: 8 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16, color: 'var(--csrl-blue)' }}>Test Analysis Tab</h2>
+        <TestInsightsPanel
+          insights={testInsights}
+          loading={testInsightsLoading}
+          error={testInsightsError}
+          testKey={selectedTestKey}
+          hideSubjectAverages
+        />
+      </div>
     </div>
   );
 
@@ -1552,15 +1564,6 @@ export default function AdminDashboard() {
           {activePage === 'import'      && <ImportExportSection />}
           {activePage === 'ranking'     && <RankingsSection />}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
-          {activePage === 'insights' && (
-            <TestInsightsPanel
-              insights={testInsights}
-              loading={testInsightsLoading}
-              error={testInsightsError}
-              testKey={selectedTestKey}
-              hideSubjectAverages
-            />
-          )}
         </div>
       </div>
     </div>
