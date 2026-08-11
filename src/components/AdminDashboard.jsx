@@ -70,7 +70,6 @@ const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',    Icon: LayoutDashboard, label: 'Dashboard'          },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
-  { key: 'insights',    Icon: BarChart3,       label: 'Test analysis'      },
   { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'marks',       Icon: FileText,        label: 'Test Marks'         },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
