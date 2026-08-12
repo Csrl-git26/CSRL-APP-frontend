@@ -1,4 +1,4 @@
-import { BarChart2 } from 'lucide-react';
+import { BarChart2, ChevronRight } from 'lucide-react';
 import { CENTERS } from '../config/centers';
 
 function centreLabel(code) {
@@ -114,6 +114,11 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 </div>
               </div>
             </div>
+            {clickable && (
+              <div style={{ display: 'flex', alignItems: 'center', marginLeft: 4, color: 'var(--gray-400)' }}>
+                <ChevronRight size={24} strokeWidth={2.5} />
+              </div>
+            )}
           </div>
         );
       })}
