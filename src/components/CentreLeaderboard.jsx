@@ -60,30 +60,30 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
                 ) : centre.code.toUpperCase().includes('GAIL') ? (
                   <img src="/GAIL_logo.png" alt="GAIL" style={{ height: 28, objectFit: 'contain' }} />
                 ) : null}
-                <span style={{ fontWeight: 700, fontSize: 15 }}>{centreLabel(centre.code)}</span>
-                <span style={{ fontSize: 12, background: 'var(--csrl-blue-light)', color: 'var(--csrl-blue)', padding: '2px 8px', borderRadius: 4, fontWeight: 600 }}>
+                <span style={{ fontWeight: 800, fontSize: 16 }}>{centreLabel(centre.code)}</span>
+                <span style={{ fontSize: 13, background: 'var(--csrl-blue-light)', color: 'var(--csrl-blue)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
                   {centre.code}
                 </span>
-                <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>
+                <span style={{ fontSize: 13, color: 'var(--gray-500)', fontWeight: 600 }}>
                   {centre.tested}/{centre.studentCount} tested
                 </span>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
                   {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
-                    <span style={{ fontSize: 11, background: '#f8fafc', border: '1px solid var(--gray-200)', color: 'var(--gray-600)', padding: '1px 6px', borderRadius: 4, display: 'flex', gap: 6, alignItems: 'center' }}>
-                      <span style={{ color: 'var(--gray-500)', fontWeight: 500 }}>Not Qual:</span>
+                    <span style={{ fontSize: 13, background: '#f8fafc', border: '1px solid var(--gray-200)', color: 'var(--gray-700)', padding: '2px 8px', borderRadius: 4, display: 'flex', gap: 6, alignItems: 'center', fontWeight: 700 }}>
+                      <span style={{ color: 'var(--gray-500)', fontWeight: 600 }}>Not Qual:</span>
                       {Object.entries(centre.notQualBySub).map(([sub, count]) => (
-                        <span key={sub} style={{ fontWeight: 600 }}>{sub === 'Mathematics' || sub === 'Math' ? 'Math' : sub.substring(0, 4)}: <strong style={{ color: 'var(--red)' }}>{count}</strong></span>
+                        <span key={sub}>{sub === 'Mathematics' || sub === 'Math' ? 'Math' : sub.substring(0, 4)}: <strong style={{ color: 'var(--red)' }}>{count}</strong></span>
                       ))}
                     </span>
                   )}
-                  <span style={{ fontSize: 12, background: '#fae8ff', color: '#86198f', padding: '2px 8px', borderRadius: 4, fontWeight: 600 }}>
+                  <span style={{ fontSize: 13, background: '#fae8ff', color: '#86198f', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
                     {centre.qualRate ?? 0}% Qual.
                   </span>
-                  <span style={{ fontSize: 12, background: 'var(--red-bg)', color: 'var(--red)', padding: '2px 7px', borderRadius: 4, fontWeight: 600 }}>
+                  <span style={{ fontSize: 13, background: 'var(--red-bg)', color: 'var(--red)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
                     Weak (Avg): {centre.weakSubject}
                   </span>
                   {centre.accuracyWeakSubject && (
-                    <span style={{ fontSize: 12, background: '#fdf2f8', color: '#9d174d', padding: '2px 7px', borderRadius: 4, fontWeight: 600 }}>
+                    <span style={{ fontSize: 13, background: '#fdf2f8', color: '#9d174d', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
                       Weak (Acc): {centre.accuracyWeakSubject}
                     </span>
                   )}
@@ -95,10 +95,10 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
                     <div className="progress-fill" style={{ width: `${pct(centre.avg, maxAvg)}%`, background: color }} />
                   </div>
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, minWidth: 90, textAlign: 'right', color: 'var(--gray-800)' }}>
-                  Avg: <span style={{ fontSize: 16, color }}>{centre.avg}</span>
+                <div style={{ fontSize: 14, fontWeight: 800, minWidth: 90, textAlign: 'right', color: 'var(--gray-800)' }}>
+                  Avg: <span style={{ fontSize: 18, color }}>{centre.avg}</span>
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)', minWidth: 60, textAlign: 'right' }}>
+                <div style={{ fontSize: 13, color: 'var(--gray-500)', minWidth: 60, textAlign: 'right', fontWeight: 600 }}>
                   Top: {centre.top}
                 </div>
               </div>
