@@ -69,8 +69,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
               <div style={{
                 position: 'absolute',
                 top: 6,
-                left: '50%',
-                transform: 'translateX(-50%)',
+                left: 70,
                 background: '#fee2e2',
                 color: '#991b1b',
                 padding: '2px 12px',
