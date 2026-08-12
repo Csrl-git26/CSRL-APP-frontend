@@ -94,6 +94,16 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
                   Top: {centre.top}
                 </div>
               </div>
+              {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
+                <div style={{ marginTop: 8, fontSize: 12, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', background: '#f8fafc', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--gray-200)' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--gray-600)' }}>Subject-wise Not Qualified:</span>
+                  {Object.entries(centre.notQualBySub).map(([sub, count]) => (
+                     <span key={sub} style={{ color: 'var(--gray-600)' }}>
+                       {sub === 'Mathematics' || sub === 'Math' ? 'Math' : sub.substring(0, 4)}: <strong style={{ color: 'var(--red)' }}>{count}</strong>
+                     </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
