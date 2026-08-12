@@ -60,7 +60,8 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
               borderLeftColor: color,
               cursor: clickable ? 'pointer' : 'default',
               transition: 'transform 0.2s, box-shadow 0.2s',
-              position: 'relative'
+              position: 'relative',
+              marginTop: (centre.avg < 100 || (centre.qualRate ?? 0) < 50) ? 14 : 0
             }}
             onClick={() => clickable && onCentreClick(centre.code)}
           >
