@@ -67,13 +67,14 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             {(centre.avg < 100 || (centre.qualRate ?? 0) < 50) && (
               <div style={{
                 position: 'absolute',
-                top: -12,
+                top: 0,
                 left: '50%',
                 transform: 'translateX(-50%)',
                 background: '#fee2e2',
                 color: '#991b1b',
                 padding: '2px 12px',
-                borderRadius: 12,
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
                 fontSize: 11,
                 fontWeight: 800,
                 display: 'flex',
@@ -81,6 +82,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 gap: 4,
                 boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
                 border: '1px solid #fecaca',
+                borderTop: 'none',
                 zIndex: 10
               }} title="Action Required: Low Avg or Low Qual. Rate">
                 <Flag size={12} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED
