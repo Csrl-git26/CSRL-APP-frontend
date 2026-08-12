@@ -266,8 +266,8 @@ export default function CentreDashboard() {
   const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))]], [data]);
 
   /** Lowest centre-wide subject average(s) from parsed test marks (same rule as overview KPI). */
-  const { minSubjectAvg, weakSubjectFromPerformance, weakSubjectAccFromPerformance } = useMemo(() => {
-    if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null, weakSubjectAccFromPerformance: null };
+  const { minSubjectAvg, weakSubjectFromPerformance } = useMemo(() => {
+    if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
     
     const streamCfg = getStreamConfig(activeCenter?.stream || 'JEE');
     
@@ -278,18 +278,7 @@ export default function CentreDashboard() {
       ? `${tiedAvg[0].subject} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`
       : `${tiedAvg.map((t) => t.subject).join(', ')} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`;
       
-    // Accuracy
-    const validAccs = subjectAvgs.filter((s) => s.accAvg != null);
-    let labelAcc = null;
-    if (validAccs.length) {
-      const minAcc = Math.min(...validAccs.map((s) => s.accAvg));
-      const tiedAcc = validAccs.filter((s) => s.accAvg === minAcc);
-      labelAcc = tiedAcc.length === 1
-        ? `${tiedAcc[0].subject} ${minAcc.toFixed(1)}% (${tiedAcc[0].avg}/${streamCfg.maxBySubject?.[tiedAcc[0].subject] || 100})`
-        : `${tiedAcc.map((t) => t.subject).join(', ')} ${minAcc.toFixed(1)}%`;
-    }
-
-    return { minSubjectAvg: minAvg, weakSubjectFromPerformance: labelAvg, weakSubjectAccFromPerformance: labelAcc };
+    return { minSubjectAvg: minAvg, weakSubjectFromPerformance: labelAvg };
   }, [subjectAvgs, activeCenter?.stream]);
 
   // ── Render states ─────────────────────────────────────────────────────────────
@@ -368,27 +357,16 @@ export default function CentreDashboard() {
       : 0;
     const topScore = topRanked.length && typeof topRanked[0]?.marks === 'number' ? topRanked[0].marks : 0;
 
-    let accLabel = 'N/A';
-    if (accuracyWeakSubject) {
-      const { subject, isMedium, percent } = accuracyWeakSubject;
-      const normSub = subject === 'Mathematics' ? 'Math' : subject;
-      const subAvgObj = subjectAvgs.find(s => s.subject === normSub);
-      const subAvgVal = subAvgObj ? subAvgObj.avg : '?';
-      const maxSubVal = getStreamConfig(activeCenter?.stream || 'JEE').maxBySubject?.[normSub] || 100;
-      accLabel = `${subject} ${isMedium ? '(Medium) ' : ''}${percent.toFixed(1)}% (${subAvgVal}/${maxSubVal})`;
-    }
-
     const statCards = [
       { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#e8f0fc', color: '#1a4fa0' },
       { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#fdecea', color: 'var(--red)' },
-      { Icon: Brain,         value: weakSubjectAccFromPerformance ?? accLabel,      label: 'Weak Sub (Acc)', bg: '#fdf2f8', color: '#9d174d' },
       { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#e6f5ed', color: '#1a6e3b' },
       { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#fff3e0', color: '#b45309' },
     ];
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div className="grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
+        <div className="grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
           {statCards.map(({ Icon, value, label, bg, color }) => (
             <div className="stat-card" key={label}>
               <div className="stat-icon" style={{ background: bg }}>
