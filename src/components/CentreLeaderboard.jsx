@@ -47,7 +47,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
   const maxAvg = centreStats[0]?.avg || 1;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 10 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32, paddingTop: 16 }}>
       {centreStats.map((centre, index) => {
         const color = getGradientColor(index, centreStats.length);
         const clickable = typeof onCentreClick === 'function';
@@ -60,8 +60,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
               borderLeftColor: color,
               cursor: clickable ? 'pointer' : 'default',
               transition: 'transform 0.2s, box-shadow 0.2s',
-              position: 'relative',
-              marginTop: (centre.avg < 100 || (centre.qualRate ?? 0) < 50) ? 14 : 0
+              position: 'relative'
             }}
             onClick={() => clickable && onCentreClick(centre.code)}
           >
