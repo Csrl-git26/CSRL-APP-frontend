@@ -15,7 +15,7 @@ export default function PerformanceChart({ chartData, streamCfg }) {
   return (
     <div className="card" style={{ marginBottom: '24px' }}>
       <div className="section-title">📈 Performance Trend</div>
-      <div style={{ height: 280 }}>
+      <div>
         <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
           {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
             <button
