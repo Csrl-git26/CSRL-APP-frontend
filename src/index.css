@@ -677,4 +677,4 @@ input, select, textarea {
   .btn { min-height: 44px; padding-left: 16px; padding-right: 16px; }
   .btn-sm { min-height: 40px; }
   .stat-card { padding: 14px; }
-}
+}.clickable-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }

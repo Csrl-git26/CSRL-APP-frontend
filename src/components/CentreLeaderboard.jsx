@@ -40,7 +40,7 @@ const pct = (a, x) => (x > 0 ? Math.round((a / x) * 100) : 0);
  *                  [{ rank, code, avg, top, tested, studentCount, weakSubject }]
  *   selTest      — selected test key (for display only)
  */
-export default function CentreLeaderboard({ centreStats = [], selTest }) {
+export default function CentreLeaderboard({ centreStats = [], selTest, onCentreClick }) {
   if (!selTest) return <Empty message="Select a test to view rankings" />;
   if (!centreStats.length) return <Empty message={`No test data for ${selTest}`} />;
 
@@ -50,8 +50,19 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {centreStats.map((centre, index) => {
         const color = getGradientColor(index, centreStats.length);
+        const clickable = typeof onCentreClick === 'function';
+        
         return (
-          <div key={centre.code} className="centre-rank-card" style={{ borderLeftColor: color }}>
+          <div 
+            key={centre.code} 
+            className={`centre-rank-card ${clickable ? 'clickable-card' : ''}`} 
+            style={{ 
+              borderLeftColor: color,
+              cursor: clickable ? 'pointer' : 'default',
+              transition: 'transform 0.2s, box-shadow 0.2s'
+            }}
+            onClick={() => clickable && onCentreClick(centre.code)}
+          >
             <RankBadge index={index} total={centreStats.length} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>

@@ -344,7 +344,14 @@ export default function CentreDashboard() {
           <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Sorted descending by average score</div>
         </div>
       </div>
-      <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} />
+      <CentreLeaderboard 
+        centreStats={centreBoard} 
+        selTest={selectedTestKey} 
+        onCentreClick={(code) => {
+          setSelectedCenterCode(code);
+          setActivePage('overview');
+        }}
+      />
     </div>
   );
 
