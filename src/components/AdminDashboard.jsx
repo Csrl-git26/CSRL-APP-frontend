@@ -875,6 +875,11 @@ export default function AdminDashboard() {
     );
   }
 
+  const handleLeaderboardCentreClick = (code) => {
+    setFilterCenter(code);
+    setActivePage('overview');
+  };
+
   // ── Section components ─────────────────────────────────────────────────────
 
   const OverviewSection = () => {
@@ -914,7 +919,7 @@ export default function AdminDashboard() {
               <Trophy size={15} style={{ marginRight: 6 }} aria-hidden="true" />
               Top Centres — {selectedTestKey}
             </div>
-            <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} />
+            <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
           </div>
           <div className="card">
             <div className="section-title">Category & Stream Distribution</div>
@@ -970,7 +975,7 @@ export default function AdminDashboard() {
           <button type="button" className="btn btn-sm btn-outline" onClick={handleAddNewTestOption}>+ New Test</button>
         </div>
       </div>
-      <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} />
+      <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
     </div>
   );
 
