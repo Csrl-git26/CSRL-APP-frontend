@@ -266,15 +266,30 @@ export default function CentreDashboard() {
   const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))]], [data]);
 
   /** Lowest centre-wide subject average(s) from parsed test marks (same rule as overview KPI). */
-  const { minSubjectAvg, weakSubjectFromPerformance } = useMemo(() => {
-    if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
-    const minAvg = Math.min(...subjectAvgs.map((s) => s.avg));
-    const tied = subjectAvgs.filter((s) => s.avg === minAvg);
+  const { minSubjectAvg, weakSubjectFromPerformance, weakSubjectAccFromPerformance } = useMemo(() => {
+    if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null, weakSubjectAccFromPerformance: null };
+    
     const streamCfg = getStreamConfig(activeCenter?.stream || 'JEE');
-    const label = tied.length === 1
-      ? `${tied[0].subject} (${minAvg}/${streamCfg.maxBySubject?.[tied[0].subject] || 100})`
-      : `${tied.map((t) => t.subject).join(', ')} (${minAvg}/${streamCfg.maxBySubject?.[tied[0].subject] || 100})`;
-    return { minSubjectAvg: minAvg, weakSubjectFromPerformance: label };
+    
+    // Average Marks
+    const minAvg = Math.min(...subjectAvgs.map((s) => s.avg));
+    const tiedAvg = subjectAvgs.filter((s) => s.avg === minAvg);
+    const labelAvg = tiedAvg.length === 1
+      ? `${tiedAvg[0].subject} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`
+      : `${tiedAvg.map((t) => t.subject).join(', ')} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`;
+      
+    // Accuracy
+    const validAccs = subjectAvgs.filter((s) => s.accAvg != null);
+    let labelAcc = null;
+    if (validAccs.length) {
+      const minAcc = Math.min(...validAccs.map((s) => s.accAvg));
+      const tiedAcc = validAccs.filter((s) => s.accAvg === minAcc);
+      labelAcc = tiedAcc.length === 1
+        ? `${tiedAcc[0].subject} ${minAcc.toFixed(1)}% (${tiedAcc[0].avg}/${streamCfg.maxBySubject?.[tiedAcc[0].subject] || 100})`
+        : `${tiedAcc.map((t) => t.subject).join(', ')} ${minAcc.toFixed(1)}%`;
+    }
+
+    return { minSubjectAvg: minAvg, weakSubjectFromPerformance: labelAvg, weakSubjectAccFromPerformance: labelAcc };
   }, [subjectAvgs, activeCenter?.stream]);
 
   // ── Render states ─────────────────────────────────────────────────────────────
@@ -366,7 +381,7 @@ export default function CentreDashboard() {
     const statCards = [
       { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#e8f0fc', color: '#1a4fa0' },
       { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#fdecea', color: 'var(--red)' },
-      { Icon: Brain,         value: accLabel,      label: 'Weak Sub (Acc)', bg: '#fdf2f8', color: '#9d174d' },
+      { Icon: Brain,         value: weakSubjectAccFromPerformance ?? accLabel,      label: 'Weak Sub (Acc)', bg: '#fdf2f8', color: '#9d174d' },
       { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#e6f5ed', color: '#1a6e3b' },
       { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#fff3e0', color: '#b45309' },
     ];
