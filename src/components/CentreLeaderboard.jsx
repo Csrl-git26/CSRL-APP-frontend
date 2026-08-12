@@ -1,4 +1,4 @@
-import { BarChart2, ChevronRight } from 'lucide-react';
+import { BarChart2, ChevronRight, Flag } from 'lucide-react';
 import { CENTERS } from '../config/centers';
 
 function centreLabel(code) {
@@ -81,6 +81,11 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 {clickable && (
                   <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--csrl-blue)', padding: '2px 10px', borderRadius: 12, fontWeight: 700, backgroundColor: 'var(--csrl-blue-light)', border: '1px solid #c7d2fe', marginLeft: 6 }}>
                     Click to overview <ChevronRight size={14} strokeWidth={3} />
+                  </span>
+                )}
+                {centre.avg < 100 && (centre.qualRate ?? 0) < 50 && (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--red)', padding: '2px 8px', borderRadius: 4, fontWeight: 700, backgroundColor: 'var(--red-bg)', border: '1px solid #fecdd3', marginLeft: 6 }} title="Action Required: Avg < 100 and Qual Rate < 50%">
+                    <Flag size={14} fill="currentColor" strokeWidth={2} /> Action Required
                   </span>
                 )}
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
