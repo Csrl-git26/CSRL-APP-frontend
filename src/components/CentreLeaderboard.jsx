@@ -119,7 +119,6 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 </div>
               </div>
             </div>
-            </div>
           </div>
         );
       })}
