@@ -67,7 +67,15 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
                 <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>
                   {centre.tested}/{centre.studentCount} tested
                 </span>
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
+                  {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
+                    <span style={{ fontSize: 11, background: '#f8fafc', border: '1px solid var(--gray-200)', color: 'var(--gray-600)', padding: '1px 6px', borderRadius: 4, display: 'flex', gap: 6, alignItems: 'center' }}>
+                      <span style={{ color: 'var(--gray-500)', fontWeight: 500 }}>Not Qual:</span>
+                      {Object.entries(centre.notQualBySub).map(([sub, count]) => (
+                        <span key={sub} style={{ fontWeight: 600 }}>{sub === 'Mathematics' || sub === 'Math' ? 'Math' : sub.substring(0, 4)}: <strong style={{ color: 'var(--red)' }}>{count}</strong></span>
+                      ))}
+                    </span>
+                  )}
                   <span style={{ fontSize: 12, background: '#fae8ff', color: '#86198f', padding: '2px 8px', borderRadius: 4, fontWeight: 600 }}>
                     {centre.qualRate ?? 0}% Qual.
                   </span>
@@ -94,16 +102,6 @@ export default function CentreLeaderboard({ centreStats = [], selTest }) {
                   Top: {centre.top}
                 </div>
               </div>
-              {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
-                <div style={{ marginTop: 8, fontSize: 12, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', background: '#f8fafc', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--gray-200)' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--gray-600)' }}>Subject-wise Not Qualified:</span>
-                  {Object.entries(centre.notQualBySub).map(([sub, count]) => (
-                     <span key={sub} style={{ color: 'var(--gray-600)' }}>
-                       {sub === 'Mathematics' || sub === 'Math' ? 'Math' : sub.substring(0, 4)}: <strong style={{ color: 'var(--red)' }}>{count}</strong>
-                     </span>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         );
