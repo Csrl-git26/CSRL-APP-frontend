@@ -47,7 +47,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
   const maxAvg = centreStats[0]?.avg || 1;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 10 }}>
       {centreStats.map((centre, index) => {
         const color = getGradientColor(index, centreStats.length);
         const clickable = typeof onCentreClick === 'function';
@@ -59,10 +59,33 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             style={{ 
               borderLeftColor: color,
               cursor: clickable ? 'pointer' : 'default',
-              transition: 'transform 0.2s, box-shadow 0.2s'
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              position: 'relative'
             }}
             onClick={() => clickable && onCentreClick(centre.code)}
           >
+            {(centre.avg < 100 || (centre.qualRate ?? 0) < 50) && (
+              <div style={{
+                position: 'absolute',
+                top: -12,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: '#fee2e2',
+                color: '#991b1b',
+                padding: '2px 12px',
+                borderRadius: 12,
+                fontSize: 11,
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                border: '1px solid #fecaca',
+                zIndex: 10
+              }} title="Action Required: Low Avg or Low Qual. Rate">
+                <Flag size={12} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED
+              </div>
+            )}
             <RankBadge index={index} total={centreStats.length} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
@@ -83,11 +106,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                     Click to overview <ChevronRight size={14} strokeWidth={3} />
                   </span>
                 )}
-                {centre.avg < 100 && (centre.qualRate ?? 0) < 50 && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--red)', padding: '2px 8px', borderRadius: 4, fontWeight: 700, backgroundColor: 'var(--red-bg)', border: '1px solid #fecdd3', marginLeft: 6 }} title="Action Required: Avg < 100 and Qual Rate < 50%">
-                    <Flag size={14} fill="currentColor" strokeWidth={2} /> Action Required
-                  </span>
-                )}
+
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
                   {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
                     <span style={{ fontSize: 13, background: '#f8fafc', border: '1px solid var(--gray-200)', color: 'var(--gray-700)', padding: '2px 8px', borderRadius: 4, display: 'flex', gap: 6, alignItems: 'center', fontWeight: 700 }}>
