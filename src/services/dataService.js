@@ -106,10 +106,20 @@ export function resolveStudentPhotoUrl(url, variant = 'primary') {
 export function parseTestColumn(col) {
   const raw = String(col || '').trim();
 
+  const suffixes = ['_Attempted', '_Accuracy', '_Rank', '_Correct', '_Wrong'];
+  let suffix = '';
+  for (const s of suffixes) {
+    if (raw.endsWith(s)) {
+      suffix = s;
+      break;
+    }
+  }
+  const baseRaw = suffix ? raw.slice(0, -suffix.length) : raw;
+
   // New format: CAT-1(TEST)_Physics
-  const underscored = raw.match(/^(.+)_([^_]+)$/);
+  const underscored = baseRaw.match(/^(.+)_([^_]+)$/);
   if (underscored) {
-    return { testName: underscored[1].trim(), subject: normalizeSubject(underscored[2]), isTotal: false };
+    return { testName: underscored[1].trim(), subject: normalizeSubject(underscored[2]) + suffix, isTotal: false };
   }
 
   // Legacy format: PHY Test 1
