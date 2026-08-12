@@ -229,9 +229,10 @@ function mapExcelMarkRow(row, testKey) {
     if (['marks', 'score', 'total marks', 'total_marks', 'total'].includes(lowerKey)) {
       updateObj[rowTestKey] = normalizeCellValue(val);
     } else {
-      // If the column is just a subject name (like 'Physics') without an underscore, prepend the test key.
       const originalKey = key.trim();
-      if (!originalKey.includes('_') && rowTestKey) {
+      if (rowTestKey && !originalKey.toLowerCase().startsWith(rowTestKey.toLowerCase() + '_')) {
+        // If it doesn't already have the test key prefix, prepend it.
+        // This ensures columns like 'Physics_Accuracy' become 'FMT08_Physics_Accuracy'
         updateObj[`${rowTestKey}_${originalKey}`] = normalizeCellValue(val);
       } else {
         updateObj[originalKey] = normalizeCellValue(val);
