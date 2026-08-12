@@ -78,6 +78,11 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 <span style={{ fontSize: 13, color: 'var(--gray-500)', fontWeight: 600 }}>
                   {centre.tested}/{centre.studentCount} tested
                 </span>
+                {clickable && (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--csrl-blue)', padding: '2px 10px', borderRadius: 12, fontWeight: 700, backgroundColor: 'var(--csrl-blue-light)', border: '1px solid #c7d2fe', marginLeft: 6 }}>
+                    Click to view overview <ChevronRight size={14} strokeWidth={3} />
+                  </span>
+                )}
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
                   {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
                     <span style={{ fontSize: 13, background: '#f8fafc', border: '1px solid var(--gray-200)', color: 'var(--gray-700)', padding: '2px 8px', borderRadius: 4, display: 'flex', gap: 6, alignItems: 'center', fontWeight: 700 }}>
@@ -114,11 +119,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 </div>
               </div>
             </div>
-            {clickable && (
-              <div style={{ display: 'flex', alignItems: 'center', marginLeft: 4, color: 'var(--gray-400)' }}>
-                <ChevronRight size={24} strokeWidth={2.5} />
-              </div>
-            )}
+            </div>
           </div>
         );
       })}
