@@ -80,7 +80,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
                 </span>
                 {clickable && (
                   <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--csrl-blue)', padding: '2px 10px', borderRadius: 12, fontWeight: 700, backgroundColor: 'var(--csrl-blue-light)', border: '1px solid #c7d2fe', marginLeft: 6 }}>
-                    Click to view overview <ChevronRight size={14} strokeWidth={3} />
+                    Click to overview <ChevronRight size={14} strokeWidth={3} />
                   </span>
                 )}
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
