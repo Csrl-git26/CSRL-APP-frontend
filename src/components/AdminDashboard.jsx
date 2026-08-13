@@ -1553,6 +1553,7 @@ export default function AdminDashboard() {
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button type="button" className="btn btn-teal" onClick={() => openImportModal('marks')}><Upload size={13} /> Upload Marks</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={handleAddNewTestOption}><Plus size={13} /> New Test</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download sample format</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={exportMarksXlsx}><Download size={13} /> Export selected test</button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={exportCombinedWorkbook}><Package size={13} /> Full workbook</button>
@@ -1735,7 +1736,6 @@ export default function AdminDashboard() {
           </button>
           <button type="button" className="btn btn-warning btn-sm" onClick={() => openImportModal('marks')}><Upload size={13} /> Marks</button>
           <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}><Users size={13} /> Upload Students</button>
-          <button type="button" className="btn btn-outline btn-sm" onClick={handleAddNewTestOption}>+ New Test</button>
           <select
             className="input select"
             value={selectedTestKey}
