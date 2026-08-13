@@ -1182,12 +1182,6 @@ export default function AdminDashboard() {
               </button>
             </>
           )}
-          <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}>
-            <Upload size={13} /> Bulk Upload
-          </button>
-          <button type="button" className="btn btn-success btn-sm" onClick={() => { setModalStudent(null); setModalMode('add'); }}>
-            <Plus size={13} /> Add Student
-          </button>
         </div>
       </div>
       <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
