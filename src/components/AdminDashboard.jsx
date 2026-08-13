@@ -960,15 +960,33 @@ export default function AdminDashboard() {
     );
   };
 
-  const LeaderboardSection = () => (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
-            <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedTestKey}
+  const LeaderboardSection = () => {
+    const totalAppeared = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
+    const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
+    const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
+
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
+              <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedTestKey}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
+              <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Sorted descending by average score</span>
+              
+              {totalAppeared > 0 && (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <span style={{ fontSize: 12, background: 'var(--gray-100)', padding: '2px 8px', borderRadius: 12, color: 'var(--gray-700)', fontWeight: 600 }}>
+                    <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
+                  </span>
+                  <span style={{ fontSize: 12, background: '#fae8ff', color: '#86198f', padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>
+                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Sorted descending by average score</div>
-        </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
           <select className="input select" value={selectedTestKey} onChange={(e) => setSelectedTestKey(e.target.value)} style={{ width: 170, fontSize: 13 }}>
@@ -979,7 +997,8 @@ export default function AdminDashboard() {
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
     </div>
-  );
+    );
+  };
 
   const RankingsSection = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
