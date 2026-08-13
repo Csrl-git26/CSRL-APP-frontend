@@ -5,7 +5,7 @@ import {
   ShieldCheck, Plus, Upload, Download, Package, Pencil, Trash2,
   Search, TrendingUp, TrendingDown, LayoutDashboard, BarChart2,
   Lightbulb, Loader2, CheckCircle2,
-  Eye, BarChart3, Flag,
+  Eye, BarChart3, Flag, Archive,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import {
@@ -25,6 +25,7 @@ import {
   getStreamConfig,
   resolveStudentPhotoUrl,
   deleteTestApi,
+  uploadPastYearData,
 } from '../services/dataService';
 import { useToast } from '../context/ToastContext';
 import StudentProfileView from './StudentProfileView';
@@ -785,6 +786,40 @@ export default function AdminDashboard() {
             payload: mapped 
           };
         }));
+      } else if (importMode === 'pastyear') {
+        const mappedRows = rows.map((row) => {
+          const clean = {};
+          Object.entries(row).forEach(([key, val]) => {
+            clean[key.trim()] = val === undefined || val === null ? '' : String(val).trim();
+          });
+          if (!clean.Year && !clean.year && !clean.YEAR) {
+            const sheetName = wb.SheetNames[0];
+            if (/^\d{4}/.test(sheetName)) clean.Year = sheetName.match(/\d{4}/)[0];
+          }
+          if (clean.year) { clean.Year = clean.year; delete clean.year; }
+          if (clean.YEAR) { clean.Year = clean.YEAR; delete clean.YEAR; }
+
+          const sponsorVal = clean.Sponsor || clean.SPONSOR || clean.sponsor;
+          if (sponsorVal) { clean.Sponsor = sponsorVal; delete clean.SPONSOR; delete clean.sponsor; }
+
+          const centreVal = clean['Centre Code'] || clean['CENTRE CODE'] || clean.Centre || clean.centre;
+          if (centreVal) { clean['Centre Code'] = centreVal; delete clean['CENTRE CODE']; delete clean.Centre; delete clean.centre; }
+
+          return clean;
+        });
+
+        setUploadPreview(mappedRows.map((mapped, idx) => {
+          if (!mapped.Year) return { row: idx + 2, status: 'err', reason: 'Missing Year' };
+          if (!mapped['Roll Number'] && !mapped['ROLL NO.'] && !mapped['Roll No.']) return { row: idx + 2, status: 'err', reason: 'Missing Roll Number' };
+          return { 
+            row: idx + 2, 
+            status: 'new', 
+            reason: 'Will insert/update', 
+            roll: mapped['Roll Number'] || mapped['ROLL NO.'] || mapped['Roll No.'], 
+            name: mapped['Student Name'] || mapped['STUDENT NAME'] || '', 
+            payload: mapped 
+          };
+        }));
       }
     } catch (e) {
       setUploadError('Failed to parse file: ' + e.message);
@@ -823,6 +858,17 @@ export default function AdminDashboard() {
         const result = await bulkUpsertTestScoresApi(null, allMarks);
         triggerRefresh();
         showToast(`Marks imported: ${result.upsertedCount || 0} new, ${result.modifiedCount || 0} updated (${result.matchedCount + result.upsertedCount} total).`, 'success');
+      } else if (importMode === 'pastyear') {
+        const allData = valid.map((row) => row.payload);
+        const CHUNK_SIZE = 500;
+        let totalInserted = 0;
+        for (let i = 0; i < allData.length; i += CHUNK_SIZE) {
+          const chunk = allData.slice(i, i + CHUNK_SIZE);
+          const res = await uploadPastYearData(chunk);
+          if (res?.success) totalInserted += res.inserted;
+          else throw new Error(res?.message || 'Chunk upload failed');
+        }
+        showToast(`Past Year Data imported: ${totalInserted} records total.`, 'success');
       }
       closeImportModal();
     } catch (e) {
@@ -1521,6 +1567,29 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      <div className="card" style={{ border: '2px solid #2563eb' }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 14 }}>
+          <div style={{ padding: 10, borderRadius: 10, background: '#dbeafe', flexShrink: 0 }}>
+            <Archive size={22} color="#2563eb" aria-hidden="true" />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 16 }}>Import Past Year Data</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-600)', marginTop: 4 }}>Upload historical student data. Supports large files with automatic chunking.</div>
+          </div>
+        </div>
+        <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px 14px', marginBottom: 14, fontSize: 13 }}>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>Key columns:</div>
+          <div style={{ color: 'var(--gray-600)', fontFamily: 'monospace', fontSize: 11, lineHeight: 1.8 }}>
+            Year · Sponsor · Centre Code · Roll Number · Student Name
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button type="button" className="btn btn-primary" onClick={() => openImportModal('pastyear')}>
+            <Upload size={13} /> Upload Past Data
+          </button>
+        </div>
+      </div>
+
       <div className="card" style={{ gridColumn: '1 / -1', background: 'var(--yellow-bg)', border: '1px solid #fde68a' }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
           <Lightbulb size={22} color="#92400e" aria-hidden="true" style={{ flexShrink: 0, marginTop: 2 }} />
@@ -1567,7 +1636,7 @@ export default function AdminDashboard() {
             <div className="modal-header">
               <div className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Upload size={16} aria-hidden="true" />
-                {importMode === 'students' ? 'Import Student Profiles' : 'Import Test Marks'}
+                {importMode === 'students' ? 'Import Student Profiles' : importMode === 'marks' ? 'Import Test Marks' : 'Import Past Year Data'}
               </div>
               <button type="button" className="modal-close" onClick={closeImportModal} aria-label="Close">×</button>
             </div>
@@ -1593,16 +1662,16 @@ export default function AdminDashboard() {
                 <Upload size={32} style={{ margin: '0 auto 10px', color: 'var(--gray-400)' }} aria-hidden="true" />
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>Click to upload Excel / CSV</div>
                 <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
-                  {importMode === 'students' ? 'Use the template headers for best column mapping.' : 'File must contain Roll Number. You can upload multiple subject columns at once.'}
+                  {importMode === 'students' ? 'Use the template headers for best column mapping.' : importMode === 'marks' ? 'File must contain Roll Number. You can upload multiple subject columns at once.' : 'Ensure Year, Sponsor, and Roll Number are present.'}
                 </div>
                 <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" style={{ display: 'none' }} onChange={(e) => handleImportFile(e.target.files?.[0])} />
               </div>
               <div style={{ marginTop: 10 }}>
                 {importMode === 'students' ? (
                   <button type="button" className="btn btn-outline btn-sm" onClick={downloadStudentTemplate}><Download size={13} /> Download Student Template</button>
-                ) : (
+                ) : importMode === 'marks' ? (
                   <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download Marks Template</button>
-                )}
+                ) : null}
               </div>
               {uploadLoading && <div style={{ marginTop: 12, color: 'var(--csrl-blue)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}><Loader2 size={14} className="spin" /> Processing file…</div>}
               {uploadError  && <div style={{ marginTop: 12, background: 'var(--red-bg)', color: 'var(--red)', borderRadius: 6, padding: '10px 12px', fontSize: 13 }}>{uploadError}</div>}
@@ -1621,7 +1690,7 @@ export default function AdminDashboard() {
                           <tr key={idx}>
                             <td>{row.row}</td>
                             <td>{row.roll || '—'}</td>
-                            <td>{importMode === 'students' ? (row.name || '—') : (row.marks ?? '—')}</td>
+                            <td>{importMode === 'students' ? (row.name || '—') : importMode === 'pastyear' ? (row.name || '—') : (row.marks ?? '—')}</td>
                             <td><span className={row.status === 'new' ? 'pill-new' : row.status === 'update' ? 'pill-update' : 'pill-err'}>{row.reason}</span></td>
                           </tr>
                         ))}
