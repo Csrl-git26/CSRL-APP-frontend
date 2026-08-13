@@ -1506,6 +1506,26 @@ export default function AdminDashboard() {
     </div>
   );
 
+  const handleClearWeakTopics = async () => {
+    if (!window.confirm('\u26A0\uFE0F This will DELETE all weak topic data across ALL tests and ALL centres. Are you sure?')) return;
+    try {
+      const res = await clearWeakTopicsApi();
+      showToast(res.message || 'Weak topic data cleared!', 'success');
+    } catch (e) {
+      showToast('Failed to clear weak topic data: ' + e.message, 'error');
+    }
+  };
+
+  const handleClearRawMarks = async () => {
+    if (!window.confirm('\u26A0\uFE0F This will DELETE all Marks Awarded Sheet data from the platform. Are you sure?')) return;
+    try {
+      const res = await clearRawMarksApi();
+      showToast(res.message || 'Marks awarded data cleared!', 'success');
+    } catch (e) {
+      showToast('Failed to clear marks awarded data: ' + e.message, 'error');
+    }
+  };
+
   const ImportExportSection = () => (
     <div className="grid-2">
       <div className="card" style={{ border: '2px solid #6d28d9' }}>
