@@ -892,19 +892,30 @@ export default function AdminDashboard() {
     return (
       <div className="card">
         <div className="section-title">{title}</div>
-        {['General', 'OBC', 'SC', 'ST'].map((cat) => {
+        {['General', 'OBC', 'SC', 'ST', 'Unknown'].map((catLabel) => {
           const count = data.profiles.filter((s) => {
-            const c = (s.CATEGORY || '').toUpperCase();
-            if (cat === 'General' && (c === 'GENERAL' || c === 'GEN')) return true;
-            return c === cat.toUpperCase();
+            const c = (s.CATEGORY || '').toUpperCase().trim();
+            if (catLabel === 'General') return ['GENERAL', 'GEN', 'UR', 'UNRESERVED'].includes(c);
+            if (catLabel === 'OBC') return c === 'OBC';
+            if (catLabel === 'SC') return c === 'SC';
+            if (catLabel === 'ST') return c === 'ST';
+            if (catLabel === 'Unknown') return !['GENERAL', 'GEN', 'UR', 'UNRESERVED', 'OBC', 'SC', 'ST'].includes(c);
+            return false;
           }).length;
+          
           if (!count) return null;
+          
+          const badgeClass = catLabel === 'Unknown' ? 'badge-general' : `badge-${catLabel.toLowerCase()}`;
+          const badgeColor = catLabel === 'Unknown' ? '#6b7280' : undefined;
+          
           return (
-            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
-              <span className={`badge badge-${cat.toLowerCase()}`} style={{ minWidth: 68, textAlign: 'center' }}>{cat}</span>
+            <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
+              <span className={`badge ${badgeClass}`} style={{ minWidth: 68, textAlign: 'center', color: badgeColor }}>
+                {catLabel === 'Unknown' ? 'Other/NA' : catLabel}
+              </span>
               <div style={{ flex: 1 }}>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: '#1a4fa0' }} />
+                  <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: catLabel === 'Unknown' ? '#9ca3af' : '#1a4fa0' }} />
                 </div>
               </div>
               <span style={{ fontSize: 14, fontWeight: 600, minWidth: 22, textAlign: 'right' }}>{count}</span>
