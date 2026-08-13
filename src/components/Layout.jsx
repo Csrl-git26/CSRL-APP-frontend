@@ -14,6 +14,7 @@ import {
   BarChart3,
   LogOut,
   Archive,
+  Building2,
 } from 'lucide-react';
 
 const ADMIN_NAV = [
