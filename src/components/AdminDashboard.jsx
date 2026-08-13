@@ -1731,7 +1731,7 @@ export default function AdminDashboard() {
           <p>Super Admin · Full Control Panel</p>
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
-          {['leaderboard', 'centre-overview', 'ranking'].includes(activeTab) && (
+          {['leaderboard', 'centre-overview', 'ranking'].includes(activePage) && (
             <select
               className="input select"
               value={selectedTestKey}
