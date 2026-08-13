@@ -124,7 +124,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           .filter((c) => !String(c).includes('_'))
           .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
         const candidate   = rankingCols.length ? rankingCols[0] : d.testColumns?.[0];
-        if (candidate) setSelectedTestKey(candidate);
+        if (candidate) setSelectedTestKey(prev => prev || candidate);
 
         fetchCentreChart(selectedCenterCode)
           .then(res => setCentreChartData(res?.chartData || []))
