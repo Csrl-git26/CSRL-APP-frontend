@@ -136,3 +136,15 @@ export async function clearWeakTopicsApi() {
   const res = await fetch(url, { method: 'DELETE', headers: authHeaders() });
   return handleResponse(res);
 }
+
+/**
+ * clearRawMarksApi — Admin only: clear all marks-awarded-sheet data
+ * @param {string|null} testId - if provided, clears only that test; otherwise clears ALL
+ */
+export async function clearRawMarksApi(testId = null) {
+  clearWeakTopicsFrontendCache();
+  let url = `${BASE}/api/admin/raw-marks/clear`;
+  if (testId) url += `?testId=${encodeURIComponent(testId)}`;
+  const res = await fetch(url, { method: 'DELETE', headers: authHeaders() });
+  return handleResponse(res);
+}

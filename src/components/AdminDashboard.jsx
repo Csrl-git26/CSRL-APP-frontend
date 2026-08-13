@@ -38,6 +38,7 @@ import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
 import PastYearDataTab from './PastYearDataTab';
 import CentreDashboard from './CentreDashboard';
 import { mapProfileToExcelRow } from './exportUtils';
+import { clearWeakTopicsApi, clearRawMarksApi } from '../services/weakTopicApi';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -1597,6 +1598,12 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 14 }}>
           <button type="button" className="btn btn-primary" style={{ background: '#db2777', borderColor: '#db2777' }} onClick={() => setShowMarksAwardModal(true)}>
             <Upload size={13} /> Upload Sheet
+          </button>
+          <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)', marginLeft: 4 }} onClick={handleClearRawMarks}>
+            <Trash2 size={13} /> Clear All Marks Awarded Data
+          </button>
+          <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)', marginLeft: 4 }} onClick={handleClearWeakTopics}>
+            <Trash2 size={13} /> Clear All Weak Topic Data
           </button>
         </div>
       </div>
