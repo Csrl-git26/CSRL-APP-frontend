@@ -889,33 +889,52 @@ export default function AdminDashboard() {
     const jeeCount       = data.profiles.filter((p) => (p.stream || 'JEE') === 'JEE').length;
     const neetCount      = data.profiles.filter((p) => p.stream === 'NEET').length;
 
+    // Dynamically count categories
+    const categoryCounts = {};
+    data.profiles.forEach(p => {
+      let c = (p.CATEGORY || '').toUpperCase().trim();
+      // Group synonyms
+      if (['GENERAL', 'GEN', 'UR', 'UNRESERVED'].includes(c)) c = 'General';
+      else if (c === 'OBC') c = 'OBC';
+      else if (c === 'SC') c = 'SC';
+      else if (c === 'ST') c = 'ST';
+      else if (c === '') c = 'NA';
+      else c = c.charAt(0).toUpperCase() + c.slice(1).toLowerCase(); // capitalize correctly for others
+      categoryCounts[c] = (categoryCounts[c] || 0) + 1;
+    });
+
+    // Sort descending by count
+    const sortedCategories = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
+
     return (
       <div className="card">
         <div className="section-title">{title}</div>
-        {['General', 'OBC', 'SC', 'ST', 'Unknown'].map((catLabel) => {
-          const count = data.profiles.filter((s) => {
-            const c = (s.CATEGORY || '').toUpperCase().trim();
-            if (catLabel === 'General') return ['GENERAL', 'GEN', 'UR', 'UNRESERVED'].includes(c);
-            if (catLabel === 'OBC') return c === 'OBC';
-            if (catLabel === 'SC') return c === 'SC';
-            if (catLabel === 'ST') return c === 'ST';
-            if (catLabel === 'Unknown') return !['GENERAL', 'GEN', 'UR', 'UNRESERVED', 'OBC', 'SC', 'ST'].includes(c);
-            return false;
-          }).length;
-          
-          if (!count) return null;
-          
-          const badgeClass = catLabel === 'Unknown' ? 'badge-general' : `badge-${catLabel.toLowerCase()}`;
-          const badgeColor = catLabel === 'Unknown' ? '#6b7280' : undefined;
+        {sortedCategories.map(([catLabel, count]) => {
+          let badgeClass = 'badge-general'; // default
+          let badgeColor = undefined;
+          let progressBg = '#1a4fa0';
+          let displayName = catLabel;
+
+          if (catLabel === 'OBC') badgeClass = 'badge-obc';
+          else if (catLabel === 'SC') badgeClass = 'badge-sc';
+          else if (catLabel === 'ST') badgeClass = 'badge-st';
+          else if (catLabel === 'NA') {
+            displayName = 'Other / NA';
+            badgeColor = '#6b7280';
+            progressBg = '#9ca3af';
+          } else if (catLabel !== 'General') {
+            badgeColor = '#0f766e';
+            progressBg = '#0d9488';
+          }
           
           return (
             <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
               <span className={`badge ${badgeClass}`} style={{ minWidth: 68, textAlign: 'center', color: badgeColor }}>
-                {catLabel === 'Unknown' ? 'Other/NA' : catLabel}
+                {displayName}
               </span>
               <div style={{ flex: 1 }}>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: catLabel === 'Unknown' ? '#9ca3af' : '#1a4fa0' }} />
+                  <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: progressBg }} />
                 </div>
               </div>
               <span style={{ fontSize: 14, fontWeight: 600, minWidth: 22, textAlign: 'right' }}>{count}</span>
