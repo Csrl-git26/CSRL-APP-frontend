@@ -972,6 +972,18 @@ export default function AdminDashboard() {
             <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>JEE</div>
           </div>
           <div 
+            style={{ 
+              flex: 1, 
+              background: '#fff3e0', 
+              borderRadius: 8, 
+              padding: '10px 14px', 
+              textAlign: 'center',
+            }}
+          >
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#b45309' }}>{Math.max(0, centersList.length - 1)}</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>Active Centres</div>
+          </div>
+          <div 
             onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'NEET' ? 'ALL' : 'NEET')}
             style={{ 
               flex: 1, 
