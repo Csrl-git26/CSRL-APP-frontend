@@ -1731,14 +1731,16 @@ export default function AdminDashboard() {
           <p>Super Admin · Full Control Panel</p>
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
-          <select
-            className="input select"
-            value={selectedTestKey}
-            onChange={(e) => setSelectedTestKey(e.target.value)}
-            style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 148, fontSize: 13 }}
-          >
-            {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
-          </select>
+          {['leaderboard', 'centre-overview', 'ranking'].includes(activeTab) && (
+            <select
+              className="input select"
+              value={selectedTestKey}
+              onChange={(e) => setSelectedTestKey(e.target.value)}
+              style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 148, fontSize: 13 }}
+            >
+              {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
+            </select>
+          )}
         </div>
       </div>
 
