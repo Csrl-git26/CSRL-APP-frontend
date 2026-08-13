@@ -914,7 +914,7 @@ export default function AdminDashboard() {
 
     return (
       <div className="card" style={{ padding: '12px 16px' }}>
-        <div className="section-title" style={{ marginBottom: 4 }}>
+        <div className="section-title" style={{ marginBottom: 6 }}>
           {title} {matrixStreamFilter !== 'ALL' && <span style={{fontSize: 14, color: 'var(--gray-500)', fontWeight: 'normal'}}>({matrixStreamFilter} only)</span>}
         </div>
         {sortedCategories.map(([catLabel, count]) => {
