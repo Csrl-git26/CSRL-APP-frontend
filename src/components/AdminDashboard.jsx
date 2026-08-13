@@ -35,6 +35,7 @@ import TestInsightsPanel from './TestInsightsPanel';
 import AdminWeakTopics from './AdminWeakTopics';
 import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
 import PastYearDataTab from './PastYearDataTab';
+import CentreDashboard from './CentreDashboard';
 import { mapProfileToExcelRow } from './exportUtils';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -69,6 +70,7 @@ const STUDENT_TEMPLATE_COLUMNS = [
 const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',    Icon: LayoutDashboard, label: 'Dashboard'          },
+  { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'marks',       Icon: FileText,        label: 'Test Marks'         },
@@ -877,7 +879,7 @@ export default function AdminDashboard() {
 
   const handleLeaderboardCentreClick = (code) => {
     setFilterCenter(code);
-    setActivePage('overview');
+    setActivePage('centre-overview');
   };
 
   // ── Section components ─────────────────────────────────────────────────────
@@ -1564,6 +1566,7 @@ export default function AdminDashboard() {
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'    && <OverviewSection />}
+          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} />}
           {activePage === 'students'    && <StudentsSection />}
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}

@@ -38,12 +38,23 @@ function getInitials(name = '') {
   return name.trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function CentreDashboard() {
-  const { activePage, setActivePage } = useOutletContext();
+export default function CentreDashboard({ adminViewCenterCode }) {
+  const outletContext = useOutletContext();
+  const [localActivePage, setLocalActivePage] = useState('overview');
+  
+  const activePage = adminViewCenterCode ? localActivePage : outletContext?.activePage;
+  const setActivePage = adminViewCenterCode ? setLocalActivePage : outletContext?.setActivePage;
+
   const { user: auth } = useAuth();
   const [centersList, setCentersList] = useState([]);
 
-  const [selectedCenterCode, setSelectedCenterCode] = useState(() => auth.centerCode || 'GAIL');
+  const [selectedCenterCode, setSelectedCenterCode] = useState(() => adminViewCenterCode || auth.centerCode || 'GAIL');
+
+  useEffect(() => {
+    if (adminViewCenterCode) {
+      setSelectedCenterCode(adminViewCenterCode);
+    }
+  }, [adminViewCenterCode]);
 
   const [data,             setData]             = useState(null);
   const [overview,         setOverview]         = useState(null);
@@ -75,7 +86,7 @@ export default function CentreDashboard() {
         if (active && Array.isArray(list) && list.length > 0) {
           setCentersList(list);
           const codes = list.map(c => c.code);
-          const initialCode = auth.centerCode || list[0].code;
+          const initialCode = adminViewCenterCode || auth.centerCode || list[0].code;
           if (codes.includes(initialCode)) {
             setSelectedCenterCode(initialCode);
           } else {
@@ -723,9 +734,9 @@ export default function CentreDashboard() {
   // ── Main render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="fade-in dashboard-page">
-      <div className="page-header">
-        <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
+    <div className={adminViewCenterCode ? "" : "fade-in dashboard-page"}>
+      <div className="page-header" style={adminViewCenterCode ? { background: 'transparent', padding: '0 0 16px 0', border: 'none', color: 'var(--gray-800)' } : {}}>
+        <div style={{ padding: 8, borderRadius: 10, background: adminViewCenterCode ? '#f1f5f9' : 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
           {CENTERS[selectedCenterCode]?.logo ? (
             <img src={CENTERS[selectedCenterCode].logo} alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
           ) : (
@@ -733,8 +744,8 @@ export default function CentreDashboard() {
           )}
         </div>
         <div>
-          <h1>{centreTitle}</h1>
-          <p>{data.profiles.length} students</p>
+          <h1 style={adminViewCenterCode ? { color: 'var(--gray-800)' } : {}}>{centreTitle}</h1>
+          <p style={adminViewCenterCode ? { color: 'var(--gray-500)' } : {}}>{data.profiles.length} students</p>
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
           <select
@@ -763,7 +774,7 @@ export default function CentreDashboard() {
         </div>
       </div>
 
-      <div className="content dashboard-page-body">
+      <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
         <div style={{ marginBottom: 14, flexShrink: 0 }}>
           <div className="tab-bar">
             {TABS.map(({ key, Icon, label }) => (
@@ -780,7 +791,7 @@ export default function CentreDashboard() {
           </div>
         </div>
 
-        <div className="dashboard-scroll">
+        <div className={adminViewCenterCode ? "" : "dashboard-scroll"}>
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'   && <OverviewSection />}
           {activePage === 'topbottom'  && <RankingsPair />}
