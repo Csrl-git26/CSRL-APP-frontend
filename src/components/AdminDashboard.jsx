@@ -955,7 +955,7 @@ export default function AdminDashboard() {
             </div>
           );
         })}
-        <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
+        <div style={{ marginTop: 4, paddingTop: 4, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
           <div 
             onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'JEE' ? 'ALL' : 'JEE')}
             style={{ 
