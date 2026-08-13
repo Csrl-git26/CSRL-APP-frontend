@@ -23,7 +23,6 @@ const ADMIN_NAV = [
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { section: 'Data Management' },
   { key: 'students',    Icon: Users,           label: 'Students'           },
-  { key: 'marks',       Icon: FileText,        label: 'Test Marks'         },
   { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
   { section: 'Import' },
   { key: 'import',      Icon: Upload,          label: 'Import Excel'       },
