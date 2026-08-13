@@ -1731,11 +1731,6 @@ export default function AdminDashboard() {
           <p>Super Admin · Full Control Panel</p>
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
-          <button type="button" className="btn btn-success btn-sm" onClick={() => { setModalStudent(null); setModalMode('add'); }}>
-            <Plus size={13} /> Student
-          </button>
-          <button type="button" className="btn btn-warning btn-sm" onClick={() => openImportModal('marks')}><Upload size={13} /> Marks</button>
-          <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}><Users size={13} /> Upload Students</button>
           <select
             className="input select"
             value={selectedTestKey}
