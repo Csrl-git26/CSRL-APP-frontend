@@ -913,8 +913,8 @@ export default function AdminDashboard() {
     const sortedCategories = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
 
     return (
-      <div className="card">
-        <div className="section-title">
+      <div className="card" style={{ padding: '12px 16px' }}>
+        <div className="section-title" style={{ marginBottom: 12 }}>
           {title} {matrixStreamFilter !== 'ALL' && <span style={{fontSize: 14, color: 'var(--gray-500)', fontWeight: 'normal'}}>({matrixStreamFilter} only)</span>}
         </div>
         {sortedCategories.map(([catLabel, count]) => {
@@ -942,7 +942,7 @@ export default function AdminDashboard() {
           }
           
           return (
-            <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}>
+            <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
               <span className={`badge ${badgeClass}`} style={{ minWidth: 68, textAlign: 'center', color: badgeColor, whiteSpace: 'nowrap' }}>
                 {displayName}
               </span>
@@ -955,48 +955,48 @@ export default function AdminDashboard() {
             </div>
           );
         })}
-        <div style={{ marginTop: 8, paddingTop: 10, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
+        <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
           <div 
             onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'JEE' ? 'ALL' : 'JEE')}
             style={{ 
               flex: 1, 
               background: matrixStreamFilter === 'JEE' ? '#d0e0fb' : '#e8f0fc', 
-              borderRadius: 8, 
-              padding: '10px 14px', 
+              borderRadius: 6, 
+              padding: '6px 10px', 
               textAlign: 'center',
               cursor: 'pointer',
               outline: matrixStreamFilter === 'JEE' ? '2px solid #1a4fa0' : 'none'
             }}
           >
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#1a4fa0' }}>{jeeCount}</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>JEE</div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: '#1a4fa0' }}>{jeeCount}</div>
+            <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>JEE</div>
           </div>
           <div 
             style={{ 
               flex: 1, 
               background: '#fff3e0', 
-              borderRadius: 8, 
-              padding: '10px 14px', 
+              borderRadius: 6, 
+              padding: '6px 10px', 
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#b45309' }}>{Math.max(0, centersList.length - 1)}</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>Active Centres</div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: '#b45309' }}>{Math.max(0, centersList.length - 1)}</div>
+            <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Active Centres</div>
           </div>
           <div 
             onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'NEET' ? 'ALL' : 'NEET')}
             style={{ 
               flex: 1, 
               background: matrixStreamFilter === 'NEET' ? '#c7ebd7' : '#e6f5ed', 
-              borderRadius: 8, 
-              padding: '10px 14px', 
+              borderRadius: 6, 
+              padding: '6px 10px', 
               textAlign: 'center',
               cursor: 'pointer',
               outline: matrixStreamFilter === 'NEET' ? '2px solid #1a6e3b' : 'none'
             }}
           >
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#1a6e3b' }}>{neetCount}</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>NEET</div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: '#1a6e3b' }}>{neetCount}</div>
+            <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>NEET</div>
           </div>
         </div>
       </div>
