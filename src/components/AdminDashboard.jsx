@@ -919,9 +919,15 @@ export default function AdminDashboard() {
           else if (catLabel === 'SC') badgeClass = 'badge-sc';
           else if (catLabel === 'ST') badgeClass = 'badge-st';
           else if (catLabel === 'NA') {
-            displayName = 'Other / NA';
+            const centers = [...new Set(data.profiles.filter(p => !p.CATEGORY || String(p.CATEGORY).trim() === '').map(p => p.centerCode))];
+            displayName = `Other / NA (${centers.join(', ')})`;
             badgeColor = '#6b7280';
             progressBg = '#9ca3af';
+          } else if (catLabel.toUpperCase() === 'PWD') {
+            const centers = [...new Set(data.profiles.filter(p => String(p.CATEGORY).toUpperCase() === 'PWD').map(p => p.centerCode))];
+            displayName = `Pwd (${centers.join(', ')})`;
+            badgeColor = '#0f766e';
+            progressBg = '#0d9488';
           } else if (catLabel !== 'General') {
             badgeColor = '#0f766e';
             progressBg = '#0d9488';
@@ -929,7 +935,7 @@ export default function AdminDashboard() {
           
           return (
             <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
-              <span className={`badge ${badgeClass}`} style={{ minWidth: 68, textAlign: 'center', color: badgeColor }}>
+              <span className={`badge ${badgeClass}`} style={{ minWidth: 68, textAlign: 'center', color: badgeColor, whiteSpace: 'nowrap' }}>
                 {displayName}
               </span>
               <div style={{ flex: 1 }}>
