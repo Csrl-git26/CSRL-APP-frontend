@@ -47,7 +47,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
   const maxAvg = centreStats[0]?.avg || 1;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 32, paddingTop: 16 }}>
+    <div className="scrollable-rankings" style={{ display: 'flex', flexDirection: 'column', gap: 32, paddingTop: 16, maxHeight: '600px', overflowY: 'auto', paddingRight: '12px' }}>
       {centreStats.map((centre, index) => {
         const color = getGradientColor(index, centreStats.length);
         const clickable = typeof onCentreClick === 'function';

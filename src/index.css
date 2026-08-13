@@ -678,3 +678,19 @@ input, select, textarea {
   .btn-sm { min-height: 40px; }
   .stat-card { padding: 14px; }
 }.clickable-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+/* Scrollable Rankings with rounded scrollbar */
+.scrollable-rankings::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollable-rankings::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 8px;
+}
+.scrollable-rankings::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+.scrollable-rankings::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
