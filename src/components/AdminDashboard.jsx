@@ -349,6 +349,8 @@ export default function AdminDashboard() {
   const [marksSearch,  setMarksSearch]  = useState('');
   const [marksTestF,   setMarksTestF]   = useState('');
   const [marksCentreF, setMarksCentreF] = useState('');
+  
+  const [matrixStreamFilter, setMatrixStreamFilter] = useState('ALL');
 
   const [modalMode,    setModalMode]    = useState(null);
   const [modalStudent, setModalStudent] = useState(null);
@@ -889,9 +891,13 @@ export default function AdminDashboard() {
     const jeeCount       = data.profiles.filter((p) => (p.stream || 'JEE') === 'JEE').length;
     const neetCount      = data.profiles.filter((p) => p.stream === 'NEET').length;
 
+    const filteredProfiles = matrixStreamFilter === 'ALL'
+      ? data.profiles
+      : data.profiles.filter(p => matrixStreamFilter === 'JEE' ? (p.stream || 'JEE') === 'JEE' : p.stream === 'NEET');
+
     // Dynamically count categories
     const categoryCounts = {};
-    data.profiles.forEach(p => {
+    filteredProfiles.forEach(p => {
       let c = (p.CATEGORY || '').toUpperCase().trim();
       // Group synonyms
       if (['GENERAL', 'GEN', 'UR', 'UNRESERVED'].includes(c)) c = 'General';
@@ -908,7 +914,9 @@ export default function AdminDashboard() {
 
     return (
       <div className="card">
-        <div className="section-title">{title}</div>
+        <div className="section-title">
+          {title} {matrixStreamFilter !== 'ALL' && <span style={{fontSize: 14, color: 'var(--gray-500)', fontWeight: 'normal'}}>({matrixStreamFilter} only)</span>}
+        </div>
         {sortedCategories.map(([catLabel, count]) => {
           let badgeClass = 'badge-general'; // default
           let badgeColor = undefined;
@@ -940,7 +948,7 @@ export default function AdminDashboard() {
               </span>
               <div style={{ flex: 1 }}>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: progressBg }} />
+                  <div className="progress-fill" style={{ width: `${pctBar(count, filteredProfiles.length || 1)}%`, background: progressBg }} />
                 </div>
               </div>
               <span style={{ fontSize: 14, fontWeight: 600, minWidth: 22, textAlign: 'right' }}>{count}</span>
@@ -948,11 +956,33 @@ export default function AdminDashboard() {
           );
         })}
         <div style={{ marginTop: 14, paddingTop: 10, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
-          <div style={{ flex: 1, background: '#e8f0fc', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
+          <div 
+            onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'JEE' ? 'ALL' : 'JEE')}
+            style={{ 
+              flex: 1, 
+              background: matrixStreamFilter === 'JEE' ? '#d0e0fb' : '#e8f0fc', 
+              borderRadius: 8, 
+              padding: '10px 14px', 
+              textAlign: 'center',
+              cursor: 'pointer',
+              outline: matrixStreamFilter === 'JEE' ? '2px solid #1a4fa0' : 'none'
+            }}
+          >
             <div style={{ fontSize: 20, fontWeight: 800, color: '#1a4fa0' }}>{jeeCount}</div>
             <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>JEE</div>
           </div>
-          <div style={{ flex: 1, background: '#e6f5ed', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
+          <div 
+            onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'NEET' ? 'ALL' : 'NEET')}
+            style={{ 
+              flex: 1, 
+              background: matrixStreamFilter === 'NEET' ? '#c7ebd7' : '#e6f5ed', 
+              borderRadius: 8, 
+              padding: '10px 14px', 
+              textAlign: 'center',
+              cursor: 'pointer',
+              outline: matrixStreamFilter === 'NEET' ? '2px solid #1a6e3b' : 'none'
+            }}
+          >
             <div style={{ fontSize: 20, fontWeight: 800, color: '#1a6e3b' }}>{neetCount}</div>
             <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>NEET</div>
           </div>
