@@ -893,7 +893,11 @@ export default function AdminDashboard() {
       <div className="card">
         <div className="section-title">{title}</div>
         {['General', 'OBC', 'SC', 'ST'].map((cat) => {
-          const count = data.profiles.filter((s) => s.CATEGORY === cat).length;
+          const count = data.profiles.filter((s) => {
+            const c = (s.CATEGORY || '').toUpperCase();
+            if (cat === 'General' && (c === 'GENERAL' || c === 'GEN')) return true;
+            return c === cat.toUpperCase();
+          }).length;
           if (!count) return null;
           return (
             <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
