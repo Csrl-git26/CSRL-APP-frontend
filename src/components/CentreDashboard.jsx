@@ -38,7 +38,7 @@ function getInitials(name = '') {
   return name.trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function CentreDashboard({ adminViewCenterCode }) {
+export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const outletContext = useOutletContext();
   const [localActivePage, setLocalActivePage] = useState('overview');
   
@@ -65,7 +65,13 @@ export default function CentreDashboard({ adminViewCenterCode }) {
   const [loading,          setLoading]          = useState(true);
   const [error,            setError]            = useState('');
   const [viewingStudentId, setViewingStudentId] = useState(null);
-  const [selectedTestKey,  setSelectedTestKey]  = useState('');
+  const [selectedTestKey,  setSelectedTestKey]  = useState(adminTestKey || '');
+
+  useEffect(() => {
+    if (adminTestKey) {
+      setSelectedTestKey(adminTestKey);
+    }
+  }, [adminTestKey]);
   const [searchTerm,       setSearchTerm]       = useState('');
   const [filterCategory,   setFilterCategory]   = useState('ALL');
   const [filterStream,     setFilterStream]     = useState('ALL');
@@ -735,61 +741,65 @@ export default function CentreDashboard({ adminViewCenterCode }) {
 
   return (
     <div className={adminViewCenterCode ? "" : "fade-in dashboard-page"}>
-      <div className="page-header" style={adminViewCenterCode ? { background: 'transparent', padding: '0 0 16px 0', border: 'none', color: 'var(--gray-800)' } : {}}>
-        <div style={{ padding: 8, borderRadius: 10, background: adminViewCenterCode ? '#f1f5f9' : 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
-          {CENTERS[selectedCenterCode]?.logo ? (
-            <img src={CENTERS[selectedCenterCode].logo} alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-          ) : (
-            <Building2 size={24} color="var(--csrl-blue)" aria-hidden="true" />
-          )}
-        </div>
-        <div>
-          <h1 style={adminViewCenterCode ? { color: 'var(--gray-800)' } : {}}>{centreTitle}</h1>
-          <p style={adminViewCenterCode ? { color: 'var(--gray-500)' } : {}}>{data.profiles.length} students</p>
-        </div>
-        <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
-          <select
-            className="input select"
-            value={selectedCenterCode}
-            onChange={(e) => setSelectedCenterCode(e.target.value)}
-            style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 220 }}
-          >
-            {centersList.map((c) => {
-              const label = c.name;
-              return (
-                <option key={c.code} value={c.code} style={{ color: '#000' }}>
-                  {label}
-                </option>
-              );
-            })}
-          </select>
-          <select
-            className="input select"
-            value={selectedTestKey}
-            onChange={(e) => setSelectedTestKey(e.target.value)}
-            style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 200 }}
-          >
-            {rankingTestColumns.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
-          </select>
-        </div>
-      </div>
-
-      <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
-        <div style={{ marginBottom: 14, flexShrink: 0 }}>
-          <div className="tab-bar">
-            {TABS.map(({ key, Icon, label }) => (
-              <button
-                key={key}
-                type="button"
-                className={`tab${activePage === key ? ' active' : ''}`}
-                onClick={() => setActivePage(key)}
-              >
-                <Icon size={13} aria-hidden="true" />
-                {label}
-              </button>
-            ))}
+      {!adminViewCenterCode && (
+        <div className="page-header">
+          <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
+            {CENTERS[selectedCenterCode]?.logo ? (
+              <img src={CENTERS[selectedCenterCode].logo} alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            ) : (
+              <Building2 size={24} color="var(--csrl-blue)" aria-hidden="true" />
+            )}
+          </div>
+          <div>
+            <h1>{centreTitle}</h1>
+            <p>{data.profiles.length} students</p>
+          </div>
+          <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
+            <select
+              className="input select"
+              value={selectedCenterCode}
+              onChange={(e) => setSelectedCenterCode(e.target.value)}
+              style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 220 }}
+            >
+              {centersList.map((c) => {
+                const label = c.name;
+                return (
+                  <option key={c.code} value={c.code} style={{ color: '#000' }}>
+                    {label}
+                  </option>
+                );
+              })}
+            </select>
+            <select
+              className="input select"
+              value={selectedTestKey}
+              onChange={(e) => setSelectedTestKey(e.target.value)}
+              style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 200 }}
+            >
+              {rankingTestColumns.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
+            </select>
           </div>
         </div>
+      )}
+
+      <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
+        {!adminViewCenterCode && (
+          <div style={{ marginBottom: 14, flexShrink: 0 }}>
+            <div className="tab-bar">
+              {TABS.map(({ key, Icon, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={`tab${activePage === key ? ' active' : ''}`}
+                  onClick={() => setActivePage(key)}
+                >
+                  <Icon size={13} aria-hidden="true" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className={adminViewCenterCode ? "" : "dashboard-scroll"}>
           {activePage === 'leaderboard' && <LeaderboardSection />}

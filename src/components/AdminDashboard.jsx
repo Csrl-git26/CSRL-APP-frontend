@@ -1566,7 +1566,7 @@ export default function AdminDashboard() {
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'    && <OverviewSection />}
-          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} />}
+          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />}
           {activePage === 'students'    && <StudentsSection />}
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}
