@@ -8,7 +8,6 @@ const ROLES = [
   { key: 'student', Icon: GraduationCap, label: 'Student' },
   { key: 'centre',  Icon: Building2,      label: 'Centre'  },
   { key: 'admin',   Icon: ShieldCheck,    label: 'Admin'   },
-  { key: 'bog',     Icon: ShieldCheck,    label: 'BOG'     },
 ];
 
 export default function Login() {
@@ -39,12 +38,6 @@ export default function Login() {
           return;
         }
         await login({ role: 'centre', id: username.trim(), password });
-      } else if (role === 'bog') {
-        if (!username.trim() || !password) {
-          setError('Enter username and password.');
-          return;
-        }
-        await login({ role: 'bog', id: username.trim(), password });
       } else {
         if (!username.trim() || !password) {
           setError('Enter username and password.');
@@ -165,14 +158,14 @@ export default function Login() {
             </>
           )}
 
-          {(role === 'admin' || role === 'bog') && (
+          {role === 'admin' && (
             <>
               <div className="form-group">
                 <label className="label" htmlFor="username">Username</label>
                 <input
                   id="username"
                   className="input"
-                  placeholder={role === 'admin' ? "Admin username" : "BOG username"}
+                  placeholder="Admin username"
                   autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}

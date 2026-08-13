@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import {
   Users, Building2, FileText, AlertTriangle, Trophy, ArrowLeft,
   ShieldCheck, Plus, Upload, Download, Package, Pencil, Trash2,
@@ -325,14 +324,6 @@ function pctBar(numerator, denominator) {
 
 export default function AdminDashboard() {
   const { activePage, setActivePage } = useOutletContext();
-  const { user: auth } = useAuth();
-
-  const visibleTabs = useMemo(() => {
-    if (auth?.role === 'BOG') {
-      return TABS.filter(t => ['leaderboard', 'centre-overview', 'pastyear'].includes(t.key));
-    }
-    return TABS;
-  }, [auth?.role]);
   const showToast = useToast();
 
   const [data,            setData]            = useState(null);
@@ -1562,7 +1553,7 @@ export default function AdminDashboard() {
       <div className="content dashboard-page-body">
         <div style={{ marginBottom: 16, flexShrink: 0 }}>
           <div className="tab-bar">
-            {visibleTabs.map((tab) => {
+            {TABS.map((tab) => {
               const TabIcon = tab.Icon;
               return (
                 <button key={tab.key} type="button" className={`tab${activePage === tab.key ? ' active' : ''}`} onClick={() => setActivePage(tab.key)}>
