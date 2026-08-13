@@ -753,7 +753,7 @@ export default function AdminDashboard() {
           const exists = existingRolls.has(mapped.ROLL_KEY);
           return { row: idx + 2, status: exists ? 'update' : 'new', reason: exists ? 'Will update' : 'Will insert', roll: mapped.ROLL_KEY, name: mapped["STUDENT'S NAME"], centre: mapped.centerCode, payload: mapped };
         }));
-      } else {
+      } else if (importMode === 'marks') {
         const rollResolver = new Map();
         (data?.profiles || []).forEach(p => {
           const rk = normalizeRollKey(p.ROLL_KEY);
@@ -840,7 +840,7 @@ export default function AdminDashboard() {
         const result = await bulkUpsertStudentsApi(null, allStudents);
         triggerRefresh();
         showToast(`Students imported: ${result.inserted || 0} new, ${result.updated || 0} updated (${result.total || allStudents.length} total).`, 'success');
-      } else {
+      } else if (importMode === 'marks') {
         // ── FAST BULK UPLOAD: send all test marks in ONE request ──
         const allMarks = valid.map((row) => {
           const rowRoll = normalizeRollKey(row.payload.roll);
