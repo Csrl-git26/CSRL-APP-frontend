@@ -1047,6 +1047,9 @@ export default function AdminDashboard() {
 
     return (
       <div>
+        <div style={{ marginBottom: 24 }}>
+          <OverallMatrixCard title="Overall CSRL Matrix" />
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
@@ -1672,14 +1675,7 @@ export default function AdminDashboard() {
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'    && <OverviewSection />}
-          {activePage === 'centre-overview' && (
-            <div>
-              <div style={{ marginBottom: 16 }}>
-                <OverallMatrixCard title="Overall CSRL Matrix" />
-              </div>
-              <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />
-            </div>
-          )}
+          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />}
           {activePage === 'students'    && <StudentsSection />}
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}
