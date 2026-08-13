@@ -884,6 +884,43 @@ export default function AdminDashboard() {
 
   // ── Section components ─────────────────────────────────────────────────────
 
+  const OverallMatrixCard = ({ title = "Overall CSRL Matrix" }) => {
+    const totalStudents  = data.profiles.length;
+    const jeeCount       = data.profiles.filter((p) => (p.stream || 'JEE') === 'JEE').length;
+    const neetCount      = data.profiles.filter((p) => p.stream === 'NEET').length;
+
+    return (
+      <div className="card">
+        <div className="section-title">{title}</div>
+        {['General', 'OBC', 'SC', 'ST'].map((cat) => {
+          const count = data.profiles.filter((s) => s.CATEGORY === cat).length;
+          if (!count) return null;
+          return (
+            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
+              <span className={`badge badge-${cat.toLowerCase()}`} style={{ minWidth: 68, textAlign: 'center' }}>{cat}</span>
+              <div style={{ flex: 1 }}>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: '#1a4fa0' }} />
+                </div>
+              </div>
+              <span style={{ fontSize: 14, fontWeight: 600, minWidth: 22, textAlign: 'right' }}>{count}</span>
+            </div>
+          );
+        })}
+        <div style={{ marginTop: 14, paddingTop: 10, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
+          <div style={{ flex: 1, background: '#e8f0fc', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#1a4fa0' }}>{jeeCount}</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>JEE</div>
+          </div>
+          <div style={{ flex: 1, background: '#e6f5ed', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#1a6e3b' }}>{neetCount}</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>NEET</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const OverviewSection = () => {
     const totalStudents  = overview?.totalStudents ?? data.profiles.length;
     const weakSubject    = overview?.weakSubject   ?? 'N/A';
@@ -923,34 +960,7 @@ export default function AdminDashboard() {
             </div>
             <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
           </div>
-          <div className="card">
-            <div className="section-title">Category & Stream Distribution</div>
-            {['General', 'OBC', 'SC', 'ST'].map((cat) => {
-              const count = data.profiles.filter((s) => s.CATEGORY === cat).length;
-              if (!count) return null;
-              return (
-                <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
-                  <span className={`badge badge-${cat.toLowerCase()}`} style={{ minWidth: 68, textAlign: 'center' }}>{cat}</span>
-                  <div style={{ flex: 1 }}>
-                    <div className="progress-bar">
-                      <div className="progress-fill" style={{ width: `${pctBar(count, totalStudents || 1)}%`, background: '#1a4fa0' }} />
-                    </div>
-                  </div>
-                  <span style={{ fontSize: 14, fontWeight: 600, minWidth: 22, textAlign: 'right' }}>{count}</span>
-                </div>
-              );
-            })}
-            <div style={{ marginTop: 14, paddingTop: 10, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
-              <div style={{ flex: 1, background: '#e8f0fc', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 800, color: '#1a4fa0' }}>{jeeCount}</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>JEE</div>
-              </div>
-              <div style={{ flex: 1, background: '#e6f5ed', borderRadius: 8, padding: '10px 14px', textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 800, color: '#1a6e3b' }}>{neetCount}</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-600)' }}>NEET</div>
-              </div>
-            </div>
-          </div>
+          <OverallMatrixCard title="Category & Stream Distribution" />
         </div>
         
         <div style={{ marginTop: '24px' }}>
@@ -1592,7 +1602,14 @@ export default function AdminDashboard() {
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'    && <OverviewSection />}
-          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />}
+          {activePage === 'centre-overview' && (
+            <div>
+              <div style={{ marginBottom: 16 }}>
+                <OverallMatrixCard title="Overall CSRL Matrix" />
+              </div>
+              <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />
+            </div>
+          )}
           {activePage === 'students'    && <StudentsSection />}
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}
