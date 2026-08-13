@@ -942,7 +942,7 @@ export default function AdminDashboard() {
           }
           
           return (
-            <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 11 }}>
+            <div key={catLabel} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
               <span className={`badge ${badgeClass}`} style={{ minWidth: 68, textAlign: 'center', color: badgeColor, whiteSpace: 'nowrap' }}>
                 {displayName}
               </span>
@@ -955,7 +955,7 @@ export default function AdminDashboard() {
             </div>
           );
         })}
-        <div style={{ marginTop: 14, paddingTop: 10, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
+        <div style={{ marginTop: 8, paddingTop: 10, borderTop: '1px solid var(--gray-100)', display: 'flex', gap: 10 }}>
           <div 
             onClick={() => setMatrixStreamFilter(matrixStreamFilter === 'JEE' ? 'ALL' : 'JEE')}
             style={{ 
