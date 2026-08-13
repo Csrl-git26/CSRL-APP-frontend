@@ -1590,6 +1590,23 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      <div className="card" style={{ border: '2px solid #db2777' }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 14 }}>
+          <div style={{ padding: 10, borderRadius: 10, background: '#fce7f3', flexShrink: 0 }}>
+            <FileText size={22} color="#db2777" aria-hidden="true" />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 16 }}>Import Marks Awarded Sheet</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-600)', marginTop: 4 }}>Upload the detailed marks awarded sheet to calculate weak topics and insights.</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 14 }}>
+          <button type="button" className="btn btn-primary" style={{ background: '#db2777', borderColor: '#db2777' }} onClick={() => setShowMarksAwardModal(true)}>
+            <Upload size={13} /> Upload Sheet
+          </button>
+        </div>
+      </div>
+
       <div className="card" style={{ gridColumn: '1 / -1', background: 'var(--yellow-bg)', border: '1px solid #fde68a' }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
           <Lightbulb size={22} color="#92400e" aria-hidden="true" style={{ flexShrink: 0, marginTop: 2 }} />
@@ -1725,7 +1742,6 @@ export default function AdminDashboard() {
           </button>
           <button type="button" className="btn btn-warning btn-sm" onClick={() => openImportModal('marks')}><Upload size={13} /> Marks</button>
           <button type="button" className="btn btn-purple btn-sm" onClick={() => openImportModal('students')}><Users size={13} /> Upload Students</button>
-          <button type="button" className="btn btn-purple btn-sm" style={{ background: '#6d28d9' }} onClick={() => setShowMarksAwardModal(true)}><Upload size={13} /> Upload Weak Topics Sheet</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={handleAddNewTestOption}>+ New Test</button>
           <select
             className="input select"
