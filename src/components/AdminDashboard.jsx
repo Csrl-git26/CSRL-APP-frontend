@@ -5,7 +5,7 @@ import {
   ShieldCheck, Plus, Upload, Download, Package, Pencil, Trash2,
   Search, TrendingUp, TrendingDown, LayoutDashboard, BarChart2,
   Lightbulb, Loader2, CheckCircle2,
-  Eye, BarChart3,
+  Eye, BarChart3, Flag,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import {
@@ -976,13 +976,21 @@ export default function AdminDashboard() {
               <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Sorted descending by average score</span>
               
               {totalAppeared > 0 && (
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <span style={{ fontSize: 12, background: 'var(--gray-100)', padding: '2px 8px', borderRadius: 12, color: 'var(--gray-700)', fontWeight: 600 }}>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
+                  <span style={{ fontSize: 14, color: 'var(--gray-600)', fontWeight: 700 }}>Overall CSRL Qualification:</span>
+                  <span style={{ fontSize: 16, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 20, color: 'var(--gray-700)', fontWeight: 700 }}>
                     <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
                   </span>
-                  <span style={{ fontSize: 12, background: '#fae8ff', color: '#86198f', padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>
-                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> Qualified ({qualPct}%)
-                  </span>
+                  {qualPct < 50 ? (
+                    <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <Flag size={14} fill="currentColor" strokeWidth={2.5} />
+                      <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: 16, background: '#fae8ff', color: '#86198f', padding: '4px 12px', borderRadius: 20, fontWeight: 800 }}>
+                      <strong style={{ color: '#701a75' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                    </span>
+                  )}
                 </div>
               )}
             </div>
