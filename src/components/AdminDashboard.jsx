@@ -69,7 +69,6 @@ const STUDENT_TEMPLATE_COLUMNS = [
 
 const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
-  { key: 'overview',    Icon: LayoutDashboard, label: 'Dashboard'          },
   { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { key: 'students',    Icon: Users,           label: 'Students'           },

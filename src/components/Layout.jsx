@@ -20,7 +20,6 @@ import {
 const ADMIN_NAV = [
   { section: 'Overview' },
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
-  { key: 'overview',    Icon: LayoutDashboard, label: 'Dashboard'          },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { section: 'Data Management' },
   { key: 'students',    Icon: Users,           label: 'Students'           },
