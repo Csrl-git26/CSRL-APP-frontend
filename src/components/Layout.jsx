@@ -43,6 +43,13 @@ const STUDENT_NAV = [
   { key: 'analysis',    Icon: BarChart3,     label: 'Test analysis' },
 ];
 
+const BOG_NAV = [
+  { section: 'BOG Dashboard' },
+  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
+  { key: 'centre-overview', Icon: Building2,  label: 'Centre Overview' },
+  { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data' },
+];
+
 function centreDisplayName(code) {
   return CENTERS[code]?.name || code || '';
 }
@@ -55,13 +62,16 @@ export default function Layout() {
   const { user: auth, logout } = useAuth();
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState(() => {
-    if (auth?.role === 'ADMIN')   return 'leaderboard';
+    if (auth?.role === 'ADMIN' || auth?.role === 'BOG') return 'leaderboard';
     if (auth?.role === 'CENTRE')  return 'leaderboard';
     return 'profile';
   });
 
   const role = auth?.role;
-  const navItems = role === 'ADMIN' ? ADMIN_NAV : role === 'CENTRE' ? CENTRE_NAV : STUDENT_NAV;
+  const navItems = auth?.role === 'ADMIN' ? ADMIN_NAV
+                 : auth?.role === 'BOG'   ? BOG_NAV
+                 : auth?.role === 'CENTRE' ? CENTRE_NAV
+                 : STUDENT_NAV;
 
   useEffect(() => {
     if (role === 'ADMIN')   setActivePage('leaderboard');
