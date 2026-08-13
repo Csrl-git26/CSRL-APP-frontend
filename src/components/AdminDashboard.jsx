@@ -1000,7 +1000,6 @@ export default function AdminDashboard() {
           <select className="input select" value={selectedTestKey} onChange={(e) => setSelectedTestKey(e.target.value)} style={{ width: 170, fontSize: 13 }}>
             {allTestOptions.map((col) => <option key={col} value={col}>{col}</option>)}
           </select>
-          <button type="button" className="btn btn-sm btn-outline" onClick={handleAddNewTestOption}>+ New Test</button>
         </div>
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
