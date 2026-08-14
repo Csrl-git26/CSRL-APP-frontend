@@ -121,8 +121,8 @@ export default function TestInsightsPanel({
         {cut?.JEE && cut?.NEET && (
           <p style={{ marginTop: 8, marginBottom: 0 }}>
             Default qualification — <strong>JEE</strong>: total ≥ {cut.JEE.overallMin} / {cut.JEE.maxTotal} (
-            {Math.round(cut.overallQualifyRatio * 100)}%); per subject vs max (Physics {cut.JEE.maxBySubject.Physics}, Chemistry{' '}
-            {cut.JEE.maxBySubject.Chemistry}, Math {cut.JEE.maxBySubject.Math}) with floor from {Math.round(cut.subjectQualifyRatio * 100)}% of each.
+            {Math.round(cut.jeeOverallQualifyRatio * 100)}%); per subject vs max (Physics {cut.JEE.maxBySubject.Physics}, Chemistry{' '}
+            {cut.JEE.maxBySubject.Chemistry}, Math {cut.JEE.maxBySubject.Math}) with floor from {Math.round(cut.jeeSubjectQualifyRatio * 100)}% of each.
             <br />
             <strong>NEET</strong>: total ≥ {cut.NEET.overallMin} / {cut.NEET.maxTotal}; Biology max {cut.NEET.maxBySubject.Biology}, others{' '}
             {cut.NEET.maxBySubject.Physics} / {cut.NEET.maxBySubject.Chemistry}.
