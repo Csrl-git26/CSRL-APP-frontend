@@ -1754,7 +1754,7 @@ export default function AdminDashboard() {
           <ShieldCheck size={24} color="#fff" aria-hidden="true" />
         </div>
         <div>
-          <h1>CSRL Admin Dashboard</h1>
+          <h1>CSRL Management Dashboard</h1>
           <p>Super Admin · Full Control Panel</p>
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
