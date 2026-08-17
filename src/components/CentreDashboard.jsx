@@ -782,6 +782,22 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         </div>
       )}
 
+      {adminViewCenterCode && (
+        <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid var(--gray-200)', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ padding: 8, borderRadius: 10, background: 'var(--csrl-blue-light)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
+            {CENTERS[selectedCenterCode]?.logo ? (
+              <img src={CENTERS[selectedCenterCode].logo} alt={centreTitle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            ) : (
+              <Building2 size={24} color="var(--csrl-blue)" aria-hidden="true" />
+            )}
+          </div>
+          <div>
+            <h2 style={{ fontSize: 24, fontWeight: 800, color: 'var(--gray-900)', margin: 0 }}>{centreTitle}</h2>
+            <p style={{ margin: 0, fontSize: 14, color: 'var(--gray-500)' }}>{data.profiles.length} students enrolled</p>
+          </div>
+        </div>
+      )}
+
       <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
         {!adminViewCenterCode && (
           <div style={{ marginBottom: 14, flexShrink: 0 }}>
