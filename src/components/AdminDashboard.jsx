@@ -1104,9 +1104,6 @@ export default function AdminDashboard() {
 
     return (
       <div>
-        <div style={{ marginBottom: 24 }}>
-          <OverallMatrixCard title="Overall CSRL Matrix" />
-        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
