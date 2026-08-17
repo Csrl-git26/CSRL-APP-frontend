@@ -78,7 +78,7 @@ export default function Login() {
           textAlign: 'center',
         }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-            <img src="/logo_new.jpg" alt="CSRL logo" style={{ width: 110, height: 110, objectFit: 'contain', borderRadius: '50%', backgroundColor: '#fff', padding: '5px' }} />
+            <img src="/logo_new.jpg" alt="CSRL logo" style={{ width: 130, height: 130, objectFit: 'contain', borderRadius: '50%', backgroundColor: '#fff', padding: '0', transform: 'scale(1.2)' }} />
           </div>
           <p style={{ color: '#f5a623', fontSize: 20, fontWeight: 'bold', margin: '6px 0 0' }}>
             प्रगति Dashboard CSRL
