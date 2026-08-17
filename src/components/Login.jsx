@@ -80,7 +80,6 @@ export default function Login() {
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
             <img src="/logo.png" alt="CSRL logo" style={{ width: 68, height: 68, objectFit: 'cover', borderRadius: '50%' }} />
           </div>
-          <p style={{ color: '#f5a623', fontSize: 21, fontWeight: 800, letterSpacing: 0.5, margin: 0 }}>CSRL</p>
           <p style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', margin: '6px 0 0' }}>
             प्रगति Dashboard CSRL
           </p>
