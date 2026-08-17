@@ -82,7 +82,7 @@ export default function Login() {
           </div>
           <p style={{ color: '#f5a623', fontSize: 21, fontWeight: 800, letterSpacing: 0.5, margin: 0 }}>CSRL</p>
           <p style={{ color: 'rgba(255,255,255,.6)', fontSize: 13, margin: '6px 0 0' }}>
-            Student Management System
+            Pragati Dashboard CSRL
           </p>
         </div>
 
