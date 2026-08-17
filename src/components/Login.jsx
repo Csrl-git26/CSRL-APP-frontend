@@ -79,7 +79,7 @@ export default function Login() {
         }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
             <div style={{ width: 140, height: 140, borderRadius: '50%', backgroundColor: '#fff', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src="/logo_new.jpg" alt="CSRL logo" style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scale(1.2)' }} />
+            <img src="/logo_new.jpg" alt="CSRL logo" style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scale(1.15)' }} />
           </div>
           </div>
           <p style={{ color: '#f5a623', fontSize: 20, fontWeight: 'bold', margin: '6px 0 0' }}>
