@@ -35,6 +35,7 @@ import CentreLeaderboard from './CentreLeaderboard';
 import TestInsightsPanel from './TestInsightsPanel';
 import AdminWeakTopics from './AdminWeakTopics';
 import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
+import ClearRawMarksModal from './ClearRawMarksModal';
 import PastYearDataTab from './PastYearDataTab';
 import CentreDashboard from './CentreDashboard';
 import { mapProfileToExcelRow } from './exportUtils';
@@ -356,6 +357,7 @@ export default function AdminDashboard() {
   const [modalStudent, setModalStudent] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [showMarksAwardModal, setShowMarksAwardModal] = useState(false);
+  const [showClearRawMarksModal, setShowClearRawMarksModal] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   const [importMode,    setImportMode]    = useState(null);
@@ -1616,6 +1618,9 @@ export default function AdminDashboard() {
           <button type="button" className="btn btn-primary" style={{ background: '#db2777', borderColor: '#db2777' }} onClick={() => setShowMarksAwardModal(true)}>
             <Upload size={13} /> Upload Sheet
           </button>
+          <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)', marginLeft: 4 }} onClick={() => setShowClearRawMarksModal(true)}>
+            <Trash2 size={13} /> Clear Data (By Test)
+          </button>
           <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)', marginLeft: 4 }} onClick={handleClearRawMarks}>
             <Trash2 size={13} /> Clear All Marks Awarded Data
           </button>
@@ -1650,6 +1655,9 @@ export default function AdminDashboard() {
       {/* Modals */}
       {showMarksAwardModal && (
         <UploadMarksAwardSheetModal onClose={() => setShowMarksAwardModal(false)} />
+      )}
+      {showClearRawMarksModal && (
+        <ClearRawMarksModal onClose={() => setShowClearRawMarksModal(false)} testOptions={data?.testColumns || []} />
       )}
       {(modalMode === 'add' || modalMode === 'edit') && (
         <StudentFormModal mode={modalMode} student={modalStudent} loading={modalLoading} onClose={() => setModalMode(null)} onSubmit={modalMode === 'add' ? handleAddStudent : handleEditStudent} />
