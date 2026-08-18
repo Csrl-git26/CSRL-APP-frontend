@@ -62,17 +62,25 @@ export default function Layout() {
   });
 
   const role = auth?.role;
-  const navItems = auth?.role === 'ADMIN' ? ADMIN_NAV
+  const isDataAdmin = role === 'ADMIN' && localStorage.getItem('subRole') === 'DATA_ADMIN';
+  const DATA_ADMIN_NAV = [
+    { section: 'Import' },
+    { key: 'import',      Icon: Upload,          label: 'Import Excel'       },
+  ];
+
+  const navItems = isDataAdmin ? DATA_ADMIN_NAV
+                 : auth?.role === 'ADMIN' ? ADMIN_NAV
                  : auth?.role === 'CENTRE' ? CENTRE_NAV
                  : STUDENT_NAV;
 
   useEffect(() => {
-    if (role === 'ADMIN')   setActivePage('leaderboard');
+    if (role === 'ADMIN')   setActivePage(isDataAdmin ? 'import' : 'leaderboard');
     else if (role === 'CENTRE') setActivePage('leaderboard');
     else if (role === 'STUDENT') setActivePage('profile');
   }, [role]);
 
   const handleLogout = async () => {
+    localStorage.removeItem('subRole');
     await logout();
     navigate('/login');
   };

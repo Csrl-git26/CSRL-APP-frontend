@@ -70,7 +70,7 @@ const STUDENT_TEMPLATE_COLUMNS = [
   'PHYSICAL DISABILITY CERTIFICATE', 'DOMICILE CERTIFICATE', 'Email Id'
 ];
 
-const TABS = [
+const ALL_TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
@@ -78,6 +78,8 @@ const TABS = [
   { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
 ];
+const isDataAdmin = typeof window !== 'undefined' && localStorage.getItem('subRole') === 'DATA_ADMIN';
+const TABS = isDataAdmin ? ALL_TABS.filter(t => t.key === 'import') : ALL_TABS;
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

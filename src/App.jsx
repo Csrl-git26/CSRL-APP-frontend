@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import Layout from './components/Layout';
 import Login from './components/Login';
+import DataAdminLogin from './components/DataAdminLogin';
 import StudentDashboard from './components/StudentDashboard';
 import CentreDashboard from './components/CentreDashboard';
 import AdminDashboard from './components/AdminDashboard';
@@ -13,6 +14,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/data-admin" element={<DataAdminLogin />} />
       <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
         <Route index element={
           user?.role === 'STUDENT' ? <StudentDashboard /> :

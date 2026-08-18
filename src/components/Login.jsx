@@ -44,6 +44,7 @@ export default function Login() {
           return;
         }
         await login({ role: 'admin', id: username.trim(), password });
+        localStorage.removeItem('subRole');
       }
       navigate('/');
     } catch (err) {
