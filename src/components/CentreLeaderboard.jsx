@@ -74,17 +74,22 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             dataKey="code" 
             angle={-45} 
             textAnchor="end" 
-            tick={{ fontSize: 11, fill: '#64748b' }} 
+            tick={{ fontSize: 14, fill: '#1e293b', fontWeight: 'bold' }} 
             interval={0}
-            height={60}
+            height={80}
             axisLine={false}
             tickLine={false}
-          />
+          >
+            <Label value="Centre" offset={10} position="insideBottom" style={{ fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
+          </XAxis>
           <YAxis 
-            tick={{ fontSize: 12, fill: '#64748b' }} 
+            tick={{ fontSize: 14, fill: '#1e293b', fontWeight: 'bold' }} 
             axisLine={false}
             tickLine={false}
-          />
+            width={70}
+          >
+            <Label value="Average Score" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
+          </YAxis>
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
           <Bar dataKey="avg" radius={[4, 4, 0, 0]} style={{ cursor: 'pointer' }}>
             <LabelList dataKey="avg" content={renderCustomBarLabel} />
