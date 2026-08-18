@@ -97,6 +97,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
     });
     
     fetchStudentChart(null, profile.ROLL_KEY, null).then((res) => {
+      console.log('DEBUG API RESPONSE:', res);
       if (!cancelled && res) setChart(res);
     }).catch(() => {});
     
@@ -111,6 +112,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
   
 const chartData = useMemo(() => {
     const rawRows = chart?.chartData ?? buildStudentChartData(studentTests, testColumns);
+    console.log('chartData rawRows:', rawRows);
 
     const toNum = (v) => {
       const n = Number(v);

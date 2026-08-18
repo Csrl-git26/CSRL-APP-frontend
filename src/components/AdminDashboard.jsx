@@ -339,6 +339,7 @@ export default function AdminDashboard() {
 
   const [viewingStudentId, setViewingStudentId] = useState(null);
   const [selectedTestKey,  setSelectedTestKey]  = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('Total');
   const [manualTestOptions, setManualTestOptions] = useState([]);
 
   const [searchTerm,     setSearchTerm]     = useState('');
@@ -399,16 +400,17 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!selectedTestKey) return;
+    const combinedKey = selectedSubject === 'Total' ? selectedTestKey : `${selectedTestKey}_${selectedSubject}`;
     Promise.all([
-      fetchRankings(null, { testKey: selectedTestKey, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
-      fetchCentreLeaderboard(null, selectedTestKey).catch(() => []),
+      fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchCentreLeaderboard(null, combinedKey).catch(() => []),
     ]).then(([top, bottom, board]) => {
       setTopRanked(top.ranked    || []);
       setBottomRanked(bottom.ranked || []);
       setCentreBoard(Array.isArray(board) ? board : []);
     });
-  }, [selectedTestKey, refreshTrigger]);
+  }, [selectedTestKey, selectedSubject, refreshTrigger]);
 
   useEffect(() => {
     if (activePage !== 'ranking' || !selectedTestKey) return undefined;
@@ -1136,11 +1138,22 @@ export default function AdminDashboard() {
               )}
             </div>
           </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
-          <select className="input select" value={selectedTestKey} onChange={(e) => setSelectedTestKey(e.target.value)} style={{ width: 170, fontSize: 13 }}>
-            {allTestOptions.map((col) => <option key={col} value={col}>{col}</option>)}
-          </select>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
+            <select className="input select" value={selectedTestKey} onChange={(e) => setSelectedTestKey(e.target.value)} style={{ width: 170, fontSize: 13 }}>
+              {allTestOptions.map((col) => <option key={col} value={col}>{col}</option>)}
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
+            <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
+              <option value="Total">Total Average</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Math">Math</option>
+            </select>
+          </div>
         </div>
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
