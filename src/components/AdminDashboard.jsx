@@ -79,7 +79,7 @@ const ALL_TABS = [
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
 ];
 const isDataAdmin = typeof window !== 'undefined' && localStorage.getItem('subRole') === 'DATA_ADMIN';
-const TABS = isDataAdmin ? ALL_TABS.filter(t => t.key === 'import') : ALL_TABS;
+const TABS = isDataAdmin ? ALL_TABS.filter(t => t.key === 'import') : ALL_TABS.filter(t => t.key !== 'import');
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

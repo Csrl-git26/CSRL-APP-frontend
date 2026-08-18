@@ -24,8 +24,6 @@ const ADMIN_NAV = [
   { section: 'Data Management' },
   { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
-  { section: 'Import' },
-  { key: 'import',      Icon: Upload,          label: 'Import Excel'       },
 ];
 
 const CENTRE_NAV = [
