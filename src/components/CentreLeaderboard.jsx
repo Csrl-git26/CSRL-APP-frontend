@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload }) => {
 
     return (
       <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
-        {isRedFlag && <div style={{ color: '#ef4444', fontWeight: 800, marginBottom: 4 }}>🚩 ACTION REQUIRED</div>}
+        {isRedFlag && <div style={{ color: '#ef4444', fontWeight: 800, marginBottom: 4 }}>⚠️ ACTION REQUIRED</div>}
         <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', fontSize: 14 }}>#{data.rank} {centerName} ({data.code})</p>
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 600 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Top Score: {data.top}</p>
@@ -41,24 +41,33 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
   // Sort by rank ascending to ensure the highest rank is first (leftmost)
   const sortedStats = [...centreStats].sort((a, b) => a.rank - b.rank);
 
-  const renderCustomBarLabel = (props) => {
-    const { x, y, width, value, index } = props;
+    const renderCustomBarLabel = (props) => {
+    const { x, y, width, height, value, index } = props;
     const data = sortedStats[index];
     const isRedFlag = data && (data.avg < 100 || (data.qualRate ?? 0) < 50);
+    const centerX = x + width / 2;
+
+    const showInside = height > 70;
+    const topY = showInside ? y + 25 : y - 25;
+    const textColor = showInside ? "#ffffff" : "#1e293b";
+    const subTextColor = showInside ? "#93c5fd" : "#0284c7";
 
     return (
-      <g>
-        <text x={x + width / 2} y={y - 18} fill="#1e293b" textAnchor="middle" fontSize={13} fontWeight={900}>
+      <g style={{ pointerEvents: 'none' }}>
+        {isRedFlag && (
+          <g transform={`translate(${centerX}, ${topY - 8})`}>
+            <circle cx={0} cy={-5} r={11} fill="#ef4444" stroke={showInside ? "#ffffff" : "none"} strokeWidth={1.5} />
+            <text x={0} y={0} fill="#ffffff" textAnchor="middle" fontSize={14} fontWeight={900}>
+              !
+            </text>
+          </g>
+        )}
+        <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
           {value}
         </text>
-        <text x={x + width / 2} y={y - 6} fill="#0284c7" textAnchor="middle" fontSize={9} fontWeight={800} style={{ pointerEvents: 'none' }}>
+        <text x={centerX} y={topY + (isRedFlag ? 24 : 12)} fill={subTextColor} textAnchor="middle" fontSize={9} fontWeight={800}>
           CLICK
         </text>
-        {isRedFlag && (
-          <text x={x + width / 2} y={y - 34} fill="#ef4444" textAnchor="middle" fontSize={14}>
-            🚩
-          </text>
-        )}
       </g>
     );
   };
