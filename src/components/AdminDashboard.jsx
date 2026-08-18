@@ -1762,7 +1762,7 @@ export default function AdminDashboard() {
         </div>
         <div>
           <h1>CSRL Management Dashboard</h1>
-          <p>Super Admin · Full Control Panel</p>
+
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
           {['leaderboard', 'centre-overview', 'ranking'].includes(activePage) && (

@@ -87,7 +87,7 @@ export default function Layout() {
 
   const sidebarUser =
     role === 'ADMIN'
-      ? 'CSRL Admin'
+      ? 'CSRL Management'
       : role === 'CENTRE'
         ? `${auth?.centerCode || auth?.id || ''} — ${centreDisplayName(auth?.centerCode)}`
         : auth?.name || auth?.id || 'Student';
