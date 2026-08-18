@@ -743,7 +743,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   return (
     <div className={adminViewCenterCode ? "" : "fade-in dashboard-page"}>
-      {!adminViewCenterCode && (
+      {!adminViewCenterCode && activePage !== 'leaderboard' && (
         <div className="page-header">
           <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
             {CENTERS[selectedCenterCode]?.logo ? (
@@ -801,7 +801,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       )}
 
       <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
-        {!adminViewCenterCode && (
+        {!adminViewCenterCode && activePage !== 'leaderboard' && (
           <div style={{ marginBottom: 14, flexShrink: 0 }}>
             <div className="tab-bar">
               {TABS.map(({ key, Icon, label }) => (
