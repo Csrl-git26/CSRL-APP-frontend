@@ -25,6 +25,9 @@ const CustomTooltip = ({ active, payload }) => {
         <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Tested: {data.tested}/{data.studentCount}</p>
         {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Qual. Rate: {data.qualRate}%</p>}
         <p style={{ margin: '8px 0 0 0', color: 'var(--red-600)', fontWeight: 600 }}>Weakest: {data.weakSubject}</p>
+        <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #eee', fontSize: 11, color: '#3b82f6', fontWeight: 600, textAlign: 'center', cursor: 'pointer' }}>
+          🖱️ Click column for full overview
+        </div>
       </div>
     );
   }
@@ -64,6 +67,16 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
           data={sortedStats}
           margin={{ top: 35, right: 30, left: 0, bottom: 60 }}
         >
+          <defs>
+            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity={1}/>
+              <stop offset="100%" stopColor="#1e3a8a" stopOpacity={1}/>
+            </linearGradient>
+            <linearGradient id="activeBarGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#60a5fa" stopOpacity={1}/>
+              <stop offset="100%" stopColor="#2563eb" stopOpacity={1}/>
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
           <XAxis 
             dataKey="code" 
@@ -86,15 +99,19 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             <Label value="Average Score" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
           </YAxis>
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
-          <Bar dataKey="avg" radius={[4, 4, 0, 0]} style={{ cursor: 'pointer' }} onClick={(data) => {
-            if (data && data.code && typeof onCentreClick === 'function') {
-              onCentreClick(data.code);
-            }
-          }}>
+          <Bar 
+            dataKey="avg" 
+            radius={[4, 4, 0, 0]} 
+            style={{ cursor: 'pointer' }} 
+            fill="url(#barGradient)"
+            activeBar={{ fill: 'url(#activeBarGradient)', stroke: '#93c5fd', strokeWidth: 2 }}
+            onClick={(data) => {
+              if (data && data.code && typeof onCentreClick === 'function') {
+                onCentreClick(data.code);
+              }
+            }}
+          >
             <LabelList dataKey="avg" content={renderCustomBarLabel} />
-            {sortedStats.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill="#1a4fa0" />
-            ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
