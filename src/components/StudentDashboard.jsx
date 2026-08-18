@@ -450,12 +450,12 @@ export default function StudentDashboard() {
               {streamCfg.subjects.map((s) => (
                 <th key={s}>
                   <div>{s}</div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC. | RANK</div>
                 </th>
               ))}
               <th>
                 <div>Total</div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC. | RANK</div>
               </th>
             </tr>
           </thead>
@@ -465,11 +465,13 @@ export default function StudentDashboard() {
                 const mark = row[s];
                 const attempted = row[`${s}_Attempted`];
                 const accuracy = row[`${s}_Accuracy`];
-                return { mark, attempted, accuracy };
+                const rank = row[`${s}_Rank`];
+                return { mark, attempted, accuracy, rank };
               });
               const total  = row.Total;
               const totalAttempted = row.Total_Attempted;
               const totalAccuracy = row.Total_Accuracy;
+              const totalRank = row.Total_Rank;
               const maxTot = streamCfg.maxTotal;
               const pct    = total != null && !Number.isNaN(Number(total))
                 ? Math.round((Number(total) / maxTot) * 100)
@@ -480,14 +482,15 @@ export default function StudentDashboard() {
                 if (isAbsent) return 'Absent';
                 if (v.mark === null || v.mark === undefined || v.mark === '—') {
                   if (v.attempted != null) {
-                    return `— | ${v.attempted} | ${v.accuracy}%`;
+                    return `— | ${v.attempted} | ${v.accuracy}% | —`;
                   }
                   return '—';
                 }
                 const m = v.mark;
                 const at = v.attempted != null ? v.attempted : '—';
                 const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
-                return `${m} | ${at} | ${ac}`;
+                const rnk = v.rank != null ? v.rank : '—';
+                return `${m} | ${at} | ${ac} | ${rnk}`;
               };
 
               return (
@@ -504,7 +507,7 @@ export default function StudentDashboard() {
                   })}
                   <td style={{ whiteSpace: 'nowrap' }}>
                     <strong style={{ color: total === 'Absent' ? 'var(--red)' : '#1a4fa0' }}>
-                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy })}
+                      {renderCell({ mark: total, attempted: totalAttempted, accuracy: totalAccuracy, rank: totalRank })}
                     </strong>
                   </td>
                 </tr>
