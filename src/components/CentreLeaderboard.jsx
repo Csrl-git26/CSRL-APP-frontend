@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 import { BarChart2 } from 'lucide-react';
 import { CENTERS } from '../config/centers';
 
@@ -73,6 +73,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
           <Bar dataKey="avg" radius={[4, 4, 0, 0]} style={{ cursor: 'pointer' }}>
+            <LabelList dataKey="avg" position="top" style={{ fontSize: '11px', fill: '#64748b', fontWeight: 600 }} />
             {sortedStats.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={getGradientColor(index, sortedStats.length)} />
             ))}
