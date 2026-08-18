@@ -433,11 +433,13 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           </div>
         )}
 
-        <CenterOverallWeakTopics centerId={selectedCenterCode} />
-
-        <div style={{ marginTop: '24px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} />
           <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} stream={activeCenter?.stream || 'JEE'} isCentre={true} />
+        </div>
+
+        <div style={{ marginTop: '24px' }}>
+          <CenterOverallWeakTopics centerId={selectedCenterCode} />
         </div>
         
         <div style={{ marginTop: '24px' }}>
