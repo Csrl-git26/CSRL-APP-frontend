@@ -1,9 +1,7 @@
-import { BarChart2, ChevronRight, Flag } from 'lucide-react';
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart2 } from 'lucide-react';
 import { CENTERS } from '../config/centers';
-
-function centreLabel(code) {
-  return CENTERS[code]?.name || code;
-}
 
 function getGradientColor(index, total) {
   if (total <= 1) return '#1a4fa0';
@@ -14,15 +12,6 @@ function getGradientColor(index, total) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-function RankBadge({ index, total }) {
-  const color = getGradientColor(index, total);
-  return (
-    <div className="rank-badge" style={{ background: '#f8fafc', color }} aria-label={`Rank ${index + 1}`}>
-      {index + 1}
-    </div>
-  );
-}
-
 const Empty = ({ message }) => (
   <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray-400)' }}>
     <BarChart2 size={36} style={{ margin: '0 auto 10px', opacity: 0.4 }} />
@@ -30,122 +19,66 @@ const Empty = ({ message }) => (
   </div>
 );
 
-const pct = (a, x) => (x > 0 ? Math.round((a / x) * 100) : 0);
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    const centerName = CENTERS[data.code]?.name || data.code;
+    return (
+      <div style={{ background: '#fff', border: '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', fontSize: 14 }}>#{data.rank} {centerName} ({data.code})</p>
+        <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 600 }}>Avg Score: {data.avg}</p>
+        <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Top Score: {data.top}</p>
+        <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Tested: {data.tested}/{data.studentCount}</p>
+        <p style={{ margin: '8px 0 0 0', color: 'var(--red-600)', fontWeight: 600 }}>Weakest: {data.weakSubject}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
-/**
- * CentreLeaderboard
- *
- * Props:
- *   centreStats  — array from backend /api/analytics/centre-leaderboard
- *                  [{ rank, code, avg, top, tested, studentCount, weakSubject }]
- *   selTest      — selected test key (for display only)
- */
 export default function CentreLeaderboard({ centreStats = [], selTest, onCentreClick }) {
   if (!selTest) return <Empty message="Select a test to view rankings" />;
   if (!centreStats.length) return <Empty message={`No test data for ${selTest}`} />;
 
-  const maxAvg = centreStats[0]?.avg || 1;
+  // Sort by rank ascending to ensure the highest rank is first (leftmost)
+  const sortedStats = [...centreStats].sort((a, b) => a.rank - b.rank);
 
   return (
-    <div className="scrollable-rankings" style={{ display: 'flex', flexDirection: 'column', gap: 32, paddingTop: 16, maxHeight: '600px', overflowY: 'auto', paddingRight: '12px' }}>
-      {centreStats.map((centre, index) => {
-        const color = getGradientColor(index, centreStats.length);
-        const clickable = typeof onCentreClick === 'function';
-        
-        return (
-          <div 
-            key={centre.code} 
-            className={`centre-rank-card ${clickable ? 'clickable-card' : ''}`} 
-            style={{ 
-              borderLeftColor: color,
-              cursor: clickable ? 'pointer' : 'default',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              position: 'relative',
-              paddingTop: (centre.avg < 100 || (centre.qualRate ?? 0) < 50) ? 32 : undefined
-            }}
-            onClick={() => clickable && onCentreClick(centre.code)}
-          >
-            {(centre.avg < 100 || (centre.qualRate ?? 0) < 50) && (
-              <div style={{
-                position: 'absolute',
-                top: 6,
-                left: 70,
-                background: '#fee2e2',
-                color: '#991b1b',
-                padding: '2px 12px',
-                borderRadius: 12,
-                fontSize: 11,
-                fontWeight: 800,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                border: '1px solid #fecaca',
-                zIndex: 10
-              }} title="Action Required: Low Avg or Low Qual. Rate">
-                <Flag size={12} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED
-              </div>
-            )}
-            <RankBadge index={index} total={centreStats.length} />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                {centre.code.toUpperCase().includes('OIL') ? (
-                  <img src="/OIL_INDIA_logo.png" alt="OIL" style={{ height: 28, objectFit: 'contain' }} />
-                ) : centre.code.toUpperCase().includes('GAIL') ? (
-                  <img src="/GAIL_logo.png" alt="GAIL" style={{ height: 28, objectFit: 'contain' }} />
-                ) : null}
-                <span style={{ fontWeight: 800, fontSize: 16 }}>{centreLabel(centre.code)}</span>
-                <span style={{ fontSize: 13, background: 'var(--csrl-blue-light)', color: 'var(--csrl-blue)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
-                  {centre.code}
-                </span>
-                <span style={{ fontSize: 13, color: 'var(--gray-500)', fontWeight: 600 }}>
-                  {centre.tested}/{centre.studentCount} tested
-                </span>
-                {clickable && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--csrl-blue)', padding: '2px 10px', borderRadius: 12, fontWeight: 700, backgroundColor: 'var(--csrl-blue-light)', border: '1px solid #c7d2fe', marginLeft: 6 }}>
-                    Click to overview <ChevronRight size={14} strokeWidth={3} />
-                  </span>
-                )}
-
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
-                  {centre.notQualBySub && Object.keys(centre.notQualBySub).length > 0 && (
-                    <span style={{ fontSize: 13, background: '#f8fafc', border: '1px solid var(--gray-200)', color: 'var(--gray-700)', padding: '2px 8px', borderRadius: 4, display: 'flex', gap: 6, alignItems: 'center', fontWeight: 700 }}>
-                      <span style={{ color: 'var(--gray-500)', fontWeight: 600 }}>Not Qual:</span>
-                      {Object.entries(centre.notQualBySub).map(([sub, count]) => (
-                        <span key={sub}>{sub === 'Mathematics' || sub === 'Math' ? 'Math' : sub.substring(0, 4)}: <strong style={{ color: 'var(--red)' }}>{count}</strong></span>
-                      ))}
-                    </span>
-                  )}
-                  <span style={{ fontSize: 13, background: '#fae8ff', color: '#86198f', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
-                    {centre.qualRate ?? 0}% Qual.
-                  </span>
-                  <span style={{ fontSize: 13, background: 'var(--red-bg)', color: 'var(--red)', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
-                    Weak (Avg): {centre.weakSubject}
-                  </span>
-                  {centre.accuracyWeakSubject && (
-                    <span style={{ fontSize: 13, background: '#fdf2f8', color: '#9d174d', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
-                      Weak (Acc): {centre.accuracyWeakSubject}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ flex: 1 }}>
-                  <div className="progress-bar" style={{ height: 10 }}>
-                    <div className="progress-fill" style={{ width: `${pct(centre.avg, maxAvg)}%`, background: color }} />
-                  </div>
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 800, minWidth: 90, textAlign: 'right', color: 'var(--gray-800)' }}>
-                  Avg: <span style={{ fontSize: 18, color }}>{centre.avg}</span>
-                </div>
-                <div style={{ fontSize: 13, color: 'var(--gray-500)', minWidth: 60, textAlign: 'right', fontWeight: 600 }}>
-                  Top: {centre.top}
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
+    <div style={{ width: '100%', height: 500, marginTop: 16 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={sortedStats}
+          margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
+          onClick={(data) => {
+             if (data && data.activePayload && typeof onCentreClick === 'function') {
+               onCentreClick(data.activePayload[0].payload.code);
+             }
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+          <XAxis 
+            dataKey="code" 
+            angle={-45} 
+            textAnchor="end" 
+            tick={{ fontSize: 11, fill: '#64748b' }} 
+            interval={0}
+            height={60}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis 
+            tick={{ fontSize: 12, fill: '#64748b' }} 
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+          <Bar dataKey="avg" radius={[4, 4, 0, 0]} style={{ cursor: 'pointer' }}>
+            {sortedStats.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={getGradientColor(index, sortedStats.length)} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
