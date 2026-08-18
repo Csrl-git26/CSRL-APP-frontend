@@ -340,6 +340,7 @@ export default function AdminDashboard() {
   const [viewingStudentId, setViewingStudentId] = useState(null);
   const [selectedTestKey,  setSelectedTestKey]  = useState('');
   const [selectedSubject, setSelectedSubject] = useState('Total');
+  const [selectedLeaderboardTestKeys, setSelectedLeaderboardTestKeys] = useState([]);
   const [manualTestOptions, setManualTestOptions] = useState([]);
 
   const [searchTerm,     setSearchTerm]     = useState('');
@@ -404,13 +405,31 @@ export default function AdminDashboard() {
     Promise.all([
       fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
       fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
-      fetchCentreLeaderboard(null, combinedKey).catch(() => []),
-    ]).then(([top, bottom, board]) => {
+    ]).then(([top, bottom]) => {
       setTopRanked(top.ranked    || []);
       setBottomRanked(bottom.ranked || []);
-      setCentreBoard(Array.isArray(board) ? board : []);
     });
   }, [selectedTestKey, selectedSubject, refreshTrigger]);
+
+  // Sync selectedTestKey to leaderboard default
+  useEffect(() => {
+    if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {
+      setSelectedLeaderboardTestKeys([selectedTestKey]);
+    }
+  }, [selectedTestKey]);
+
+  // Separate effect for Leaderboard
+  useEffect(() => {
+    if (selectedLeaderboardTestKeys.length === 0) return;
+    const baseKeys = selectedLeaderboardTestKeys.join(',');
+    const combinedKey = selectedSubject === 'Total' 
+       ? baseKeys 
+       : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
+
+    fetchCentreLeaderboard(null, combinedKey)
+      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
+      .catch(() => setCentreBoard([]));
+  }, [selectedLeaderboardTestKeys, selectedSubject, refreshTrigger]);
 
   useEffect(() => {
     if (activePage !== 'ranking' || !selectedTestKey) return undefined;
@@ -1091,7 +1110,7 @@ export default function AdminDashboard() {
               <Trophy size={15} style={{ marginRight: 6 }} aria-hidden="true" />
               Top Centres — {selectedTestKey}
             </div>
-            <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
+            <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
           </div>
           <OverallMatrixCard title="Category & Stream Distribution" />
         </div>
@@ -1141,9 +1160,11 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
-            <select className="input select" value={selectedTestKey} onChange={(e) => setSelectedTestKey(e.target.value)} style={{ width: 170, fontSize: 13 }}>
-              {allTestOptions.map((col) => <option key={col} value={col}>{col}</option>)}
-            </select>
+            <MultiSelectDropdown 
+              options={allTestOptions} 
+              selectedOptions={selectedLeaderboardTestKeys} 
+              onChange={setSelectedLeaderboardTestKeys} 
+            />
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
@@ -1156,7 +1177,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-      <CentreLeaderboard centreStats={centreBoard} selTest={selectedTestKey} onCentreClick={handleLeaderboardCentreClick} />
+      <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
     </div>
     );
   };
