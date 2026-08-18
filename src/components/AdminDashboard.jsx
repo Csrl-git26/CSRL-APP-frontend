@@ -1895,18 +1895,7 @@ export default function AdminDashboard() {
 
       {/* Tabs + scrollable body (lists scroll here, not the whole window) */}
       <div className="content dashboard-page-body">
-        <div style={{ marginBottom: 16, flexShrink: 0 }}>
-          <div className="tab-bar">
-            {TABS.map((tab) => {
-              const TabIcon = tab.Icon;
-              return (
-                <button key={tab.key} type="button" className={`tab${activePage === tab.key ? ' active' : ''}`} onClick={() => setActivePage(tab.key)}>
-                  <TabIcon size={13} aria-hidden="true" />{tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && <LeaderboardSection />}
           {activePage === 'overview'    && <OverviewSection />}
