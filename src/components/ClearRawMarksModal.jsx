@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { apiFetch } from '../utils/apiFetch';
+import { clearRawMarksApi } from '../services/weakTopicApi';
 
 export default function ClearRawMarksModal({ onClose, testOptions = [] }) {
   const [testId, setTestId] = useState('');
@@ -22,9 +22,7 @@ export default function ClearRawMarksModal({ onClose, testOptions = [] }) {
     setErrorMsg('');
 
     try {
-      const res = await apiFetch(`/api/admin/clear-raw-marks?testId=${encodeURIComponent(testId.trim())}`, {
-        method: 'DELETE'
-      });
+      const res = await clearRawMarksApi(testId.trim());
       if (res.success) {
         setStatus('success');
       } else {
