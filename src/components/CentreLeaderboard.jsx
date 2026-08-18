@@ -70,25 +70,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
           data={sortedStats}
           margin={{ top: 50, right: 30, left: 0, bottom: 60 }}
         >
-          <defs>
-            <linearGradient id="crystalWater" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#0284c7" stopOpacity={0.9}/>
-              <stop offset="25%" stopColor="#38bdf8" stopOpacity={1}/>
-              <stop offset="50%" stopColor="#e0f2fe" stopOpacity={0.95}/>
-              <stop offset="75%" stopColor="#0ea5e9" stopOpacity={1}/>
-              <stop offset="100%" stopColor="#0369a1" stopOpacity={0.9}/>
-            </linearGradient>
-            <linearGradient id="crystalWaterActive" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#0ea5e9" stopOpacity={1}/>
-              <stop offset="25%" stopColor="#7dd3fc" stopOpacity={1}/>
-              <stop offset="50%" stopColor="#ffffff" stopOpacity={1}/>
-              <stop offset="75%" stopColor="#38bdf8" stopOpacity={1}/>
-              <stop offset="100%" stopColor="#0284c7" stopOpacity={1}/>
-            </linearGradient>
-            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="2" dy="4" stdDeviation="3" floodColor="#000000" floodOpacity="0.2"/>
-            </filter>
-          </defs>
+          
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
           <XAxis 
             dataKey="code" 
@@ -113,10 +95,10 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
           <Bar 
             dataKey="avg" 
-            radius={[6, 6, 0, 0]} 
-            style={{ cursor: 'pointer', filter: 'url(#shadow)' }} 
-            fill="url(#crystalWater)"
-            activeBar={{ fill: 'url(#crystalWaterActive)', stroke: '#ffffff', strokeWidth: 1 }}
+            radius={[4, 4, 0, 0]} 
+            style={{ cursor: 'pointer' }} 
+            fill="#1a4fa0"
+            activeBar={{ fill: '#2563eb', stroke: '#93c5fd', strokeWidth: 2 }}
             onClick={(data) => {
               if (data && data.code && typeof onCentreClick === 'function') {
                 onCentreClick(data.code);
