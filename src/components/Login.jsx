@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Building2, ShieldCheck, LogIn, AlertCircle, Database } from 'lucide-react';
+import { GraduationCap, Building2, ShieldCheck, LogIn, AlertCircle, FileText } from 'lucide-react';
 import { CENTERS } from '../config/centers';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,7 +8,7 @@ const ROLES = [
   { key: 'student', Icon: GraduationCap, label: 'Student' },
   { key: 'centre',  Icon: Building2,      label: 'Centre'  },
   { key: 'admin',   Icon: ShieldCheck,    label: 'CSRL Management'   },
-  { key: 'data_admin', Icon: Database,    label: 'Admin' },
+  { key: 'data_admin', Icon: FileText,    label: 'Admin' },
 ];
 
 export default function Login() {
