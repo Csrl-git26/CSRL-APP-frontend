@@ -29,7 +29,7 @@ const CustomTooltip = ({ active, payload }) => {
         
         {data.notQualBySub && Object.keys(data.notQualBySub).length > 0 && (
           <div style={{ marginTop: 8, padding: '6px 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 4 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#b91c1c', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>Failures By Subject</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#b91c1c', marginBottom: 4, letterSpacing: 0.5 }}>No. of not qual.</div>
             {Object.entries(data.notQualBySub).map(([subj, count]) => (
               <div key={subj} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#991b1b', marginBottom: 2 }}>
                 <span>{subj}</span>
