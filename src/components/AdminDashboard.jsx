@@ -410,6 +410,10 @@ function pctBar(numerator, denominator) {
 
 
 const LeaderboardTrendChart = ({ centreBoard, getStreamConfig }) => {
+  const [selectedTrendCentre, setSelectedTrendCentre] = useState('');
+  const [trendChartData, setTrendChartData] = useState([]);
+  const [trendChartLoading, setTrendChartLoading] = useState(false);
+
 
   useEffect(() => {
     if (centreBoard.length > 0 && !selectedTrendCentre) {
