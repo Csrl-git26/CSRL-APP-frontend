@@ -1221,7 +1221,7 @@ export default function AdminDashboard() {
               Top Centres — {selectedTestKey}
             </div>
             <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
-        <div className="card" style={{ marginTop: 12 }}>
+        <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select
@@ -1311,7 +1311,7 @@ export default function AdminDashboard() {
         </div>
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
-        <div className="card" style={{ marginTop: 12 }}>
+        <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select
@@ -1908,8 +1908,8 @@ export default function AdminDashboard() {
                   <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download Marks Template</button>
                 ) : null}
               </div>
-              {uploadLoading && <div style={{ marginTop: 12, color: 'var(--csrl-blue)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}><Loader2 size={14} className="spin" /> Processing file…</div>}
-              {uploadError  && <div style={{ marginTop: 12, background: 'var(--red-bg)', color: 'var(--red)', borderRadius: 6, padding: '10px 12px', fontSize: 13 }}>{uploadError}</div>}
+              {uploadLoading && <div style={{ marginTop: 0, color: 'var(--csrl-blue)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}><Loader2 size={14} className="spin" /> Processing file…</div>}
+              {uploadError  && <div style={{ marginTop: 0, background: 'var(--red-bg)', color: 'var(--red)', borderRadius: 6, padding: '10px 12px', fontSize: 13 }}>{uploadError}</div>}
               {!!uploadPreview.length && (
                 <div style={{ marginTop: 14 }}>
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
