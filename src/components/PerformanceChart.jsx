@@ -16,17 +16,17 @@ export default function PerformanceChart({ chartData, streamCfg }) {
     <div className={noCard ? "" : "card"} style={{ marginBottom: noCard ? 0 : '24px' }}>
       {!noCard && <div className="section-title">📈 Performance Trend</div>}
       <div>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
           {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
             <button
               key={m}
               onClick={() => setChartMetric(m)}
               style={{
-                padding: '6px 14px', borderRadius: 999, border: '1px solid',
+                padding: '4px 10px', borderRadius: 999, border: '1px solid',
                 borderColor: chartMetric === m ? 'var(--csrl-orange)' : 'var(--gray-200)',
                 background: chartMetric === m ? 'var(--csrl-orange)' : '#f8fafc',
                 color: chartMetric === m ? '#fff' : 'var(--gray-600)',
-                fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: '0.2s'
+                fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: '0.2s'
               }}
             >
               {m}
@@ -51,8 +51,8 @@ export default function PerformanceChart({ chartData, streamCfg }) {
           ))}
         </div>
 
-        <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={chartData} margin={{ top: 30, right: 30, left: 65, bottom: 75 }}>
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart data={chartData} margin={{ top: 15, right: 15, left: 50, bottom: 50 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-600)' }} interval={0} angle={-35} textAnchor="end" />
             <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />

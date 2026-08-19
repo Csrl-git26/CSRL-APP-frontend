@@ -1222,8 +1222,8 @@ export default function AdminDashboard() {
             </div>
             <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
         <div className="card" style={{ marginTop: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select
               className="input select"
               value={selectedTrendCentre}
@@ -1305,8 +1305,8 @@ export default function AdminDashboard() {
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
         <div className="card" style={{ marginTop: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select
               className="input select"
               value={selectedTrendCentre}
