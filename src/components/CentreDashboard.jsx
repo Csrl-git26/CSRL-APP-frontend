@@ -17,6 +17,8 @@ import {
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
 import CentreLeaderboard from './CentreLeaderboard';
+import MultiSelectDropdown from './MultiSelectDropdown';
+import PerformanceChart from './PerformanceChart';
 import { CENTERS } from '../config/centers';
 import TestInsightsPanel from './TestInsightsPanel';
 import CenterWeakTopics from './CenterWeakTopics';
@@ -84,6 +86,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const [centreBoard, setCentreBoard] = useState([]);
   const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
   const [centreChartData, setCentreChartData] = useState([]);
+  const [selectedLeaderboardTestKeys, setSelectedLeaderboardTestKeys] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState('Total');
+  const [selectedTrendCentre, setSelectedTrendCentre] = useState(() => adminViewCenterCode || auth.centerCode || '');
+  const [trendChartData, setTrendChartData] = useState([]);
+  const [trendChartLoading, setTrendChartLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -140,13 +147,43 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   // Subject performance + weak subject for the selected test only
   useEffect(() => {
+    if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {
+      setSelectedLeaderboardTestKeys([selectedTestKey]);
+    }
+  }, [selectedTestKey]);
+
+  useEffect(() => {
+    if (selectedLeaderboardTestKeys.length === 0) return;
+    const baseKeys = selectedLeaderboardTestKeys.join(',');
+    const combinedKey = selectedSubject === 'Total' 
+       ? baseKeys 
+       : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
+
+    fetchCentreLeaderboard(null, combinedKey)
+      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
+      .catch(() => setCentreBoard([]));
+  }, [selectedLeaderboardTestKeys, selectedSubject]);
+
+  useEffect(() => {
+    if (!selectedTrendCentre) return;
+    let isMounted = true;
+    setTrendChartLoading(true);
+    fetchCentreChart(selectedTrendCentre)
+      .then(res => {
+        if (isMounted) setTrendChartData(res.chartData || []);
+      })
+      .catch(err => console.error('Failed to fetch trend data:', err))
+      .finally(() => {
+        if (isMounted) setTrendChartLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, [selectedTrendCentre]);
+
+  useEffect(() => {
     if (!selectedCenterCode || !selectedTestKey) return undefined;
     let cancelled = false;
     
-    fetchCentreLeaderboard(null, selectedTestKey)
-      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
-      .catch(() => setCentreBoard([]));
-    
+
     fetchSubjectAverages(null, selectedCenterCode, selectedTestKey)
       .then((avgs) => {
         if (!cancelled) setSubjectAvgs(Array.isArray(avgs) ? avgs : []);
@@ -158,6 +195,39 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       cancelled = true;
     };
   }, [selectedCenterCode, selectedTestKey]);
+
+  useEffect(() => {
+    if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {
+      setSelectedLeaderboardTestKeys([selectedTestKey]);
+    }
+  }, [selectedTestKey]);
+
+  useEffect(() => {
+    if (selectedLeaderboardTestKeys.length === 0) return;
+    const baseKeys = selectedLeaderboardTestKeys.join(',');
+    const combinedKey = selectedSubject === 'Total' 
+       ? baseKeys 
+       : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
+
+    fetchCentreLeaderboard(null, combinedKey)
+      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
+      .catch(() => setCentreBoard([]));
+  }, [selectedLeaderboardTestKeys, selectedSubject]);
+
+  useEffect(() => {
+    if (!selectedTrendCentre) return;
+    let isMounted = true;
+    setTrendChartLoading(true);
+    fetchCentreChart(selectedTrendCentre)
+      .then(res => {
+        if (isMounted) setTrendChartData(res.chartData || []);
+      })
+      .catch(err => console.error('Failed to fetch trend data:', err))
+      .finally(() => {
+        if (isMounted) setTrendChartLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, [selectedTrendCentre]);
 
   useEffect(() => {
     if (!selectedCenterCode || !selectedTestKey) return undefined;
@@ -263,6 +333,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     return map;
   }, [data]);
 
+  const allTestOptions = useMemo(
+    () => [...new Set((data?.testColumns || []).filter(c => !String(c).includes('_')))]
+      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
+    [data]
+  );
+
   const filteredStudents = useMemo(() => {
     if (!data) return [];
     const q = searchTerm.toLowerCase();
@@ -356,19 +432,61 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
-            <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedTestKey}
+            <Trophy size={18} aria-hidden="true" />Centre Rankings
           </div>
           <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Sorted descending by average score</div>
+        </div>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
+            <MultiSelectDropdown 
+              options={allTestOptions} 
+              selectedOptions={selectedLeaderboardTestKeys} 
+              onChange={setSelectedLeaderboardTestKeys} 
+            />
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
+            <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
+              <option value="Total">Total Average</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Math">Math</option>
+            </select>
+          </div>
         </div>
       </div>
       <CentreLeaderboard 
         centreStats={centreBoard} 
-        selTest={selectedTestKey} 
+        selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} 
         onCentreClick={(code) => {
           setSelectedCenterCode(code);
           setActivePage('overview');
-        }}
+        }} 
       />
+      
+      <div className="card" style={{ marginTop: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+          <select
+            className="input select"
+            value={selectedTrendCentre}
+            onChange={(e) => setSelectedTrendCentre(e.target.value)}
+            style={{ width: 200, fontSize: 13 }}
+          >
+            {centreBoard.map(c => (
+              <option key={c.code} value={c.code}>{c.code}</option>
+            ))}
+          </select>
+        </div>
+        {trendChartLoading ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
+        ) : trendChartData.length > 0 ? (
+          <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} />
+        ) : (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
+        )}
+      </div>
     </div>
   );
 
