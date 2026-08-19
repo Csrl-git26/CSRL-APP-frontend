@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Search, Eye, Brain, Package } from 'lucide-react';
+import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Search, Eye, Brain, Package, Flag } from 'lucide-react';
 import {
   fetchCenterDataApi,
   fetchOverview,
@@ -393,14 +393,40 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   // ── Section components ────────────────────────────────────────────────────────
 
-  const LeaderboardSection = () => (
+  const LeaderboardSection = () => {
+    const totalAppeared = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
+    const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
+    const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
+
+    return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
-            <Trophy size={18} aria-hidden="true" />Centre Rankings
+            <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Sorted descending by average score</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Sorted descending by average score</span>
+            
+            {totalAppeared > 0 && (
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
+                <span style={{ fontSize: 14, color: 'var(--gray-600)', fontWeight: 700 }}>Overall CSRL Qualification:</span>
+                <span style={{ fontSize: 16, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 20, color: 'var(--gray-700)', fontWeight: 700 }}>
+                  <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
+                </span>
+                {qualPct < 50 ? (
+                  <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Flag size={14} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED - 
+                    <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                  </span>
+                ) : (
+                  <span style={{ fontSize: 16, background: '#fae8ff', color: '#86198f', padding: '4px 12px', borderRadius: 20, fontWeight: 800 }}>
+                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -454,7 +480,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         )}
       </div>
     </div>
-  );
+    );
+  };
 
   const OverviewSection = () => {
     const totalStudents = overview?.totalStudents ?? data.profiles.length;
@@ -827,7 +854,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   return (
     <div className={adminViewCenterCode ? "" : "fade-in dashboard-page"}>
-      {!adminViewCenterCode && activePage !== 'leaderboard' && (
+      {!adminViewCenterCode && (
         <div className="page-header">
           <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
             {CENTERS[selectedCenterCode]?.logo ? (
@@ -885,7 +912,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       )}
 
       <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
-        {!adminViewCenterCode && activePage !== 'leaderboard' && (
+        {!adminViewCenterCode && (
           <div style={{ marginBottom: 14, flexShrink: 0 }}>
             <div className="tab-bar">
               {TABS.map(({ key, Icon, label }) => (
