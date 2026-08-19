@@ -460,6 +460,30 @@ export default function AdminDashboard() {
   const [testInsights, setTestInsights] = useState(null);
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError] = useState('');
+
+  // Sync selectedTrendCentre to first centre in board
+  useEffect(() => {
+    if (centreBoard.length > 0 && !selectedTrendCentre) {
+      setSelectedTrendCentre(centreBoard[0].code);
+    }
+  }, [centreBoard, selectedTrendCentre]);
+
+  // Fetch trend data
+  useEffect(() => {
+    if (!selectedTrendCentre) return;
+    let isMounted = true;
+    setTrendChartLoading(true);
+    fetchCentreChart(selectedTrendCentre)
+      .then(res => {
+        if (isMounted) setTrendChartData(res.chartData || []);
+      })
+      .catch(err => console.error('Failed to fetch trend data:', err))
+      .finally(() => {
+        if (isMounted) setTrendChartLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, [selectedTrendCentre]);
+
   
   // Trigger to refetch backend analytics
   const [refreshTrigger, setRefreshTrigger] = useState(0);
