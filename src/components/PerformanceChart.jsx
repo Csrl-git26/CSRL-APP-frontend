@@ -4,7 +4,7 @@ import { getMaxMarksForSubject } from '../services/dataService';
 
 const SUBJECT_COLORS = ['#3b82f6', '#f97316', '#22c55e', '#ef4444'];
 
-export default function PerformanceChart({ chartData, streamCfg }) {
+export default function PerformanceChart({ chartData, streamCfg, noCard }) {
   const [chartMetric, setChartMetric] = useState('MARKS');
   const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
 
