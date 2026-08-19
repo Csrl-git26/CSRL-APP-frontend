@@ -75,9 +75,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
         <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
           {value}
         </text>
-        <text x={centerX} y={topY + (isRedFlag ? 24 : 12)} fill={subTextColor} textAnchor="middle" fontSize={9} fontWeight={800}>
-          CLICK
-        </text>
+
       </g>
     );
   };
