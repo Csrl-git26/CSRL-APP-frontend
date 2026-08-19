@@ -1238,7 +1238,7 @@ export default function AdminDashboard() {
           {trendChartLoading ? (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
           ) : trendChartData.length > 0 ? (
-            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} />
           ) : (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
           )}
@@ -1321,7 +1321,7 @@ export default function AdminDashboard() {
           {trendChartLoading ? (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
           ) : trendChartData.length > 0 ? (
-            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} />
           ) : (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
           )}

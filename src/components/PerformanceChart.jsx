@@ -13,8 +13,8 @@ export default function PerformanceChart({ chartData, streamCfg }) {
   ));
 
   return (
-    <div className="card" style={{ marginBottom: '24px' }}>
-      <div className="section-title">📈 Performance Trend</div>
+    <div className={noCard ? "" : "card"} style={{ marginBottom: noCard ? 0 : '24px' }}>
+      {!noCard && <div className="section-title">📈 Performance Trend</div>}
       <div>
         <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
           {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
