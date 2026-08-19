@@ -1265,7 +1265,7 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
-              <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedTestKey}
+              <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
               <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Sorted descending by average score</span>
@@ -1292,6 +1292,14 @@ export default function AdminDashboard() {
           </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
+            <MultiSelectDropdown 
+              options={allTestOptions} 
+              selectedOptions={selectedLeaderboardTestKeys} 
+              onChange={setSelectedLeaderboardTestKeys} 
+            />
+          </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
             <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
@@ -1948,7 +1956,7 @@ export default function AdminDashboard() {
 
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
-          {['leaderboard', 'centre-overview', 'ranking'].includes(activePage) && (
+          {['centre-overview', 'ranking'].includes(activePage) && (
             <select
               className="input select"
               value={selectedTestKey}
