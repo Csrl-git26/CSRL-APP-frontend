@@ -113,6 +113,8 @@ import StudentProfileView from './StudentProfileView';
 import StudentFormModal from './StudentFormModal';
 import TestDataModal from './TestDataModal';
 import CentreLeaderboard from './CentreLeaderboard';
+import PerformanceChart from './PerformanceChart';
+import { fetchCentreChart } from '../services/dataService';
 import TestInsightsPanel from './TestInsightsPanel';
 import AdminWeakTopics from './AdminWeakTopics';
 import UploadMarksAwardSheetModal from './UploadMarksAwardSheetModal';
@@ -415,6 +417,9 @@ export default function AdminDashboard() {
   const [topRanked,       setTopRanked]       = useState([]);
   const [bottomRanked,    setBottomRanked]    = useState([]);
   const [centreBoard,     setCentreBoard]     = useState([]);
+  const [selectedTrendCentre, setSelectedTrendCentre] = useState('');
+  const [trendChartData, setTrendChartData] = useState([]);
+  const [trendChartLoading, setTrendChartLoading] = useState(false);
   const [loading,         setLoading]         = useState(true);
   const [error,           setError]           = useState('');
 
@@ -1192,6 +1197,29 @@ export default function AdminDashboard() {
               Top Centres — {selectedTestKey}
             </div>
             <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
+        <div className="card" style={{ marginTop: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+            <select
+              className="input select"
+              value={selectedTrendCentre}
+              onChange={(e) => setSelectedTrendCentre(e.target.value)}
+              style={{ width: 200, fontSize: 13 }}
+            >
+              {centreBoard.map(c => (
+                <option key={c.code} value={c.code}>{c.code}</option>
+              ))}
+            </select>
+          </div>
+          {trendChartLoading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
+          ) : trendChartData.length > 0 ? (
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
+          ) : (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
+          )}
+        </div>
+
           </div>
           <OverallMatrixCard title="Category & Stream Distribution" />
         </div>
@@ -1259,6 +1287,29 @@ export default function AdminDashboard() {
         </div>
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
+        <div className="card" style={{ marginTop: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+            <select
+              className="input select"
+              value={selectedTrendCentre}
+              onChange={(e) => setSelectedTrendCentre(e.target.value)}
+              style={{ width: 200, fontSize: 13 }}
+            >
+              {centreBoard.map(c => (
+                <option key={c.code} value={c.code}>{c.code}</option>
+              ))}
+            </select>
+          </div>
+          {trendChartLoading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
+          ) : trendChartData.length > 0 ? (
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
+          ) : (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
+          )}
+        </div>
+
     </div>
     );
   };
