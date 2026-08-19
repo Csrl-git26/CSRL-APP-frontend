@@ -99,7 +99,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             <Label value="Average Score" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
           </YAxis>
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
-          <Bar 
+          <Bar isAnimationActive={false} 
             dataKey="avg" 
             radius={[4, 4, 0, 0]} 
             style={{ cursor: 'pointer' }} 
