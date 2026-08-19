@@ -147,39 +147,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   // Subject performance + weak subject for the selected test only
   useEffect(() => {
-    if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {
-      setSelectedLeaderboardTestKeys([selectedTestKey]);
-    }
-  }, [selectedTestKey]);
-
-  useEffect(() => {
-    if (selectedLeaderboardTestKeys.length === 0) return;
-    const baseKeys = selectedLeaderboardTestKeys.join(',');
-    const combinedKey = selectedSubject === 'Total' 
-       ? baseKeys 
-       : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
-
-    fetchCentreLeaderboard(null, combinedKey)
-      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
-      .catch(() => setCentreBoard([]));
-  }, [selectedLeaderboardTestKeys, selectedSubject]);
-
-  useEffect(() => {
-    if (!selectedTrendCentre) return;
-    let isMounted = true;
-    setTrendChartLoading(true);
-    fetchCentreChart(selectedTrendCentre)
-      .then(res => {
-        if (isMounted) setTrendChartData(res.chartData || []);
-      })
-      .catch(err => console.error('Failed to fetch trend data:', err))
-      .finally(() => {
-        if (isMounted) setTrendChartLoading(false);
-      });
-    return () => { isMounted = false; };
-  }, [selectedTrendCentre]);
-
-  useEffect(() => {
     if (!selectedCenterCode || !selectedTestKey) return undefined;
     let cancelled = false;
     
