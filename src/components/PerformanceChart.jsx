@@ -51,7 +51,7 @@ export default function PerformanceChart({ chartData, streamCfg }) {
           ))}
         </div>
 
-        <ResponsiveContainer width="100%" height={340}>
+        <ResponsiveContainer width="100%" height={280}>
           <LineChart data={chartData} margin={{ top: 30, right: 30, left: 65, bottom: 75 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-600)' }} interval={0} angle={-35} textAnchor="end" />

@@ -1221,7 +1221,7 @@ export default function AdminDashboard() {
               Top Centres — {selectedTestKey}
             </div>
             <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
-        <div className="card" style={{ marginTop: 24 }}>
+        <div className="card" style={{ marginTop: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select
@@ -1311,7 +1311,7 @@ export default function AdminDashboard() {
         </div>
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
-        <div className="card" style={{ marginTop: 24 }}>
+        <div className="card" style={{ marginTop: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select

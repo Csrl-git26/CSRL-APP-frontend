@@ -70,7 +70,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
   };
 
   return (
-    <div style={{ width: '100%', height: 500, marginTop: 16 }}>
+    <div style={{ width: '100%', height: 320, marginTop: 16 }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={sortedStats}
