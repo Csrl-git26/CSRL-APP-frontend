@@ -69,7 +69,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard }) {
               }}
               contentStyle={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, fontSize: 12 }}
             />
-            <Legend wrapperStyle={{ fontSize: 13 }} />
+            <Legend wrapperStyle={{ fontSize: 13, paddingTop: 15 }} />
             {subjects.map((sub, i) => {
               if (!chartSubjects.includes(sub)) return null;
               let dataKey = sub;
