@@ -19,12 +19,12 @@ const CustomTooltip = ({ active, payload }) => {
     return (
       <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
         {isRedFlag && <div style={{ color: '#ef4444', fontWeight: 800, marginBottom: 4 }}>🚩 ACTION REQUIRED</div>}
-        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', fontSize: 14 }}>#{data.rank} {centerName} ({data.code})</p>
-        <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 600 }}>Avg Score: {data.avg}</p>
-        <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Top Score: {data.top}</p>
-        <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Tested: {data.tested}/{data.studentCount}</p>
-        {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Qual. Rate: {data.qualRate}%</p>}
-        <p style={{ margin: '8px 0 0 0', color: 'var(--red-600)', fontWeight: 600 }}>Weakest: {data.weakSubject}</p>
+        <p style={{ margin: '0 0 8px 0', fontWeight: 800, fontSize: 15 }}>{data.rank} {centerName} ({data.code})</p>
+        <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
+        <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Top Score: {data.top}</p>
+        <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Tested: {data.tested}/{data.studentCount}</p>
+        {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Qual. Rate: {data.qualRate}%</p>}
+        <p style={{ margin: '8px 0 0 0', color: 'var(--red-700)', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
         <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #eee', fontSize: 11, color: '#3b82f6', fontWeight: 600, textAlign: 'center', cursor: 'pointer' }}>
           🖱️ Click column for full overview
         </div>
