@@ -408,60 +408,6 @@ function pctBar(numerator, denominator) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-
-const LeaderboardTrendChart = ({ centreBoard, getStreamConfig }) => {
-  const [selectedTrendCentre, setSelectedTrendCentre] = useState('');
-  const [trendChartData, setTrendChartData] = useState([]);
-  const [trendChartLoading, setTrendChartLoading] = useState(false);
-
-
-  useEffect(() => {
-    if (centreBoard.length > 0 && !selectedTrendCentre) {
-      setSelectedTrendCentre(centreBoard[0].code);
-    }
-  }, [centreBoard, selectedTrendCentre]);
-
-  useEffect(() => {
-    if (!selectedTrendCentre) return;
-    let isMounted = true;
-    setTrendChartLoading(true);
-    fetchCentreChart(selectedTrendCentre)
-      .then(res => {
-        if (isMounted) setTrendChartData(res.chartData || []);
-      })
-      .catch(err => console.error('Failed to fetch trend data:', err))
-      .finally(() => {
-        if (isMounted) setTrendChartLoading(false);
-      });
-    return () => { isMounted = false; };
-  }, [selectedTrendCentre]);
-
-  return (
-    <div className="card" style={{ marginTop: 24 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
-        <select
-          className="input select"
-          value={selectedTrendCentre}
-          onChange={(e) => setSelectedTrendCentre(e.target.value)}
-          style={{ width: 200, fontSize: 13 }}
-        >
-          {centreBoard.map(c => (
-            <option key={c.code} value={c.code}>{c.code}</option>
-          ))}
-        </select>
-      </div>
-      {trendChartLoading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
-      ) : trendChartData.length > 0 ? (
-        <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
-      ) : (
-        <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
-      )}
-    </div>
-  );
-};
-
 export default function AdminDashboard() {
   const { activePage, setActivePage } = useOutletContext();
   const showToast = useToast();
@@ -471,6 +417,9 @@ export default function AdminDashboard() {
   const [topRanked,       setTopRanked]       = useState([]);
   const [bottomRanked,    setBottomRanked]    = useState([]);
   const [centreBoard,     setCentreBoard]     = useState([]);
+  const [selectedTrendCentre, setSelectedTrendCentre] = useState('');
+  const [trendChartData, setTrendChartData] = useState([]);
+  const [trendChartLoading, setTrendChartLoading] = useState(false);
   const [loading,         setLoading]         = useState(true);
   const [error,           setError]           = useState('');
 
@@ -512,7 +461,31 @@ export default function AdminDashboard() {
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError] = useState('');
 
-// Trigger to refetch backend analytics
+  // Sync selectedTrendCentre to first centre in board
+  useEffect(() => {
+    if (centreBoard.length > 0 && !selectedTrendCentre) {
+      setSelectedTrendCentre(centreBoard[0].code);
+    }
+  }, [centreBoard, selectedTrendCentre]);
+
+  // Fetch trend data
+  useEffect(() => {
+    if (!selectedTrendCentre) return;
+    let isMounted = true;
+    setTrendChartLoading(true);
+    fetchCentreChart(selectedTrendCentre)
+      .then(res => {
+        if (isMounted) setTrendChartData(res.chartData || []);
+      })
+      .catch(err => console.error('Failed to fetch trend data:', err))
+      .finally(() => {
+        if (isMounted) setTrendChartLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, [selectedTrendCentre]);
+
+  
+  // Trigger to refetch backend analytics
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const triggerRefresh = () => setRefreshTrigger((prev) => prev + 1);
 
@@ -1248,7 +1221,30 @@ export default function AdminDashboard() {
               Top Centres — {selectedTestKey}
             </div>
             <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
-        <LeaderboardTrendChart centreBoard={centreBoard} getStreamConfig={getStreamConfig} />
+        <div className="card" style={{ marginTop: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+            <select
+              className="input select"
+              value={selectedTrendCentre}
+              onChange={(e) => setSelectedTrendCentre(e.target.value)}
+              style={{ width: 200, fontSize: 13 }}
+            >
+              {centreBoard.map(c => (
+                <option key={c.code} value={c.code}>{c.code}</option>
+              ))}
+            </select>
+          </div>
+          {trendChartLoading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
+          ) : trendChartData.length > 0 ? (
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
+          ) : (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
+          )}
+        </div>
+
+          </div>
           <OverallMatrixCard title="Category & Stream Distribution" />
         </div>
         
@@ -1315,7 +1311,30 @@ export default function AdminDashboard() {
         </div>
       </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
-        <LeaderboardTrendChart centreBoard={centreBoard} getStreamConfig={getStreamConfig} />
+        <div className="card" style={{ marginTop: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
+            <select
+              className="input select"
+              value={selectedTrendCentre}
+              onChange={(e) => setSelectedTrendCentre(e.target.value)}
+              style={{ width: 200, fontSize: 13 }}
+            >
+              {centreBoard.map(c => (
+                <option key={c.code} value={c.code}>{c.code}</option>
+              ))}
+            </select>
+          </div>
+          {trendChartLoading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
+          ) : trendChartData.length > 0 ? (
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} />
+          ) : (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
+          )}
+        </div>
+
+    </div>
     );
   };
 
