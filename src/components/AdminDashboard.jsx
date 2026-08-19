@@ -1291,14 +1291,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
-            <MultiSelectDropdown 
-              options={allTestOptions} 
-              selectedOptions={selectedLeaderboardTestKeys} 
-              onChange={setSelectedLeaderboardTestKeys} 
-            />
-          </div>
+          
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
             <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
