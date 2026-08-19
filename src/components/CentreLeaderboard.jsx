@@ -15,8 +15,7 @@ const CustomTooltip = ({ active, payload }) => {
     const data = payload[0].payload;
     const centerName = CENTERS[data.code]?.name || data.code;
     const isRedFlag = data.avg < 100 || (data.qualRate ?? 0) < 50;
-    const notQualCount = data.notQualBySub ? data.notQualBySub[data.weakSubject] : 0;
-    const weakText = notQualCount ? `${data.weakSubject} (${notQualCount} not qualified)` : data.weakSubject;
+
 
     return (
       <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
@@ -26,7 +25,19 @@ const CustomTooltip = ({ active, payload }) => {
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Top Score: {data.top}</p>
         
         {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 50 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 50 ? 700 : 600 }}>Qual. Rate: {data.qualRate}%</p>}
-        <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {weakText}</p>
+        <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
+        
+        {data.notQualBySub && Object.keys(data.notQualBySub).length > 0 && (
+          <div style={{ marginTop: 8, padding: '6px 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 4 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#b91c1c', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>Failures By Subject</div>
+            {Object.entries(data.notQualBySub).map(([subj, count]) => (
+              <div key={subj} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#991b1b', marginBottom: 2 }}>
+                <span>{subj}</span>
+                <span style={{ fontWeight: 600 }}>{count}</span>
+              </div>
+            ))}
+          </div>
+        )}
         <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #eee', fontSize: 11, color: '#3b82f6', fontWeight: 600, textAlign: 'center', cursor: 'pointer' }}>
           🖱️ Click column for full overview
         </div>
