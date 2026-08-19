@@ -24,7 +24,7 @@ const CustomTooltip = ({ active, payload }) => {
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Top Score: {data.top}</p>
         
         {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 50 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 50 ? 700 : 600 }}>Qual. Rate: {data.qualRate}%</p>}
-        <p style={{ margin: '8px 0 0 0', color: 'var(--red-700)', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
+        <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
         <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #eee', fontSize: 11, color: '#3b82f6', fontWeight: 600, textAlign: 'center', cursor: 'pointer' }}>
           🖱️ Click column for full overview
         </div>
