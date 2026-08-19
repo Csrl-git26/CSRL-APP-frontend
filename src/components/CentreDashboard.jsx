@@ -18,7 +18,6 @@ import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
 import CentreLeaderboard from './CentreLeaderboard';
 import MultiSelectDropdown from './MultiSelectDropdown';
-import PerformanceChart from './PerformanceChart';
 import { CENTERS } from '../config/centers';
 import TestInsightsPanel from './TestInsightsPanel';
 import CenterWeakTopics from './CenterWeakTopics';
