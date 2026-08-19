@@ -53,70 +53,9 @@ export default function StudentReportCard({
         </div>
       </div>
 
-      {/* TWO COLUMNS */}
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
-        
-        {/* LEFT COLUMN: Personal Info */}
-        <div style={{ flex: 1 }}>
-          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
-              Personal & Selection Info
-            </h3>
-            <InfoRow label="Registration No." value={profile['Registration no.'] || profile.ROLL_KEY} />
-            <InfoRow label="Sponsor" value={profile.SPONSOR} />
-            <InfoRow label="Mode of Selection" value={profile['Mode of Selection']} />
-            <InfoRow label="Written Test Marks" value={profile['Written Test Marks (240)']} />
-            <InfoRow label="Interview Marks" value={profile['Interview Marks (90)']} />
-            <InfoRow label="HO Score" value={profile['HO Score in Final Admission']} />
-            <InfoRow label="Gender" value={profile.GENDER} />
-            <InfoRow label="Category" value={profile.CATEGORY} />
-            <InfoRow label="Date of Birth" value={profile['DATE OF BIRTH']} />
-            <InfoRow label="Student Mobile" value={profile['Mobile No.']} />
-            <InfoRow label="Parent Mobile" value={profile['parent_mobile']} />
-            <InfoRow label="Father's Name" value={profile["FATHER'S NAME"]} />
-            <InfoRow label="Mother's Name" value={profile["MOTHER'S NAME"]} />
-            <div style={{ marginTop: '10px', fontSize: '11px', color: '#475569', lineHeight: 1.4 }}>
-              <strong>Address:</strong> {profile['PARMANENT ADDRESS'] || '-'}, {profile.DISTRICT || '-'}, {profile.STATE || '-'}{profile.PINCODE ? ` - ${profile.PINCODE}` : ''}
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN: Education & Weak Topics */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
-              Education History
-            </h3>
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#1a4fa0', marginBottom: '4px' }}>10th Standard</div>
-              <InfoRow label="School" value={school10} />
-              <InfoRow label="Board" value={profile['10th BOARD']} />
-              <InfoRow label="Dist/State" value={`${profile['DISTRICT_10'] || '-'} / ${profile['STATE_10'] || '-'}`} />
-              <InfoRow label="Percentage" value={profile['10th Precentage']} />
-            </div>
-            <div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#1a4fa0', marginBottom: '4px' }}>12th Standard</div>
-              <InfoRow label="School" value={school12} />
-              <InfoRow label="Board" value={profile['12th BOARD']} />
-              <InfoRow label="Dist/State" value={`${profile['DISTRICT_12'] || '-'} / ${profile['STATE_12'] || '-'}`} />
-              <InfoRow label="Percentage" value={profile['12th Precentage']} />
-            </div>
-            
-            {stream === 'JEE' && examResult && (
-              <div style={{ marginTop: '16px', background: '#e8f0fc', padding: '8px 12px', borderRadius: '6px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1a4fa0' }}>JEE Main Percentile: </span>
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{examResult}</span>
-              </div>
-            )}
-            {stream === 'NEET' && examResult && (
-              <div style={{ marginTop: '16px', background: '#e6f5ed', padding: '8px 12px', borderRadius: '6px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1a6e3b' }}>NEET Score: </span>
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{examResult}</span>
-              </div>
-            )}
-          </div>
-
-          <div style={{ background: '#fff1f2', padding: '12px', borderRadius: '8px', border: '1px solid #fecdd3' }}>
+      {/* Weak Subjects Analysis */}
+      <div style={{ marginBottom: '12px' }}>
+        <div style={{ background: '#fff1f2', padding: '12px', borderRadius: '8px', border: '1px solid #fecdd3' }}>
             <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#9f1239', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #fda4af', paddingBottom: '4px' }}>
               Weak Subjects Analysis
             </h3>
@@ -135,7 +74,6 @@ export default function StudentReportCard({
               return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
             })()} />
           </div>
-        </div>
       </div>
 
       {/* FULL WIDTH: Performance Graph */}
