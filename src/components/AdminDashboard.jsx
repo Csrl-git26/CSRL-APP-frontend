@@ -1953,13 +1953,13 @@ export default function AdminDashboard() {
       <div className="content dashboard-page-body">
 
         <div className="dashboard-scroll">
-          {activePage === 'leaderboard' && {LeaderboardSection()}}
-          {activePage === 'overview'    && {OverviewSection()}}
+          {activePage === 'leaderboard' && LeaderboardSection()}
+          {activePage === 'overview'    && OverviewSection()}
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />}
-          {activePage === 'students'    && {StudentsSection()}}
+          {activePage === 'students'    && StudentsSection()}
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}
-          {activePage === 'ranking'     && {RankingsSection()}}
+          {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
         </div>
       </div>
