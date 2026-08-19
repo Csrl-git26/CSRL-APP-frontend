@@ -22,7 +22,7 @@ const CustomTooltip = ({ active, payload }) => {
         <p style={{ margin: '0 0 8px 0', fontWeight: 800, fontSize: 15 }}>{data.rank} {centerName === data.code ? centerName : `${centerName} (${data.code})`}</p>
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Top Score: {data.top}</p>
-        <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Tested: {data.tested}/{data.studentCount}</p>
+        
         {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Qual. Rate: {data.qualRate}%</p>}
         <p style={{ margin: '8px 0 0 0', color: 'var(--red-700)', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
         <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #eee', fontSize: 11, color: '#3b82f6', fontWeight: 600, textAlign: 'center', cursor: 'pointer' }}>
