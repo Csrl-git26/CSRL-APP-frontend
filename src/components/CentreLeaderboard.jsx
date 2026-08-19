@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload }) => {
 
     return (
       <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
-        {isRedFlag && <div style={{ color: '#ef4444', fontWeight: 800, marginBottom: 4 }}>⚠️ ACTION REQUIRED</div>}
+        {isRedFlag && <div style={{ color: '#ef4444', fontWeight: 800, marginBottom: 4 }}>🚩 ACTION REQUIRED</div>}
         <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', fontSize: 14 }}>#{data.rank} {centerName} ({data.code})</p>
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 600 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-600)' }}>Top Score: {data.top}</p>
@@ -55,12 +55,9 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
     return (
       <g style={{ pointerEvents: 'none' }}>
         {isRedFlag && (
-          <g transform={`translate(${centerX}, ${topY - 8})`}>
-            <circle cx={0} cy={-5} r={11} fill="#ef4444" stroke={showInside ? "#ffffff" : "none"} strokeWidth={1.5} />
-            <text x={0} y={0} fill="#ffffff" textAnchor="middle" fontSize={14} fontWeight={900}>
-              !
-            </text>
-          </g>
+          <text x={centerX} y={topY - 4} fill="#ef4444" textAnchor="middle" fontSize={18} style={{ textShadow: showInside ? '0px 0px 4px rgba(255,255,255,0.8)' : 'none' }}>
+            🚩
+          </text>
         )}
         <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
           {value}
