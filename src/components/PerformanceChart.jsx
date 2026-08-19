@@ -52,10 +52,10 @@ export default function PerformanceChart({ chartData, streamCfg, noCard }) {
         </div>
 
         <ResponsiveContainer width="100%" height={240}>
-          <LineChart data={chartData} margin={{ top: 15, right: 15, left: 50, bottom: 50 }}>
+          <LineChart data={chartData} margin={{ top: 15, right: 15, left: 0, bottom: 50 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-600)' }} interval={0} angle={-35} textAnchor="end" />
-            <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={55} />
+            <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={35} />
             <Tooltip
               formatter={(value, name) => {
                 const isTotal = name.startsWith('Total');
