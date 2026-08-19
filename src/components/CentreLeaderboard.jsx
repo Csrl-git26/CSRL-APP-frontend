@@ -74,7 +74,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={sortedStats}
-          margin={{ top: 50, right: 30, left: 0, bottom: 35 }}
+          margin={{ top: 50, right: 30, left: 0, bottom: 5 }}
         >
           
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -84,11 +84,11 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             textAnchor="end" 
             tick={{ fontSize: 14, fill: '#1e293b', fontWeight: 'bold' }} 
             interval={0}
-            height={45}
+            height={50}
             axisLine={false}
             tickLine={false}
           >
-            <Label value="Centre" offset={10} position="insideBottom" style={{ fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
+            
           </XAxis>
           <YAxis 
             tick={{ fontSize: 14, fill: '#1e293b', fontWeight: 'bold' }} 
