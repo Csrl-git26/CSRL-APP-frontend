@@ -47,34 +47,30 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
     setTimeout(async () => {
       try {
         const page1 = document.getElementById('pdf-report-content');
-        const page2 = document.getElementById('pdf-report-page2');
         if (!page1) return;
         
-        const canvas1 = await html2canvas(page1, { scale: 2, useCORS: true });
+        const canvas1 = await html2canvas(page1, { 
+          scale: 2, 
+          useCORS: true,
+          windowHeight: page1.scrollHeight
+        });
         const imgData1 = canvas1.toDataURL('image/jpeg', 1.0);
         
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfWidth = 210; // A4 width in mm
         const pdfHeight1 = (canvas1.height * pdfWidth) / canvas1.width;
+        
+        // Use dynamic height to avoid cropping
+        const pdf = new jsPDF('p', 'mm', [pdfWidth, Math.max(297, pdfHeight1)]);
         
         pdf.addImage(imgData1, 'JPEG', 0, 0, pdfWidth, pdfHeight1);
         
-        if (page2) {
-          const canvas2 = await html2canvas(page2, { scale: 2, useCORS: true });
-          const imgData2 = canvas2.toDataURL('image/jpeg', 1.0);
-          const pdfHeight2 = (canvas2.height * pdfWidth) / canvas2.width;
-          
-          pdf.addPage();
-          pdf.addImage(imgData2, 'JPEG', 0, 0, pdfWidth, pdfHeight2);
-        }
-        
-        pdf.save(`${profile.ROLL_KEY || 'Student'}_Report.pdf`);
+        pdf.save(`${profile['ROLL NO.'] || profile.ROLL_KEY || 'Student'}_Report.pdf`);
       } catch (err) {
-        console.error("Failed to generate PDF", err);
+        console.error('Failed to generate PDF', err);
       } finally {
         setIsExportingPDF(false);
       }
-    }, 150); // slight delay to ensure DOM is fully rendered
+    }, 500);
   };
 
   const exportProfileToExcel = () => {
