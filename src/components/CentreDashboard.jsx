@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Download, Search, Eye, Brain, Package, Flag } from 'lucide-react';
 import {
   fetchCenterDataApi,
@@ -772,8 +774,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     
     setTimeout(async () => {
       try {
-        const { jsPDF } = await import('jspdf');
-        const html2canvas = (await import('html2canvas')).default;
+        // Using static imports to avoid dynamic import interop issues
         
         let pdf = null;
         let count = 0;
@@ -802,6 +803,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             width: 800
           });
 
+          if (canvas.width === 0 || canvas.height === 0) {
+            throw new Error(`Canvas is 0x0 for student ${rollKey}. Element might be hidden.`);
+          }
           const imgData = canvas.toDataURL('image/jpeg', 1.0);
           const pdfWidth = 210;
           const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
