@@ -49,6 +49,21 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
         const page1 = document.getElementById('pdf-report-content');
         if (!page1) return;
         
+        // Temporarily move to body to avoid overflow clipping from parent modals/tabs
+        const originalParent = page1.parentNode;
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.top = '0';
+        tempContainer.style.left = '0';
+        tempContainer.style.width = '800px';
+        tempContainer.style.zIndex = '-9999';
+        tempContainer.style.opacity = '0';
+        document.body.appendChild(tempContainer);
+        tempContainer.appendChild(page1);
+
+        // Wait a frame for layout recalculation
+        await new Promise(r => setTimeout(r, 100));
+
         const canvas1 = await html2canvas(page1, { 
           scale: 2, 
           useCORS: true,
@@ -57,6 +72,11 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
           windowWidth: 800,
           width: 800
         });
+        
+        // Restore to original parent
+        originalParent.appendChild(page1);
+        document.body.removeChild(tempContainer);
+
         const imgData1 = canvas1.toDataURL('image/jpeg', 1.0);
         
         const pdfWidth = 210; // A4 width in mm
