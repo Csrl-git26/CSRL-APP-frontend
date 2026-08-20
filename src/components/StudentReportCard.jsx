@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { getJeePercentile, getNeetScore } from '../services/dataService';
 
 export default function StudentReportCard({
@@ -94,8 +94,7 @@ export default function StudentReportCard({
                 <div key={metric} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '8px' }}>
                   <div style={{ fontSize: '9px', fontWeight: 700, color: '#475569', marginBottom: '4px', textAlign: 'center', textTransform: 'uppercase' }}>{titles[metric]} Trend</div>
                   <div style={{ width: '100%', height: '70px' }}>
-                    <ResponsiveContainer width="100%" height={100}>
-                      <LineChart data={chartData} margin={{ top: 5, left: 0, bottom: -5, right: 10 }}>
+                    <LineChart width={358} height={70} data={chartData} margin={{ top: 5, left: 0, bottom: -5, right: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                         <XAxis dataKey="name" tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} />
                         <YAxis reversed={isRank} domain={isRank ? [1, 'dataMax'] : [0, 'dataMax']} tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} width={25} />
@@ -110,7 +109,6 @@ export default function StudentReportCard({
                         })}
                         <Line type="monotone" dataKey={metric === 'MARKS' ? 'Total' : `Total_${metric.charAt(0).toUpperCase() + metric.slice(1).toLowerCase()}`} stroke="#1a4fa0" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
                       </LineChart>
-                    </ResponsiveContainer>
                   </div>
                 </div>
               );
