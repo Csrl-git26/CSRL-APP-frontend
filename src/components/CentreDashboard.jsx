@@ -1028,10 +1028,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         )}
 
         <div className={adminViewCenterCode ? "" : "dashboard-scroll"}>
-          {activePage === 'leaderboard' && <LeaderboardSection />}
-          {activePage === 'overview'   && <OverviewSection />}
+          {activePage === 'leaderboard' && LeaderboardSection()}
+          {activePage === 'overview'   && OverviewSection()}
           {activePage === 'topbottom'  && <RankingsPair />}
-          {activePage === 'students'   && <StudentsSection />}
+          {activePage === 'students'   && StudentsSection()}
           {activePage === 'pastyear'   && <PastYearDataTab isAdmin={false} />}
         </div>
       </div>
