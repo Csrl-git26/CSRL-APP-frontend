@@ -94,7 +94,7 @@ export default function StudentReportCard({
                   <div style={{ fontSize: '9px', fontWeight: 700, color: '#475569', marginBottom: '4px', textAlign: 'center', textTransform: 'uppercase' }}>{titles[metric]} Trend</div>
                   <div style={{ width: '100%', height: '70px' }}>
                     <ResponsiveContainer width="100%" height={100}>
-                      <LineChart data={chartData} margin={{ top: 5, left: -25, bottom: -5, right: 10 }}>
+                      <LineChart data={chartData} margin={{ top: 5, left: 0, bottom: -5, right: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                         <XAxis dataKey="name" tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} />
                         <YAxis reversed={isRank} domain={isRank ? [1, 'dataMax'] : [0, 'dataMax']} tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} width={25} />
