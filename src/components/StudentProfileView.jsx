@@ -31,12 +31,12 @@ function InfoRow({ label, value }) {
   );
 }
 
-export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false }) {
+export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false, prefetchedChart = null, prefetchedWeakTopics = null }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
-  const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(null);
+  const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(prefetchedWeakTopics);
   const [isExportingPDF, setIsExportingPDF] = React.useState(false);
   
-  const [chart, setChart] = React.useState(null);
+  const [chart, setChart] = React.useState(prefetchedChart);
   const [chartMetric, setChartMetric] = React.useState('MARKS');
   const [chartSubjects, setChartSubjects] = React.useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
 
@@ -91,6 +91,12 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
 
   React.useEffect(() => {
     if (!profile?.ROLL_KEY) return;
+    if (prefetchedChart && prefetchedWeakTopics) {
+      // If data is prefetched (e.g. bulk export), don't fetch again
+      if (prefetchedWeakTopics.overallWeakSubjects) setOverallWeakSubjects(prefetchedWeakTopics.overallWeakSubjects);
+      return;
+    }
+    
     let cancelled = false;
     getStudentOverallWeakTopics(profile.ROLL_KEY).then((res) => {
       if (!cancelled && res.success && res.data) {
@@ -100,12 +106,11 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
     });
     
     fetchStudentChart(null, profile.ROLL_KEY, null).then((res) => {
-      console.log('DEBUG API RESPONSE:', res);
       if (!cancelled && res) setChart(res);
     }).catch(() => {});
     
     return () => { cancelled = true; };
-  }, [profile?.ROLL_KEY]);
+  }, [profile?.ROLL_KEY, prefetchedChart, prefetchedWeakTopics]);
 
   const stream = profile?.stream || 'JEE';
   const school10 = profile?.['10th SCHOOL NAME'] || profile?.['10th SCHOOL'] || profile?.['SCHOOL NAME'] || profile?.SCHOOL || '';
@@ -114,7 +119,8 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
   const streamCfg = getStreamConfig(stream);
   
 const chartData = useMemo(() => {
-    const rawRows = chart?.chartData ?? buildStudentChartData(studentTests, testColumns);
+    const actualChart = prefetchedChart || chart;
+    const rawRows = actualChart?.chartData ?? buildStudentChartData(studentTests, testColumns);
     console.log('chartData rawRows:', rawRows);
 
     const toNum = (v) => {
@@ -173,7 +179,7 @@ const chartData = useMemo(() => {
 
       return normalized;
     });
-  }, [chart, studentTests, testColumns, stream]);
+  }, [chart, prefetchedChart, studentTests, testColumns, stream]);
 
   const subjects = useMemo(() => streamCfg.subjects.filter((sub) => chartData.some((row) => 
       row[sub] != null || 
@@ -186,8 +192,8 @@ const chartData = useMemo(() => {
   const mappedTestList = chartData;
 
   const weakSubject = React.useMemo(
-    () => chart?.weakSubject ?? computeWeakSubject(studentTests, testColumns),
-    [chart, studentTests, testColumns]
+    () => (prefetchedChart || chart)?.weakSubject ?? computeWeakSubject(studentTests, testColumns),
+    [chart, prefetchedChart, studentTests, testColumns]
   );
  // Fallback mapping for older uses if any
 
@@ -385,7 +391,7 @@ const chartData = useMemo(() => {
           chartData={chartData}
           subjects={subjects}
           overallWeakSubjects={overallWeakSubjects}
-          overallWeakTopicsData={overallWeakTopicsData}
+          overallWeakTopicsData={actualWeakTopics}
           weakSubject={weakSubject}
           subjectColor={subjectColor}
           examResult={examValue}

@@ -16,6 +16,8 @@ import {
   fetchCentreChart,
   getStreamConfig,
 } from '../services/dataService';
+import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
+import { fetchStudentChart } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
 import CentreLeaderboard from './CentreLeaderboard';
@@ -78,6 +80,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     }
   }, [adminTestKey]);
   const [searchTerm,       setSearchTerm]       = useState('');
+  const [prefetchedData, setPrefetchedData] = useState({});
   const [filterCategory,   setFilterCategory]   = useState('ALL');
   const [filterStream,     setFilterStream]     = useState('ALL');
   const [filterSponsor,    setFilterSponsor]    = useState('ALL');
@@ -770,12 +773,36 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const handleBulkExportPDF = async () => {
     if (!filteredStudents.length) return;
     setIsExportingBulk(true);
-    setBulkExportProgress(`Starting export...`);
+    setBulkExportProgress(`Preparing...`);
     
     setTimeout(async () => {
       try {
-        // Using static imports to avoid dynamic import interop issues
+        const dataMap = {};
+        let fetched = 0;
+        for (let i = 0; i < filteredStudents.length; i += 5) {
+          const chunk = filteredStudents.slice(i, i + 5);
+          await Promise.all(chunk.map(async (student) => {
+            const roll = student.ROLL_KEY;
+            const [chartRes, topicsRes] = await Promise.all([
+               fetchStudentChart(null, roll, null).catch(() => null),
+               getStudentOverallWeakTopics(roll).catch(() => null)
+            ]);
+            dataMap[roll] = {
+               chart: chartRes || null,
+               topics: topicsRes?.data || null
+            };
+            fetched++;
+          }));
+          setBulkExportProgress(`Fetched ${fetched} / ${filteredStudents.length}`);
+        }
         
+        setPrefetchedData(dataMap);
+        setBulkExportProgress(`Generating layout...`);
+        
+        // Wait for React to render the newly fetched data
+        await new Promise(r => setTimeout(r, 1000));
+        
+        // Using static imports to avoid dynamic import interop issues
         let pdf = null;
         let count = 0;
         
@@ -860,7 +887,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
               profile={student} 
               studentTests={data.tests.find(t => t.ROLL_KEY === student.ROLL_KEY) || {}} 
               testColumns={data.testColumns} 
-              isHiddenForBulk={true} 
+              isHiddenForBulk={true}
+              prefetchedChart={prefetchedData[student.ROLL_KEY]?.chart || null}
+              prefetchedWeakTopics={prefetchedData[student.ROLL_KEY]?.topics || null}
             />
           ))}
         </div>
