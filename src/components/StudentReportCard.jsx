@@ -133,12 +133,12 @@ export default function StudentReportCard({
             {subjects.map((s) => (
               <th key={s} style={{ padding: '6px 6px', fontWeight: 700, color: '#475569' }}>
                 <div>{s}</div>
-                <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+                <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC. | Rk.</div>
               </th>
             ))}
             <th style={{ padding: '6px 6px', fontWeight: 700, color: '#475569' }}>
               <div>Total</div>
-              <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
+              <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC. | Rk.</div>
             </th>
           </tr>
         </thead>
@@ -148,13 +148,14 @@ export default function StudentReportCard({
               const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
               if (isAbsent) return 'Absent';
               if (v.mark === null || v.mark === undefined || v.mark === '—') {
-                if (v.attempted != null) return `— | ${v.attempted} | ${v.accuracy}%`;
+                if (v.attempted != null) return `— | ${v.attempted} | ${v.accuracy}% | ${v.rank || '—'}`;
                 return '—';
               }
               const m = v.mark;
               const at = v.attempted != null ? v.attempted : '—';
               const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
-              return `${m} | ${at} | ${ac}`;
+              const rk = v.rank != null ? v.rank : '—';
+              return `${m} | ${at} | ${ac} | ${rk}`;
             };
 
             return (
@@ -164,7 +165,8 @@ export default function StudentReportCard({
                   const mark = row[s];
                   const attempted = row[`${s}_Attempted`];
                   const accuracy = row[`${s}_Accuracy`];
-                  const v = { mark, attempted, accuracy };
+                  const rank = row[`${s}_Rank`];
+                  const v = { mark, attempted, accuracy, rank };
                   const isAbsent = mark === 'A' || mark === 'a' || mark === 'Absent';
                   const isEmpty = (mark === null || mark === undefined || mark === '—') && attempted == null;
                   return (
@@ -175,7 +177,7 @@ export default function StudentReportCard({
                 })}
                 <td style={{ padding: '6px 6px', whiteSpace: 'nowrap' }}>
                   <strong style={{ color: row.Total === 'Absent' ? '#c0392b' : '#1a4fa0' }}>
-                    {renderCell({ mark: row.Total, attempted: row.Total_Attempted, accuracy: row.Total_Accuracy })}
+                    {renderCell({ mark: row.Total, attempted: row.Total_Attempted, accuracy: row.Total_Accuracy, rank: row.Total_Rank })}
                   </strong>
                 </td>
               </tr>
@@ -187,7 +189,7 @@ export default function StudentReportCard({
         </tbody>
       </table>
       <div style={{ fontSize: '10px', color: '#64748b', marginTop: '12px', fontStyle: 'italic' }}>
-        * Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %
+        * Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %, Rk. = Rank
       </div>
 
       {/* FULL WIDTH: Overall Weak Topics */}
