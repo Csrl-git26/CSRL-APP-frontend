@@ -789,17 +789,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
              continue;
           }
           
-          const originalParent = page.parentNode;
-          const tempContainer = document.createElement('div');
-          tempContainer.style.position = 'absolute';
-          tempContainer.style.top = '0';
-          tempContainer.style.left = '0';
-          tempContainer.style.width = '800px';
-          tempContainer.style.zIndex = '-9999';
-          tempContainer.style.opacity = '0';
-          document.body.appendChild(tempContainer);
-          tempContainer.appendChild(page);
-
+          // We capture the page exactly where it is rendered by React.
+          // By NOT moving it to document.body, we preserve the Recharts SVG DOM.
           await new Promise(r => setTimeout(r, 100));
 
           const canvas = await html2canvas(page, { 
@@ -810,9 +801,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             windowWidth: 800,
             width: 800
           });
-          
-          originalParent.appendChild(page);
-          document.body.removeChild(tempContainer);
 
           const imgData = canvas.toDataURL('image/jpeg', 1.0);
           const pdfWidth = 210;
