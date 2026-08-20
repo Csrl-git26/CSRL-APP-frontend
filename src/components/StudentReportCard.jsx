@@ -21,7 +21,7 @@ export default function StudentReportCard({
   const school12 = profile['12th SCHOOL NAME'] || schoolName;
 
   const InfoRow = ({ label, value }) => (
-    <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', padding: '4px 0', fontSize: '11px' }}>
+    <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', padding: '4px 0', fontSize: '9px' }}>
       <span style={{ width: '180px', color: '#64748b', fontWeight: 600 }}>{label}</span>
       <span style={{ flex: 1, color: '#1e293b', fontWeight: 700 }}>{value && value !== ', ,  - ' ? value : '-'}</span>
     </div>
@@ -32,12 +32,12 @@ export default function StudentReportCard({
     <div id="pdf-report-content" style={{
       width: '800px',
       background: 'white',
-      padding: '24px',
+      padding: '16px',
       color: '#0f172a',
       fontFamily: 'Inter, sans-serif'
     }}>
       {/* HEADER */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '3px solid #1a4fa0', paddingBottom: '8px', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '3px solid #1a4fa0', paddingBottom: '8px', marginBottom: '8px' }}>
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#1a4fa0', margin: 0, textTransform: 'uppercase' }}>
             CSRL Student Report
@@ -54,8 +54,8 @@ export default function StudentReportCard({
       </div>
 
       {/* Weak Subjects Analysis */}
-      <div style={{ marginBottom: '12px' }}>
-        <div style={{ background: '#fff1f2', padding: '12px', borderRadius: '8px', border: '1px solid #fecdd3' }}>
+      <div style={{ marginBottom: '8px' }}>
+        <div style={{ background: '#fff1f2', padding: '8px', borderRadius: '8px', border: '1px solid #fecdd3' }}>
             <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#9f1239', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #fda4af', paddingBottom: '4px' }}>
               Weak Subjects Analysis
             </h3>
@@ -77,7 +77,7 @@ export default function StudentReportCard({
       </div>
 
       {/* FULL WIDTH: Performance Graphs */}
-      <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '12px' }}>
+      <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '8px' }}>
         <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
           Performance Trends
         </h3>
@@ -91,10 +91,10 @@ export default function StudentReportCard({
               
               return (
                 <div key={metric} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '8px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#475569', marginBottom: '4px', textAlign: 'center', textTransform: 'uppercase' }}>{titles[metric]} Trend</div>
-                  <div style={{ width: '100%', height: '150px' }}>
-                    <ResponsiveContainer width="100%" height={150}>
-                      <LineChart data={chartData} margin={{ top: 10, left: -25, bottom: 0, right: 10 }}>
+                  <div style={{ fontSize: '9px', fontWeight: 700, color: '#475569', marginBottom: '4px', textAlign: 'center', textTransform: 'uppercase' }}>{titles[metric]} Trend</div>
+                  <div style={{ width: '100%', height: '70px' }}>
+                    <ResponsiveContainer width="100%" height={100}>
+                      <LineChart data={chartData} margin={{ top: 5, left: -25, bottom: -5, right: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                         <XAxis dataKey="name" tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} />
                         <YAxis reversed={isRank} domain={isRank ? [1, 'dataMax'] : [0, 'dataMax']} tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} width={25} />
@@ -122,21 +122,21 @@ export default function StudentReportCard({
 
 
 
-<h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+<h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
         Performance Test Records
       </h3>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'left' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px', textAlign: 'left' }}>
         <thead>
           <tr style={{ background: '#f8fafc', borderBottom: '2px solid #cbd5e1' }}>
-            <th style={{ padding: '10px 8px', fontWeight: 700, color: '#475569' }}>Test</th>
+            <th style={{ padding: '6px 6px', fontWeight: 700, color: '#475569' }}>Test</th>
             {subjects.map((s) => (
-              <th key={s} style={{ padding: '10px 8px', fontWeight: 700, color: '#475569' }}>
+              <th key={s} style={{ padding: '6px 6px', fontWeight: 700, color: '#475569' }}>
                 <div>{s}</div>
                 <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
               </th>
             ))}
-            <th style={{ padding: '10px 8px', fontWeight: 700, color: '#475569' }}>
+            <th style={{ padding: '6px 6px', fontWeight: 700, color: '#475569' }}>
               <div>Total</div>
               <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 'normal', marginTop: 2 }}>M | AT. | AC.</div>
             </th>
@@ -159,7 +159,7 @@ export default function StudentReportCard({
 
             return (
               <tr key={row.name} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#fff' : '#f8fafc' }}>
-                <td style={{ padding: '10px 8px', fontWeight: 700 }}>{row.name}</td>
+                <td style={{ padding: '6px 6px', fontWeight: 700 }}>{row.name}</td>
                 {subjects.map((s, i) => {
                   const mark = row[s];
                   const attempted = row[`${s}_Attempted`];
@@ -168,12 +168,12 @@ export default function StudentReportCard({
                   const isAbsent = mark === 'A' || mark === 'a' || mark === 'Absent';
                   const isEmpty = (mark === null || mark === undefined || mark === '—') && attempted == null;
                   return (
-                    <td key={i} style={{ padding: '10px 8px', color: (isEmpty || isAbsent) ? '#94a3b8' : 'inherit', whiteSpace: 'nowrap' }}>
+                    <td key={i} style={{ padding: '6px 6px', color: (isEmpty || isAbsent) ? '#94a3b8' : 'inherit', whiteSpace: 'nowrap' }}>
                       {renderCell(v)}
                     </td>
                   );
                 })}
-                <td style={{ padding: '10px 8px', whiteSpace: 'nowrap' }}>
+                <td style={{ padding: '6px 6px', whiteSpace: 'nowrap' }}>
                   <strong style={{ color: row.Total === 'Absent' ? '#c0392b' : '#1a4fa0' }}>
                     {renderCell({ mark: row.Total, attempted: row.Total_Attempted, accuracy: row.Total_Accuracy })}
                   </strong>
@@ -182,7 +182,7 @@ export default function StudentReportCard({
             );
           })}
           {(!chartData || chartData.length === 0) && (
-            <tr><td colSpan={subjects.length + 2} style={{ textAlign: 'center', padding: '24px', color: '#94a3b8' }}>No marks recorded yet.</td></tr>
+            <tr><td colSpan={subjects.length + 2} style={{ textAlign: 'center', padding: '16px', color: '#94a3b8' }}>No marks recorded yet.</td></tr>
           )}
         </tbody>
       </table>
@@ -192,9 +192,9 @@ export default function StudentReportCard({
 
       {/* FULL WIDTH: Overall Weak Topics */}
       {overallWeakTopicsData && overallWeakTopicsData.overallWeakTopics && Object.keys(overallWeakTopicsData.overallWeakTopics).length > 0 && (
-        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
+        <div style={{ background: '#f8fafc', padding: '8px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '8px' }}>
           <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
-            Detailed Weak Topics Analysis <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'none' }}>(Based on {overallWeakTopicsData.totalTests} tests)</span>
+            Detailed Weak Topics Analysis <span style={{ fontSize: '9px', color: '#64748b', fontWeight: 600, textTransform: 'none' }}>(Based on {overallWeakTopicsData.totalTests} tests)</span>
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
             {['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Botany', 'Zoology'].map((subject) => {
