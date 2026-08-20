@@ -52,7 +52,10 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
         const canvas1 = await html2canvas(page1, { 
           scale: 2, 
           useCORS: true,
-          windowHeight: page1.scrollHeight
+          windowHeight: page1.scrollHeight,
+          height: page1.scrollHeight,
+          windowWidth: 800,
+          width: 800
         });
         const imgData1 = canvas1.toDataURL('image/jpeg', 1.0);
         
@@ -366,7 +369,7 @@ const chartData = useMemo(() => {
       <TestRecordsTable chartData={chartData} streamCfg={streamCfg} stream={stream} />
       
       {/* HIDDEN PRINTABLE CONTAINER */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', left: '0', top: '0', zIndex: -1000, opacity: 0, pointerEvents: 'none' }}>
         <StudentReportCard
           profile={profile}
           stream={stream}
