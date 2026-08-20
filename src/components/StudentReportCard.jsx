@@ -127,66 +127,7 @@ export default function StudentReportCard({
         </div>
       </div>
 
-      {/* FULL WIDTH: Overall Weak Topics */}
-      {overallWeakTopicsData && overallWeakTopicsData.overallWeakTopics && Object.keys(overallWeakTopicsData.overallWeakTopics).length > 0 && (
-        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
-            Detailed Weak Topics Analysis <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'none' }}>(Based on {overallWeakTopicsData.totalTests} tests)</span>
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-            {['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Botany', 'Zoology'].map((subject) => {
-              const subjData = overallWeakTopicsData.overallWeakTopics[subject];
-              if (!subjData || (!subjData.strongWeak.length && !subjData.mediumWeak.length)) return null;
-              
-              const colors = {
-                Physics:     { bg: '#e8f0fc', color: '#1a4fa0', border: '#bbd0f8' },
-                Chemistry:   { bg: '#fff3e0', color: '#b45309', border: '#fcd5a0' },
-                Mathematics: { bg: '#e6f5ed', color: '#1a6e3b', border: '#a8dfc0' },
-                Biology:     { bg: '#f3e8ff', color: '#7c3aed', border: '#d8b4fe' },
-                Botany:      { bg: '#d1fae5', color: '#059669', border: '#6ee7b7' },
-                Zoology:     { bg: '#cffafe', color: '#0891b2', border: '#67e8f9' },
-              }[subject] || { bg: '#f5f5f5', color: '#333', border: '#ddd' };
-
-              return (
-                <div key={subject} style={{ border: `1px solid ${colors.border}`, borderRadius: '8px', padding: '8px', background: '#fff' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', paddingBottom: '4px', borderBottom: `2px solid ${colors.border}` }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: colors.color }} />
-                    <span style={{ fontWeight: 700, fontSize: '12px', color: colors.color }}>{subject}</span>
-                  </div>
-                  
-                  {subjData.strongWeak.length > 0 && (
-                    <div style={{ marginBottom: subjData.mediumWeak.length ? '6px' : '0' }}>
-                      <div style={{ fontSize: '9px', fontWeight: 700, color: '#c0392b', textTransform: 'uppercase', marginBottom: '2px' }}>🔴 Weakest</div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {subjData.strongWeak.map(topic => (
-                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5', margin: '1px 3px 1px 0' }}>
-                            {topic}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {subjData.mediumWeak.length > 0 && (
-                    <div>
-                      <div style={{ fontSize: '9px', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', marginBottom: '2px' }}>🟡 Weak</div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {subjData.mediumWeak.map(topic => (
-                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0', margin: '1px 3px 1px 0' }}>
-                            {topic}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+<h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '12px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
         Performance Test Records
       </h3>
 
@@ -253,6 +194,66 @@ export default function StudentReportCard({
       <div style={{ fontSize: '10px', color: '#64748b', marginTop: '12px', fontStyle: 'italic' }}>
         * Reference: M = Marks, AT. = Attempted Questions, AC. = Accuracy %
       </div>
+
+      {/* FULL WIDTH: Overall Weak Topics */}
+      {overallWeakTopicsData && overallWeakTopicsData.overallWeakTopics && Object.keys(overallWeakTopicsData.overallWeakTopics).length > 0 && (
+        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+            Detailed Weak Topics Analysis <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'none' }}>(Based on {overallWeakTopicsData.totalTests} tests)</span>
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+            {['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Botany', 'Zoology'].map((subject) => {
+              const subjData = overallWeakTopicsData.overallWeakTopics[subject];
+              if (!subjData || (!subjData.strongWeak.length && !subjData.mediumWeak.length)) return null;
+              
+              const colors = {
+                Physics:     { bg: '#e8f0fc', color: '#1a4fa0', border: '#bbd0f8' },
+                Chemistry:   { bg: '#fff3e0', color: '#b45309', border: '#fcd5a0' },
+                Mathematics: { bg: '#e6f5ed', color: '#1a6e3b', border: '#a8dfc0' },
+                Biology:     { bg: '#f3e8ff', color: '#7c3aed', border: '#d8b4fe' },
+                Botany:      { bg: '#d1fae5', color: '#059669', border: '#6ee7b7' },
+                Zoology:     { bg: '#cffafe', color: '#0891b2', border: '#67e8f9' },
+              }[subject] || { bg: '#f5f5f5', color: '#333', border: '#ddd' };
+
+              return (
+                <div key={subject} style={{ border: `1px solid ${colors.border}`, borderRadius: '8px', padding: '8px', background: '#fff' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', paddingBottom: '4px', borderBottom: `2px solid ${colors.border}` }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: colors.color }} />
+                    <span style={{ fontWeight: 700, fontSize: '12px', color: colors.color }}>{subject}</span>
+                  </div>
+                  
+                  {subjData.strongWeak.length > 0 && (
+                    <div style={{ marginBottom: subjData.mediumWeak.length ? '6px' : '0' }}>
+                      <div style={{ fontSize: '9px', fontWeight: 700, color: '#c0392b', textTransform: 'uppercase', marginBottom: '2px' }}>🔴 Weakest</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {subjData.strongWeak.map(topic => (
+                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5', margin: '1px 3px 1px 0' }}>
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {subjData.mediumWeak.length > 0 && (
+                    <div>
+                      <div style={{ fontSize: '9px', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', marginBottom: '2px' }}>🟡 Weak</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {subjData.mediumWeak.map(topic => (
+                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0', margin: '1px 3px 1px 0' }}>
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
     </div>
     </>
   );
