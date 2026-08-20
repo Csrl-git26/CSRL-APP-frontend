@@ -821,7 +821,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         }
       } catch (err) {
         console.error('Failed bulk export', err);
-        alert('Export failed.');
+        alert('Export failed: ' + (err.message || err.toString()));
       } finally {
         setIsExportingBulk(false);
       }
