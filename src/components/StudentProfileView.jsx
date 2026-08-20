@@ -31,7 +31,7 @@ function InfoRow({ label, value }) {
   );
 }
 
-export default function StudentProfileView({ profile, studentTests, testColumns }) {
+export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
   const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(null);
   const [isExportingPDF, setIsExportingPDF] = React.useState(false);
@@ -46,7 +46,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns 
     
     setTimeout(async () => {
       try {
-        const page1 = document.getElementById('pdf-report-content');
+        const page1 = document.getElementById(`pdf-report-content-${profile.ROLL_KEY}`);
         if (!page1) return;
         
         // Temporarily move to body to avoid overflow clipping from parent modals/tabs
@@ -388,9 +388,12 @@ const chartData = useMemo(() => {
       <PerformanceChart chartData={chartData} streamCfg={streamCfg} />
       <TestRecordsTable chartData={chartData} streamCfg={streamCfg} stream={stream} />
       
+      </>
+      )}
       {/* HIDDEN PRINTABLE CONTAINER */}
       <div style={{ position: 'absolute', left: '0', top: '0', zIndex: -1000, opacity: 0, pointerEvents: 'none' }}>
         <StudentReportCard
+          containerId={`pdf-report-content-${profile.ROLL_KEY}`}
           profile={profile}
           stream={stream}
           chartData={chartData}

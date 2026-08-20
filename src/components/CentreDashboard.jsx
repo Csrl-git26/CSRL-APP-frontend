@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Search, Eye, Brain, Package, Flag } from 'lucide-react';
+import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Download, Search, Eye, Brain, Package, Flag } from 'lucide-react';
 import {
   fetchCenterDataApi,
   fetchOverview,
@@ -63,6 +63,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const [bottomRanked,     setBottomRanked]     = useState([]);
   const [allRanked,        setAllRanked]        = useState([]);
   const [subjectAvgs,      setSubjectAvgs]      = useState([]);
+  const [isExportingBulk, setIsExportingBulk] = useState(false);
+  const [bulkExportProgress, setBulkExportProgress] = useState('');
   const [loading,          setLoading]          = useState(true);
   const [error,            setError]            = useState('');
   const [viewingStudentId, setViewingStudentId] = useState(null);
@@ -763,12 +765,115 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     </div>
   );
 
+  const handleBulkExportPDF = async () => {
+    if (!filteredStudents.length) return;
+    setIsExportingBulk(true);
+    setBulkExportProgress(`Starting export...`);
+    
+    setTimeout(async () => {
+      try {
+        const { jsPDF } = await import('jspdf');
+        const html2canvas = (await import('html2canvas')).default;
+        
+        let pdf = null;
+        let count = 0;
+        
+        for (const student of filteredStudents) {
+          count++;
+          setBulkExportProgress(`Exporting ${count} of ${filteredStudents.length}...`);
+          const rollKey = student.ROLL_KEY;
+          const page = document.getElementById(`pdf-report-content-${rollKey}`);
+          
+          if (!page) {
+             console.warn('Could not find element for', rollKey);
+             continue;
+          }
+          
+          const originalParent = page.parentNode;
+          const tempContainer = document.createElement('div');
+          tempContainer.style.position = 'absolute';
+          tempContainer.style.top = '0';
+          tempContainer.style.left = '0';
+          tempContainer.style.width = '800px';
+          tempContainer.style.zIndex = '-9999';
+          tempContainer.style.opacity = '0';
+          document.body.appendChild(tempContainer);
+          tempContainer.appendChild(page);
+
+          await new Promise(r => setTimeout(r, 100));
+
+          const canvas = await html2canvas(page, { 
+            scale: 2, 
+            useCORS: true,
+            windowHeight: page.scrollHeight,
+            height: page.scrollHeight,
+            windowWidth: 800,
+            width: 800
+          });
+          
+          originalParent.appendChild(page);
+          document.body.removeChild(tempContainer);
+
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdfWidth = 210;
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          
+          if (!pdf) {
+            pdf = new jsPDF('p', 'mm', [pdfWidth, Math.max(297, pdfHeight)]);
+          } else {
+            pdf.addPage([pdfWidth, Math.max(297, pdfHeight)], 'p');
+          }
+          
+          pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        }
+        
+        setBulkExportProgress(`Saving PDF...`);
+        if (pdf) {
+          pdf.save(`${selectedCenterCode}_All_Students_Report.pdf`);
+        }
+      } catch (err) {
+        console.error('Failed bulk export', err);
+        alert('Export failed.');
+      } finally {
+        setIsExportingBulk(false);
+      }
+    }, 1500);
+  };
+
   const StudentsSection = () => (
     <div className="card">
-      <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <Users size={14} aria-hidden="true" />
-        All Students ({filteredStudents.length})
+      <div className="section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Users size={14} aria-hidden="true" />
+          All Students ({filteredStudents.length})
+        </div>
+        <div>
+          <button 
+            className="btn btn-outline btn-sm" 
+            onClick={handleBulkExportPDF} 
+            disabled={isExportingBulk || filteredStudents.length === 0}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            {isExportingBulk ? <Loader2 size={13} className="spin" /> : <Download size={13} />}
+            {isExportingBulk ? bulkExportProgress : 'Export All to PDF'}
+          </button>
+        </div>
       </div>
+      
+      {isExportingBulk && (
+        <div style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', zIndex: -10000 }}>
+          {filteredStudents.map(student => (
+            <StudentProfileView 
+              key={student.ROLL_KEY}
+              profile={student} 
+              studentTests={data.tests.find(t => t.ROLL_KEY === student.ROLL_KEY) || {}} 
+              testColumns={data.testColumns} 
+              isHiddenForBulk={true} 
+            />
+          ))}
+        </div>
+      )}
+
         <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
           <div style={{ position: 'relative', flex: '1 1 200px' }}>
             <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />

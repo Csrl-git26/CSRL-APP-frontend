@@ -13,6 +13,7 @@ export default function StudentReportCard({
   subjectColor,
   examResult,
   examLabel,
+  containerId = "pdf-report-content",
 }) {
   if (!profile) return null;
 
@@ -29,7 +30,7 @@ export default function StudentReportCard({
 
   return (
     <>
-    <div id="pdf-report-content" style={{
+    <div id={containerId} style={{
       width: '800px',
       background: 'white',
       padding: '16px',
