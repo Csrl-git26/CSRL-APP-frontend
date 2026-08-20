@@ -392,8 +392,6 @@ const chartData = useMemo(() => {
       
       </>
       )}
-      </>
-      )}
       {/* HIDDEN PRINTABLE CONTAINER */}
       <div style={{ position: 'absolute', left: '0', top: '0', zIndex: -1000, opacity: 0, pointerEvents: 'none' }}>
         <StudentReportCard
