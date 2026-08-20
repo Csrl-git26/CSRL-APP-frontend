@@ -226,6 +226,8 @@ const chartData = useMemo(() => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {!isHiddenForBulk && (
+      <>
       {/* Banner */}
       <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
         {photo
@@ -388,6 +390,8 @@ const chartData = useMemo(() => {
       <PerformanceChart chartData={chartData} streamCfg={streamCfg} />
       <TestRecordsTable chartData={chartData} streamCfg={streamCfg} stream={stream} />
       
+      </>
+      )}
       </>
       )}
       {/* HIDDEN PRINTABLE CONTAINER */}
