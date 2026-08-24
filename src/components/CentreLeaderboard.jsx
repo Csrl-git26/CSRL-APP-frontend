@@ -21,7 +21,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
     } else if (selectedSubject === 'Qualification') {
       isRedFlag = (data.qualRate ?? 0) < 80;
     } else {
-      isRedFlag = data.avg <= 20;
+      isRedFlag = data.avg <= 30;
     }
 
 
@@ -93,7 +93,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
       } else if (selectedSubject === 'Qualification') {
         isRedFlag = (data.qualRate ?? 0) < 80;
       } else {
-        isRedFlag = data.avg <= 20;
+        isRedFlag = data.avg <= 30;
       }
     }
     const centerX = x + width / 2;
