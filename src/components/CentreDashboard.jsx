@@ -178,7 +178,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   useEffect(() => {
     if (selectedLeaderboardTestKeys.length === 0) return;
     const baseKeys = selectedLeaderboardTestKeys.join(',');
-    const combinedKey = selectedSubject === 'Total' 
+    const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
        ? baseKeys 
        : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
@@ -451,6 +451,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
               <option value="Math">Math</option>
+              <option value="Qualification">Qualification Rate</option>
             </select>
           </div>
         </div>

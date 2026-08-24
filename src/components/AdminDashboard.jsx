@@ -453,7 +453,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (selectedLeaderboardTestKeys.length === 0) return;
     const baseKeys = selectedLeaderboardTestKeys.join(',');
-    const combinedKey = selectedSubject === 'Total' 
+    const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
        ? baseKeys 
        : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
@@ -1141,7 +1141,7 @@ export default function AdminDashboard() {
               <Trophy size={15} style={{ marginRight: 6 }} aria-hidden="true" />
               Top Centres — {selectedTestKey}
             </div>
-            <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
+            <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} />
         <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
@@ -1228,11 +1228,12 @@ export default function AdminDashboard() {
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
               <option value="Math">Math</option>
+              <option value="Qualification">Qualification Rate</option>
             </select>
           </div>
         </div>
       </div>
-      <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
+      <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} />
         <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>

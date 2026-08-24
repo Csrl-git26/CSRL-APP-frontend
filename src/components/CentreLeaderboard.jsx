@@ -47,12 +47,18 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-export default function CentreLeaderboard({ centreStats = [], selTest, onCentreClick }) {
+export default function CentreLeaderboard({ centreStats = [], selTest, selectedSubject, onCentreClick }) {
   if (!selTest) return <Empty message="Select a test to view rankings" />;
   if (!centreStats.length) return <Empty message={`No test data for ${selTest}`} />;
 
   // Sort by rank ascending to ensure the highest rank is first (leftmost)
-  const sortedStats = [...centreStats].sort((a, b) => a.rank - b.rank);
+  const isQualSort = selectedSubject === 'Qualification';
+  const sortedStats = [...centreStats].sort((a, b) => {
+    if (isQualSort) return (b.qualRate || 0) - (a.qualRate || 0);
+    return a.rank - b.rank;
+  });
+  const currentDataKey = isQualSort ? "qualRate" : "avg";
+  const currentYLabel = isQualSort ? "Qualification %" : "Average Score";
 
     const renderCustomBarLabel = (props) => {
     const { x, y, width, height, value, index } = props;
@@ -73,7 +79,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
           </text>
         )}
         <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
-          {value}
+          {value}{isQualSort ? '%' : ''}
         </text>
 
       </g>
@@ -107,22 +113,22 @@ export default function CentreLeaderboard({ centreStats = [], selTest, onCentreC
             tickLine={false}
             width={70}
           >
-            <Label value="Average Score" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
+            <Label value={currentYLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
           </YAxis>
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
           <Bar isAnimationActive={false} 
-            dataKey="avg" 
+            dataKey={currentDataKey}
             radius={[4, 4, 0, 0]} 
             style={{ cursor: 'pointer' }} 
-            fill="#1a4fa0"
-            activeBar={{ fill: '#2563eb', stroke: '#93c5fd', strokeWidth: 2 }}
+            fill={isQualSort ? "#8b5cf6" : "#1a4fa0"}
+            activeBar={{ fill: isQualSort ? "#a78bfa" : '#2563eb', stroke: isQualSort ? "#c4b5fd" : '#93c5fd', strokeWidth: 2 }}
             onClick={(data) => {
               if (data && data.code && typeof onCentreClick === 'function') {
                 onCentreClick(data.code);
               }
             }}
           >
-            <LabelList dataKey="avg" content={renderCustomBarLabel} />
+            <LabelList dataKey={currentDataKey} content={renderCustomBarLabel} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
