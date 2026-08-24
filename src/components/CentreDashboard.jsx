@@ -819,6 +819,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           loading={testInsightsLoading}
           error={testInsightsError}
           testKey={selectedTestKey}
+          onViewStudent={setViewingStudentId}
           hideSubjectAverages
         />
       </div>

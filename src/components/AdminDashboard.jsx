@@ -1274,6 +1274,7 @@ export default function AdminDashboard() {
           loading={testInsightsLoading}
           error={testInsightsError}
           testKey={selectedTestKey}
+          onViewStudent={setViewingStudentId}
           hideSubjectAverages
         />
       </div>
