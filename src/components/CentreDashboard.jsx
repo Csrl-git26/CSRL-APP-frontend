@@ -736,21 +736,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <option value="ALL">All Sponsors</option>
             {sponsorsList.filter((s) => s !== 'ALL' && s !== '—').map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
-          <select className="input select" value={filterStream}   onChange={(e) => setFilterStream(e.target.value)}   style={{ flex: '1 1 120px' }}>
-            <option value="ALL">All Streams</option>
-            <option value="JEE">JEE</option>
-            <option value="NEET">NEET</option>
-          </select>
           <select className="input select" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{ flex: '1 1 120px' }}>
             {categories.map((c) => <option key={c} value={c}>{c === 'ALL' ? 'All Categories' : c}</option>)}
           </select>
           <select className="input select" value={filterGender} onChange={(e) => setFilterGender(e.target.value)} style={{ flex: '1 1 100px' }}>
             <option value="ALL">All Genders</option>
             {gendersList.filter((g) => g !== 'ALL').map((g) => <option key={g} value={g}>{g}</option>)}
-          </select>
-          <select className="input select" value={filterState} onChange={(e) => setFilterState(e.target.value)} style={{ flex: '1 1 120px' }}>
-            <option value="ALL">All States</option>
-            {statesList.filter((s) => s !== 'ALL').map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
         <div className="table-wrap" style={{ maxHeight: 440, overflowY: 'auto' }}>
