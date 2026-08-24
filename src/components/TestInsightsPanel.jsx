@@ -323,11 +323,16 @@ export default function TestInsightsPanel({
                         val = r.rawScores[k1];
                       } else if (r.rawScores[s] !== undefined && r.rawScores[s] !== null && r.rawScores[s] !== '') {
                         val = r.rawScores[s];
+                      } else {
+                        const fallbackKey = Object.keys(r.rawScores).find(k => k.toLowerCase().endsWith(s.toLowerCase()) || k.toLowerCase().includes(`_${s.toLowerCase()}`));
+                        if (fallbackKey && r.rawScores[fallbackKey] !== undefined && r.rawScores[fallbackKey] !== null && r.rawScores[fallbackKey] !== '') {
+                          val = r.rawScores[fallbackKey];
+                        }
                       }
                     }
                     return (
-                      <td key={s} style={{ color: val === '—' ? 'var(--gray-200)' : 'inherit' }}>
-                        {val}
+                      <td key={s} style={{ color: val === '—' ? 'var(--gray-200)' : 'inherit', fontSize: '10px' }} title={r.rawScores ? Object.keys(r.rawScores).join(', ') : 'no rawScores'}>
+                        {val === '—' ? (r.rawScores ? Object.keys(r.rawScores).filter(k => k.toLowerCase().includes(s.toLowerCase())).join('|') || 'NoMatch' : 'NoRaw') : val}
                       </td>
                     );
                   })}
