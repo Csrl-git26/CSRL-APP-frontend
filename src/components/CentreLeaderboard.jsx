@@ -24,7 +24,7 @@ const CustomTooltip = ({ active, payload }) => {
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Top Score: {data.top}</p>
         
-        {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 50 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 50 ? 700 : 600 }}>Qual. Rate: {data.qualRate}%</p>}
+        {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 50 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 50 ? 700 : 600 }}>Qual. Rate: {Math.round(data.qualRate)}%</p>}
         <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
         
         {data.notQualBySub && Object.keys(data.notQualBySub).length > 0 && (
@@ -79,7 +79,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
           </text>
         )}
         <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
-          {value}{isQualSort ? '%' : ''}
+          {typeof value === 'number' ? Math.round(value) : value}{isQualSort ? '%' : ''}
         </text>
 
       </g>
