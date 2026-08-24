@@ -722,16 +722,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           All students rankwise — {selectedTestKey}
         </div>
         <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '14px', marginBottom: '14px' }}>
-          <div style={{ position: 'relative', flex: '1 1 200px' }}>
-            <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
-            <input
-              className="input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by name or roll…"
-              style={{ width: '100%', paddingLeft: 30 }}
-            />
-          </div>
+
           <select className="input select" value={filterSponsor} onChange={(e) => setFilterSponsor(e.target.value)} style={{ flex: '1 1 120px' }}>
             <option value="ALL">All Sponsors</option>
             {sponsorsList.filter((s) => s !== 'ALL' && s !== '—').map((s) => <option key={s} value={s}>{s}</option>)}
@@ -952,16 +943,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       )}
 
         <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-          <div style={{ position: 'relative', flex: '1 1 200px' }}>
-            <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
-            <input
-              className="input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by name or roll…"
-              style={{ width: '100%', paddingLeft: 30 }}
-            />
-          </div>
+
           <select className="input select" value={filterSponsor} onChange={(e) => setFilterSponsor(e.target.value)} style={{ flex: '1 1 120px' }}>
             <option value="ALL">All Sponsors</option>
             {sponsorsList.filter((s) => s !== 'ALL' && s !== '—').map((s) => <option key={s} value={s}>{s}</option>)}

@@ -55,7 +55,6 @@ export default function TestInsightsPanel({
   const [sortOrder, setSortOrder] = useState('desc');
   const [selectedCenter, setSelectedCenter] = useState('ALL');
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [filterSponsor, setFilterSponsor] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [filterGender, setFilterGender] = useState('ALL');
@@ -71,11 +70,6 @@ export default function TestInsightsPanel({
 
   const filteredRanked = useMemo(() => {
     let list = [...rankedStudents];
-
-    if (searchTerm) {
-      const q = searchTerm.toLowerCase();
-      list = list.filter(s => (s.name || '').toLowerCase().includes(q) || (s.roll || '').toLowerCase().includes(q));
-    }
 
     list = list.filter(s => {
       const matchCat     = filterCategory === 'ALL' || s.category === filterCategory;
@@ -95,7 +89,7 @@ export default function TestInsightsPanel({
     return sortOrder === 'asc'
       ? [...selected].sort((a, b) => (a.marks - b.marks) || a.rank - b.rank)
       : [...selected].sort((a, b) => (b.marks - a.marks) || a.rank - b.rank);
-  }, [rankedStudents, selectedCenter, sortOrder, rankMode, searchTerm, filterCategory, filterSponsor, filterGender]);
+  }, [rankedStudents, selectedCenter, sortOrder, rankMode, filterCategory, filterSponsor, filterGender]);
 
   const rowHighlight = (code) =>
     highlightCenter && code === highlightCenter
@@ -275,16 +269,7 @@ export default function TestInsightsPanel({
             ))}
           </select>
           
-          <div style={{ position: 'relative', flex: '1 1 200px' }}>
-            <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
-            <input
-              className="input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by name or roll…"
-              style={{ width: '100%', paddingLeft: 30 }}
-            />
-          </div>
+
           <select className="input select" value={filterSponsor} onChange={(e) => setFilterSponsor(e.target.value)} style={{ flex: '1 1 120px' }}>
             <option value="ALL">All Sponsors</option>
             {sponsorsList.filter((s) => s !== 'ALL' && s !== '—').map((s) => <option key={s} value={s}>{s}</option>)}
@@ -304,6 +289,10 @@ export default function TestInsightsPanel({
                 <th>#</th>
                 <th>Student</th>
                 <th>Centre</th>
+                {subjects.map((s) => {
+                  const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
+                  return <th key={s} title={s}>{abbr}</th>;
+                })}
                 <th>Total</th>
                 <th>Actions</th>
               </tr>
@@ -326,6 +315,22 @@ export default function TestInsightsPanel({
                     </div>
                   </td>
                   <td>{r.center}</td>
+                  {subjects.map((s) => {
+                    let val = '—';
+                    if (r.rawScores) {
+                      const k1 = `${insights.testKey}_${s}`;
+                      if (r.rawScores[k1] !== undefined && r.rawScores[k1] !== null && r.rawScores[k1] !== '') {
+                        val = r.rawScores[k1];
+                      } else if (r.rawScores[s] !== undefined && r.rawScores[s] !== null && r.rawScores[s] !== '') {
+                        val = r.rawScores[s];
+                      }
+                    }
+                    return (
+                      <td key={s} style={{ color: val === '—' ? 'var(--gray-200)' : 'inherit' }}>
+                        {val}
+                      </td>
+                    );
+                  })}
                   <td><strong style={{ color: '#1a4fa0' }}>{r.marks}</strong></td>
                   <td>
                     {onViewStudent && (
@@ -343,7 +348,7 @@ export default function TestInsightsPanel({
               ))}
               {!filteredRanked.length && (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>
+                  <td colSpan={5 + subjects.length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>
                     No data found
                   </td>
                 </tr>
