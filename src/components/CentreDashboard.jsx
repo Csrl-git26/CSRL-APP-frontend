@@ -413,7 +413,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Sorted descending by average score</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{selectedSubject === 'Qualification' ? 'Sorted descending by qualification rate' : 'Sorted descending by average score'}</span>
             
             {totalAppeared > 0 && (
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
@@ -458,6 +458,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       </div>
       <CentreLeaderboard 
         centreStats={centreBoard} 
+        selectedSubject={selectedSubject}
         selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} 
         onCentreClick={(code) => {
           setSelectedCenterCode(code);
