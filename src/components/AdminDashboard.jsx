@@ -490,11 +490,11 @@ export default function AdminDashboard() {
     [data]
   );
 
-  const allTestOptions = useMemo(
-    () => [...new Set([...manualTestOptions, ...rankingTestColumns])]
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
-    [manualTestOptions, rankingTestColumns]
-  );
+  const allTestOptions = useMemo(() => {
+    const sorted = [...new Set([...manualTestOptions, ...rankingTestColumns])]
+      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+    return ['ALL_FMT', ...sorted];
+  }, [manualTestOptions, rankingTestColumns]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -1885,7 +1885,7 @@ export default function AdminDashboard() {
               onChange={(e) => setSelectedTestKey(e.target.value)}
               style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 148, fontSize: 13 }}
             >
-              {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
+              {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t === 'ALL_FMT' ? 'All FMT Average' : t}</option>)}
             </select>
           )}
         </div>
