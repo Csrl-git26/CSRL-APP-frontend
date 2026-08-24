@@ -995,7 +995,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <h1>{centreTitle}</h1>
             <p>{data.profiles.length} students</p>
           </div>
-          <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
+          <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: activePage === 'leaderboard' ? 'none' : 'flex', gap: 12 }}>
             <select
               className="input select"
               value={selectedCenterCode}
