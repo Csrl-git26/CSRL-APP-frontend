@@ -10,11 +10,19 @@ const Empty = ({ message }) => (
   </div>
 );
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, selectedSubject }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     const centerName = CENTERS[data.code]?.name || data.code;
-    const isRedFlag = data.avg < 100 || (data.qualRate ?? 0) < 50;
+    
+    let isRedFlag = false;
+    if (selectedSubject === 'Total' || !selectedSubject) {
+      isRedFlag = data.avg < 100 || (data.qualRate ?? 0) < 50;
+    } else if (selectedSubject === 'Qualification') {
+      isRedFlag = (data.qualRate ?? 0) < 50;
+    } else {
+      isRedFlag = data.avg <= 20;
+    }
 
 
     return (
@@ -63,7 +71,17 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
     const renderCustomBarLabel = (props) => {
     const { x, y, width, height, value, index } = props;
     const data = sortedStats[index];
-    const isRedFlag = data && (data.avg < 100 || (data.qualRate ?? 0) < 50);
+    
+    let isRedFlag = false;
+    if (data) {
+      if (selectedSubject === 'Total' || !selectedSubject) {
+        isRedFlag = data.avg < 100 || (data.qualRate ?? 0) < 50;
+      } else if (selectedSubject === 'Qualification') {
+        isRedFlag = (data.qualRate ?? 0) < 50;
+      } else {
+        isRedFlag = data.avg <= 20;
+      }
+    }
     const centerX = x + width / 2;
 
     const showInside = height > 70;
@@ -115,7 +133,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
           >
             <Label value={currentYLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
           </YAxis>
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+          <Tooltip content={<CustomTooltip selectedSubject={selectedSubject} />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
           <Bar isAnimationActive={false} 
             dataKey={currentDataKey}
             radius={[4, 4, 0, 0]} 
