@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
         {data.bottom !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Lowest Individual Score: {data.bottom}</p>}
         
         {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>Qual. Rate: {Math.round(data.qualRate)}%</p>}
-        <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
+        {(!selectedSubject || selectedSubject === 'Total') && <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>}
         
         {data.notQualBySub && Object.keys(data.notQualBySub).length > 0 && (
           <div style={{ marginTop: 8, padding: '6px 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 4 }}>
