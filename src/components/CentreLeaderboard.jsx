@@ -36,17 +36,30 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
         {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>Qual. Rate: {Math.round(data.qualRate)}%</p>}
         {(!selectedSubject || selectedSubject === 'Total') && <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>}
         
-        {data.notQualBySub && Object.keys(data.notQualBySub).length > 0 && (
-          <div style={{ marginTop: 8, padding: '6px 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 4 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#ef4444', marginBottom: 4, letterSpacing: 0.5 }}>No. of student subjectwise marks &lt;=20</div>
-            {Object.entries(data.notQualBySub).map(([subj, count]) => (
-              <div key={subj} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#ef4444', marginBottom: 2 }}>
-                <span>{subj}</span>
-                <span style={{ fontWeight: 600 }}>{count}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        {(() => {
+          if (!data.notQualBySub) return null;
+          const entries = Object.entries(data.notQualBySub).filter(([subj]) => {
+            if (!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') return true;
+            return subj === selectedSubject;
+          });
+          if (entries.length === 0) return null;
+          
+          const title = (!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification')
+            ? "No. of student subjectwise marks <=20"
+            : `No. of student marks in ${selectedSubject} <=20`;
+            
+          return (
+            <div style={{ marginTop: 8, padding: '6px 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 4 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#ef4444', marginBottom: 4, letterSpacing: 0.5 }}>{title}</div>
+              {entries.map(([subj, count]) => (
+                <div key={subj} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#ef4444', marginBottom: 2 }}>
+                  <span>{subj}</span>
+                  <span style={{ fontWeight: 600 }}>{count}</span>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
         <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #eee', fontSize: 11, color: '#3b82f6', fontWeight: 600, textAlign: 'center', cursor: 'pointer' }}>
           🖱️ Click column for full overview
         </div>
