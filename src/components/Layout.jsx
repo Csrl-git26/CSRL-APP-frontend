@@ -22,7 +22,6 @@ const ADMIN_NAV = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { section: 'Data Management' },
-  { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
 ];
 
@@ -30,7 +29,6 @@ const CENTRE_NAV = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
-  { key: 'students',   Icon: Users,           label: 'Students'  },
   { key: 'pastyear',   Icon: Archive,         label: 'Past Year Data' },
 ];
 

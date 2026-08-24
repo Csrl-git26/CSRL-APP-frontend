@@ -35,7 +35,6 @@ const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
-  { key: 'students',   Icon: Users,           label: 'Students'  },
   { key: 'pastyear',   Icon: Package,         label: 'Past Year Data' },
 ];
 
