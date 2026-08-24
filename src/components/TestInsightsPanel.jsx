@@ -124,7 +124,6 @@ export default function TestInsightsPanel({
             <br />
             <span style={{ fontSize: 11, color: 'var(--gray-600)' }}>
               Total marks criteria: GEN ≥ 110 | EWS ≥ 90 | OBC ≥ 85 | SC ≥ 65 | ST ≥ 60 | PWD ≥ 30.
-              Subject-wise criteria: ≥ 20 marks in Physics, Chemistry, and Math across all categories.
             </span>
             <br />
             <strong>NEET</strong>: total ≥ {cut.NEET.overallMin} / {cut.NEET.maxTotal}; Biology max {cut.NEET.maxBySubject.Biology}, others{' '}

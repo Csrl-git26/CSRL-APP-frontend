@@ -75,7 +75,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   else if (cat.includes('OBC')) overallMin = 85;
                   else if (cat.includes('EWS')) overallMin = 90;
                   
-                  if (tot >= overallMin && p >= 20 && c >= 20 && m >= 20) {
+                  if (tot >= overallMin) {
                     isQualified = true;
                   }
                 } else if (stream === 'NEET') {
