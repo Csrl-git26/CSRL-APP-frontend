@@ -118,8 +118,10 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
 
   const streamCfg = getStreamConfig(stream);
   
-const chartData = useMemo(() => {
-    const actualChart = prefetchedChart || chart;
+const actualChart = prefetchedChart || chart;
+  const actualWeakTopics = prefetchedWeakTopics || overallWeakTopicsData;
+  
+  const chartData = useMemo(() => {
     const rawRows = actualChart?.chartData ?? buildStudentChartData(studentTests, testColumns);
     console.log('chartData rawRows:', rawRows);
 
