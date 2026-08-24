@@ -1612,11 +1612,20 @@ export default function AdminDashboard() {
               <td>
                 <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
               </td>
-              {allSubjects.map((sub) => (
-                <td key={sub} style={{ color: flatM.subjects[sub] === undefined ? 'var(--gray-200)' : 'inherit' }}>
-                  {flatM.subjects[sub] ?? '—'}
-                </td>
-              ))}
+              {allSubjects.map((sub) => {
+                let val = flatM.subjects[sub];
+                if (val === undefined && m.rawScores) {
+                  val = m.rawScores[`${selectedTestKey}_${sub}`];
+                  if (val === undefined) {
+                    val = m.rawScores[sub];
+                  }
+                }
+                return (
+                  <td key={sub} style={{ color: val === undefined ? 'var(--gray-200)' : 'inherit' }}>
+                    {val ?? '—'}
+                  </td>
+                );
+              })}
               <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
             </tr>
           )})}
