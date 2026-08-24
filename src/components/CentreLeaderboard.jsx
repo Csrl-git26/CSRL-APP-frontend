@@ -32,7 +32,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Top Score: {data.top}</p>
         
-        {data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>Qual. Rate: {Math.round(data.qualRate)}%</p>}
+        {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>Qual. Rate: {Math.round(data.qualRate)}%</p>}
         <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>
         
         {data.notQualBySub && Object.keys(data.notQualBySub).length > 0 && (
