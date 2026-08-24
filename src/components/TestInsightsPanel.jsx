@@ -119,10 +119,13 @@ export default function TestInsightsPanel({
           {insights.note}
         </p>
         {cut?.JEE && cut?.NEET && (
-          <p style={{ marginTop: 8, marginBottom: 0 }}>
-            Default qualification — <strong>JEE</strong>: total ≥ {cut.JEE.overallMin} / {cut.JEE.maxTotal} (
-            {Math.round(cut.jeeOverallQualifyRatio * 100)}%); per subject vs max (Physics {cut.JEE.maxBySubject.Physics}, Chemistry{' '}
-            {cut.JEE.maxBySubject.Chemistry}, Math {cut.JEE.maxBySubject.Math}) with floor from {Math.round(cut.jeeSubjectQualifyRatio * 100)}% of each.
+          <p style={{ marginTop: 8, marginBottom: 0, lineHeight: 1.5 }}>
+            Default qualification — <strong>JEE</strong>: Category-based cutoff applied. 
+            <br />
+            <span style={{ fontSize: 11, color: 'var(--gray-600)' }}>
+              Total marks criteria: GEN ≥ 110 | EWS ≥ 90 | OBC ≥ 85 | SC ≥ 65 | ST ≥ 60 | PWD ≥ 30.
+              Subject-wise criteria: ≥ 20 marks in Physics, Chemistry, and Math across all categories.
+            </span>
             <br />
             <strong>NEET</strong>: total ≥ {cut.NEET.overallMin} / {cut.NEET.maxTotal}; Biology max {cut.NEET.maxBySubject.Biology}, others{' '}
             {cut.NEET.maxBySubject.Physics} / {cut.NEET.maxBySubject.Chemistry}.

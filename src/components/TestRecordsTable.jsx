@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TestRecordsTable({ chartData, streamCfg, stream, isCentre }) {
+export default function TestRecordsTable({ chartData, streamCfg, stream, isCentre, profile }) {
   const subjects = streamCfg.subjects.filter((sub) => chartData.some((row) => 
     row[sub] !== undefined && row[sub] !== null
   ));
@@ -67,7 +67,15 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 const b = Number(row.Biology || 0);
 
                 if (stream === 'JEE') {
-                  if (tot >= 120 && p >= 35 && c >= 35 && m >= 35) {
+                  const cat = (profile?.CATEGORY || '').toUpperCase().trim();
+                  let overallMin = 110;
+                  if (cat.includes('PWD')) overallMin = 30;
+                  else if (cat.includes('ST')) overallMin = 60;
+                  else if (cat.includes('SC')) overallMin = 65;
+                  else if (cat.includes('OBC')) overallMin = 85;
+                  else if (cat.includes('EWS')) overallMin = 90;
+                  
+                  if (tot >= overallMin && p >= 20 && c >= 20 && m >= 20) {
                     isQualified = true;
                   }
                 } else if (stream === 'NEET') {
