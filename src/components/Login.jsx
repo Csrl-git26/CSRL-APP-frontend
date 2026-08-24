@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 const ROLES = [
   { key: 'student', Icon: GraduationCap, label: 'Student' },
   { key: 'centre',  Icon: Building2,      label: 'Centre'  },
-  { key: 'admin',   Icon: ShieldCheck,    label: 'CSRL Management'   },
+  { key: 'admin',   Icon: ShieldCheck,    label: 'CSRL Admin'   },
   { key: 'data_admin', Icon: FileText,    label: 'Admin' },
 ];
 
@@ -175,7 +175,7 @@ export default function Login() {
                 <input
                   id="username"
                   className="input"
-                  placeholder="CSRL Management username"
+                  placeholder="CSRL Admin username"
                   autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
