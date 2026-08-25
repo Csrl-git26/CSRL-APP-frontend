@@ -648,12 +648,13 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                       </td>
                     );
                   })}
+                  {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || '-'}</td>)}
                   <td><strong style={{ color: '#1a4fa0' }}>{s.marks}</strong></td>
                 </tr>
               );
             })}
             {!topRanked.length && (
-              <tr><td colSpan={rankingSubjects.length + 3} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
+              <tr><td colSpan={rankingSubjects.length + 3 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
             )}
           </tbody>
         </table>
@@ -710,11 +711,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                     </td>
                   );
                 })}
-                <td><strong style={{ color: 'var(--red)' }}>{s.marks}</strong></td>
+                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || '-'}</td>)}
+                  <td><strong style={{ color: 'var(--red)' }}>{s.marks}</strong></td>
               </tr>
             )})}
             {!bottomRanked.length && (
-              <tr><td colSpan={rankingSubjects.length + 3} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data</td></tr>
+              <tr><td colSpan={rankingSubjects.length + 3 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data</td></tr>
             )}
           </tbody>
         </table>

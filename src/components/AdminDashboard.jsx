@@ -1511,7 +1511,7 @@ export default function AdminDashboard() {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
             })}
-            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t.replace('FMT','')} Rk</th>)}
+            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             <th>Total</th>
           </tr>
         </thead>
@@ -1588,7 +1588,7 @@ export default function AdminDashboard() {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
             })}
-            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t.replace('FMT','')} Rk</th>)}
+            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             <th>Total</th>
           </tr>
         </thead>
