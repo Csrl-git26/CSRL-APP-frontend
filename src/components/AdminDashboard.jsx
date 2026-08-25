@@ -1215,7 +1215,7 @@ export default function AdminDashboard() {
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
             <MultiSelectDropdown 
-              options={allTestOptions} 
+              options={allTestOptions.filter(o => o !== 'ALL_FMT')} 
               selectedOptions={selectedLeaderboardTestKeys} 
               onChange={setSelectedLeaderboardTestKeys} 
             />
