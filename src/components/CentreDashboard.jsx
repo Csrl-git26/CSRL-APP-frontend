@@ -252,8 +252,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   useEffect(() => {
     if (!selectedTestKey) return;
     Promise.all([
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'asc'  }).catch(() => ({ ranked: [] })),
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom, all]) => {
       setTopRanked(top.ranked    || []);
@@ -593,7 +593,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         <div className="card">
         <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <TrendingUp size={14} aria-hidden="true" />
-          Top 30 — {selectedTestKey}
+          Top 10 — {selectedTestKey}
         </div>
         <div className="table-wrap">
         <table className="table table-compact">
@@ -656,7 +656,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         <div className="card">
         <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <AlertTriangle size={14} color="var(--red)" aria-hidden="true" />
-          Bottom 30 — {selectedTestKey}
+          Bottom 10 — {selectedTestKey}
         </div>
         <div className="table-wrap">
         <table className="table table-compact">
