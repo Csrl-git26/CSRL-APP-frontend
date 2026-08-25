@@ -343,10 +343,8 @@ export default function TestInsightsPanel({
 
           <div className="grid-2">
             <div className="card">
-              <div className="section-title">Below subject cutoff — count by centre</div>
-              <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 12 }}>
-                Students with a subject mark below their stream&apos;s cutoff ({Math.round((cut?.subjectQualifyRatio ?? 0.35) * 100)}% of that subject&apos;s max — JEE vs NEET differ).
-              </p>
+              <div className="section-title">student no. subjectwise marks &lt;=30 - count by centre</div>
+              
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
                 {subjects.map((sub) => (
                   <div key={sub} style={{ background: 'var(--gray-50)', borderRadius: 8, padding: 12 }}>
