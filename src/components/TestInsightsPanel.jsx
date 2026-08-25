@@ -354,7 +354,7 @@ export default function TestInsightsPanel({
                         .filter(([, n]) => n > 0)
                         .sort((a, b) => b[1] - a[1])
                         .map(([code, n]) => (
-                          <li key={code} style={{ color: 'var(--red)' }}>
+                          <li key={code} style={{ color: 'var(--red)', fontWeight: 600 }}>
                             {code}: {n}
                           </li>
                         ))}
@@ -375,7 +375,7 @@ export default function TestInsightsPanel({
                   .filter(([, n]) => n > 0)
                   .sort((a, b) => b[1] - a[1])
                   .map(([code, n]) => (
-                    <li key={code} style={{ color: 'var(--red)' }}>
+                    <li key={code} style={{ color: 'var(--red)', fontWeight: 600 }}>
                       {code}: {n}
                     </li>
                   ))}
