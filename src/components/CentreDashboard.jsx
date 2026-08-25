@@ -612,6 +612,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
+              {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             </tr>
           </thead>
           <tbody>
@@ -648,8 +649,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                       </td>
                     );
                   })}
-                  {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
                   <td><strong style={{ color: '#1a4fa0' }}>{s.marks}</strong></td>
+                  {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
                 </tr>
               );
             })}
@@ -676,6 +677,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
+              {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             </tr>
           </thead>
           <tbody>
@@ -711,8 +713,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                     </td>
                   );
                 })}
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
                   <td><strong style={{ color: 'var(--red)' }}>{s.marks}</strong></td>
+                  {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
               </tr>
             )})}
             {!bottomRanked.length && (
