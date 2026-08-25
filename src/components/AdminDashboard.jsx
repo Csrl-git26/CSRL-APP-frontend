@@ -1182,10 +1182,10 @@ export default function AdminDashboard() {
     }
     const numTests = Math.max(1, testCount);
     
-    const totalAppeared = Math.round(centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0) / numTests);
-    const totalQualifiedRaw = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
-    const totalQualified = Math.round(totalQualifiedRaw / numTests);
-    const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
+    const totalAppearedRaw = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
+    const totalAppeared = Math.round(totalAppearedRaw / numTests);
+    const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
+    const qualPct = totalAppearedRaw > 0 ? Math.round((totalQualified / totalAppearedRaw) * 100) : 0;
 
     return (
       <div>
