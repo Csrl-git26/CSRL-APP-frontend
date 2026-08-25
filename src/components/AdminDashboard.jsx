@@ -1262,7 +1262,7 @@ export default function AdminDashboard() {
 
   const RankingsSection = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div className="grid-2">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <Top30Section />
         <Bottom30Section />
       </div>

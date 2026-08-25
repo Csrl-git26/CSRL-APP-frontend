@@ -589,7 +589,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   const RankingsPair = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div className="grid-2">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div className="card">
         <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <TrendingUp size={14} aria-hidden="true" />
