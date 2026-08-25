@@ -180,9 +180,7 @@ export default function TestInsightsPanel({
               {insights.bestScorePercentStudent && (
                 <div style={{ fontSize: 22, fontWeight: 800, color: '#1a6e3b' }}>
                   {insights.bestScorePercentStudent.scorePercent}%
-                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', marginLeft: 6 }}>
-                    ({insights.bestScorePercentStudent.total} / {insights.bestScorePercentStudent.maxTotal ?? '—'})
-                  </span>
+
                 </div>
               )}
             </div>
