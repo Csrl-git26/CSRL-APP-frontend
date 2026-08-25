@@ -419,8 +419,15 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   // ── Section components ────────────────────────────────────────────────────────
 
   const LeaderboardSection = () => {
-    const totalAppeared = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
-    const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
+    let testCount = selectedLeaderboardTestKeys.length;
+    if (testCount === 1 && selectedLeaderboardTestKeys[0] === 'ALL_FMT') {
+      testCount = allTestOptions.filter(o => String(o).startsWith('FMT') && o !== 'ALL_FMT').length;
+    }
+    const numTests = Math.max(1, testCount);
+    
+    const totalAppeared = Math.round(centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0) / numTests);
+    const totalQualifiedRaw = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
+    const totalQualified = Math.round(totalQualifiedRaw / numTests);
     const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
 
     return (
