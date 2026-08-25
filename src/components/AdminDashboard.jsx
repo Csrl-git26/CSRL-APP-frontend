@@ -1511,6 +1511,7 @@ export default function AdminDashboard() {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
             })}
+            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t.replace('FMT','')} Rk</th>)}
             <th>Total</th>
           </tr>
         </thead>
@@ -1559,12 +1560,13 @@ export default function AdminDashboard() {
                     </td>
                   );
                 })}
+                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || '-'}</td>)}
                 <td><strong style={{ fontSize: 13, color: '#1a4fa0' }}>{m.marks}</strong></td>
               </tr>
             );
           })}
           {!topRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1586,6 +1588,7 @@ export default function AdminDashboard() {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
             })}
+            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t.replace('FMT','')} Rk</th>)}
             <th>Total</th>
           </tr>
         </thead>
@@ -1633,11 +1636,12 @@ export default function AdminDashboard() {
                   </td>
                 );
               })}
-              <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
+              {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || '-'}</td>)}
+                <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
             </tr>
           )})}
           {!bottomRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
