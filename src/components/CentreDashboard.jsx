@@ -283,9 +283,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   }, [activePage, selectedTestKey]);
 
   const rankingTestColumns = useMemo(
-    () => (data?.testColumns || [])
+    () => ['ALL_FMT', ...(data?.testColumns || [])
       .filter((c) => !String(c).includes('_'))
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
+      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }))],
     [data]
   );
 
@@ -965,7 +965,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
               onChange={(e) => setSelectedTestKey(e.target.value)}
               style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 200 }}
             >
-              {rankingTestColumns.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
+              {rankingTestColumns.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t === 'ALL_FMT' ? 'All FMT Average' : t}</option>)}
             </select>
           </div>
         </div>
