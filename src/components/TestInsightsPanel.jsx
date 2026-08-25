@@ -162,7 +162,7 @@ export default function TestInsightsPanel({
       <div className="card">
         <div className="section-title" style={{ marginBottom: 12 }}>
           <Trophy size={16} color="#d97706" aria-hidden="true" />
-          Top student (total and score %)
+          Top student
         </div>
         {(insights.overallTopper || insights.bestScorePercentStudent) ? (
           <div>
