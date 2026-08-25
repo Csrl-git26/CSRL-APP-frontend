@@ -433,8 +433,8 @@ export default function AdminDashboard() {
     if (!selectedTestKey) return;
     const combinedKey = selectedSubject === 'Total' ? selectedTestKey : `${selectedTestKey}_${selectedSubject}`;
     Promise.all([
-      fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc'  }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom]) => {
       setTopRanked(top.ranked    || []);
       setBottomRanked(bottom.ranked || []);
@@ -1493,7 +1493,7 @@ export default function AdminDashboard() {
   const Top30Section = () => (
     <div className="card">
       <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <TrendingUp size={15} aria-hidden="true" />Top 30 — {selectedTestKey}
+        <TrendingUp size={15} aria-hidden="true" />Top 15 — {selectedTestKey}
       </div>
       <div className="table-wrap">
       <table className="table table-compact">
@@ -1568,7 +1568,7 @@ export default function AdminDashboard() {
   const Bottom30Section = () => (
     <div className="card">
       <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <TrendingDown size={15} aria-hidden="true" />Bottom 30 — {selectedTestKey}
+        <TrendingDown size={15} aria-hidden="true" />Bottom 15 — {selectedTestKey}
       </div>
       <div className="table-wrap">
       <table className="table table-compact">
