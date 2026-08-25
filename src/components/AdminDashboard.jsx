@@ -1561,7 +1561,7 @@ export default function AdminDashboard() {
                   );
                 })}
                 <td><strong style={{ fontSize: 13, color: '#1a4fa0' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || '-'}</td>)}
+                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
               </tr>
             );
           })}
@@ -1637,7 +1637,7 @@ export default function AdminDashboard() {
                 );
               })}
               <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || '-'}</td>)}
+                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
             </tr>
           )})}
           {!bottomRanked.length && (
