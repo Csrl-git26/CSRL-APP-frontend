@@ -957,8 +957,18 @@ export default function AdminDashboard() {
   }
 
   if (viewingStudentId) {
-    const profile      = data.profiles.find((p) => String(p.ROLL_KEY) === String(viewingStudentId));
-    const studentTests = data.tests.find((t) => String(t.ROLL_KEY) === String(viewingStudentId)) || {};
+    const target = String(viewingStudentId).trim().toLowerCase();
+    const profile = data.profiles.find((p) => {
+      const rk = p.ROLL_KEY != null ? String(p.ROLL_KEY).trim().toLowerCase() : '';
+      const rno = p['ROLL NO.'] != null ? String(p['ROLL NO.']).trim().toLowerCase() : '';
+      const roll = p.roll != null ? String(p.roll).trim().toLowerCase() : '';
+      return rk === target || rno === target || roll === target || p.ROLL_KEY === viewingStudentId;
+    }) || profileByRoll?.get(viewingStudentId) || profileByRoll?.get(Number(viewingStudentId)) || profileByRoll?.get(String(viewingStudentId));
+    
+    const studentTests = data.tests.find((t) => {
+      const rk = t.ROLL_KEY != null ? String(t.ROLL_KEY).trim().toLowerCase() : '';
+      return rk === target || t.ROLL_KEY === viewingStudentId;
+    }) || {};
     return (
       <div className="fade-in dashboard-page">
         <div className="page-header">
