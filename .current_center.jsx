@@ -1,8 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
-import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Download, Search, Eye, Brain, Package, Flag } from 'lucide-react';
+import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Search, Eye, Brain, Package } from 'lucide-react';
 import {
   fetchCenterDataApi,
   fetchOverview,
@@ -16,12 +14,11 @@ import {
   fetchCentreChart,
   getStreamConfig,
 } from '../services/dataService';
-import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
-import { fetchStudentChart } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
 import CentreLeaderboard from './CentreLeaderboard';
 import MultiSelectDropdown from './MultiSelectDropdown';
+import PerformanceChart from './PerformanceChart';
 import { CENTERS } from '../config/centers';
 import TestInsightsPanel from './TestInsightsPanel';
 import CenterWeakTopics from './CenterWeakTopics';
@@ -35,6 +32,7 @@ const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
+  { key: 'students',   Icon: Users,           label: 'Students'  },
   { key: 'pastyear',   Icon: Package,         label: 'Past Year Data' },
 ];
 
@@ -66,8 +64,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const [bottomRanked,     setBottomRanked]     = useState([]);
   const [allRanked,        setAllRanked]        = useState([]);
   const [subjectAvgs,      setSubjectAvgs]      = useState([]);
-  const [isExportingBulk, setIsExportingBulk] = useState(false);
-  const [bulkExportProgress, setBulkExportProgress] = useState('');
   const [loading,          setLoading]          = useState(true);
   const [error,            setError]            = useState('');
   const [viewingStudentId, setViewingStudentId] = useState(null);
@@ -79,7 +75,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     }
   }, [adminTestKey]);
   const [searchTerm,       setSearchTerm]       = useState('');
-  const [prefetchedData, setPrefetchedData] = useState({});
   const [filterCategory,   setFilterCategory]   = useState('ALL');
   const [filterStream,     setFilterStream]     = useState('ALL');
   const [filterSponsor,    setFilterSponsor]    = useState('ALL');
@@ -177,7 +172,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   useEffect(() => {
     if (selectedLeaderboardTestKeys.length === 0) return;
     const baseKeys = selectedLeaderboardTestKeys.join(',');
-    const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
+    const combinedKey = selectedSubject === 'Total' 
        ? baseKeys 
        : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
@@ -252,8 +247,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   useEffect(() => {
     if (!selectedTestKey) return;
     Promise.all([
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom, all]) => {
       setTopRanked(top.ranked    || []);
@@ -283,9 +278,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   }, [activePage, selectedTestKey]);
 
   const rankingTestColumns = useMemo(
-    () => ['ALL_FMT', ...(data?.testColumns || [])
+    () => (data?.testColumns || [])
       .filter((c) => !String(c).includes('_'))
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }))],
+      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
     [data]
   );
 
@@ -324,25 +319,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       return matchSearch && matchCat && matchStream && matchSponsor && matchGender && matchState;
     }).sort((a, b) => a.ROLL_KEY.localeCompare(b.ROLL_KEY, undefined, { numeric: true }));
   }, [data, searchTerm, filterCategory, filterStream, filterSponsor, filterGender, filterState]);
-
-  const filteredRanked = useMemo(() => {
-    let list = [...allRanked];
-    if (searchTerm) {
-      const q = searchTerm.toLowerCase();
-      list = list.filter(s => (s.name || '').toLowerCase().includes(q) || (s.roll || '').toLowerCase().includes(q));
-    }
-    list = list.filter(s => {
-      const p = profileByRoll.get(s.roll);
-      if (!p) return true;
-      const matchCat     = filterCategory === 'ALL' || p.CATEGORY   === filterCategory;
-      const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
-      const matchSponsor = filterSponsor  === 'ALL' || (p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))) === filterSponsor;
-      const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
-      const matchState   = filterState    === 'ALL' || p.STATE === filterState;
-      return matchCat && matchStream && matchSponsor && matchGender && matchState;
-    });
-    return list;
-  }, [allRanked, searchTerm, filterCategory, filterStream, filterSponsor, filterGender, filterState, profileByRoll]);
 
   const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))]], [data]);
   const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))).filter(Boolean))]], [data]);
@@ -389,25 +365,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   }
 
   if (viewingStudentId) {
-    const target = String(viewingStudentId).trim().toLowerCase();
-    const profile = data.profiles.find((p) => {
-      const rk = p.ROLL_KEY != null ? String(p.ROLL_KEY).trim().toLowerCase() : '';
-      const rno = p['ROLL NO.'] != null ? String(p['ROLL NO.']).trim().toLowerCase() : '';
-      const roll = p.roll != null ? String(p.roll).trim().toLowerCase() : '';
-      return rk === target || rno === target || roll === target || p.ROLL_KEY === viewingStudentId;
-    }) || profileByRoll?.get(viewingStudentId) || profileByRoll?.get(Number(viewingStudentId)) || profileByRoll?.get(String(viewingStudentId));
-    
-    const studentTests = data.tests.find((t) => {
-      const rk = t.ROLL_KEY != null ? String(t.ROLL_KEY).trim().toLowerCase() : '';
-      return rk === target || t.ROLL_KEY === viewingStudentId;
-    }) || {};
-    
-    // Ultimate fallback if profile is still undefined
-    const finalProfile = profile || {
-      ROLL_KEY: viewingStudentId,
-      "STUDENT'S NAME": "Student " + viewingStudentId,
-      roll: viewingStudentId
-    };
+    const profile      = data.profiles.find((p) => p.ROLL_KEY === viewingStudentId);
+    const studentTests = data.tests.find((t) => t.ROLL_KEY === viewingStudentId) || {};
     return (
       <div className="fade-in dashboard-page">
         <div className="page-header">
@@ -421,18 +380,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           </button>
           <div>
             <h1>Student Profile</h1>
-            <p>{profile?.["STUDENT'S NAME"]} &middot; {viewingStudentId}</p>
-            <div style={{color:'red', fontSize:10}}>
-              DEBUG: data.profiles.length={data?.profiles?.length}, 
-              profileByRoll.has(viewingStudentId)={profileByRoll?.has(viewingStudentId) ? 'true' : 'false'},
-              has(Number)={profileByRoll?.has(Number(viewingStudentId)) ? 'true' : 'false'},
-              has(String)={profileByRoll?.has(String(viewingStudentId)) ? 'true' : 'false'}
-            </div>
+            <p>{profile?.["STUDENT'S NAME"]} · {viewingStudentId}</p>
           </div>
         </div>
         <div className="content dashboard-page-body">
           <div className="dashboard-scroll">
-            <StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} />
+            <StudentProfileView profile={profile} studentTests={studentTests} testColumns={data.testColumns} />
           </div>
         </div>
       </div>
@@ -441,47 +394,14 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   // ── Section components ────────────────────────────────────────────────────────
 
-  const LeaderboardSection = () => {
-    let testCount = selectedLeaderboardTestKeys.length;
-    if (testCount === 1 && selectedLeaderboardTestKeys[0] === 'ALL_FMT') {
-      testCount = allTestOptions.filter(o => String(o).startsWith('FMT') && o !== 'ALL_FMT').length;
-    }
-    const numTests = Math.max(1, testCount);
-    
-    const totalAppearedRaw = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
-    const totalAppeared = Math.round(totalAppearedRaw / numTests);
-    const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
-    const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
-
-    return (
+  const LeaderboardSection = () => (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
-            <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
+            <Trophy size={18} aria-hidden="true" />Centre Rankings
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{selectedSubject === 'Qualification' ? 'Sorted descending by qualification rate' : 'Sorted descending by average score'}</span>
-            
-            {totalAppeared > 0 && (
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
-                <span style={{ fontSize: 14, color: 'var(--gray-600)', fontWeight: 700 }}>Overall CSRL Qualification:</span>
-                <span style={{ fontSize: 16, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 20, color: 'var(--gray-700)', fontWeight: 700 }}>
-                  <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
-                </span>
-                {qualPct < 80 ? (
-                  <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Flag size={14} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED - 
-                    <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
-                  </span>
-                ) : (
-                  <span style={{ fontSize: 16, background: '#fae8ff', color: '#86198f', padding: '4px 12px', borderRadius: 20, fontWeight: 800 }}>
-                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> Qualified ({qualPct}%)
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
+          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>Sorted descending by average score</div>
         </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -499,14 +419,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
               <option value="Math">Math</option>
-              <option value="Qualification">Qualification Rate</option>
             </select>
           </div>
         </div>
       </div>
       <CentreLeaderboard 
         centreStats={centreBoard} 
-        selectedSubject={selectedSubject}
         selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} 
         onCentreClick={(code) => {
           setSelectedCenterCode(code);
@@ -537,8 +455,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         )}
       </div>
     </div>
-    );
-  };
+  );
 
   const OverviewSection = () => {
     const totalStudents = overview?.totalStudents ?? data.profiles.length;
@@ -619,11 +536,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   const RankingsPair = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="grid-2">
         <div className="card">
         <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <TrendingUp size={14} aria-hidden="true" />
-          Top 10 — {selectedTestKey}
+          Top 30 — {selectedTestKey}
         </div>
         <div className="table-wrap">
         <table className="table table-compact">
@@ -635,7 +552,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
-              {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             </tr>
           </thead>
           <tbody>
@@ -673,12 +589,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                     );
                   })}
                   <td><strong style={{ color: '#1a4fa0' }}>{s.marks}</strong></td>
-                  {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
                 </tr>
               );
             })}
             {!topRanked.length && (
-              <tr><td colSpan={rankingSubjects.length + 3 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
+              <tr><td colSpan={rankingSubjects.length + 3} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
             )}
           </tbody>
         </table>
@@ -688,7 +603,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         <div className="card">
         <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <AlertTriangle size={14} color="var(--red)" aria-hidden="true" />
-          Bottom 10 — {selectedTestKey}
+          Bottom 30 — {selectedTestKey}
         </div>
         <div className="table-wrap">
         <table className="table table-compact">
@@ -700,7 +615,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
-              {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             </tr>
           </thead>
           <tbody>
@@ -736,17 +650,78 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                     </td>
                   );
                 })}
-                  <td><strong style={{ color: 'var(--red)' }}>{s.marks}</strong></td>
-                  {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
+                <td><strong style={{ color: 'var(--red)' }}>{s.marks}</strong></td>
               </tr>
             )})}
             {!bottomRanked.length && (
-              <tr><td colSpan={rankingSubjects.length + 3 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data</td></tr>
+              <tr><td colSpan={rankingSubjects.length + 3} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data</td></tr>
             )}
           </tbody>
         </table>
         </div>
       </div>
+      </div>
+
+      <div className="card">
+        <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Trophy size={14} aria-hidden="true" />
+          All students rankwise — {selectedTestKey}
+        </div>
+        <div className="table-wrap" style={{ maxHeight: 440, overflowY: 'auto' }}>
+          <table className="table table-compact">
+            <thead>
+              <tr>
+                <th>Rank</th><th>Student</th><th>Cat.</th><th>Stream</th>
+                {rankingSubjects.map((s) => {
+                  const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
+                  return <th key={s} title={s}>{abbr}</th>;
+                })}
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allRanked.map((s) => {
+                const profile = profileByRoll.get(s.roll);
+                const photoUrl = profile?.['STUDENT PHOTO URL'] ? resolveStudentPhotoUrl(profile['STUDENT PHOTO URL'], 'fallback') : null;
+                return (
+                <tr key={`all-${s.roll}`} style={{ cursor: 'pointer' }} onClick={() => setViewingStudentId(s.roll)}>
+                  <td><strong>#{s.rank}</strong></td>
+                  <td>
+                    <div className="student-row">
+                      {photoUrl ? (
+                        <img src={photoUrl} alt="Avatar" className="avatar" style={{width: 32, height: 32, fontSize: 12, objectFit: 'cover'}} />
+                      ) : (
+                        <div className="avatar" style={{width: 32, height: 32, fontSize: 12}}>{getInitials(s.name)}</div>
+                      )}
+                      <span style={{ fontWeight: 600, fontSize: 13 }}>{s.name}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
+                  </td>
+                  <td>
+                    <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 3, background: s.stream === 'NEET' ? '#e6f5ed' : '#e8f0fc', color: s.stream === 'NEET' ? '#1a6e3b' : '#1a4fa0', fontWeight: 600 }}>
+                      {s.stream || 'JEE'}
+                    </span>
+                  </td>
+                  {rankingSubjectCols.map((col) => {
+                    const raw = data?.tests?.find(t => t.ROLL_KEY === s.roll)?.[col];
+                    const val = (raw === undefined || raw === null || raw === '') ? '—' : raw;
+                    return (
+                      <td key={col} style={{ color: val === '—' ? 'var(--gray-200)' : 'inherit' }}>
+                        {val}
+                      </td>
+                    );
+                  })}
+                  <td><strong style={{ color: '#1a4fa0' }}>{s.marks}</strong></td>
+                </tr>
+              )})}
+              {!allRanked.length && (
+                <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="card" style={{ marginTop: 8 }}>
@@ -756,140 +731,29 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           loading={testInsightsLoading}
           error={testInsightsError}
           testKey={selectedTestKey}
-          onViewStudent={setViewingStudentId}
           hideSubjectAverages
         />
       </div>
     </div>
   );
 
-  const handleBulkExportPDF = async () => {
-    if (!filteredStudents.length) return;
-    setIsExportingBulk(true);
-    setBulkExportProgress(`Preparing...`);
-    
-    setTimeout(async () => {
-      try {
-        const dataMap = {};
-        let fetched = 0;
-        for (let i = 0; i < filteredStudents.length; i += 5) {
-          const chunk = filteredStudents.slice(i, i + 5);
-          await Promise.all(chunk.map(async (student) => {
-            const roll = student.ROLL_KEY;
-            const [chartRes, topicsRes] = await Promise.all([
-               fetchStudentChart(null, roll, null).catch(() => null),
-               getStudentOverallWeakTopics(roll).catch(() => null)
-            ]);
-            dataMap[roll] = {
-               chart: chartRes || null,
-               topics: topicsRes?.data || null
-            };
-            fetched++;
-          }));
-          setBulkExportProgress(`Fetched ${fetched} / ${filteredStudents.length}`);
-        }
-        
-        setPrefetchedData(dataMap);
-        setBulkExportProgress(`Generating layout...`);
-        
-        // Wait for React to render the newly fetched data
-        await new Promise(r => setTimeout(r, 1000));
-        
-        // Using static imports to avoid dynamic import interop issues
-        let pdf = null;
-        let count = 0;
-        
-        for (const student of filteredStudents) {
-          count++;
-          setBulkExportProgress(`Exporting ${count} of ${filteredStudents.length}...`);
-          const rollKey = student.ROLL_KEY;
-          const page = document.getElementById(`pdf-report-content-${rollKey}`);
-          
-          if (!page) {
-             console.warn('Could not find element for', rollKey);
-             continue;
-          }
-          
-          // We capture the page exactly where it is rendered by React.
-          // By NOT moving it to document.body, we preserve the Recharts SVG DOM.
-          await new Promise(r => setTimeout(r, 100));
-
-          const canvas = await html2canvas(page, { 
-            scale: 2, 
-            useCORS: true,
-            windowHeight: page.scrollHeight,
-            height: page.scrollHeight,
-            windowWidth: 800,
-            width: 800
-          });
-
-          if (canvas.width === 0 || canvas.height === 0) {
-            throw new Error(`Canvas is 0x0 for student ${rollKey}. Element might be hidden.`);
-          }
-          const imgData = canvas.toDataURL('image/jpeg', 1.0);
-          const pdfWidth = 210;
-          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-          
-          if (!pdf) {
-            pdf = new jsPDF('p', 'mm', [pdfWidth, Math.max(297, pdfHeight)]);
-          } else {
-            pdf.addPage([pdfWidth, Math.max(297, pdfHeight)], 'p');
-          }
-          
-          pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        }
-        
-        setBulkExportProgress(`Saving PDF...`);
-        if (pdf) {
-          pdf.save(`${selectedCenterCode}_All_Students_Report.pdf`);
-        }
-      } catch (err) {
-        console.error('Failed bulk export', err);
-        alert('Export failed: ' + (err.message || err.toString()));
-      } finally {
-        setIsExportingBulk(false);
-      }
-    }, 1500);
-  };
-
   const StudentsSection = () => (
     <div className="card">
-      <div className="section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Users size={14} aria-hidden="true" />
-          All Students ({filteredStudents.length})
-        </div>
-        <div>
-          <button 
-            className="btn btn-outline btn-sm" 
-            onClick={handleBulkExportPDF} 
-            disabled={isExportingBulk || filteredStudents.length === 0}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            {isExportingBulk ? <Loader2 size={13} className="spin" /> : <Download size={13} />}
-            {isExportingBulk ? bulkExportProgress : 'Export All to PDF'}
-          </button>
-        </div>
+      <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <Users size={14} aria-hidden="true" />
+        All Students ({filteredStudents.length})
       </div>
-      
-      {isExportingBulk && (
-        <div style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', zIndex: -10000 }}>
-          {filteredStudents.map(student => (
-            <StudentProfileView 
-              key={student.ROLL_KEY}
-              profile={student} 
-              studentTests={data.tests.find(t => t.ROLL_KEY === student.ROLL_KEY) || {}} 
-              testColumns={data.testColumns} 
-              isHiddenForBulk={true}
-              prefetchedChart={prefetchedData[student.ROLL_KEY]?.chart || null}
-              prefetchedWeakTopics={prefetchedData[student.ROLL_KEY]?.topics || null}
-            />
-          ))}
-        </div>
-      )}
-
         <div className="search-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-
+          <div style={{ position: 'relative', flex: '1 1 200px' }}>
+            <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
+            <input
+              className="input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by name or roll…"
+              style={{ width: '100%', paddingLeft: 30 }}
+            />
+          </div>
           <select className="input select" value={filterSponsor} onChange={(e) => setFilterSponsor(e.target.value)} style={{ flex: '1 1 120px' }}>
             <option value="ALL">All Sponsors</option>
             {sponsorsList.filter((s) => s !== 'ALL' && s !== '—').map((s) => <option key={s} value={s}>{s}</option>)}
@@ -964,7 +828,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   return (
     <div className={adminViewCenterCode ? "" : "fade-in dashboard-page"}>
-      {!adminViewCenterCode && (
+      {!adminViewCenterCode && activePage !== 'leaderboard' && (
         <div className="page-header">
           <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
             {CENTERS[selectedCenterCode]?.logo ? (
@@ -977,7 +841,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <h1>{centreTitle}</h1>
             <p>{data.profiles.length} students</p>
           </div>
-          <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: activePage === 'leaderboard' ? 'none' : 'flex', gap: 12 }}>
+          <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
             <select
               className="input select"
               value={selectedCenterCode}
@@ -999,7 +863,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
               onChange={(e) => setSelectedTestKey(e.target.value)}
               style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 200 }}
             >
-              {rankingTestColumns.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t === 'ALL_FMT' ? 'All FMT Average' : t}</option>)}
+              {rankingTestColumns.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
             </select>
           </div>
         </div>
@@ -1022,7 +886,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       )}
 
       <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
-        {!adminViewCenterCode && (
+        {!adminViewCenterCode && activePage !== 'leaderboard' && (
           <div style={{ marginBottom: 14, flexShrink: 0 }}>
             <div className="tab-bar">
               {TABS.map(({ key, Icon, label }) => (
@@ -1041,10 +905,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         )}
 
         <div className={adminViewCenterCode ? "" : "dashboard-scroll"}>
-          {activePage === 'leaderboard' && LeaderboardSection()}
-          {activePage === 'overview'   && OverviewSection()}
+          {activePage === 'leaderboard' && <LeaderboardSection />}
+          {activePage === 'overview'   && <OverviewSection />}
           {activePage === 'topbottom'  && <RankingsPair />}
-          {activePage === 'students'   && StudentsSection()}
+          {activePage === 'students'   && <StudentsSection />}
           {activePage === 'pastyear'   && <PastYearDataTab isAdmin={false} />}
         </div>
       </div>

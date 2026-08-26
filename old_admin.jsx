@@ -8,7 +8,86 @@ import {
   Eye, BarChart3, Flag, Archive,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import MultiSelectDropdown from './MultiSelectDropdown';
+function MultiSelectDropdown({ options, selectedOptions, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectAllFmt = (e) => {
+    e.stopPropagation();
+    const fmtOptions = options.filter(o => String(o).toUpperCase().startsWith('FMT'));
+    const allFmtSelected = fmtOptions.length > 0 && fmtOptions.every(o => selectedOptions.includes(o));
+    
+    if (allFmtSelected) {
+      onChange(selectedOptions.filter(o => !String(o).toUpperCase().startsWith('FMT')));
+    } else {
+      onChange([...new Set([...selectedOptions, ...fmtOptions])]);
+    }
+  };
+
+  const toggleOption = (option, e) => {
+    e.stopPropagation();
+    if (selectedOptions.includes(option)) {
+      onChange(selectedOptions.filter(o => o !== option));
+    } else {
+      onChange([...selectedOptions, option]);
+    }
+  };
+
+  const displayText = selectedOptions.length === 0 ? "Select Tests" : 
+         selectedOptions.length === 1 ? selectedOptions[0] : 
+         `${selectedOptions.length} tests selected`;
+
+  return (
+    <div ref={dropdownRef} style={{ position: 'relative', display: 'inline-block' }}>
+      <button 
+        type="button"
+        className="input select" 
+        style={{ width: 170, fontSize: 13, textAlign: 'left', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayText}</span>
+        <span style={{ fontSize: 10 }}>▼</span>
+      </button>
+      
+      {isOpen && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, width: 220, background: '#fff', border: '1px solid var(--gray-300)', borderRadius: 6, zIndex: 9999, maxHeight: 300, overflowY: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+          <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--gray-200)', background: 'var(--gray-50)', cursor: 'pointer' }} onClick={handleSelectAllFmt}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', margin: 0 }}>
+              <input 
+                type="checkbox" 
+                checked={options.filter(o => String(o).toUpperCase().startsWith('FMT')).length > 0 && options.filter(o => String(o).toUpperCase().startsWith('FMT')).every(o => selectedOptions.includes(o))} 
+                readOnly
+              />
+              <strong style={{ fontSize: 13 }}>All FMT Tests</strong>
+            </label>
+          </div>
+          <div style={{ padding: '4px 0' }}>
+            {options.map(col => (
+              <label key={col} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', cursor: 'pointer', margin: 0, fontSize: 13, color: '#333' }} onClick={(e) => toggleOption(col, e)}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedOptions.includes(col)} 
+                  readOnly
+                />
+                {col}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 import {
   fetchGlobalData,
@@ -78,6 +157,7 @@ const ALL_TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
   { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
+  { key: 'students',    Icon: Users,           label: 'Students'           },
   { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
 ];
@@ -433,8 +513,8 @@ export default function AdminDashboard() {
     if (!selectedTestKey) return;
     const combinedKey = selectedSubject === 'Total' ? selectedTestKey : `${selectedTestKey}_${selectedSubject}`;
     Promise.all([
-      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 30, order: 'asc'  }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom]) => {
       setTopRanked(top.ranked    || []);
       setBottomRanked(bottom.ranked || []);
@@ -452,7 +532,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (selectedLeaderboardTestKeys.length === 0) return;
     const baseKeys = selectedLeaderboardTestKeys.join(',');
-    const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
+    const combinedKey = selectedSubject === 'Total' 
        ? baseKeys 
        : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
@@ -490,11 +570,11 @@ export default function AdminDashboard() {
     [data]
   );
 
-  const allTestOptions = useMemo(() => {
-    const sorted = [...new Set([...manualTestOptions, ...rankingTestColumns])]
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
-    return ['ALL_FMT', ...sorted];
-  }, [manualTestOptions, rankingTestColumns]);
+  const allTestOptions = useMemo(
+    () => [...new Set([...manualTestOptions, ...rankingTestColumns])]
+      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
+    [manualTestOptions, rankingTestColumns]
+  );
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -957,25 +1037,8 @@ export default function AdminDashboard() {
   }
 
   if (viewingStudentId) {
-    const target = String(viewingStudentId).trim().toLowerCase();
-    const profile = data.profiles.find((p) => {
-      const rk = p.ROLL_KEY != null ? String(p.ROLL_KEY).trim().toLowerCase() : '';
-      const rno = p['ROLL NO.'] != null ? String(p['ROLL NO.']).trim().toLowerCase() : '';
-      const roll = p.roll != null ? String(p.roll).trim().toLowerCase() : '';
-      return rk === target || rno === target || roll === target || p.ROLL_KEY === viewingStudentId;
-    }) || profileByRoll?.get(viewingStudentId) || profileByRoll?.get(Number(viewingStudentId)) || profileByRoll?.get(String(viewingStudentId));
-    
-    const studentTests = data.tests.find((t) => {
-      const rk = t.ROLL_KEY != null ? String(t.ROLL_KEY).trim().toLowerCase() : '';
-      return rk === target || t.ROLL_KEY === viewingStudentId;
-    }) || {};
-    
-    // Ultimate fallback if profile is still undefined
-    const finalProfile = profile || {
-      ROLL_KEY: viewingStudentId,
-      "STUDENT'S NAME": "Student " + viewingStudentId,
-      roll: viewingStudentId
-    };
+    const profile      = data.profiles.find((p) => p.ROLL_KEY === viewingStudentId);
+    const studentTests = data.tests.find((t) => t.ROLL_KEY === viewingStudentId) || {};
     return (
       <div className="fade-in dashboard-page">
         <div className="page-header">
@@ -989,7 +1052,7 @@ export default function AdminDashboard() {
         </div>
         <div className="content dashboard-page-body">
           <div className="dashboard-scroll">
-            <StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} />
+            <StudentProfileView profile={profile} studentTests={studentTests} testColumns={data.testColumns} />
           </div>
         </div>
       </div>
@@ -1157,7 +1220,7 @@ export default function AdminDashboard() {
               <Trophy size={15} style={{ marginRight: 6 }} aria-hidden="true" />
               Top Centres — {selectedTestKey}
             </div>
-            <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} />
+            <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
         <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
@@ -1193,14 +1256,7 @@ export default function AdminDashboard() {
   };
 
   const LeaderboardSection = () => {
-    let testCount = selectedLeaderboardTestKeys.length;
-    if (testCount === 1 && selectedLeaderboardTestKeys[0] === 'ALL_FMT') {
-      testCount = allTestOptions.filter(o => String(o).startsWith('FMT') && o !== 'ALL_FMT').length;
-    }
-    const numTests = Math.max(1, testCount);
-    
-    const totalAppearedRaw = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
-    const totalAppeared = Math.round(totalAppearedRaw / numTests);
+    const totalAppeared = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
     const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
     const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
 
@@ -1212,7 +1268,7 @@ export default function AdminDashboard() {
               <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-              <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{selectedSubject === 'Qualification' ? 'Sorted descending by qualification rate' : 'Sorted descending by average score'}</span>
+              <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>Sorted descending by average score</span>
               
               {totalAppeared > 0 && (
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
@@ -1220,7 +1276,7 @@ export default function AdminDashboard() {
                   <span style={{ fontSize: 16, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 20, color: 'var(--gray-700)', fontWeight: 700 }}>
                     <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
                   </span>
-                  {qualPct < 80 ? (
+                  {qualPct < 50 ? (
                     <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
                       <Flag size={14} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED - 
                       <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
@@ -1239,7 +1295,7 @@ export default function AdminDashboard() {
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
             <MultiSelectDropdown 
-              options={allTestOptions.filter(o => o !== 'ALL_FMT')} 
+              options={allTestOptions} 
               selectedOptions={selectedLeaderboardTestKeys} 
               onChange={setSelectedLeaderboardTestKeys} 
             />
@@ -1251,12 +1307,11 @@ export default function AdminDashboard() {
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
               <option value="Math">Math</option>
-              <option value="Qualification">Qualification Rate</option>
             </select>
           </div>
         </div>
       </div>
-      <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} />
+      <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} />
         <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
@@ -1286,7 +1341,7 @@ export default function AdminDashboard() {
 
   const RankingsSection = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="grid-2">
         <Top30Section />
         <Bottom30Section />
       </div>
@@ -1297,7 +1352,6 @@ export default function AdminDashboard() {
           loading={testInsightsLoading}
           error={testInsightsError}
           testKey={selectedTestKey}
-          onViewStudent={setViewingStudentId}
           hideSubjectAverages
         />
       </div>
@@ -1517,7 +1571,7 @@ export default function AdminDashboard() {
   const Top30Section = () => (
     <div className="card">
       <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <TrendingUp size={15} aria-hidden="true" />Top 15 — {selectedTestKey}
+        <TrendingUp size={15} aria-hidden="true" />Top 30 — {selectedTestKey}
       </div>
       <div className="table-wrap">
       <table className="table table-compact">
@@ -1529,7 +1583,6 @@ export default function AdminDashboard() {
               return <th key={s} title={s}>{abbr}</th>;
             })}
             <th>Total</th>
-            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1563,27 +1616,17 @@ export default function AdminDashboard() {
                 <td>
                   <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
                 </td>
-                {allSubjects.map((sub) => {
-                  let val = flatM.subjects[sub];
-                  if (val === undefined && m.rawScores) {
-                    val = m.rawScores[`${selectedTestKey}_${sub}`];
-                    if (val === undefined) {
-                      val = m.rawScores[sub];
-                    }
-                  }
-                  return (
-                    <td key={sub} style={{ color: val === undefined ? 'var(--gray-200)' : 'inherit' }}>
-                      {val ?? '—'}
-                    </td>
-                  );
-                })}
+                {allSubjects.map((sub) => (
+                  <td key={sub} style={{ color: flatM.subjects[sub] === undefined ? 'var(--gray-200)' : 'inherit' }}>
+                    {flatM.subjects[sub] ?? '—'}
+                  </td>
+                ))}
                 <td><strong style={{ fontSize: 13, color: '#1a4fa0' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
               </tr>
             );
           })}
           {!topRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1594,7 +1637,7 @@ export default function AdminDashboard() {
   const Bottom30Section = () => (
     <div className="card">
       <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <TrendingDown size={15} aria-hidden="true" />Bottom 15 — {selectedTestKey}
+        <TrendingDown size={15} aria-hidden="true" />Bottom 30 — {selectedTestKey}
       </div>
       <div className="table-wrap">
       <table className="table table-compact">
@@ -1606,7 +1649,6 @@ export default function AdminDashboard() {
               return <th key={s} title={s}>{abbr}</th>;
             })}
             <th>Total</th>
-            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1639,26 +1681,16 @@ export default function AdminDashboard() {
               <td>
                 <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
               </td>
-              {allSubjects.map((sub) => {
-                let val = flatM.subjects[sub];
-                if (val === undefined && m.rawScores) {
-                  val = m.rawScores[`${selectedTestKey}_${sub}`];
-                  if (val === undefined) {
-                    val = m.rawScores[sub];
-                  }
-                }
-                return (
-                  <td key={sub} style={{ color: val === undefined ? 'var(--gray-200)' : 'inherit' }}>
-                    {val ?? '—'}
-                  </td>
-                );
-              })}
+              {allSubjects.map((sub) => (
+                <td key={sub} style={{ color: flatM.subjects[sub] === undefined ? 'var(--gray-200)' : 'inherit' }}>
+                  {flatM.subjects[sub] ?? '—'}
+                </td>
+              ))}
               <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
             </tr>
           )})}
           {!bottomRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1931,7 +1963,7 @@ export default function AdminDashboard() {
               onChange={(e) => setSelectedTestKey(e.target.value)}
               style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 148, fontSize: 13 }}
             >
-              {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t === 'ALL_FMT' ? 'All FMT Average' : t}</option>)}
+              {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t}</option>)}
             </select>
           )}
         </div>

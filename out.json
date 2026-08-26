@@ -1,0 +1,82 @@
+{
+  "chartData": [
+    {
+      "name": "FMT01",
+      "Total": 95,
+      "Chemistry": 42,
+      "Math": 11,
+      "Physics": 42
+    },
+    {
+      "name": "FMT02",
+      "Total": 80,
+      "Chemistry": 14,
+      "Math": 24,
+      "Physics": 42,
+      "Physics_Attempted": 25,
+      "Physics_Correct": 11,
+      "Physics_Accuracy": 44,
+      "Chemistry_Attempted": 25,
+      "Chemistry_Correct": 6,
+      "Chemistry_Accuracy": 24,
+      "Math_Attempted": 25,
+      "Math_Correct": 7,
+      "Math_Accuracy": 28,
+      "Total_Attempted": 75,
+      "Total_Correct": 24,
+      "Total_Accuracy": 32,
+      "FALLBACK_DEBUG": "RAN"
+    },
+    {
+      "name": "FMT03",
+      "Total": 118,
+      "Chemistry": 60,
+      "Math": 26,
+      "Physics": 32
+    },
+    {
+      "name": "FMT04",
+      "Total": 112,
+      "Chemistry": 59,
+      "Math": 37,
+      "Physics": 16
+    },
+    {
+      "name": "FMT05",
+      "Total": 96,
+      "Chemistry": 44,
+      "Math": 23,
+      "Physics": 29
+    },
+    {
+      "name": "FMT06",
+      "Total": 114,
+      "Chemistry": 34,
+      "Math": 27,
+      "Physics": 53
+    },
+    {
+      "name": "FMT07",
+      "Total": 85,
+      "Chemistry": 35,
+      "Math": 18,
+      "Physics": 32
+    },
+    {
+      "name": "FMT08",
+      "Total": 130,
+      "Chemistry": 48,
+      "Math": 30,
+      "Physics": 52
+    },
+    {
+      "name": "ERROR: Cannot read properties of undefined (reading 'forEach')",
+      "Physics": 0,
+      "Chemistry": 0,
+      "Math": 0,
+      "Biology": 0,
+      "Total": 0
+    }
+  ],
+  "weakSubject": "Math"
+}
