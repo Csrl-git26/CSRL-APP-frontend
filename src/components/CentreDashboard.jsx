@@ -417,17 +417,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           </button>
           <div>
             <h1>Student Profile</h1>
-            <p>{profile?.["STUDENT'S NAME"]} &middot; {viewingStudentId}</p>
-            <div style={{color:'red', fontSize:10}}>
-              profileByRoll.has(viewingStudentId)={profileByRoll?.has(viewingStudentId) ? 'true' : 'false'},
-              has(Number)={profileByRoll?.has(Number(viewingStudentId)) ? 'true' : 'false'},
-              has(String)={profileByRoll?.has(String(viewingStudentId)) ? 'true' : 'false'}
-            </div>
+            <p>{profile?.["STUDENT'S NAME"] || 'Student'} &middot; {viewingStudentId}</p>
           </div>
         </div>
         <div className="content dashboard-page-body">
           <div className="dashboard-scroll">
-            <StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} />
+            <StudentProfileView profile={profile} studentTests={studentTests} testColumns={data.testColumns} />
           </div>
         </div>
       </div>
