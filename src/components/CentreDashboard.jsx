@@ -392,12 +392,25 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
 
   if (viewingStudentId) {
     const target = String(viewingStudentId).trim().toLowerCase();
-    const profile = data.profiles.find((p) => {
+    
+    let foundProfile = (data?.profiles || []).find((p) => {
       const rk = p.ROLL_KEY != null ? String(p.ROLL_KEY).trim().toLowerCase() : '';
       const rno = p['ROLL NO.'] != null ? String(p['ROLL NO.']).trim().toLowerCase() : '';
       const roll = p.roll != null ? String(p.roll).trim().toLowerCase() : '';
       return rk === target || rno === target || roll === target || p.ROLL_KEY === viewingStudentId;
-    }) || profileByRoll?.get(viewingStudentId) || profileByRoll?.get(Number(viewingStudentId)) || profileByRoll?.get(String(viewingStudentId));
+    });
+
+    if (!foundProfile && profileByRoll) {
+      foundProfile = profileByRoll.get(viewingStudentId) || profileByRoll.get(Number(viewingStudentId)) || profileByRoll.get(String(viewingStudentId));
+    }
+
+    // Fallback if backend hasn't supplied the profile yet
+    const profile = foundProfile || {
+      ROLL_KEY: viewingStudentId,
+      "STUDENT'S NAME": "Student",
+      "ROLL NO.": viewingStudentId,
+      "centerCode": selectedCenterCode
+    };
     
     const studentTests = data.tests.find((t) => {
       const rk = t.ROLL_KEY != null ? String(t.ROLL_KEY).trim().toLowerCase() : '';
