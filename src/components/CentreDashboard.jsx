@@ -256,11 +256,13 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'asc'  }).catch(() => ({ ranked: [] })),
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom, all]) => {
-      setTopRanked(top.ranked    || []);
-      setBottomRanked(bottom.ranked || []);
-      setAllRanked(all.ranked || []);
+      const validRolls = new Set((data?.profiles || []).map(p => p.ROLL_KEY));
+      const filterRanked = (list) => (list || []).filter(s => validRolls.has(s.roll));
+      setTopRanked(filterRanked(top.ranked));
+      setBottomRanked(filterRanked(bottom.ranked));
+      setAllRanked(filterRanked(all.ranked));
     });
-  }, [selectedTestKey, selectedCenterCode, data?.profiles?.length]);
+  }, [selectedTestKey, selectedCenterCode, data?.profiles]);
 
   useEffect(() => {
     if (activePage !== 'topbottom' || !selectedTestKey) return undefined;
@@ -402,12 +404,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       return rk === target || t.ROLL_KEY === viewingStudentId;
     }) || {};
     
-    // Ultimate fallback if profile is still undefined
-    const finalProfile = profile || {
-      ROLL_KEY: viewingStudentId,
-      "STUDENT'S NAME": "Student " + viewingStudentId,
-      roll: viewingStudentId
-    };
     return (
       <div className="fade-in dashboard-page">
         <div className="page-header">
@@ -423,7 +419,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <h1>Student Profile</h1>
             <p>{profile?.["STUDENT'S NAME"]} &middot; {viewingStudentId}</p>
             <div style={{color:'red', fontSize:10}}>
-              DEBUG: data.profiles.length={data?.profiles?.length}, 
               profileByRoll.has(viewingStudentId)={profileByRoll?.has(viewingStudentId) ? 'true' : 'false'},
               has(Number)={profileByRoll?.has(Number(viewingStudentId)) ? 'true' : 'false'},
               has(String)={profileByRoll?.has(String(viewingStudentId)) ? 'true' : 'false'}

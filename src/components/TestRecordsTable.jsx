@@ -214,14 +214,15 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   </td>
                   {subjects.map(s => {
                     const stats = calculateSubjectStats(s);
+                    const isTotal = s === 'Total';
                     return (
                       <td key={s}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                           <span style={{ fontWeight: 700, color: 'var(--csrl-blue)', fontSize: '1.1em' }}>{stats.avg}</span>
-                          {!isCentre && stats.fails > 0 && (
+                          {!isCentre && !isTotal && stats.fails > 0 && (
                             <span style={{ fontSize: 11, color: '#991b1b', fontWeight: 600 }}>{stats.fails} times</span>
                           )}
-                          {!isCentre && stats.fails === 0 && stats.avg !== '—' && (
+                          {!isCentre && !isTotal && stats.fails === 0 && stats.avg !== '—' && (
                             <span style={{ fontSize: 11, color: '#166534', fontWeight: 600 }}>0 times</span>
                           )}
                         </div>
