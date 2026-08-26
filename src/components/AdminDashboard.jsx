@@ -957,8 +957,8 @@ export default function AdminDashboard() {
   }
 
   if (viewingStudentId) {
-    const profile      = data.profiles.find((p) => p.ROLL_KEY === viewingStudentId);
-    const studentTests = data.tests.find((t) => t.ROLL_KEY === viewingStudentId) || {};
+    const profile      = data.profiles.find((p) => String(p.ROLL_KEY) === String(viewingStudentId));
+    const studentTests = data.tests.find((t) => String(t.ROLL_KEY) === String(viewingStudentId)) || {};
     return (
       <div className="fade-in dashboard-page">
         <div className="page-header">
