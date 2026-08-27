@@ -6,6 +6,7 @@ export default function Navbar({ auth, setAuth, onRefresh }) {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        if (!window.confirm("Are you sure you want to log out?")) return;
         setAuth({ role: null, rollNo: null });
         navigate('/login');
     };
