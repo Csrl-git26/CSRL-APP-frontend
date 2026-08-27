@@ -84,7 +84,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   }
                 }
                 
-                if (tot > 0 || total === 0) {
+                if (typeof tot === 'number') {
                   qualText = isQualified 
                     ? <span className="badge badge-success" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0' }}>Qualified</span> 
                     : <span className="badge badge-danger" style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>Not Qualified</span>;
