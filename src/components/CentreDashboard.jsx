@@ -102,8 +102,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     fetchCentersApi()
       .then((list) => {
         if (active && Array.isArray(list) && list.length > 0) {
-          setCentersList(list);
-          const codes = list.map(c => c.code);
+          setCentersList([...list].sort((a, b) => String(a.name || a.code).localeCompare(String(b.name || b.code))));
+          const codes = [...list].sort((a, b) => String(a.name || a.code).localeCompare(String(b.name || b.code))).map(c => c.code);
           const initialCode = adminViewCenterCode || auth.centerCode || list[0].code;
           if (codes.includes(initialCode)) {
             setSelectedCenterCode(initialCode);
@@ -346,10 +346,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     return list;
   }, [allRanked, searchTerm, filterCategory, filterStream, filterSponsor, filterGender, filterState, profileByRoll]);
 
-  const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))]], [data]);
-  const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))).filter(Boolean))]], [data]);
-  const gendersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.GENDER).filter(Boolean))]], [data]);
-  const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))]], [data]);
+  const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const gendersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.GENDER).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
 
   /** Lowest centre-wide subject average(s) from parsed test marks (same rule as overview KPI). */
   const { minSubjectAvg, weakSubjectFromPerformance } = useMemo(() => {
