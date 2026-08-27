@@ -511,11 +511,11 @@ export default function AdminDashboard() {
     }).sort((a, b) => a.ROLL_KEY.localeCompare(b.ROLL_KEY, undefined, { numeric: true }));
   }, [data, searchTerm, filterCategory, filterCenter, filterStream, filterSponsor, filterGender, filterState]);
 
-  const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))]], [data]);
-  const centersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.centerCode).filter(Boolean))]], [data]);
-  const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || displaySponsor(p.centerCode)).filter(Boolean))]], [data]);
-  const gendersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.GENDER).filter(Boolean))]], [data]);
-  const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))]], [data]);
+  const categories  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.CATEGORY).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const centersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.centerCode).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const sponsorsList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.SPONSOR || displaySponsor(p.centerCode)).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const gendersList = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.GENDER).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
+  const statesList  = useMemo(() => ['ALL', ...[...new Set((data?.profiles || []).map((p) => p.STATE).filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b)))], [data]);
 
   // All unique subjects across test columns (for dynamic marks table header)
   const allSubjects = useMemo(() => {
@@ -1167,7 +1167,7 @@ export default function AdminDashboard() {
               onChange={(e) => setSelectedTrendCentre(e.target.value)}
               style={{ width: 200, fontSize: 13 }}
             >
-              {centreBoard.map(c => (
+              {[...centreBoard].sort((a, b) => String(a.code).localeCompare(String(b.code))).map(c => (
                 <option key={c.code} value={c.code}>{c.code}</option>
               ))}
             </select>
@@ -1266,7 +1266,7 @@ export default function AdminDashboard() {
               onChange={(e) => setSelectedTrendCentre(e.target.value)}
               style={{ width: 200, fontSize: 13 }}
             >
-              {centreBoard.map(c => (
+              {[...centreBoard].sort((a, b) => String(a.code).localeCompare(String(b.code))).map(c => (
                 <option key={c.code} value={c.code}>{c.code}</option>
               ))}
             </select>
