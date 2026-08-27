@@ -210,7 +210,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 <tr style={{ background: 'var(--gray-50)', borderTop: '2px solid var(--gray-200)' }}>
                   <td style={{ fontWeight: 800, color: 'var(--gray-800)' }}>
                     <div>Overall Average</div>
-                    {!isCentre && <div style={{ fontSize: 10, color: '#991b1b', marginTop: 4 }}>No. of student subjectwise marks &lt;=20</div>}
+                    {!isCentre && <div style={{ fontSize: 10, color: '#991b1b', marginTop: 4 }}>No. of time subjectwise marks &lt;=20</div>}
                   </td>
                   {subjects.map(s => {
                     const stats = calculateSubjectStats(s);
