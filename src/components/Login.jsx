@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, Building2, ShieldCheck, LogIn, AlertCircle, FileText } from 'lucide-react';
 import { CENTERS } from '../config/centers';
@@ -14,10 +14,11 @@ const ROLES = [
 export default function Login() {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
+  const isLoggingIn = useRef(false);
 
   useEffect(() => {
     // If the user lands on the login page but is already logged in (e.g., swiped back)
-    if (user) {
+    if (user && !isLoggingIn.current) {
       const confirmLogout = window.confirm('Are you sure you want to log out?');
       if (confirmLogout) {
         logout();
@@ -39,6 +40,7 @@ export default function Login() {
     e?.preventDefault();
     setError('');
     setLoading(true);
+    isLoggingIn.current = true;
 
     try {
       if (role === 'student') {

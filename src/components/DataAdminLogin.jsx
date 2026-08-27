@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -6,9 +6,10 @@ import { useAuth } from '../context/AuthContext';
 export default function DataAdminLogin() {
   const { user, login, logout } = useAuth();
   const navigate = useNavigate();
+  const isLoggingIn = useRef(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && !isLoggingIn.current) {
       const confirmLogout = window.confirm('Are you sure you want to log out?');
       if (confirmLogout) {
         logout();
@@ -27,6 +28,7 @@ export default function DataAdminLogin() {
     e?.preventDefault();
     setError('');
     setLoading(true);
+    isLoggingIn.current = true;
 
     try {
       if (!username.trim() || !password) {
