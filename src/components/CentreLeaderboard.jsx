@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList, Label } from 'recharts';
 import { BarChart2 } from 'lucide-react';
 import { CENTERS } from '../config/centers';
@@ -70,6 +70,60 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
 };
 
 export default function CentreLeaderboard({ centreStats = [], selTest, selectedSubject, onCentreClick }) {
+  const audioCtxRef = useRef(null);
+
+  const getAudioCtx = useCallback(() => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtxRef.current;
+  }, []);
+
+  // Play a sharp two-tone alert beep using Web Audio API (no external file needed)
+  const playAlertSound = useCallback(() => {
+    try {
+      const ctx = getAudioCtx();
+      const playTone = (freq, startTime, duration, vol = 0.4) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(vol, startTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      };
+      const now = ctx.currentTime;
+      playTone(880, now, 0.12, 0.5);        // High beep
+      playTone(660, now + 0.15, 0.12, 0.4); // Lower beep
+      playTone(880, now + 0.30, 0.18, 0.5); // High beep again
+    } catch (e) {
+      // Audio not supported or blocked
+    }
+  }, [getAudioCtx]);
+
+  // Play once on mount when red flags are detected
+  useEffect(() => {
+    if (!centreStats || !centreStats.length || !selTest) return;
+    const hasRedFlag = centreStats.some(data => {
+      if (selectedSubject === 'Total' || !selectedSubject) {
+        return data.avg < 100 || (data.qualRate ?? 0) < 80;
+      } else if (selectedSubject === 'Qualification') {
+        return (data.qualRate ?? 0) < 80;
+      } else {
+        return data.avg <= 20;
+      }
+    });
+    if (hasRedFlag) {
+      // Small delay so the page renders first
+      const t = setTimeout(() => playAlertSound(), 600);
+      return () => clearTimeout(t);
+    }
+  }, [selTest, selectedSubject, centreStats, playAlertSound]);
+
   if (!selTest) return <Empty message="Select a test to view rankings" />;
   if (!centreStats.length) return <Empty message={`No test data for ${selTest}`} />;
 
@@ -106,7 +160,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
     return (
       <g style={{ pointerEvents: 'none' }}>
         {isRedFlag && (
-          <g>
+          <g style={{ pointerEvents: 'all', cursor: 'pointer' }} onMouseEnter={playAlertSound}>
             {/* Outermost pulsing ring - delayed */}
             <circle
               cx={centerX}
