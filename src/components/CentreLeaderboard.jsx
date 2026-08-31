@@ -27,7 +27,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
 
     return (
       <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
-        {isRedFlag && (<div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#ef4444', animation: 'csrlPulse 1s ease-in-out infinite', boxShadow: '0 0 0 0 rgba(239,68,68,0.7)', flexShrink: 0 }} /><span style={{ color: '#ef4444', fontWeight: 800, letterSpacing: 0.5 }}>⚠ ACTION REQUIRED</span></div>)}
+        {isRedFlag && (<div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}><span style={{ display: 'inline-block', width: 14, height: 14, borderRadius: '50%', background: '#cc0000', animation: 'csrlPulse 1.2s ease-out infinite', boxShadow: '0 0 0 0 rgba(220,0,0,1)', flexShrink: 0, border: '2px solid #ff0000' }} /><span style={{ color: '#ef4444', fontWeight: 800, letterSpacing: 0.5 }}>⚠ ACTION REQUIRED</span></div>)}
         <p style={{ margin: '0 0 8px 0', fontWeight: 800, fontSize: 15 }}>{data.rank} {centerName === data.code ? centerName : `${centerName} (${data.code})`}</p>
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Highest Individual Score: {data.top}</p>
@@ -107,24 +107,35 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
       <g style={{ pointerEvents: 'none' }}>
         {isRedFlag && (
           <g>
-            {/* Outer pulsing ring */}
+            {/* Outermost pulsing ring - delayed */}
             <circle
               cx={centerX}
-              cy={topY - 12}
-              r={9}
+              cy={topY - 14}
+              r={4}
               fill="none"
-              stroke="#ef4444"
+              stroke="#cc0000"
               strokeWidth={2}
-              opacity={0.5}
-              style={{ animation: 'csrlRingPulse 1s ease-in-out infinite' }}
+              style={{ animation: 'csrlRingPulse 1.2s ease-out infinite 0.3s', transformOrigin: `${centerX}px ${topY - 14}px` }}
             />
-            {/* Inner solid dot */}
+            {/* Middle pulsing ring */}
             <circle
               cx={centerX}
-              cy={topY - 12}
-              r={5}
-              fill="#ef4444"
-              style={{ animation: 'csrlDotBlink 1s ease-in-out infinite' }}
+              cy={topY - 14}
+              r={4}
+              fill="none"
+              stroke="#ff0000"
+              strokeWidth={2.5}
+              style={{ animation: 'csrlRingPulse2 1.2s ease-out infinite' }}
+            />
+            {/* Inner bold solid dot */}
+            <circle
+              cx={centerX}
+              cy={topY - 14}
+              r={6}
+              fill="#cc0000"
+              stroke="#ffffff"
+              strokeWidth={1.5}
+              style={{ animation: 'csrlDotBlink 1.2s ease-in-out infinite', filter: 'drop-shadow(0 0 4px #ff0000)' }}
             />
           </g>
         )}
@@ -140,19 +151,25 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
     <div style={{ width: '100%', height: 320, marginTop: 0 }}>
       <style>{`
         @keyframes csrlPulse {
-          0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.8); background: #ef4444; }
-          50%  { box-shadow: 0 0 0 6px rgba(239,68,68,0); background: #ff6b6b; }
-          100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); background: #ef4444; }
+          0%   { box-shadow: 0 0 0 0 rgba(220,0,0,1); background: #cc0000; }
+          40%  { box-shadow: 0 0 0 10px rgba(220,0,0,0.3); background: #ff0000; }
+          80%  { box-shadow: 0 0 0 18px rgba(220,0,0,0); background: #cc0000; }
+          100% { box-shadow: 0 0 0 0 rgba(220,0,0,0); background: #cc0000; }
         }
         @keyframes csrlRingPulse {
-          0%   { r: 6; opacity: 0.8; }
-          50%  { r: 11; opacity: 0.1; }
-          100% { r: 6; opacity: 0.8; }
+          0%   { r: 3; stroke-opacity: 1; stroke-width: 3; }
+          60%  { r: 14; stroke-opacity: 0.1; stroke-width: 1; }
+          100% { r: 16; stroke-opacity: 0; stroke-width: 0.5; }
+        }
+        @keyframes csrlRingPulse2 {
+          0%   { r: 3; stroke-opacity: 0.7; stroke-width: 2; }
+          60%  { r: 12; stroke-opacity: 0.05; stroke-width: 1; }
+          100% { r: 14; stroke-opacity: 0; stroke-width: 0.5; }
         }
         @keyframes csrlDotBlink {
-          0%   { opacity: 1; }
-          50%  { opacity: 0.4; }
-          100% { opacity: 1; }
+          0%   { opacity: 1; r: 6; }
+          50%  { opacity: 0.75; r: 7; }
+          100% { opacity: 1; r: 6; }
         }
       `}</style>
       <ResponsiveContainer width="100%" height="100%">
