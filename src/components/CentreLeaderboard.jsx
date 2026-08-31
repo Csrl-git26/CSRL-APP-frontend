@@ -27,7 +27,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
 
     return (
       <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
-        {isRedFlag && <div style={{ color: '#ef4444', fontWeight: 800, marginBottom: 4 }}>🚩 ACTION REQUIRED</div>}
+        {isRedFlag && (<div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#ef4444', animation: 'csrlPulse 1s ease-in-out infinite', boxShadow: '0 0 0 0 rgba(239,68,68,0.7)', flexShrink: 0 }} /><span style={{ color: '#ef4444', fontWeight: 800, letterSpacing: 0.5 }}>⚠ ACTION REQUIRED</span></div>)}
         <p style={{ margin: '0 0 8px 0', fontWeight: 800, fontSize: 15 }}>{data.rank} {centerName === data.code ? centerName : `${centerName} (${data.code})`}</p>
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Highest Individual Score: {data.top}</p>
@@ -106,9 +106,27 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
     return (
       <g style={{ pointerEvents: 'none' }}>
         {isRedFlag && (
-          <text x={centerX} y={topY - 4} fill="#ef4444" textAnchor="middle" fontSize={18} style={{ textShadow: showInside ? '0px 0px 4px rgba(255,255,255,0.8)' : 'none' }}>
-            🚩
-          </text>
+          <g>
+            {/* Outer pulsing ring */}
+            <circle
+              cx={centerX}
+              cy={topY - 12}
+              r={9}
+              fill="none"
+              stroke="#ef4444"
+              strokeWidth={2}
+              opacity={0.5}
+              style={{ animation: 'csrlRingPulse 1s ease-in-out infinite' }}
+            />
+            {/* Inner solid dot */}
+            <circle
+              cx={centerX}
+              cy={topY - 12}
+              r={5}
+              fill="#ef4444"
+              style={{ animation: 'csrlDotBlink 1s ease-in-out infinite' }}
+            />
+          </g>
         )}
         <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
           {typeof value === 'number' ? Math.round(value) : value}{isQualSort ? '%' : ''}
@@ -120,6 +138,23 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
 
   return (
     <div style={{ width: '100%', height: 320, marginTop: 0 }}>
+      <style>{`
+        @keyframes csrlPulse {
+          0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.8); background: #ef4444; }
+          50%  { box-shadow: 0 0 0 6px rgba(239,68,68,0); background: #ff6b6b; }
+          100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); background: #ef4444; }
+        }
+        @keyframes csrlRingPulse {
+          0%   { r: 6; opacity: 0.8; }
+          50%  { r: 11; opacity: 0.1; }
+          100% { r: 6; opacity: 0.8; }
+        }
+        @keyframes csrlDotBlink {
+          0%   { opacity: 1; }
+          50%  { opacity: 0.4; }
+          100% { opacity: 1; }
+        }
+      `}</style>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={sortedStats}
