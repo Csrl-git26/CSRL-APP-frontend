@@ -81,14 +81,14 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
             overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{name}</div>
           <div style={{ fontSize:11, color:'#64748b' }}>{center}</div>
         </div>
-        {subjectScores.length > 0 && (
-          <div style={{ fontSize: 10, color: '#64748b', marginTop: 2, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {subjectScores.map((sc, i) => (
-              <span key={i} style={{ background: '#f1f5f9', padding: '1px 5px', borderRadius: 4, fontWeight: 600 }}>{sc}</span>
-            ))}
-          </div>
-        )}
       </div>
+      {subjectScores.length > 0 && (
+        <div style={{ fontSize: 11, color: '#64748b', display: 'flex', gap: 6, alignItems: 'center', marginRight: 4 }}>
+          {subjectScores.map((sc, i) => (
+            <span key={i} style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontWeight: 600 }}>{sc}</span>
+          ))}
+        </div>
+      )}
       <div style={{ background:fg+'20', color:fg, fontWeight:800,
         fontSize:13, padding:'3px 10px', borderRadius:20, flexShrink:0 }}>{score}</div>
     </div>
