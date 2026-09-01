@@ -1233,7 +1233,7 @@ export default function AdminDashboard() {
                   </span>
                   {qualPct < 80 ? (
                     <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: '50%', background: '#cc0000', animation: 'csrlPulse 1.2s ease-out infinite', boxShadow: '0 0 0 0 rgba(220,0,0,1)', flexShrink: 0, border: '2px solid #ff0000' }} /> ATTENTION - 
+                      <Flag size={14} color="#cc0000" fill="#cc0000" style={{ animation: 'csrlPulse 1.2s ease-out infinite', flexShrink: 0 }} /> ATTENTION - 
                       <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
                     </span>
                   ) : (
