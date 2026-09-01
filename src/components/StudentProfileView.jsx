@@ -31,7 +31,7 @@ function InfoRow({ label, value }) {
   );
 }
 
-export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false, prefetchedChart = null, prefetchedWeakTopics = null }) {
+export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false, prefetchedChart = null, prefetchedWeakTopics = null, hidePersonalDetails = false }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
   const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(prefetchedWeakTopics);
   const [isExportingPDF, setIsExportingPDF] = React.useState(false);
@@ -272,6 +272,7 @@ const actualChart = prefetchedChart || chart;
       </div>
 
       {/* Info Grid */}
+      {!hidePersonalDetails && (
       <div className="grid-2">
         <div className="card">
           <div className="section-title">👨‍👩‍👧 Personal & Selection Info</div>
@@ -331,6 +332,7 @@ const actualChart = prefetchedChart || chart;
           )}
         </div>
       </div>
+      )}
 
       {/* Target & Analysis */}
       <div className="grid-2">

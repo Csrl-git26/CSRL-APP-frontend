@@ -1000,7 +1000,7 @@ export default function AdminDashboard() {
         </div>
         <div className="content dashboard-page-body">
           <div className="dashboard-scroll">
-            <StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} />
+            <StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} hidePersonalDetails={true} />
           </div>
         </div>
       </div>
