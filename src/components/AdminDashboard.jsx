@@ -76,9 +76,8 @@ const STUDENT_TEMPLATE_COLUMNS = [
 ];
 
 const ALL_TABS = [
-  { key: 'insights',    Icon: Lightbulb,       label: 'Insights'           },
-  { key: 'leaderboard', Icon: Trophy,          label: 'Centre Leaderboard' },
-  { key: 'centre-overview', Icon: Building2,   label: 'Centre Overview'    },
+  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
+  { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
@@ -1282,6 +1281,9 @@ export default function AdminDashboard() {
           )}
         </div>
 
+      <div style={{ marginTop: 24 }}>
+        <InsightsDashboard data={data} overview={overview} topRanked={topRanked} bottomRanked={bottomRanked} centreBoard={centreBoard} selectedTestKey={selectedTestKey} />
+      </div>
     </div>
     );
   };
@@ -1943,7 +1945,6 @@ export default function AdminDashboard() {
       <div className="content dashboard-page-body">
 
         <div className="dashboard-scroll">
-          {activePage === 'insights'    && <InsightsDashboard data={data} overview={overview} topRanked={topRanked} bottomRanked={bottomRanked} centreBoard={centreBoard} selectedTestKey={selectedTestKey} />}
           {activePage === 'leaderboard' && LeaderboardSection()}
           {activePage === 'overview'    && OverviewSection()}
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />}
