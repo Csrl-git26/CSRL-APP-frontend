@@ -173,7 +173,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             <div style={{ flex:1, textAlign:'center', padding:'10px 6px', background:'#fef2f2',
               borderRadius:10, border:'1px solid #fecaca' }}>
               <div style={{ fontSize:22, fontWeight:900, color:'#dc2626' }}>{redFlagCentres.length}</div>
-              <div style={{ fontSize:11, color:'#dc2626', fontWeight:600 }}>Action Required 🚨</div>
+              <div style={{ fontSize:11, color:'#dc2626', fontWeight:600 }}>Attention 🚨</div>
             </div>
           </div>
           {redFlagCentres.slice(0,5).map((c,i) => (

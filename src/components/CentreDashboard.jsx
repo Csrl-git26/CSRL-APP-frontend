@@ -474,7 +474,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
                 </span>
                 {qualPct < 80 ? (
                   <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Flag size={14} fill="currentColor" strokeWidth={2.5} /> ACTION REQUIRED - 
+                    <Flag size={14} fill="currentColor" strokeWidth={2.5} /> ATTENTION - 
                     <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
                   </span>
                 ) : (
