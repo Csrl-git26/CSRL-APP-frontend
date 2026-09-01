@@ -350,7 +350,7 @@ const actualChart = prefetchedChart || chart;
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px', border: '1px solid var(--gray-200)' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', textTransform: 'uppercase', marginBottom: 4 }}>By Avg Score</div>
-              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--gray-800)' }}>{weakSubject}</div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--gray-800)' }}>{weakSubject === 'Mathematics' ? 'Math' : weakSubject}</div>
             </div>
 
             <div style={{ background: '#fdf2f8', borderRadius: 8, padding: '12px', border: '1px solid #fbcfe8' }}>
@@ -360,11 +360,11 @@ const actualChart = prefetchedChart || chart;
                   if (!overallWeakSubjects) return 'Loading...';
                   const weakest = [];
                   Object.keys(overallWeakSubjects).forEach(sub => {
-                    if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+                    if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub === 'Mathematics' ? 'Math' : sub);
                   });
                   if (weakest.length === 0) {
                     Object.keys(overallWeakSubjects).forEach(sub => {
-                      if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Medium)`);
+                      if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub === 'Mathematics' ? 'Math' : sub} (Medium)`);
                     });
                   }
                   return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
