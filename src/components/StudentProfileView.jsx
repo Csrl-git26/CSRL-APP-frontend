@@ -344,7 +344,9 @@ const actualChart = prefetchedChart || chart;
               {profile['FUTURE COLLEGE (TARGET)'] || 'Not specified'}
             </div>
           </div>
-          <div className="divider" style={{ margin: '4px 0' }} />
+        </div>
+        
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div className="section-title" style={{ marginBottom: 6 }}>🧠 Weak Subject Analysis</div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
