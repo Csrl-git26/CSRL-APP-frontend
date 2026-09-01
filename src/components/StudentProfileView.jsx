@@ -379,12 +379,12 @@ const actualChart = prefetchedChart || chart;
         
       </div>
 
+      <PerformanceChart chartData={chartData} streamCfg={streamCfg} />
+      <TestRecordsTable chartData={chartData} streamCfg={streamCfg} stream={stream} profile={profile} />
+
       <div style={{ marginTop: '24px' }}>
         <StudentOverallWeakTopics studentId={profile.ROLL_KEY} />
       </div>
-
-      <PerformanceChart chartData={chartData} streamCfg={streamCfg} />
-      <TestRecordsTable chartData={chartData} streamCfg={streamCfg} stream={stream} profile={profile} />
       
       </>
       )}
