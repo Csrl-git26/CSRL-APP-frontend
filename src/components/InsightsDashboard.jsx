@@ -135,7 +135,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       </div>
 
       {/* ── Top 5 + Bottom 5 ── */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr', gap:16 }}>
         <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
           <SectionTitle Icon={Trophy} color="#f59e0b">🏆 Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
@@ -146,15 +146,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           }
         </div>
 
-        <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
-          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #fee2e2' }}>
-          <SectionTitle Icon={AlertTriangle} color="#dc2626">⚠️ Needs Attention — Lowest Scores</SectionTitle>
-          {bottom5.length === 0
-            ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>No data available</div>
-            : bottom5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
-                center={s.center||'—'} score={s.marks??s.score} idx={i}/>)
-          }
-        </div>
+
       </div>
 
       {/* ── Centre Health + Student Dist + Category ── */}
