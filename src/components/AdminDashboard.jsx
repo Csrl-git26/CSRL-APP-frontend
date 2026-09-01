@@ -336,6 +336,8 @@ export default function AdminDashboard() {
   const [data,            setData]            = useState(null);
   const [overview,        setOverview]        = useState(null);
   const [topRanked,       setTopRanked]       = useState([]);
+  const [leaderboardTopRanked, setLeaderboardTopRanked] = useState([]);
+  const [leaderboardBottomRanked, setLeaderboardBottomRanked] = useState([]);
   const [bottomRanked,    setBottomRanked]    = useState([]);
   const [centreBoard,     setCentreBoard]     = useState([]);
   const [selectedTrendCentre, setSelectedTrendCentre] = useState('');
@@ -460,6 +462,14 @@ export default function AdminDashboard() {
     fetchCentreLeaderboard(null, combinedKey)
       .then(board => setCentreBoard(Array.isArray(board) ? board : []))
       .catch(() => setCentreBoard([]));
+      
+    Promise.all([
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc'  }).catch(() => ({ ranked: [] })),
+    ]).then(([top, bottom]) => {
+      setLeaderboardTopRanked(top.ranked || []);
+      setLeaderboardBottomRanked(bottom.ranked || []);
+    });
   }, [selectedLeaderboardTestKeys, selectedSubject, refreshTrigger]);
 
   useEffect(() => {
@@ -1282,7 +1292,7 @@ export default function AdminDashboard() {
         </div>
 
       <div style={{ marginTop: 24 }}>
-        <InsightsDashboard data={data} overview={overview} topRanked={topRanked} bottomRanked={bottomRanked} centreBoard={centreBoard} selectedTestKey={selectedTestKey} />
+        <InsightsDashboard data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} />
       </div>
     </div>
     );
