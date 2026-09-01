@@ -41,13 +41,31 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color }) {
   );
 }
 
-function RankRow({ rank, name, center, score, idx }) {
+function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
   const [fg, bg] = AVATAR_COLORS[idx % AVATAR_COLORS.length];
   const medals = { 1:'🥇', 2:'🥈', 3:'🥉' };
+  
+  const subjects = ['Physics', 'Chemistry', 'Math', 'Mathematics', 'Biology', 'Botany', 'Zoology'];
+  const subjectScores = [];
+  if (rawScores) {
+    subjects.forEach(sub => {
+      if (rawScores[sub] !== undefined && rawScores[sub] !== null) {
+        let abbr = sub.substring(0, 3);
+        if (sub === 'Mathematics') abbr = 'Mat';
+        subjectScores.push(`${abbr}: ${rawScores[sub]}`);
+      }
+    });
+  }
+
   return (
-    <div style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 10px',
+    <div 
+      onClick={onClick}
+      style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 10px',
       borderRadius:8, background: rank % 2 === 0 ? '#f8fafc' : '#fff',
-      marginBottom:4, border:'1px solid #f1f5f9' }}>
+      marginBottom:4, border:'1px solid #f1f5f9', cursor: onClick ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
+      onMouseEnter={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'; } }}
+      onMouseLeave={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; } }}
+    >
       <div style={{ width:24, textAlign:'center', fontSize:14, fontWeight:800, flexShrink:0,
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `#${rank}`}</div>
       <div style={{ width:36, height:36, borderRadius:'50%', background:bg,
@@ -56,9 +74,18 @@ function RankRow({ rank, name, center, score, idx }) {
         {rank === 1 ? '🌟' : getInitials(name)}
       </div>
       <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ fontSize:13, fontWeight:700, color:'#1e293b',
-          overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{name}</div>
-        <div style={{ fontSize:11, color:'#64748b' }}>{center}</div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:'#1e293b',
+            overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{name}</div>
+          <div style={{ fontSize:11, color:'#64748b' }}>{center}</div>
+        </div>
+        {subjectScores.length > 0 && (
+          <div style={{ fontSize: 10, color: '#64748b', marginTop: 2, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {subjectScores.map((sc, i) => (
+              <span key={i} style={{ background: '#f1f5f9', padding: '1px 5px', borderRadius: 4, fontWeight: 600 }}>{sc}</span>
+            ))}
+          </div>
+        )}
       </div>
       <div style={{ background:fg+'20', color:fg, fontWeight:800,
         fontSize:13, padding:'3px 10px', borderRadius:20, flexShrink:0 }}>{score}</div>
@@ -82,7 +109,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
-export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey }) {
+export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent }) {
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -142,7 +169,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : top5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
-                center={s.center||'—'} score={s.marks??s.score} idx={i}/>)
+                center={s.center||'—'} score={s.marks??s.score} idx={i} roll={s.roll} rawScores={s.rawScores} onClick={() => onViewStudent && onViewStudent(s.roll)} />)
           }
         </div>
 
