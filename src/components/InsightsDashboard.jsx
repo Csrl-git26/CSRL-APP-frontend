@@ -49,10 +49,12 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
   const subjectScores = [];
   if (rawScores) {
     subjects.forEach(sub => {
-      if (rawScores[sub] !== undefined && rawScores[sub] !== null) {
+      // Find a key in rawScores that matches the subject (e.g. exactly 'Physics' or ends with '_Physics')
+      const matchedKey = Object.keys(rawScores).find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()));
+      if (matchedKey && rawScores[matchedKey] !== undefined && rawScores[matchedKey] !== null && rawScores[matchedKey] !== '') {
         let abbr = sub.substring(0, 3);
         if (sub === 'Mathematics') abbr = 'Mat';
-        subjectScores.push(`${abbr}: ${rawScores[sub]}`);
+        subjectScores.push(`${abbr}: ${rawScores[matchedKey]}`);
       }
     });
   }
