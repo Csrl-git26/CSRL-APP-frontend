@@ -67,7 +67,7 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
       onClick={onClick}
       style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 10px',
       borderRadius:8, background: rank % 2 === 0 ? '#f8fafc' : '#fff',
-      marginBottom:4, border:'1px solid #f1f5f9', cursor: onClick ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
+      marginBottom:4, border:'none', cursor: onClick ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
       onMouseEnter={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'; } }}
       onMouseLeave={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; } }}
     >
@@ -75,7 +75,7 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `#${rank}`}</div>
       <div style={{ width:36, height:36, borderRadius:'50%', background:bg,
         color:fg, fontWeight:800, fontSize:13, display:'flex', alignItems:'center',
-        justifyContent:'center', flexShrink:0, border:'2px solid rgba(0,0,0,0.07)' }}>
+        justifyContent:'center', flexShrink:0, border:'none' }}>
         {rank === 1 ? '🌟' : getInitials(name)}
       </div>
       <div style={{ flex:1, minWidth:0, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
