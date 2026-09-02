@@ -1217,6 +1217,29 @@ export default function AdminDashboard() {
 
     return (
       <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
+              <MultiSelectDropdown 
+                options={allTestOptions.filter(o => o !== 'ALL_FMT')} 
+                selectedOptions={selectedLeaderboardTestKeys} 
+                onChange={setSelectedLeaderboardTestKeys} 
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
+              <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
+                <option value="Total">Total Average</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Math">Math</option>
+                <option value="Qualification">Qualification Rate</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div style={{ marginBottom: 32 }}>
           <InsightsDashboard data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setFilterCenter(code); setActivePage('centre-overview'); }} />
         </div>
@@ -1225,30 +1248,8 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
               <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
             </div>
-
-          </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
-            <MultiSelectDropdown 
-              options={allTestOptions.filter(o => o !== 'ALL_FMT')} 
-              selectedOptions={selectedLeaderboardTestKeys} 
-              onChange={setSelectedLeaderboardTestKeys} 
-            />
-          </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
-            <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
-              <option value="Total">Total Average</option>
-              <option value="Physics">Physics</option>
-              <option value="Chemistry">Chemistry</option>
-              <option value="Math">Math</option>
-              <option value="Qualification">Qualification Rate</option>
-            </select>
           </div>
         </div>
-      </div>
       <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} />
         <div className="card" style={{ marginTop: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
