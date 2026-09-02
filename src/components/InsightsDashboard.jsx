@@ -114,7 +114,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
-export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, controls }) {
+export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre }) {
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -153,9 +153,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
 
-      {/* ── KPI Cards + Controls ── */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap: 16 }}>
-        <div style={{ display:'flex', gap:14, flexWrap:'wrap', flex: 1 }}>
+      {/* ── KPI Cards ── */}
+      <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="Total Students"
           sub={`JEE: ${jeeCount}  ·  NEET: ${neetCount}`} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={totalCentres} label="Active Centres"
@@ -165,8 +164,6 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#faf5ff" color="#7c3aed"/>
-      </div>
-      {controls && <div style={{ display: 'flex', alignItems: 'center', height: '54px' }}>{controls}</div>}
       </div>
 
       {/* ── Top 5 + Bottom 5 ── */}
