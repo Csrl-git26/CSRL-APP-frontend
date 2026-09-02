@@ -167,7 +167,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       <div style={{ display:'grid', gridTemplateColumns:'1fr', gap:16 }}>
         <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
-          <SectionTitle Icon={Trophy} color="#f59e0b">🏆 Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
+          <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : top5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
@@ -217,14 +217,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
 
             return (
               <>
-                <SectionTitle Icon={Star} color="#f59e0b">⭐ Top 5 Centres by Average Score</SectionTitle>
+                <SectionTitle Icon={Star} color="#f59e0b">Top 5 Centres by Average Score</SectionTitle>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:10, marginBottom: bottomCentres.length > 0 ? 20 : 0 }}>
                   {topCentres.map(renderCard)}
                 </div>
                 
                 {bottomCentres.length > 0 && (
                   <>
-                    <SectionTitle Icon={TrendingDown} color="#dc2626">📉 Bottom 5 Centres</SectionTitle>
+                    <SectionTitle Icon={TrendingDown} color="#dc2626">Bottom 5 Centres</SectionTitle>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:10 }}>
                       {bottomCentres.map(renderCard)}
                     </div>
