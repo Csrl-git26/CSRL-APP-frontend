@@ -257,13 +257,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       innerRadius={35} 
                       outerRadius={60} 
                       paddingAngle={1}
-                      label={({ cx, cy, midAngle, outerRadius, name }) => {
+                      label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
-                        const radius = outerRadius + 12;
+                        // Alternate radius to prevent overlapping
+                        const radius = outerRadius + 12 + (index % 2 === 0 ? 0 : 14);
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
                         return (
-                          <text x={x} y={y} fill="#64748b" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={10}>
+                          <text x={x} y={y} fill="#64748b" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9}>
                             {name}
                           </text>
                         );
