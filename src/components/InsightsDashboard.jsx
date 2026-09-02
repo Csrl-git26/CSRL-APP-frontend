@@ -254,8 +254,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       nameKey="code" 
                       cx="50%" 
                       cy="50%" 
-                      innerRadius={40} 
-                      outerRadius={70} 
+                      innerRadius={35} 
+                      outerRadius={60} 
                       paddingAngle={1}
                       label={({ cx, cy, midAngle, outerRadius, name }) => {
                         const RADIAN = Math.PI / 180;
@@ -277,14 +277,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                     <Tooltip formatter={(value, name) => [Math.round(value), `Centre ${name}`]} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div style={{ display: 'flex', gap: 16, marginTop: 10, fontSize: 12, color: '#475569', justifyContent: 'center', width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#10b981' }} />
-                    Above Average
+                <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#10b981', flexShrink: 0 }} />
+                    <span style={{ fontWeight: 600 }}>Above Average</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#ef4444' }} />
-                    Below Average
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ef4444', flexShrink: 0 }} />
+                    <span style={{ fontWeight: 600 }}>Below Average</span>
                   </div>
                 </div>
               </div>
