@@ -263,8 +263,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                         const radius = outerRadius + 12 + (index % 2 === 0 ? 0 : 14);
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                        const isAbove = (sorted[index]?.avg || 0) >= overallAvg;
                         return (
-                          <text x={x} y={y} fill="#64748b" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9}>
+                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#ef4444'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={10} fontWeight={600}>
                             {name}
                           </text>
                         );
