@@ -167,7 +167,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       {/* ── Top 5 + Bottom 5 ── */}
       <div style={{ display:'grid', gridTemplateColumns:'1fr', gap:16 }}>
         <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
-          boxShadow:'0 8px 30px rgba(0,0,0,0.04)', border:'1px solid #e8f0fc' }}>
+          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
           <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
@@ -190,7 +190,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
             {/* Left Column: Top and Bottom 5 */}
             <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
-              boxShadow:'0 8px 30px rgba(0,0,0,0.04)', border:'1px solid #e2e8f0' }}>
+              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0' }}>
               
               {(() => {
                 const topCentres = sorted.slice(0,5).map((c,i) => ({...c, rank: i+1}));
@@ -243,14 +243,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             
             {/* Right Column: Pie Chart */}
             <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
-              boxShadow:'0 8px 30px rgba(0,0,0,0.04)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
               <SectionTitle Icon={PieChartIcon} color="#3b82f6">Centre Distribution</SectionTitle>
               <div style={{ flex: 1, minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                {/* Center Text */}
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -60%)', textAlign: 'center', pointerEvents: 'none' }}>
-                  <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Avg Score</div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#1e293b', marginTop: -2 }}>{Math.round(overallAvg)}</div>
-                </div>
                 <ResponsiveContainer width="100%" height={280}>
                   <PieChart>
                     <Pie 
@@ -261,10 +256,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       cy="50%" 
                       innerRadius={65} 
                       outerRadius={90} 
-                      paddingAngle={3}
-                      cornerRadius={6}
-                      stroke="none"
-                      isAnimationActive={true}
+                      paddingAngle={1}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
                         // Alternate radius to prevent overlapping
