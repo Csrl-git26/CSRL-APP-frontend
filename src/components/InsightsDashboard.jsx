@@ -111,7 +111,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
-export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent }) {
+export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre }) {
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -192,7 +192,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
               return (
                 <div key={c.code} style={{ padding:'12px 10px', borderRadius:10, textAlign:'center',
                   background: isAlert ? '#fef2f2' : '#f8fafc',
-                  border: isAlert ? '1px solid #fecaca' : '1px solid #e2e8f0' }}>
+                  border: isAlert ? '1px solid #fecaca' : '1px solid #e2e8f0',
+                  cursor: onViewCentre ? 'pointer' : 'default' }}
+                  onClick={() => onViewCentre && onViewCentre(c.code)}>
                   <div style={{ fontSize:18 }}>{medals[i]||`#${i+1}`}</div>
                   <div style={{ fontWeight:800, fontSize:13, color:'#1e293b', marginTop:2 }}>{c.code}</div>
                   <div style={{ fontSize:20, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:2 }}>
