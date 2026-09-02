@@ -245,8 +245,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
               <SectionTitle Icon={PieChartIcon} color="#3b82f6">Centre Distribution</SectionTitle>
-              <div style={{ flex: 1, minHeight: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <ResponsiveContainer width="100%" height={220}>
+              <div style={{ flex: 1, minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <ResponsiveContainer width="100%" height={280}>
                   <PieChart>
                     <Pie 
                       data={sorted} 
@@ -254,8 +254,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       nameKey="code" 
                       cx="50%" 
                       cy="50%" 
-                      innerRadius={35} 
-                      outerRadius={60} 
+                      innerRadius={55} 
+                      outerRadius={85} 
                       paddingAngle={1}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
@@ -272,7 +272,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       labelLine={false}
                     >
                       {sorted.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={(entry.avg||0) >= overallAvg ? '#10b981' : '#ef4444'} />
+                        <Cell key={`cell-${index}`} fill={(entry.avg||0) >= overallAvg ? '#3b82f6' : '#ef4444'} />
                       ))}
                     </Pie>
                     <Tooltip formatter={(value, name) => [Math.round(value), `Centre ${name}`]} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
@@ -280,7 +280,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#10b981', flexShrink: 0 }} />
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
                     <span style={{ fontWeight: 600 }}>Above Average</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
