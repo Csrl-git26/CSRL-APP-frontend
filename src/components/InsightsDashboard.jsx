@@ -275,18 +275,18 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       ))}
                     </Pie>
                     <Tooltip formatter={(value, name) => [Math.round(value), `Centre ${name}`]} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                    <Legend 
-                      verticalAlign="bottom" 
-                      height={36} 
-                      iconType="circle" 
-                      wrapperStyle={{ fontSize: 12, paddingTop: 10 }} 
-                      payload={[
-                        { value: 'Above Average', type: 'circle', color: '#10b981' },
-                        { value: 'Below Average', type: 'circle', color: '#ef4444' }
-                      ]}
-                    />
                   </PieChart>
                 </ResponsiveContainer>
+                <div style={{ display: 'flex', gap: 16, marginTop: 10, fontSize: 12, color: '#475569', justifyContent: 'center', width: '100%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#10b981' }} />
+                    Above Average
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                    Below Average
+                  </div>
+                </div>
               </div>
             </div>
           </div>
