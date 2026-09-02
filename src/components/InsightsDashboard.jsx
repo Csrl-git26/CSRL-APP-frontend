@@ -283,7 +283,22 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                         />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value, name) => [Math.round(value), `Centre ${name}`]} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                    <Tooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          const isAbove = (data.avg || 0) >= overallAvg;
+                          return (
+                            <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                              <span style={{ color: isAbove ? '#3b82f6' : '#ef4444', fontWeight: 600, fontSize: 13 }}>
+                                Centre {payload[0].name}
+                              </span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
