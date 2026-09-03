@@ -217,7 +217,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           label="Overall Qual. Rate"
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg={(qualRate !== null && qualRate < 80) ? "#fef2f2" : "#f0fdf4"} 
-          color={(qualRate !== null && qualRate < 80) ? "#ef4444" : "#16a34a"}
+          color={(qualRate !== null && qualRate < 80) ? "#f97316" : "#16a34a"}
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
@@ -525,7 +525,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
                         const isAbove = (sorted[index]?.avg || 0) >= overallAvg;
                         return (
-                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#ef4444'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={10} fontWeight={600}>
+                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={10} fontWeight={600}>
                             {name}
                           </text>
                         );
@@ -535,7 +535,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       {sorted.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
-                          fill={(entry.avg||0) >= overallAvg ? '#3b82f6' : '#ef4444'} 
+                          fill={(entry.avg||0) >= overallAvg ? '#3b82f6' : '#f97316'} 
                           style={{ cursor: onViewCentre ? 'pointer' : 'default', outline: 'none' }}
                           onClick={() => onViewCentre && onViewCentre(entry.code)}
                         />
@@ -548,7 +548,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                           const isAbove = (data.avg || 0) >= overallAvg;
                           return (
                             <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                              <span style={{ color: isAbove ? '#3b82f6' : '#ef4444', fontWeight: 600, fontSize: 13 }}>
+                              <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
                                 Centre {payload[0].name}
                               </span>
                             </div>
@@ -565,7 +565,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                     <span style={{ fontWeight: 600 }}>Above Average</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ef4444', flexShrink: 0 }} />
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
                     <span style={{ fontWeight: 600 }}>Below Average</span>
                   </div>
                 </div>
