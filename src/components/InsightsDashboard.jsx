@@ -3,7 +3,7 @@ import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
 } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
 
 function pct(n, d) { return !d ? 0 : Math.round((n / d) * 100); }
 
