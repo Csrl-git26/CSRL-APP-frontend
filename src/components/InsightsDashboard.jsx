@@ -154,8 +154,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           sub={`JEE: ${jeeCount}  ·  NEET: ${neetCount}`} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={totalCentres} label="Active Centres"
           sub={`${redFlagCentres.length} need attention`} bg="#fff7ed" color="#b45309"/>
-        <KpiCard icon={Award}    value={qualRate !== null ? `${qualRate}%` : '—'} label="Overall Qual. Rate"
-          sub={`${totalQualified} / ${totalAppeared} qualified`} bg="#f0fdf4" color="#16a34a"/>
+        <KpiCard 
+          icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
+          value={qualRate !== null ? `${qualRate}%` : '—'} 
+          label="Overall Qual. Rate"
+          sub={`${totalQualified} / ${totalAppeared} qualified`} 
+          bg={(qualRate !== null && qualRate < 80) ? "#fef2f2" : "#f0fdf4"} 
+          color={(qualRate !== null && qualRate < 80) ? "#ef4444" : "#16a34a"}
+        />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#faf5ff" color="#7c3aed"/>
