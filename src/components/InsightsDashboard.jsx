@@ -72,7 +72,7 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
       onMouseLeave={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; } }}
     >
       <div style={{ width:24, textAlign:'center', fontSize:14, fontWeight:800, flexShrink:0,
-        color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `#${rank}`}</div>
+        color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `${rank}`}</div>
       <div style={{ flex:1, minWidth:0, display: 'flex', flexDirection: 'column', gap: 2, justifyContent: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
           <div style={{ fontSize:13, fontWeight:700, color:'#1e293b',
@@ -199,7 +199,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 const renderCard = (c) => {
                   const isAlert = c.avg < 100 || (c.qualRate??0) < 80;
                   const medals = {1:'🥇',2:'🥈',3:'🥉'};
-                  const rankDisplay = medals[c.rank] || `#${c.rank}`;
+                  const rankDisplay = medals[c.rank] || `${c.rank}`;
                   return (
                     <div key={c.code} style={{ padding:'6px 4px', borderRadius:8, textAlign:'center',
                       background: isAlert ? '#fef2f2' : '#f8fafc',
