@@ -4,7 +4,7 @@ import { getMaxMarksForSubject } from '../services/dataService';
 
 const SUBJECT_COLORS = ['#3b82f6', '#f97316', '#22c55e', '#ef4444'];
 
-export default function PerformanceChart({ chartData, streamCfg, noCard }) {
+export default function PerformanceChart({ chartData, streamCfg, noCard, height = 350 }) {
   const [chartMetric, setChartMetric] = useState('MARKS');
   const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
 
@@ -51,7 +51,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard }) {
           ))}
         </div>
 
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height={height}>
           <LineChart data={chartData} margin={{ top: 15, right: 15, left: 0, bottom: 70 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-700)', fontWeight: 700 }} interval={0} angle={-35} textAnchor="end" />

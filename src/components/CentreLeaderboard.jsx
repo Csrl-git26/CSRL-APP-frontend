@@ -69,7 +69,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
   return null;
 };
 
-export default function CentreLeaderboard({ centreStats = [], selTest, selectedSubject, onCentreClick }) {
+export default function CentreLeaderboard({ centreStats = [], selTest, selectedSubject, onCentreClick, height = 320 }) {
   if (!selTest) return <Empty message="Select a test to view rankings" />;
   if (!centreStats.length) return <Empty message={`No test data for ${selTest}`} />;
 
@@ -149,7 +149,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
   };
 
   return (
-    <div style={{ width: '100%', height: 320, marginTop: 0 }}>
+    <div style={{ width: '100%', height, marginTop: 0 }}>
       <style>{`
         @keyframes csrlPulse {
           0%   { box-shadow: 0 0 0 0 rgba(220,0,0,1); background: #cc0000; }
