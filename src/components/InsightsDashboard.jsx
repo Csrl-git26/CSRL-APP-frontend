@@ -242,7 +242,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             
         {/* Middle Column: Radial Progress Chart */}
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-          <SectionTitle Icon={PieChartIcon} color="#10b981">Top 5 Centres Qual %</SectionTitle>
+          <SectionTitle Icon={PieChartIcon} color="#f59e0b">Top 5 Centres Qual %</SectionTitle>
           <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
             {(() => {
               if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
@@ -275,11 +275,13 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       dataKey="value" 
                       cornerRadius={10}
                       label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%` }}
+                      onClick={(data, index) => { if (onViewCentre && data && data.name) { onViewCentre(data.name); } else if (onViewCentre && data && data.payload && data.payload.name) { onViewCentre(data.payload.name); } }}
+                      style={{ cursor: 'pointer' }}
                     />
                     <Tooltip 
                       cursor={{ fill: 'transparent' }} 
                       contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }} 
-                      formatter={(val) => [`${val}%`, 'Qual Rate']}
+                      formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
                     />
                     <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} />
                     
