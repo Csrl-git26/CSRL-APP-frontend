@@ -73,11 +73,6 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
     >
       <div style={{ width:24, textAlign:'center', fontSize:14, fontWeight:800, flexShrink:0,
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `#${rank}`}</div>
-      <div style={{ width:36, height:36, borderRadius:'50%', background:bg,
-        color:fg, fontWeight:800, fontSize:13, display:'flex', alignItems:'center',
-        justifyContent:'center', flexShrink:0, border:'none' }}>
-        {rank === 1 ? '🌟' : getInitials(name)}
-      </div>
       <div style={{ flex:1, minWidth:0, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
           <div style={{ fontSize:13, fontWeight:700, color:'#1e293b',
