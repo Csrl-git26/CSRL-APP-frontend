@@ -170,7 +170,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       {/* ── Main Dashboard Layout ── */}
       <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
         {/* Left Column: Stacked Students & Centres */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
         {/* Left Column: Top 5 Students */}
         <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
