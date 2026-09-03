@@ -272,6 +272,12 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 };
               }).reverse();
               
+              const legendPayload = [...radialData].reverse().map(item => ({
+                value: item.name,
+                type: 'square',
+                color: item.fill
+              }));
+              
               const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
 
               return (
@@ -300,7 +306,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       labelFormatter={(label, payload) => `Rank ${payload?.[0]?.payload?.rank || (5 - Number(label))}`}
                       formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
                     />
-                    <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} />
+                    <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} payload={legendPayload} />
                     
                     
                   </RadialBarChart>
