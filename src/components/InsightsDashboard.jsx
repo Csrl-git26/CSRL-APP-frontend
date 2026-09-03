@@ -213,7 +213,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       </div>
                       {c.qualRate !== undefined && (
                         <div style={{ marginTop:2, fontSize:10, fontWeight:700,
-                          color: c.qualRate < 80 ? '#dc2626' : '#16a34a' }}>
+                          color: isAlert ? '#dc2626' : '#1a4fa0' }}>
                           {Math.round(c.qualRate)}% Qual.
                         </div>
                       )}
