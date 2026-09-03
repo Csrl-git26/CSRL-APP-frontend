@@ -1173,7 +1173,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           
-          <div className="card" style={{ marginTop: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <div className="card" style={{ marginTop: 0, height: '100%', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
             <select
@@ -1249,7 +1249,7 @@ export default function AdminDashboard() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
           {/* Left Side: Centre Rankings (Bar Chart) */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: 'var(--gray-800)' }}>
@@ -1263,7 +1263,7 @@ export default function AdminDashboard() {
           </div>
           
           {/* Right Side: Centre Performance Trend (Line Chart) */}
-          <div className="card" style={{ marginTop: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <div className="card" style={{ marginTop: 0, height: '100%', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--csrl-blue)' }}>Centre Performance Trend</h2>
               <select
