@@ -165,7 +165,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       </div>
 
       {/* ── Main Dashboard Layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
@@ -240,6 +240,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         })()}
         </div> {/* Close Stacked Left Column */}
             
+        {/* Middle Column: Placeholder for another Pie Chart */}
+        <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+          <SectionTitle Icon={PieChartIcon} color="#f59e0b">New Pie Chart</SectionTitle>
+          <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ color: '#94a3b8', fontSize: 13 }}>Placeholder for Pie Chart</span>
+          </div>
+        </div>
+
         {/* Right Column: Pie Chart */}
         {centreBoard.length > 0 && (() => {
             const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
