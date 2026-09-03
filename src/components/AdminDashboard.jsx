@@ -378,6 +378,7 @@ export default function AdminDashboard() {
   const [error,           setError]           = useState('');
 
   const [viewingStudentId, setViewingStudentId] = useState(null);
+  const [previousPage, setPreviousPage] = useState('leaderboard');
   const [selectedTestKey,  setSelectedTestKey]  = useState('');
   const [selectedSubject, setSelectedSubject] = useState('Total');
   const [selectedLeaderboardTestKeys, setSelectedLeaderboardTestKeys] = useState([]);
@@ -1039,6 +1040,7 @@ export default function AdminDashboard() {
   }
 
   const handleLeaderboardCentreClick = (code) => {
+    setPreviousPage(activePage);
     setFilterCenter(code);
     setActivePage('centre-overview');
   };
@@ -1275,7 +1277,7 @@ export default function AdminDashboard() {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <InsightsDashboard data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setFilterCenter(code); setActivePage('centre-overview'); }} />
+          <InsightsDashboard data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
           {/* Left Side: Centre Rankings (Bar Chart) */}
@@ -1957,9 +1959,15 @@ export default function AdminDashboard() {
 
       {/* Page header */}
       <div className="page-header">
-        <div style={{ padding: 10, borderRadius: 10, background: 'rgba(255,255,255,.15)', flexShrink: 0 }}>
-          <ShieldCheck size={24} color="#fff" aria-hidden="true" />
-        </div>
+        {activePage === 'centre-overview' ? (
+          <button type="button" onClick={() => setActivePage(previousPage || 'leaderboard')} className="btn btn-sm" style={{ background: 'rgba(255,255,255,.15)', color: '#fff', border: 'none', marginRight: 8, gap: 5, padding: 10, borderRadius: 10 }}>
+            <ArrowLeft size={16} /> Back
+          </button>
+        ) : (
+          <div style={{ padding: 10, borderRadius: 10, background: 'rgba(255,255,255,.15)', flexShrink: 0 }}>
+            <ShieldCheck size={24} color="#fff" aria-hidden="true" />
+          </div>
+        )}
         <div>
           <h1>CSRL Management Dashboard</h1>
 
