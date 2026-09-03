@@ -245,9 +245,10 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           <SectionTitle Icon={PieChartIcon} color="#f59e0b">Subject Performance</SectionTitle>
           <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
             {(() => {
-              const physicsAvg = Math.round(data.reduce((s, d) => s + (d.rawScores?.Physics||0), 0) / (data.length||1));
-              const chemAvg = Math.round(data.reduce((s, d) => s + (d.rawScores?.Chemistry||0), 0) / (data.length||1));
-              const mathAvg = Math.round(data.reduce((s, d) => s + (d.rawScores?.Math||d.rawScores?.Mathematics||0), 0) / (data.length||1));
+              const safeData = Array.isArray(data) ? data : [];
+              const physicsAvg = Math.round(safeData.reduce((s, d) => s + (d.rawScores?.Physics||0), 0) / (safeData.length||1));
+              const chemAvg = Math.round(safeData.reduce((s, d) => s + (d.rawScores?.Chemistry||0), 0) / (safeData.length||1));
+              const mathAvg = Math.round(safeData.reduce((s, d) => s + (d.rawScores?.Math||d.rawScores?.Mathematics||0), 0) / (safeData.length||1));
               
               const radialData = [
                 { name: 'Math', value: mathAvg, fill: '#ec4899' },
