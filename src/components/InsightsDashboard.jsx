@@ -209,7 +209,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                   const bg = '#e2e8f080';
 
                   return (
-                    <div key={c.code} style={{ padding:'8px 4px 6px 4px', borderRadius:10, textAlign:'center',
+                    <div key={c.code} style={{ padding:'6px 2px 4px 2px', borderRadius:10, textAlign:'center',
                       background: '#fff',
                       border: '1px solid #e2e8f0',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
@@ -219,7 +219,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.06)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'; }}
                     >
-                      <div style={{ position: 'relative', width: '100%', maxWidth: '60px', aspectRatio: '2/1', marginBottom: '8px' }}>
+                      <div style={{ position: 'relative', width: '100%', maxWidth: '60px', aspectRatio: '2/1', marginBottom: '4px' }}>
                         <svg viewBox="0 0 100 50" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
                           {/* Background Arc */}
                           <path
@@ -253,9 +253,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                         </div>
                       </div>
                       
-                      <div style={{ fontSize:9, fontWeight:800, color: color, letterSpacing: '0.2px', textTransform: 'uppercase', marginBottom: '2px' }}>
-                        {isAlert ? 'AT RISK' : 'ON TRACK'}
-                      </div>
+
                       <div style={{ fontSize:8, fontWeight:600, color: '#64748b', display: 'flex', alignItems: 'center', gap: 2 }}>
                         {medals[c.rank] && <span style={{fontSize:9}}>{medals[c.rank]}</span>} {c.code}
                       </div>
@@ -266,14 +264,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 return (
                   <>
                     <SectionTitle Icon={Star} color="#2563eb">Top 5 Centres by Average Score</SectionTitle>
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3, marginBottom: bottomCentres.length > 0 ? 6 : 0 }}>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 6 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
                     
                     {bottomCentres.length > 0 && (
                       <>
                         <SectionTitle Icon={Star} color="#2563eb">Bottom 5 Centres</SectionTitle>
-                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3 }}>
+                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
                       </>
