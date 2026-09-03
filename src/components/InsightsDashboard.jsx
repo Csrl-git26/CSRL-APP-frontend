@@ -106,12 +106,12 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, selectedTest
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `${rank}`}</div>
       <div style={{ flex:1, minWidth:0, display: 'flex', alignItems: 'center', gap: 6 }}>
         <div style={{ fontSize:10, fontWeight:700, color:'#1e293b', whiteSpace:'nowrap', flexShrink:0 }}>{name}</div>
-        <div style={{ fontSize:8, color:'#64748b', fontWeight:600, flexShrink:0, marginRight: 'auto' }}>{center}</div>
+        <div style={{ fontSize:8, color:'#64748b', fontWeight:600, flexShrink:0 }}>{center}</div>
         
         {parsedScores.length > 0 && (
           <div style={{ 
-            flexShrink: 0, 
-            width: '100px', 
+            flex: 1, 
+
             height: '14px', 
             background: '#f1f5f9', 
             borderRadius: '4px', 
