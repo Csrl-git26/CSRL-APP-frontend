@@ -44,7 +44,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color }) {
   );
 }
 
-function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
+function RankRow({ rank, name, center, score, idx, roll, rawScores, selectedTest, onClick }) {
   const [fg, bg] = AVATAR_COLORS[0];
   const medals = { 1:'🥇', 2:'🥈', 3:'🥉' };
   
@@ -53,7 +53,16 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
   if (rawScores) {
     subjects.forEach(sub => {
       // Find a key in rawScores that matches the subject (e.g. exactly 'Physics' or ends with '_Physics')
-      const matchedKey = Object.keys(rawScores).find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()));
+      // Prefer the key that starts with the selected test
+      const keys = Object.keys(rawScores);
+      let matchedKey = null;
+      if (selectedTest && selectedTest !== 'Multiple Tests') {
+         matchedKey = keys.find(k => k === `${selectedTest}_${sub}` || k === `${selectedTest}_${sub.toUpperCase()}` || k === `${selectedTest}_${sub.toLowerCase()}`);
+      }
+      if (!matchedKey) {
+         matchedKey = keys.find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()));
+      }
+      
       if (matchedKey && rawScores[matchedKey] !== undefined && rawScores[matchedKey] !== null && rawScores[matchedKey] !== '') {
         let abbr = sub.substring(0, 3);
         if (sub === 'Mathematics') abbr = 'Mat';
@@ -177,7 +186,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : top5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
-                center={s.center||'—'} score={s.marks??s.score} idx={i} roll={s.roll} rawScores={s.rawScores} onClick={() => onViewStudent && onViewStudent(s.roll)} />)
+                center={s.center||'—'} score={s.marks??s.score} idx={i} roll={s.roll} rawScores={s.rawScores} selectedTest={selectedTestKey} onClick={() => onViewStudent && onViewStudent(s.roll)} />)
           }
         </div>
 
