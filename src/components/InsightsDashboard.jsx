@@ -381,10 +381,10 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                         <Bar yAxisId="left" dataKey="Chemistry" stackId="a" fill="#8b5cf6">
                           <LabelList dataKey="Chemistry" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Che ${v}` : ''} />
                         </Bar>
-                        <Bar yAxisId="left" dataKey="Math" stackId="a" fill="#f97316">
+                        <Bar yAxisId="left" dataKey="Math" stackId="a" fill="#0ea5e9">
                           <LabelList dataKey="Math" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Mat ${v}` : ''} />
                         </Bar>
-                        <Bar yAxisId="left" dataKey="Mathematics" stackId="a" fill="#f97316">
+                        <Bar yAxisId="left" dataKey="Mathematics" stackId="a" fill="#0ea5e9">
                           <LabelList dataKey="Mathematics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Mat ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Biology" stackId="a" fill="#ec4899">
