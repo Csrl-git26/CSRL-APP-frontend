@@ -274,6 +274,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       clockWise={true} 
                       dataKey="value" 
                       cornerRadius={10}
+                      label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%` }}
                     />
                     <Tooltip 
                       cursor={{ fill: 'transparent' }} 
@@ -281,12 +282,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       formatter={(val) => [`${val}%`, 'Qual Rate']}
                     />
                     <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} />
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 24, fontWeight: 900, fill: '#1e293b' }}>
-                      {avgQual}%
-                    </text>
-                    <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }}>
-                      Top 5 Avg
-                    </text>
+                    
+                    
                   </RadialBarChart>
                 </ResponsiveContainer>
               );
