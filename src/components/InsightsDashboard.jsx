@@ -238,7 +238,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             {/* Right Column: Pie Chart */}
             <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
-              <SectionTitle Icon={PieChartIcon} color="#3b82f6">Centre Distribution</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#f59e0b">Centre Distribution</SectionTitle>
               <div style={{ flex: 1, minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={280}>
                   <PieChart>
