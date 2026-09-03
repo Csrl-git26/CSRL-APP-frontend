@@ -45,7 +45,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color }) {
 }
 
 function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
-  const [fg, bg] = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+  const [fg, bg] = AVATAR_COLORS[0];
   const medals = { 1:'🥇', 2:'🥈', 3:'🥉' };
   
   const subjects = ['Physics', 'Chemistry', 'Math', 'Mathematics', 'Biology', 'Botany', 'Zoology'];
