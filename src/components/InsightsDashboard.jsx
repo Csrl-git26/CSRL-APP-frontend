@@ -65,30 +65,30 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
   return (
     <div 
       onClick={onClick}
-      style={{ display:'flex', alignItems:'center', gap:10, padding:'4px 8px',
+      style={{ display:'flex', alignItems:'center', gap:10, padding:'2px 4px',
       borderRadius:8, background: rank % 2 === 0 ? '#f8fafc' : '#fff',
       marginBottom:2, border:'none', cursor: onClick ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
       onMouseEnter={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'; } }}
       onMouseLeave={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; } }}
     >
-      <div style={{ width:24, textAlign:'center', fontSize:14, fontWeight:800, flexShrink:0,
+      <div style={{ width:16, textAlign:'center', fontSize:10, fontWeight:800, flexShrink:0,
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `${rank}`}</div>
       <div style={{ flex:1, minWidth:0, display: 'flex', flexDirection: 'column', gap: 2, justifyContent: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <div style={{ fontSize:13, fontWeight:700, color:'#1e293b',
+          <div style={{ fontSize:10, fontWeight:700, color:'#1e293b',
             overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{name}</div>
-          <div style={{ fontSize:11, color:'#64748b', fontWeight:600 }}>{center}</div>
+          <div style={{ fontSize:8, color:'#64748b', fontWeight:600 }}>{center}</div>
         </div>
         {subjectScores.length > 0 && (
-          <div style={{ fontSize: 11, color: '#64748b', display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ fontSize: 8, color: '#64748b', display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
             {subjectScores.map((sc, i) => (
-              <span key={i} style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontWeight: 600, border: '1px solid #e2e8f0' }}>{sc}</span>
+              <span key={i} style={{ background: '#f1f5f9', padding: '1px 3px', borderRadius: 2, fontWeight: 600, border: '1px solid #e2e8f0' }}>{sc}</span>
             ))}
           </div>
         )}
       </div>
       <div style={{ background:fg+'20', color:fg, fontWeight:800,
-        fontSize:13, padding:'3px 10px', borderRadius:20, flexShrink:0 }}>{score}</div>
+        fontSize:10, padding:'2px 6px', borderRadius:20, flexShrink:0 }}>{score}</div>
     </div>
   );
 }
@@ -199,18 +199,18 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                   const medals = {1:'🥇',2:'🥈',3:'🥉'};
                   const rankDisplay = medals[c.rank] || `${c.rank}`;
                   return (
-                    <div key={c.code} style={{ padding:'6px 4px', borderRadius:8, textAlign:'center',
+                    <div key={c.code} style={{ padding:'3px 2px', borderRadius:8, textAlign:'center',
                       background: isAlert ? '#fef2f2' : '#f8fafc',
                       border: isAlert ? '1px solid #fecaca' : '1px solid #e2e8f0',
                       cursor: onViewCentre ? 'pointer' : 'default' }}
                       onClick={() => onViewCentre && onViewCentre(c.code)}>
-                      <div style={{ fontSize:14 }}>{rankDisplay}</div>
-                      <div style={{ fontWeight:800, fontSize:12, color:'#1e293b', marginTop:2 }}>{c.code}</div>
-                      <div style={{ fontSize:16, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:2 }}>
+                      <div style={{ fontSize:10 }}>{rankDisplay}</div>
+                      <div style={{ fontWeight:800, fontSize:9, color:'#1e293b', marginTop:1 }}>{c.code}</div>
+                      <div style={{ fontSize:12, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:1 }}>
                         {Math.round(c.avg)}
                       </div>
                       {c.qualRate !== undefined && (
-                        <div style={{ marginTop:2, fontSize:10, fontWeight:700,
+                        <div style={{ marginTop:1, fontSize:8, fontWeight:700,
                           color: isAlert ? '#dc2626' : '#1a4fa0' }}>
                           {Math.round(c.qualRate)}% Qual.
                         </div>
@@ -222,14 +222,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 return (
                   <>
                     <SectionTitle Icon={Star} color="#f59e0b">Top 5 Centres by Average Score</SectionTitle>
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:6, marginBottom: bottomCentres.length > 0 ? 12 : 0 }}>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3, marginBottom: bottomCentres.length > 0 ? 6 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
                     
                     {bottomCentres.length > 0 && (
                       <>
                         <SectionTitle Icon={TrendingDown} color="#dc2626">Bottom 5 Centres</SectionTitle>
-                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:6 }}>
+                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
                       </>
