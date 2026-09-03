@@ -139,7 +139,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             />
           </g>
         )}
-        <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={15} fontWeight={900}>
+        <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={12} fontWeight={500}>
           {typeof value === 'number' ? Math.round(value) : value}{isQualSort ? '%' : ''}
         </text>
 
@@ -183,7 +183,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             dataKey="code" 
             angle={-45} 
             textAnchor="end" 
-            tick={{ fontSize: 14, fill: '#1e293b', fontWeight: 'bold' }} 
+            tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500 }} 
             interval={0}
             height={50}
             axisLine={false}
@@ -192,7 +192,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             
           </XAxis>
           <YAxis 
-            tick={{ fontSize: 14, fill: '#1e293b', fontWeight: 'bold' }} 
+            tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500 }} 
             axisLine={false}
             tickLine={false}
             width={70}
