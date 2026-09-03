@@ -99,9 +99,14 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
     const centerX = x + width / 2;
 
     const showInside = height > 70;
-    const topY = showInside ? y + 25 : y - 25;
+    
+    // Positioning logic:
+    // If text is inside, put text at y+20. Put dot ABOVE the bar (y-12)
+    // If text is outside, put text at y-10. Put dot ABOVE the text (y-30)
+    const textY = showInside ? y + 20 : y - 10;
+    const dotY = showInside ? y - 12 : y - 30;
+    
     const textColor = showInside ? "#ffffff" : "#1e293b";
-    const subTextColor = showInside ? "#93c5fd" : "#0284c7";
 
     return (
       <g style={{ pointerEvents: 'none' }}>
@@ -110,17 +115,17 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             {/* Outermost pulsing ring - delayed */}
             <circle
               cx={centerX}
-              cy={topY - 14}
+              cy={dotY}
               r={4}
               fill="none"
               stroke="#cc0000"
               strokeWidth={2}
-              style={{ animation: 'csrlRingPulse 1.2s ease-out infinite 0.3s', transformOrigin: `${centerX}px ${topY - 14}px` }}
+              style={{ animation: 'csrlRingPulse 1.2s ease-out infinite 0.3s', transformOrigin: `${centerX}px ${dotY}px` }}
             />
             {/* Middle pulsing ring */}
             <circle
               cx={centerX}
-              cy={topY - 14}
+              cy={dotY}
               r={4}
               fill="none"
               stroke="#ff0000"
@@ -130,7 +135,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             {/* Inner bold solid dot */}
             <circle
               cx={centerX}
-              cy={topY - 14}
+              cy={dotY}
               r={6}
               fill="#cc0000"
               stroke="#ffffff"
@@ -139,10 +144,9 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             />
           </g>
         )}
-        <text x={centerX} y={topY + (isRedFlag ? 12 : 0)} fill={textColor} textAnchor="middle" fontSize={12} fontWeight={500}>
+        <text x={centerX} y={textY} fill={textColor} textAnchor="middle" fontSize={11} fontWeight={600} letterSpacing={-0.5}>
           {typeof value === 'number' ? Math.round(value) : value}{isQualSort ? '%' : ''}
         </text>
-
       </g>
     );
   };
