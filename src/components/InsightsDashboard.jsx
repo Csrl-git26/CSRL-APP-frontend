@@ -196,18 +196,18 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                   const medals = {1:'🥇',2:'🥈',3:'🥉'};
                   const rankDisplay = medals[c.rank] || `${c.rank}`;
                   return (
-                    <div key={c.code} style={{ padding:'3px 2px', borderRadius:8, textAlign:'center',
+                    <div key={c.code} style={{ padding:'1px 1px', borderRadius:8, textAlign:'center',
                       background: isAlert ? '#fef2f2' : '#f8fafc',
                       border: isAlert ? '1px solid #fecaca' : '1px solid #e2e8f0',
                       cursor: onViewCentre ? 'pointer' : 'default' }}
                       onClick={() => onViewCentre && onViewCentre(c.code)}>
-                      <div style={{ fontSize:10 }}>{rankDisplay}</div>
-                      <div style={{ fontWeight:800, fontSize:9, color:'#1e293b', marginTop:1 }}>{c.code}</div>
-                      <div style={{ fontSize:12, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:1 }}>
+                      <div style={{ fontSize:8 }}>{rankDisplay}</div>
+                      <div style={{ fontWeight:800, fontSize:8, color:'#1e293b', marginTop:0 }}>{c.code}</div>
+                      <div style={{ fontSize:10, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:0 }}>
                         {Math.round(c.avg)}
                       </div>
                       {c.qualRate !== undefined && (
-                        <div style={{ marginTop:1, fontSize:8, fontWeight:700,
+                        <div style={{ marginTop:0, fontSize:7, fontWeight:700,
                           color: isAlert ? '#dc2626' : '#1a4fa0' }}>
                           {Math.round(c.qualRate)}% Qual.
                         </div>
