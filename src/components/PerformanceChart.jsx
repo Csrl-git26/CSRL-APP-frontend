@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getMaxMarksForSubject } from '../services/dataService';
 
-const SUBJECT_COLORS = ['#3b82f6', '#f97316', '#22c55e', '#ef4444'];
+const SUBJECT_COLORS = ['#6366f1', '#f97316', '#10b981', '#f43f5e'];
 
 export default function PerformanceChart({ chartData, streamCfg, noCard, height = 350 }) {
   const [chartMetric, setChartMetric] = useState('MARKS');
@@ -44,7 +44,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                   if (e.target.checked) setChartSubjects([...chartSubjects, sub]);
                   else setChartSubjects(chartSubjects.filter(s => s !== sub));
                 }}
-                style={{ accentColor: sub === 'Total' ? '#a21caf' : SUBJECT_COLORS[i % SUBJECT_COLORS.length] }}
+                style={{ accentColor: sub === 'Total' ? '#8b5cf6' : SUBJECT_COLORS[i % SUBJECT_COLORS.length] }}
               />
               {sub}
             </label>
@@ -53,7 +53,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
 
         <ResponsiveContainer width="100%" height={height}>
           <LineChart data={chartData} margin={{ top: 15, right: 15, left: 0, bottom: 70 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="var(--gray-100)" />
+            <CartesianGrid strokeDasharray="4 6" vertical={false} stroke="#e2e8f020" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-700)', fontWeight: 700 }} interval={0} angle={-35} textAnchor="end" />
             <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={35} />
             <Tooltip
@@ -67,7 +67,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                 if (chartMetric === 'RANK') return [value ?? '—', `${subName} Rank`];
                 return [value ?? '—', name];
               }}
-              contentStyle={{ background: '#fff', border: '1px solid var(--gray-100)', borderRadius: 8, fontSize: 12 }}
+              contentStyle={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', border: '1px solid #e2e8f0', borderRadius: 10, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
             />
             <Legend wrapperStyle={{ fontSize: 13, paddingTop: 30 }} />
             {subjects.map((sub, i) => {
@@ -85,12 +85,14 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                   type="monotone"
                   dataKey={dataKey}
                   stroke={SUBJECT_COLORS[i % SUBJECT_COLORS.length]}
-                  strokeWidth={2.3}
-                  dot={{ r: 3.5, strokeWidth: 1, fill: '#fff' }}
-                  activeDot={{ r: 5 }}
+                  strokeWidth={1.8}
+                  dot={{ r: 3, strokeWidth: 1.5, fill: '#fff', stroke: SUBJECT_COLORS[i % SUBJECT_COLORS.length] }}
+                  activeDot={{ r: 5, strokeWidth: 2, fill: '#fff', stroke: SUBJECT_COLORS[i % SUBJECT_COLORS.length] }}
                   connectNulls
-                  isAnimationActive={false}
-                  label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 11, fontWeight: 600, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : val }}
+                  isAnimationActive={true}
+                  animationDuration={800}
+                  animationEasing="ease-in-out"
+                  label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : val }}
                 />
               );
             })}
@@ -99,13 +101,15 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                 name="Total"
                 type="monotone"
                 dataKey={chartMetric === 'MARKS' ? 'Total' : (chartMetric === 'RANK' ? 'Total_Rank' : `Total_${chartMetric.charAt(0).toUpperCase() + chartMetric.slice(1).toLowerCase()}`)}
-                stroke="#a21caf"
-                strokeWidth={3}
-                dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
-                activeDot={{ r: 6 }}
+                stroke="#8b5cf6"
+                strokeWidth={2.2}
+                dot={{ r: 3.5, strokeWidth: 2, fill: '#fff', stroke: '#8b5cf6' }}
+                activeDot={{ r: 6, strokeWidth: 2, fill: '#fff', stroke: '#8b5cf6' }}
                 connectNulls
-                isAnimationActive={false}
-                label={{ position: 'top', fill: '#a21caf', fontSize: 11, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : val }}
+                isAnimationActive={true}
+                animationDuration={1000}
+                animationEasing="ease-in-out"
+                label={{ position: 'top', fill: '#8b5cf6', fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : val }}
               />
             )}
           </LineChart>
