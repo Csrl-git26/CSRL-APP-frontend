@@ -364,7 +364,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                    return d;
                 });
                 return (
-                  <div style={{ height: 155, width: '100%', marginTop: 8 }}>
+                  <div style={{ height: 115, width: '100%', marginTop: 8 }}>
                     <ResponsiveContainer>
                       <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 35, left: 20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
