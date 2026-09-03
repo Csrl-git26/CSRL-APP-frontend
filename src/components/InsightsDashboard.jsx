@@ -208,12 +208,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       <div style={{ fontSize:10, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:0 }}>
                         {Math.round(c.avg)}
                       </div>
-                      {c.qualRate !== undefined && (
-                        <div style={{ marginTop:0, fontSize:7, fontWeight:700,
-                          color: isAlert ? '#dc2626' : '#1a4fa0' }}>
-                          {Math.round(c.qualRate)}% Qual.
-                        </div>
-                      )}
+
                     </div>
                   );
                 };
