@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
@@ -107,6 +107,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
 }
 
 export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre }) {
+  const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -242,11 +243,22 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             
         {/* Middle Column: Radial Progress Chart */}
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-          <SectionTitle Icon={PieChartIcon} color="#f59e0b">Top 5 Centres Qual %</SectionTitle>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <SectionTitle Icon={PieChartIcon} color={showBottom5Qual ? "#dc2626" : "#f59e0b"}>
+              {showBottom5Qual ? 'Bottom 5 Centres Qual %' : 'Top 5 Centres Qual %'}
+            </SectionTitle>
+            <span 
+              onClick={() => setShowBottom5Qual(!showBottom5Qual)}
+              style={{ fontSize: 10, fontWeight: 800, color: '#3b82f6', cursor: 'pointer', userSelect: 'none', padding: '2px 6px', background: '#eff6ff', borderRadius: 4, marginBottom: 6 }}
+            >
+              Show {showBottom5Qual ? 'Top 5' : 'Bottom 5'}
+            </span>
+          </div>
           <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
             {(() => {
               if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
-              const top5Qual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0)).slice(0, 5);
+              const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
+              const top5Qual = showBottom5Qual ? sortedByQual.slice(-5).reverse() : sortedByQual.slice(0, 5);
               
               const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
               // Reverse so the #1 rank is on the outermost ring
