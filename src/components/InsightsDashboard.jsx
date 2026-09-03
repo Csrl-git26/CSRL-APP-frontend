@@ -173,7 +173,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         {/* Left Column: Top 5 Students */}
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
-          <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
+          <SectionTitle Icon={Trophy} color="#2563eb">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : top5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
@@ -215,7 +215,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
 
                 return (
                   <>
-                    <SectionTitle Icon={Star} color="#f59e0b">Top 5 Centres by Average Score</SectionTitle>
+                    <SectionTitle Icon={Star} color="#2563eb">Top 5 Centres by Average Score</SectionTitle>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3, marginBottom: bottomCentres.length > 0 ? 6 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
@@ -239,7 +239,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         {/* Middle Column: Radial Progress Chart */}
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <SectionTitle Icon={PieChartIcon} color={showBottom5Qual ? "#dc2626" : "#f59e0b"}>
+            <SectionTitle Icon={PieChartIcon} color={showBottom5Qual ? "#dc2626" : "#2563eb"}>
               {showBottom5Qual ? 'Bottom 5 Centres Qual %' : 'Top 5 Centres Qual %'}
             </SectionTitle>
             <span 
@@ -335,7 +335,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             return (
             <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#f59e0b">Centre Distribution</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
                   <PieChart>
