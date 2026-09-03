@@ -293,6 +293,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                     <Tooltip 
                       cursor={{ fill: 'transparent' }} 
                       contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }} 
+                      labelFormatter={(label) => `Rank ${Number(label) + 1}`}
                       formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
                     />
                     <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} />
