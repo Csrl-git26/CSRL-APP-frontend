@@ -1852,6 +1852,7 @@ export default function AdminDashboard() {
   // ── Main render ────────────────────────────────────────────────────────────
 
   return (
+    <ErrorBoundary>
     <div className="fade-in dashboard-page">
       {/* Modals */}
       {showMarksAwardModal && (
