@@ -158,7 +158,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="Total Students"
-          sub={`JEE: ${jeeCount}  ·  NEET: ${neetCount}`} bg="#f0f5ff" color="#1a4fa0"/>
+           bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="Active Centres"
           sub={`${redFlagCentres.length} need attention`} bg="#fff7ed" color="#b45309"/>
         <KpiCard 
