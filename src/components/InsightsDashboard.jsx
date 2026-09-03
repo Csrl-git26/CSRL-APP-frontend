@@ -376,25 +376,25 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                            cursor={{ fill: '#f8fafc' }}
                         />
                         <Bar yAxisId="left" dataKey="Physics" stackId="a" fill="#3b82f6" barSize={18}>
-                          <LabelList dataKey="Physics" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Physics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Phy ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Chemistry" stackId="a" fill="#8b5cf6">
-                          <LabelList dataKey="Chemistry" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Chemistry" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Che ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Math" stackId="a" fill="#10b981">
-                          <LabelList dataKey="Math" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Math" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Mat ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Mathematics" stackId="a" fill="#10b981">
-                          <LabelList dataKey="Mathematics" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Mathematics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Mat ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Biology" stackId="a" fill="#ec4899">
-                          <LabelList dataKey="Biology" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Biology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Bio ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Botany" stackId="a" fill="#14b8a6">
-                          <LabelList dataKey="Botany" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Botany" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Bot ${v}` : ''} />
                         </Bar>
                         <Bar yAxisId="left" dataKey="Zoology" stackId="a" fill="#f59e0b">
-                          <LabelList dataKey="Zoology" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? v : ''} />
+                          <LabelList dataKey="Zoology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Zoo ${v}` : ''} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
