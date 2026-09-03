@@ -242,27 +242,28 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             
         {/* Middle Column: Radial Progress Chart */}
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-          <SectionTitle Icon={PieChartIcon} color="#f59e0b">Subject Performance</SectionTitle>
+          <SectionTitle Icon={PieChartIcon} color="#10b981">Top 5 Centres Qual %</SectionTitle>
           <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
             {(() => {
-              const safeData = Array.isArray(data) ? data : [];
-              const physicsAvg = Math.round(safeData.reduce((s, d) => s + (d.rawScores?.Physics||0), 0) / (safeData.length||1));
-              const chemAvg = Math.round(safeData.reduce((s, d) => s + (d.rawScores?.Chemistry||0), 0) / (safeData.length||1));
-              const mathAvg = Math.round(safeData.reduce((s, d) => s + (d.rawScores?.Math||d.rawScores?.Mathematics||0), 0) / (safeData.length||1));
+              if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
+              const top5Qual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0)).slice(0, 5);
               
-              const radialData = [
-                { name: 'Math', value: mathAvg, fill: '#ec4899' },
-                { name: 'Chemistry', value: chemAvg, fill: '#8b5cf6' },
-                { name: 'Physics', value: physicsAvg, fill: '#f59e0b' }
-              ];
-              const overallScore = Math.round((physicsAvg + chemAvg + mathAvg) / 3);
+              const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+              // Reverse so the #1 rank is on the outermost ring
+              const radialData = top5Qual.map((c, i) => ({
+                name: c.code,
+                value: Math.round(c.qualRate || 0),
+                fill: colors[i % colors.length]
+              })).reverse();
+              
+              const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
 
               return (
                 <ResponsiveContainer width="100%" height={180}>
                   <RadialBarChart 
                     cx="50%" cy="50%" 
-                    innerRadius="40%" outerRadius="90%" 
-                    barSize={12} 
+                    innerRadius="30%" outerRadius="90%" 
+                    barSize={10} 
                     data={radialData}
                     startAngle={90} endAngle={-270}
                   >
@@ -274,13 +275,17 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       dataKey="value" 
                       cornerRadius={10}
                     />
-                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                    <Tooltip 
+                      cursor={{ fill: 'transparent' }} 
+                      contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }} 
+                      formatter={(val) => [`${val}%`, 'Qual Rate']}
+                    />
                     <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} />
                     <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 24, fontWeight: 900, fill: '#1e293b' }}>
-                      {overallScore}%
+                      {avgQual}%
                     </text>
                     <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }}>
-                      Average
+                      Top 5 Avg
                     </text>
                   </RadialBarChart>
                 </ResponsiveContainer>
