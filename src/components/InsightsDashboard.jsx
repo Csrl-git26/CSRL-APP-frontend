@@ -168,7 +168,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       </div>
 
       {/* ── Main Dashboard Layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr)', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'repeat(3, minmax(0, 1fr))' : '1fr', gap: 20 }}>
         
         {/* Left Column: Top 5 Students */}
         <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
@@ -187,7 +187,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
 
         return (
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
+          <>
             {/* Left Column: Top and Bottom 5 */}
             <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -311,7 +311,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 </div>
               </div>
             </div>
-          </div>
+          </>
         );
       })()}
       
