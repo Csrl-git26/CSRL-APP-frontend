@@ -1196,7 +1196,6 @@ export default function AdminDashboard() {
           )}
         </div>
 
-          </div>
           <OverallMatrixCard title="Category & Stream Distribution" />
         </div>
         
