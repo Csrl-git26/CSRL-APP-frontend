@@ -262,11 +262,15 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
               
               const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
               // Reverse so the #1 rank is on the outermost ring
-              const radialData = top5Qual.map((c, i) => ({
-                name: c.code,
-                value: Math.round(c.qualRate || 0),
-                fill: colors[i % colors.length]
-              })).reverse();
+              const radialData = top5Qual.map((c, i) => {
+                const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
+                return {
+                  name: c.code,
+                  value: Math.round(c.qualRate || 0),
+                  fill: colors[i % colors.length],
+                  rank
+                };
+              }).reverse();
               
               const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
 
@@ -293,7 +297,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                     <Tooltip 
                       cursor={{ fill: 'transparent' }} 
                       contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }} 
-                      labelFormatter={(label) => `Rank ${Number(label) + 1}`}
+                      labelFormatter={(label, payload) => `Rank ${payload?.[0]?.payload?.rank || (5 - Number(label))}`}
                       formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
                     />
                     <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} />
