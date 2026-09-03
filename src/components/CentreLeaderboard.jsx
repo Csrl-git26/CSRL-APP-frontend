@@ -182,9 +182,9 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
           <XAxis 
             dataKey="code" 
-            angle={-45} 
+            angle={-90} 
             textAnchor="end" 
-            tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500 }} 
+            tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500, dy: 4, dx: -4 }} 
             interval={0}
             height={50}
             axisLine={false}
@@ -193,7 +193,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
             
           </XAxis>
           <YAxis 
-            tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500 }} 
+            tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500, dy: 4, dx: -4 }} 
             axisLine={false}
             tickLine={false}
             width={70}
