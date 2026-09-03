@@ -23,8 +23,8 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
               onClick={() => setChartMetric(m)}
               style={{
                 padding: '4px 10px', borderRadius: 999, border: '1px solid',
-                borderColor: chartMetric === m ? 'var(--csrl-orange)' : 'var(--gray-200)',
-                background: chartMetric === m ? 'var(--csrl-orange)' : '#f8fafc',
+                borderColor: chartMetric === m ? '#2563eb' : 'var(--gray-200)',
+                background: chartMetric === m ? '#2563eb' : '#f8fafc',
                 color: chartMetric === m ? '#fff' : 'var(--gray-600)',
                 fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: '0.2s'
               }}
