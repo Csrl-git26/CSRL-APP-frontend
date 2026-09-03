@@ -272,10 +272,10 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 };
               }).reverse();
               
-              const legendPayload = [...radialData].reverse().map(item => ({
-                value: item.name,
+              const legendPayload = top5Qual.map((c, i) => ({
+                value: c.code,
                 type: 'square',
-                color: item.fill
+                color: colors[i % colors.length]
               }));
               
               const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
