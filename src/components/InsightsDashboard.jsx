@@ -272,11 +272,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 };
               }).reverse();
               
-              const legendPayload = top5Qual.map((c, i) => ({
-                value: c.code,
-                type: 'square',
-                color: colors[i % colors.length]
-              }));
+              const legendPayload = top5Qual.map((c, i) => {
+                const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
+                return {
+                  value: `${rank}. ${c.code}`,
+                  type: 'square',
+                  color: colors[i % colors.length]
+                };
+              });
               
               const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
 
@@ -306,7 +309,21 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       labelFormatter={(label, payload) => `Rank ${payload?.[0]?.payload?.rank || (5 - Number(label))}`}
                       formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
                     />
-                    <Legend iconSize={8} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 10 }} payload={legendPayload} />
+                    <Legend 
+                      layout="vertical" 
+                      verticalAlign="middle" 
+                      wrapperStyle={{ right: 0 }} 
+                      content={(props) => (
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                          {legendPayload.map((entry, index) => (
+                            <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
+                              <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
+                              {entry.value}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    />
                     
                     
                   </RadialBarChart>
