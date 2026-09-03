@@ -161,12 +161,10 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#faf5ff" color="#7c3aed"/>
       </div>
 
-      {/* ── Main Dashboard Layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.8fr)', gap: 20 }}>
-        
-        {/* Left Column: Top 5 Students */}
+      {/* ── Top 5 Students ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20, marginBottom: 20 }}>
         <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
-          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', alignSelf: 'start' }}>
+          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
           <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
@@ -174,8 +172,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 center={s.center||'—'} score={s.marks??s.score} idx={i} roll={s.roll} rawScores={s.rawScores} onClick={() => onViewStudent && onViewStudent(s.roll)} />)
           }
         </div>
+      </div>
 
-      {/* Right Column: Top 10 Centres Cards & Pie Chart ── */}
+      {/* ── Top/Bottom Centres & Pie Chart ── */}
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
         const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
@@ -308,8 +307,6 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           </div>
         );
       })()}
-      
-      </div> {/* End Main Dashboard Layout */}
 
     </div>
   );
