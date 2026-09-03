@@ -168,11 +168,13 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       </div>
 
       {/* ── Main Dashboard Layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'repeat(3, minmax(0, 1fr))' : '1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
+        {/* Left Column: Stacked Students & Centres */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         
         {/* Left Column: Top 5 Students */}
         <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
-          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
           <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
@@ -181,16 +183,12 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           }
         </div>
 
-      {/* Right Column: Top 10 Centres Cards & Pie Chart ── */}
+      {/* Stacked Top 10 Centres ── */}
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
-        const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
-
         return (
-          <>
-            {/* Left Column: Top and Bottom 5 */}
             <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
-              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0' }}>
               
               {(() => {
                 const topCentres = sorted.slice(0,5).map((c,i) => ({...c, rank: i+1}));
@@ -240,8 +238,15 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 );
               })()}
             </div>
+          );
+        })()}
+        </div> {/* Close Stacked Left Column */}
             
-            {/* Right Column: Pie Chart */}
+        {/* Right Column: Pie Chart */}
+        {centreBoard.length > 0 && (() => {
+            const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
+            const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
+            return (
             <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#f59e0b">Centre Distribution</SectionTitle>
@@ -311,8 +316,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 </div>
               </div>
             </div>
-          </>
-        );
+          );
       })()}
       
       </div> {/* End Main Dashboard Layout */}
