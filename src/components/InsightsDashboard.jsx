@@ -222,7 +222,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                     
                     {bottomCentres.length > 0 && (
                       <>
-                        <SectionTitle Icon={TrendingDown} color="#dc2626">Bottom 5 Centres</SectionTitle>
+                        <SectionTitle Icon={Star} color="#2563eb">Bottom 5 Centres</SectionTitle>
                         <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
@@ -239,7 +239,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         {/* Middle Column: Radial Progress Chart */}
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <SectionTitle Icon={PieChartIcon} color={showBottom5Qual ? "#dc2626" : "#2563eb"}>
+            <SectionTitle Icon={PieChartIcon} color="#2563eb">
               {showBottom5Qual ? 'Bottom 5 Centres Qual %' : 'Top 5 Centres Qual %'}
             </SectionTitle>
             <span 
