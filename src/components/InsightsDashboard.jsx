@@ -27,7 +27,7 @@ function SectionTitle({ Icon, children, color = '#1a4fa0' }) {
 
 function KpiCard({ icon: Icon, value, label, sub, bg, color }) {
   return (
-    <div style={{ background:bg, borderRadius:10, padding:'10px 14px', display:'flex',
+    <div style={{ background:bg, borderRadius:10, padding:'6px 12px', display:'flex',
       alignItems:'center', gap:12, boxShadow:'0 1px 4px rgba(0,0,0,0.07)', flex:1, minWidth:0 }}>
       <div style={{ width:34, height:34, borderRadius:8, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -245,8 +245,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
               <SectionTitle Icon={PieChartIcon} color="#f59e0b">Centre Distribution</SectionTitle>
-              <div style={{ flex: 1, minHeight: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <ResponsiveContainer width="100%" height={220}>
+              <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                <ResponsiveContainer width="100%" height={180}>
                   <PieChart>
                     <Pie 
                       data={sorted.map(c => ({...c, equalValue: 1}))} 
@@ -254,8 +254,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       nameKey="code" 
                       cx="50%" 
                       cy="50%" 
-                      innerRadius={50} 
-                      outerRadius={75} 
+                      innerRadius={45} 
+                      outerRadius={65} 
                       paddingAngle={1}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
