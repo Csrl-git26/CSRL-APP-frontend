@@ -366,7 +366,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 return (
                   <div style={{ height: 155, width: '100%', marginTop: 8 }}>
                     <ResponsiveContainer>
-                      <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 0, left: 20, bottom: 0 }}>
+                      <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 35, left: 20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                         <XAxis type="number" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis yAxisId="left" type="category" dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#64748b', fontWeight: 600}} interval={0} width={50} />
