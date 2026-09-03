@@ -65,15 +65,15 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, onClick }) {
   return (
     <div 
       onClick={onClick}
-      style={{ display:'flex', alignItems:'center', gap:10, padding:'8px 10px',
+      style={{ display:'flex', alignItems:'center', gap:10, padding:'4px 8px',
       borderRadius:8, background: rank % 2 === 0 ? '#f8fafc' : '#fff',
-      marginBottom:4, border:'none', cursor: onClick ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
+      marginBottom:2, border:'none', cursor: onClick ? 'pointer' : 'default', transition: 'all 0.15s ease' }}
       onMouseEnter={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'; } }}
       onMouseLeave={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; } }}
     >
       <div style={{ width:24, textAlign:'center', fontSize:14, fontWeight:800, flexShrink:0,
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `#${rank}`}</div>
-      <div style={{ flex:1, minWidth:0, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
+      <div style={{ flex:1, minWidth:0, display: 'flex', flexDirection: 'column', gap: 2, justifyContent: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
           <div style={{ fontSize:13, fontWeight:700, color:'#1e293b',
             overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{name}</div>
@@ -171,7 +171,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr)', gap: 20 }}>
         
         {/* Left Column: Top 5 Students */}
-        <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
+        <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', alignSelf: 'start' }}>
           <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
@@ -189,7 +189,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         return (
           <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
             {/* Left Column: Top and Bottom 5 */}
-            <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
+            <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0' }}>
               
               {(() => {
@@ -201,7 +201,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                   const medals = {1:'🥇',2:'🥈',3:'🥉'};
                   const rankDisplay = medals[c.rank] || `#${c.rank}`;
                   return (
-                    <div key={c.code} style={{ padding:'8px 6px', borderRadius:8, textAlign:'center',
+                    <div key={c.code} style={{ padding:'6px 4px', borderRadius:8, textAlign:'center',
                       background: isAlert ? '#fef2f2' : '#f8fafc',
                       border: isAlert ? '1px solid #fecaca' : '1px solid #e2e8f0',
                       cursor: onViewCentre ? 'pointer' : 'default' }}
@@ -224,14 +224,14 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                 return (
                   <>
                     <SectionTitle Icon={Star} color="#f59e0b">Top 5 Centres by Average Score</SectionTitle>
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:10, marginBottom: bottomCentres.length > 0 ? 20 : 0 }}>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:6, marginBottom: bottomCentres.length > 0 ? 12 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
                     
                     {bottomCentres.length > 0 && (
                       <>
                         <SectionTitle Icon={TrendingDown} color="#dc2626">Bottom 5 Centres</SectionTitle>
-                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:10 }}>
+                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:6 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
                       </>
@@ -242,11 +242,11 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             </div>
             
             {/* Right Column: Pie Chart */}
-            <div style={{ background:'#fff', borderRadius:14, padding:'18px 20px',
+            <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
               <SectionTitle Icon={PieChartIcon} color="#f59e0b">Centre Distribution</SectionTitle>
-              <div style={{ flex: 1, minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <ResponsiveContainer width="100%" height={280}>
+              <div style={{ flex: 1, minHeight: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
                     <Pie 
                       data={sorted.map(c => ({...c, equalValue: 1}))} 
@@ -254,8 +254,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       nameKey="code" 
                       cx="50%" 
                       cy="50%" 
-                      innerRadius={65} 
-                      outerRadius={90} 
+                      innerRadius={50} 
+                      outerRadius={75} 
                       paddingAngle={1}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
