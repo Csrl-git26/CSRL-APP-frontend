@@ -179,17 +179,6 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
-        {/* Left Column: Top 5 Students */}
-        <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
-          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
-          <SectionTitle Icon={Trophy} color="#2563eb">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
-          {top5.length === 0
-            ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
-            : top5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
-                center={s.center||'—'} score={s.marks??s.score} idx={i} roll={s.roll} rawScores={s.rawScores} selectedTest={selectedTestKey} onClick={() => onViewStudent && onViewStudent(s.roll)} />)
-          }
-        </div>
-
       {/* Stacked Top 10 Centres ── */}
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
@@ -243,6 +232,17 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             </div>
           );
         })()}
+
+        {/* Left Column: Top 5 Students */}
+        <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
+          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
+          <SectionTitle Icon={Trophy} color="#2563eb">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
+          {top5.length === 0
+            ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
+            : top5.map((s,i) => <RankRow key={s.roll||i} rank={i+1} name={s.name||s.roll||'—'}
+                center={s.center||'—'} score={s.marks??s.score} idx={i} roll={s.roll} rawScores={s.rawScores} selectedTest={selectedTestKey} onClick={() => onViewStudent && onViewStudent(s.roll)} />)
+          }
+        </div>
         </div> {/* Close Stacked Left Column */}
             
         {/* Middle Column: Radial Progress Chart */}
