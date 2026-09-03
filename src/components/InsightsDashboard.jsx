@@ -258,7 +258,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             {(() => {
               if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
               const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
-              const top5Qual = showBottom5Qual ? sortedByQual.slice(-5).reverse() : sortedByQual.slice(0, 5);
+              const top5Qual = showBottom5Qual ? sortedByQual.slice(-5) : sortedByQual.slice(0, 5);
               
               const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
               // Reverse so the #1 rank is on the outermost ring
