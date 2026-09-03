@@ -18,7 +18,7 @@ const AVATAR_COLORS = [
 
 function SectionTitle({ Icon, children, color = '#1a4fa0' }) {
   return (
-    <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:14,
+    <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:6,
       fontSize:14, fontWeight:800, color, letterSpacing:0.2 }}>
       <Icon size={15} />{children}
     </div>
@@ -170,7 +170,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
         {/* Left Column: Top 5 Students */}
-        <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
+        <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc' }}>
           <SectionTitle Icon={Trophy} color="#f59e0b">Top 5 Students — {selectedTestKey||'Overall'}</SectionTitle>
           {top5.length === 0
@@ -184,7 +184,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
         return (
-            <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
+            <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0' }}>
               
               {(() => {
@@ -201,8 +201,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                       border: isAlert ? '1px solid #fecaca' : '1px solid #e2e8f0',
                       cursor: onViewCentre ? 'pointer' : 'default' }}
                       onClick={() => onViewCentre && onViewCentre(c.code)}>
-                      <div style={{ fontSize:8 }}>{rankDisplay}</div>
-                      <div style={{ fontWeight:800, fontSize:8, color:'#1e293b', marginTop:0 }}>{c.code}</div>
+                      <div style={{ fontSize:8, display:'flex', justifyContent:'center', alignItems:'center', gap: 4 }}>
+                        {rankDisplay} <span style={{ fontWeight:800, color:'#1e293b' }}>{c.code}</span>
+                      </div>
                       <div style={{ fontSize:10, fontWeight:900, color: isAlert?'#dc2626':'#1a4fa0', marginTop:0 }}>
                         {Math.round(c.avg)}
                       </div>
@@ -244,7 +245,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
-            <div style={{ background:'#fff', borderRadius:14, padding:'12px 16px',
+            <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#f59e0b">Centre Distribution</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
