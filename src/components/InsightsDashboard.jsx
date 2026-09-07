@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import SubjectTopCentres from './SubjectTopCentres';
+import SubjectTopStudents from './SubjectTopStudents';
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
@@ -166,7 +167,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
-export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick }) {
+export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
@@ -607,6 +608,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       
       {/* Subject Top 3 Centres */}
       <SubjectTopCentres centreBoard={centreBoard} onViewCentre={onViewCentre} />
+      {/* Subject Top 3 Students */}
+      <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
 
       </div> {/* End Main Dashboard Layout */}
 
