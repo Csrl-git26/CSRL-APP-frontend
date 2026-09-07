@@ -403,6 +403,7 @@ export default function AdminDashboard() {
   const [modalLoading, setModalLoading] = useState(false);
   const [showMarksAwardModal, setShowMarksAwardModal] = useState(false);
   const [showClearRawMarksModal, setShowClearRawMarksModal] = useState(false);
+  const [showGraphsModal, setShowGraphsModal] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   const [importMode,    setImportMode]    = useState(null);
@@ -1277,9 +1278,20 @@ export default function AdminDashboard() {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <InsightsDashboard data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} />
+          <InsightsDashboard data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setSelectedTrendCentre(code); setShowGraphsModal(true); }} />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+        {showGraphsModal && (
+        <div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
+          <div className="modal" style={{ maxWidth: 1200, width: '95%', height: '80vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Trophy size={16} aria-hidden="true" />
+                Centre Insights - {selectedTrendCentre}
+              </div>
+              <button type="button" className="modal-close" onClick={() => setShowGraphsModal(false)} aria-label="Close">×</button>
+            </div>
+            <div className="modal-body" style={{ background: '#f8fafc', padding: 20, flex: 1, overflowY: 'auto' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px', height: '100%' }}>
           {/* Left Side: Centre Rankings (Bar Chart) */}
           <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
@@ -1320,6 +1332,10 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+              </div>
+            </div>
+          </div>
+        )}
 
 
     </div>
