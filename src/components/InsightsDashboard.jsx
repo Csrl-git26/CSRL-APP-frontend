@@ -25,9 +25,9 @@ function SectionTitle({ Icon, children, color = '#1a4fa0' }) {
   );
 }
 
-function KpiCard({ icon: Icon, value, label, sub, bg, color }) {
+function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
   return (
-    <div style={{ background:bg, borderRadius:10, padding:'6px 12px', display:'flex',
+    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, borderRadius:10, padding:'6px 12px', display:'flex',
       alignItems:'center', gap:12, boxShadow:'0 1px 4px rgba(0,0,0,0.07)', flex:1, minWidth:0 }}>
       <div style={{ width:34, height:34, borderRadius:8, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -165,7 +165,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
-export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre }) {
+export default function InsightsDashboard({ data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
@@ -209,7 +209,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="Total Students"
            bg="#f0f5ff" color="#1a4fa0"/>
-        <KpiCard icon={BarChart3} value={centreBoard.length} label="Active Centres"
+        <KpiCard icon={BarChart3} value={centreBoard.length} label="Active Centres" onClick={onActiveCentresClick}
           sub={`${redFlagCentres.length} need attention`} bg="#fff7ed" color="#b45309"/>
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
