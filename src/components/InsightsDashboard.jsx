@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import SubjectTopCentres from './SubjectTopCentres';
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
@@ -604,6 +605,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
           );
       })()}
       
+      {/* Subject Top 3 Centres */}
+      <SubjectTopCentres data={data} selectedTestKeys={selectedTestKey && selectedTestKey !== 'Multiple Tests' ? [selectedTestKey] : []} />
+
       </div> {/* End Main Dashboard Layout */}
 
     </div>
