@@ -167,7 +167,7 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
-export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick }) {
+export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
@@ -304,7 +304,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
-        <KpiCard icon={Users}    value={totalStudents} label="Total Students"
+        <KpiCard icon={Users}    value={totalStudents} label="Total Students" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="Active Centres" onClick={onActiveCentresClick}
           sub={`${redFlagCentres.length} need attention`} bg="#fff7ed" color="#b45309"/>

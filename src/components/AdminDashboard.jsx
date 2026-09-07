@@ -1270,7 +1270,7 @@ export default function AdminDashboard() {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <InsightsDashboard testInsights={testInsights} data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} />
+          <InsightsDashboard testInsights={testInsights} data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => setActivePage('ranking')} />
         </div>
         {showGraphsModal && (
         <div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
