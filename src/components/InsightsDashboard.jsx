@@ -606,7 +606,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       })()}
       
       {/* Subject Top 3 Centres */}
-      <SubjectTopCentres centreBoard={centreBoard} />
+      <SubjectTopCentres centreBoard={centreBoard} onViewCentre={onViewCentre} />
 
       </div> {/* End Main Dashboard Layout */}
 
