@@ -181,8 +181,10 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
             : (() => {
                 const chartData = students.map(s => {
                    let nameSplit = (s.name || s.roll || '—').split(' ');
-                   let shortName = nameSplit[0];
-                   if (shortName.length < 3 && nameSplit.length > 1) shortName += ' ' + nameSplit[1];
+                   let shortName = nameSplit[0].substring(0, 8); // truncate to 8 chars
+                   if (shortName.length < 3 && nameSplit.length > 1) {
+                       shortName += ' ' + nameSplit[1].substring(0, 3);
+                   }
                    const centre = s.center || '';
                    const label = centre ? `${shortName} (${centre})` : shortName;
                    
@@ -198,7 +200,8 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                              matchedKey = keys.find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()));
                           }
                           if (matchedKey && !isNaN(Number(s.rawScores[matchedKey]))) {
-                             d[sub] = Number(s.rawScores[matchedKey]);
+                             let val = Number(s.rawScores[matchedKey]);
+                             d[sub] = val > 0 ? val : 0; // clamp to 0 to prevent downward bars breaking layout
                           }
                       });
                    }
@@ -213,9 +216,9 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                   const total = chartData.find(d => d.name === payload.value)?.total || '';
                   return (
                     <g transform={`translate(${x},${y})`}>
-                      <text x={0} y={10} dy={0} textAnchor="middle" fill="#64748b" fontSize={9} fontWeight={600}>{name}</text>
-                      {extra && <text x={0} y={20} dy={0} textAnchor="middle" fill="#64748b" fontSize={8}>{extra}</text>}
-                      <text x={0} y={32} dy={0} textAnchor="middle" fill="#1e293b" fontSize={10} fontWeight={800}>{total}</text>
+                      <text x={0} y={12} dy={0} textAnchor="middle" fill="#64748b" fontSize={8} fontWeight={700}>{name}</text>
+                      {extra && <text x={0} y={22} dy={0} textAnchor="middle" fill="#64748b" fontSize={7}>{extra}</text>}
+                      <text x={0} y={34} dy={0} textAnchor="middle" fill="#1e293b" fontSize={10} fontWeight={900}>{total}</text>
                     </g>
                   );
                 };
@@ -231,7 +234,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
                            contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }}
                            cursor={{ fill: '#f8fafc' }}
                         />
-                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={35}>
+                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={22}>
                           <LabelList dataKey="Physics" position="center" fill="#fff" fontSize={9} fontWeight={700} formatter={(v) => v > 0 ? `PHY ${v}` : ''} />
                         </Bar>
                         <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6">
