@@ -84,8 +84,8 @@ export default function SubjectTopCentres({ data, selectedTestKeys }) {
         <Activity size={16} aria-hidden="true" />
         Subject Top 3
       </div>
-      <div style={{ flex: 1, minHeight: 0 }}>
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ flex: 1, minHeight: 180 }}>
+        <ResponsiveContainer width="100%" height={180}>
           <BarChart data={chartData} margin={{ top: 15, right: 5, left: -20, bottom: 0 }} barGap={2} barCategoryGap="15%">
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
             <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
