@@ -2,81 +2,38 @@ import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, CartesianGrid } from 'recharts';
 import { Activity } from 'lucide-react';
 
-export default function SubjectTopCentres({ data, selectedTestKeys }) {
+export default function SubjectTopCentres({ centreBoard }) {
   const chartData = useMemo(() => {
-    if (!data?.profiles) return [];
+    if (!centreBoard || centreBoard.length === 0) return [];
     
-    const keys = selectedTestKeys.length > 1 ? selectedTestKeys : (selectedTestKeys[0] ? [selectedTestKeys[0]] : []);
-    let profiles = data.profiles;
-    if (keys.length > 0) {
-      profiles = profiles.filter(p => keys.some(k => p.ROLL_KEY?.includes(k) || p.TEST_KEY === k));
-    }
-    
-    const centreMap = {};
-    profiles.forEach(p => {
-      const centre = p.centerCode || p.center || 'Unknown';
-      if (!centreMap[centre]) {
-         centreMap[centre] = { count: 0, PHY: 0, CHE: 0, MATH: 0 };
-      }
-      centreMap[centre].count++;
-      
-      const raw = p.rawScores || {};
-      const rKeys = Object.keys(raw);
-      
-      const getScore = (sub) => {
-         let k = null;
-         for (const key of keys) {
-            k = rKeys.find(rk => rk === `${key}_${sub}` || rk === `${key}_${sub.toUpperCase()}` || rk === `${key}_${sub.toLowerCase()}`);
-            if (k) break;
-         }
-         if (!k) k = rKeys.find(rk => rk === sub || rk.toLowerCase().endsWith('_' + sub.toLowerCase()));
-         if (k && !isNaN(Number(raw[k]))) {
-             let val = Number(raw[k]);
-             return val > 0 ? val : 0;
-         }
-         return 0;
-      };
-      
-      centreMap[centre].PHY += getScore('Physics');
-      centreMap[centre].CHE += getScore('Chemistry');
-      centreMap[centre].MATH += Math.max(getScore('Math'), getScore('Mathematics'));
-    });
-    
-    const centres = Object.keys(centreMap).map(c => {
-       const cnt = centreMap[c].count || 1;
-       return {
-         code: c,
-         PHY: centreMap[c].PHY / cnt,
-         CHE: centreMap[c].CHE / cnt,
-         MATH: centreMap[c].MATH / cnt
-       };
-    });
-    
-    const topPhy = [...centres].sort((a,b) => b.PHY - a.PHY).slice(0, 3);
-    const topChe = [...centres].sort((a,b) => b.CHE - a.CHE).slice(0, 3);
-    const topMath = [...centres].sort((a,b) => b.MATH - a.MATH).slice(0, 3);
+    // Sort by Physics
+    const topPhy = [...centreBoard].sort((a,b) => (b.Physics || 0) - (a.Physics || 0)).slice(0, 3);
+    // Sort by Chemistry
+    const topChe = [...centreBoard].sort((a,b) => (b.Chemistry || 0) - (a.Chemistry || 0)).slice(0, 3);
+    // Sort by Math
+    const topMath = [...centreBoard].sort((a,b) => (b.Math || 0) - (a.Math || 0)).slice(0, 3);
     
     return [
       {
         subject: 'PHY',
-        top1Code: topPhy[0]?.code || '', top1Val: Math.round(topPhy[0]?.PHY || 0),
-        top2Code: topPhy[1]?.code || '', top2Val: Math.round(topPhy[1]?.PHY || 0),
-        top3Code: topPhy[2]?.code || '', top3Val: Math.round(topPhy[2]?.PHY || 0),
+        top1Code: topPhy[0]?.code || '', top1Val: Math.round(topPhy[0]?.Physics || 0),
+        top2Code: topPhy[1]?.code || '', top2Val: Math.round(topPhy[1]?.Physics || 0),
+        top3Code: topPhy[2]?.code || '', top3Val: Math.round(topPhy[2]?.Physics || 0),
       },
       {
         subject: 'CHEM',
-        top1Code: topChe[0]?.code || '', top1Val: Math.round(topChe[0]?.CHE || 0),
-        top2Code: topChe[1]?.code || '', top2Val: Math.round(topChe[1]?.CHE || 0),
-        top3Code: topChe[2]?.code || '', top3Val: Math.round(topChe[2]?.CHE || 0),
+        top1Code: topChe[0]?.code || '', top1Val: Math.round(topChe[0]?.Chemistry || 0),
+        top2Code: topChe[1]?.code || '', top2Val: Math.round(topChe[1]?.Chemistry || 0),
+        top3Code: topChe[2]?.code || '', top3Val: Math.round(topChe[2]?.Chemistry || 0),
       },
       {
         subject: 'MATH',
-        top1Code: topMath[0]?.code || '', top1Val: Math.round(topMath[0]?.MATH || 0),
-        top2Code: topMath[1]?.code || '', top2Val: Math.round(topMath[1]?.MATH || 0),
-        top3Code: topMath[2]?.code || '', top3Val: Math.round(topMath[2]?.MATH || 0),
+        top1Code: topMath[0]?.code || '', top1Val: Math.round(topMath[0]?.Math || 0),
+        top2Code: topMath[1]?.code || '', top2Val: Math.round(topMath[1]?.Math || 0),
+        top3Code: topMath[2]?.code || '', top3Val: Math.round(topMath[2]?.Math || 0),
       }
     ];
-  }, [data, selectedTestKeys]);
+  }, [centreBoard]);
 
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>

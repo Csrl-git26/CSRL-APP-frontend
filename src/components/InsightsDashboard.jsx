@@ -606,7 +606,7 @@ export default function InsightsDashboard({ data, overview, topRanked, bottomRan
       })()}
       
       {/* Subject Top 3 Centres */}
-      <SubjectTopCentres data={data} selectedTestKeys={selectedTestKey && selectedTestKey !== 'Multiple Tests' ? [selectedTestKey] : []} />
+      <SubjectTopCentres centreBoard={centreBoard} />
 
       </div> {/* End Main Dashboard Layout */}
 
