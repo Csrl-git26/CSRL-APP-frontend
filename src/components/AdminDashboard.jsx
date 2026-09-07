@@ -1265,16 +1265,7 @@ export default function AdminDashboard() {
                 onChange={setSelectedLeaderboardTestKeys} 
               />
             </div>
-            <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-              <span style={{ fontSize: 11, color: 'var(--gray-600)', fontWeight: 600 }}>Sort:</span>
-              <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 110, fontSize: 11, padding: '3px 6px' }}>
-                <option value="Total">Total Avg</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Math">Math</option>
-                <option value="Qualification">Qual. Rate</option>
-              </select>
-            </div>
+
           </div>
         </div>
 
@@ -1310,16 +1301,7 @@ export default function AdminDashboard() {
                     onChange={setSelectedLeaderboardTestKeys} 
                   />
                 </div>
-                <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-                  <span style={{ fontSize: 11, color: 'var(--gray-600)', fontWeight: 600 }}>Sort:</span>
-                  <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 110, fontSize: 11, padding: '3px 6px' }}>
-                    <option value="Total">Total Avg</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="Math">Math</option>
-                    <option value="Qualification">Qual. Rate</option>
-                  </select>
-                </div>
+
               </div>
             </div>
             <div style={{ flex: 1 }}>
