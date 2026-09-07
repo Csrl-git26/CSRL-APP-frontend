@@ -108,7 +108,7 @@ const STUDENT_TEMPLATE_COLUMNS = [
 ];
 
 const ALL_TABS = [
-  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
+  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Dashboard' },
   { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
