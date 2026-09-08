@@ -542,7 +542,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <PieChart>
                     <Pie 
                       data={sorted} 
-                      dataKey="avg" 
+                      dataKey="avg"
+                      startAngle={0}
+                      endAngle={-360} 
                       nameKey="code" 
                       cx="50%" 
                       cy="50%" 
