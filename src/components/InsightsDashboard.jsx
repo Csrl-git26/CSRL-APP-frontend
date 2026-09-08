@@ -255,9 +255,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   const nameParts = payload.value.split(' (');
                   const name = nameParts[0];
                   const extra = nameParts.length > 1 ? '(' + nameParts[1] : '';
-                  const total = chartData.find(d => d.name === payload.value)?.total || '';
+                  const studentData = chartData.find(d => d.name === payload.value);
+                  const total = studentData?.total || '';
+                  const studentId = studentData?.studentId;
                   return (
-                    <g transform={`translate(${x},${y})`}>
+                    <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
+                      <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
                       <text x={-5} y={-4} textAnchor="end" fill="#64748b" fontSize={9} fontWeight={700}>{name} {extra}</text>
                       <text x={-5} y={8} textAnchor="end" fill="#1e293b" fontSize={10} fontWeight={900}>{total}</text>
                     </g>
@@ -283,25 +286,25 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         <XAxis type="number" domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
 
-                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Physics" content={(props) => <CustomBarLabel {...props} prefix="P" />} />
                         </Bar>
-                        <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Chemistry" content={(props) => <CustomBarLabel {...props} prefix="C" />} />
                         </Bar>
-                        <Bar dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Math" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
-                        <Bar dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Mathematics" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
-                        <Bar dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Biology" content={(props) => <CustomBarLabel {...props} prefix="B" />} />
                         </Bar>
-                        <Bar dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Botany" content={(props) => <CustomBarLabel {...props} prefix="Bo" />} />
                         </Bar>
-                        <Bar dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false}>
+                        <Bar dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Zoology" content={(props) => <CustomBarLabel {...props} prefix="Z" />} />
                         </Bar>
                       </BarChart>
