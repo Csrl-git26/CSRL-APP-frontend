@@ -32,7 +32,7 @@ import PerformanceChart from './PerformanceChart';
 import TestRecordsTable from './TestRecordsTable';
 
 const TABS = [
-  { key: 'leaderboard', Icon: Trophy,         label: 'Centre Leaderboard' },
+  { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
   { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
   { key: 'pastyear',   Icon: Package,         label: 'Past Year Data' },
