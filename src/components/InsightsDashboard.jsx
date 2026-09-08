@@ -170,20 +170,38 @@ function ProgressBar({ value, max, color, bg, label, count }) {
 
 const CustomBarLabel = (props) => {
   const { x, y, width, height, value, prefix } = props;
-  if (!value || value === 0) return null;
-  // If the bar is physically too thin on the screen, hide the text to prevent overlapping
-  if (width < 18) return null;
+  
+  // In Recharts with stackOffset="sign", `value` is passed as an array [base, current]
+  let val = value;
+  if (Array.isArray(value)) {
+    val = value[1] - value[0]; // Recover the original value
+  }
+  
+  if (!val || val === 0) return null;
+  
+  const absWidth = Math.abs(width);
+  
+  // Hide completely if less than 6 pixels wide
+  if (absWidth < 6) return null;
+
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+  
+  // Rotate 90 degrees if it's too thin to fit horizontal text
+  const isThin = absWidth < 18;
+
   return (
     <text 
-       x={x + width / 2} 
-       y={y + height / 2} 
+       x={cx} 
+       y={cy} 
        fill="#fff" 
        fontSize={8} 
        fontWeight={700} 
        textAnchor="middle" 
        dominantBaseline="central"
+       transform={isThin ? `rotate(-90, ${cx}, ${cy})` : ''}
     >
-      {prefix}{value}
+      {prefix}{val}
     </text>
   );
 };
