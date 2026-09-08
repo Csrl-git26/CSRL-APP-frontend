@@ -327,7 +327,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         
       {/* Stacked Top 10 Centres ── */}
       {centreBoard.length > 0 && (() => {
-        const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
+        const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
         return (
             <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0' }}>
@@ -526,7 +526,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
         {/* Right Column: Pie Chart */}
         {centreBoard.length > 0 && (() => {
-            const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
+            const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
             <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
@@ -537,7 +537,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <PieChart>
                     <Pie 
                       data={sorted} 
-                      dataKey="avg"
+                      dataKey="equalSlice"
                       startAngle={180}
                       endAngle={-180} 
                       nameKey="code" 
@@ -605,7 +605,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       
       {/* Fourth Column: Qual Pie Chart */}
         {centreBoard.length > 0 && (() => {
-            const sorted = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0));
+            const sorted = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
             <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
@@ -616,7 +616,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <PieChart>
                     <Pie 
                       data={sorted} 
-                      dataKey="qualRate"
+                      dataKey="equalSlice"
                       startAngle={180}
                       endAngle={-180} 
                       nameKey="code" 
