@@ -209,19 +209,22 @@ const CustomBarLabel = (props) => {
 
 
 
+const renderPieShape = (props) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+  return (
+    <g style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))' }}>
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={4} />
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={4} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+    </g>
+  );
+};
+
 const renderActiveShape = (props) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
   return (
-    <g>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius + 5}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
+    <g style={{ filter: 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' }}>
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 4} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={4} />
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 4} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={4} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
     </g>
   );
 };
@@ -230,6 +233,13 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   return (
     <PieChart>
+      <defs>
+        <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+          <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+          <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+        </linearGradient>
+      </defs>
       <Pie 
         data={sorted} 
         dataKey="equalSlice"
@@ -240,9 +250,10 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
         cy="50%" 
         innerRadius={35} 
         outerRadius={55} 
-        paddingAngle={1}
+        paddingAngle={3}
         activeIndex={activeIndex}
         isAnimationActive={false}
+        shape={renderPieShape}
         activeShape={renderActiveShape}
         onMouseEnter={(_, index) => setActiveIndex(index)}
         onMouseLeave={() => setActiveIndex(-1)}
@@ -315,6 +326,16 @@ const renderStudentBarShape = (props, dataKey, chartId, activeStudentBar) => {
     <g>
       <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill={fill} rx={6} ry={6} style={{ filter: isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }} />
       <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill="url(#bar3D)" rx={6} ry={6} style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', pointerEvents: 'none', mixBlendMode: 'overlay' }} />
+    </g>
+  );
+};
+
+const renderRadialBarShape = (props) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+  return (
+    <g style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))' }}>
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={10} />
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={10} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
     </g>
   );
 };
@@ -659,13 +680,20 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     data={radialData}
                     startAngle={90} endAngle={-270}
                   >
+                    <defs>
+                      <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+                        <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+                        <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+                      </linearGradient>
+                    </defs>
                     <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                     <RadialBar 
                       minAngle={15} 
                       background={{ fill: '#f1f5f9' }} 
                       clockWise={true} 
                       dataKey="value" 
-                      cornerRadius={10}
+                      shape={renderRadialBarShape}
                       label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%` }}
                       onClick={(data, index) => { if (onViewCentre && data && data.name) { onViewCentre(data.name); } else if (onViewCentre && data && data.payload && data.payload.name) { onViewCentre(data.payload.name); } }}
                       style={{ cursor: 'pointer' }}
