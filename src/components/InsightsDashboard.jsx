@@ -692,7 +692,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
       {/* Top & Bottom 5 Students (Each taking 1 column in the 4-col grid) */}
       {renderStudentChart(top5, 'Top 5 Students', Trophy, '#2563eb')}
-      {renderStudentChart(bottom5, 'Bottom 5 Students', Star, '#ef4444')}
+      {renderStudentChart(bottom5, 'Bottom 5 Students', Star, '#2563eb')}
 
       </div> {/* End Main Dashboard Layout */}
 
