@@ -167,6 +167,27 @@ function ProgressBar({ value, max, color, bg, label, count }) {
   );
 }
 
+
+const CustomBarLabel = (props) => {
+  const { x, y, width, height, value, prefix } = props;
+  if (!value || value === 0) return null;
+  // If the bar is physically too thin on the screen, hide the text to prevent overlapping
+  if (width < 18) return null;
+  return (
+    <text 
+       x={x + width / 2} 
+       y={y + height / 2} 
+       fill="#fff" 
+       fontSize={8} 
+       fontWeight={700} 
+       textAnchor="middle" 
+       dominantBaseline="central"
+    >
+      {prefix}{value}
+    </text>
+  );
+};
+
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
@@ -235,25 +256,25 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                            cursor={{ fill: '#f8fafc' }}
                         />
                         <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Physics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `P${v}` : ''} />
+                          <LabelList dataKey="Physics" content={(props) => <CustomBarLabel {...props} prefix="P" />} />
                         </Bar>
                         <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Chemistry" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `C${v}` : ''} />
+                          <LabelList dataKey="Chemistry" content={(props) => <CustomBarLabel {...props} prefix="C" />} />
                         </Bar>
                         <Bar dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Math" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `M${v}` : ''} />
+                          <LabelList dataKey="Math" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
                         <Bar dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Mathematics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `M${v}` : ''} />
+                          <LabelList dataKey="Mathematics" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
                         <Bar dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Biology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `B${v}` : ''} />
+                          <LabelList dataKey="Biology" content={(props) => <CustomBarLabel {...props} prefix="B" />} />
                         </Bar>
                         <Bar dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Botany" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `Bo${v}` : ''} />
+                          <LabelList dataKey="Botany" content={(props) => <CustomBarLabel {...props} prefix="Bo" />} />
                         </Bar>
                         <Bar dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Zoology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `Z${v}` : ''} />
+                          <LabelList dataKey="Zoology" content={(props) => <CustomBarLabel {...props} prefix="Z" />} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
