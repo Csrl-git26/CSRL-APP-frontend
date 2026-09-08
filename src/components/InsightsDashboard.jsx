@@ -625,7 +625,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               return (
                 <ResponsiveContainer width="100%" height={180}>
                   <RadialBarChart 
-                    cx="50%" cy="50%" 
+                    cx="40%" cy="50%" 
                     innerRadius="30%" outerRadius="90%" 
                     barSize={10} 
                     data={radialData}
