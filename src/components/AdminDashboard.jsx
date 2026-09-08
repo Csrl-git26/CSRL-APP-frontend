@@ -1270,7 +1270,7 @@ export default function AdminDashboard() {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <InsightsDashboard testInsights={testInsights} data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => setActivePage('ranking')} />
+          <InsightsDashboard testInsights={testInsights} data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} />
         </div>
         {showGraphsModal && (
         <div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
@@ -1978,7 +1978,7 @@ export default function AdminDashboard() {
 
       {/* Page header */}
       <div className="page-header">
-        {activePage === 'centre-overview' ? (
+        {['centre-overview', 'ranking'].includes(activePage) ? (
           <button type="button" onClick={() => setActivePage(previousPage || 'leaderboard')} className="btn btn-sm" style={{ background: 'rgba(255,255,255,.15)', color: '#fff', border: 'none', marginRight: 8, gap: 5, padding: 10, borderRadius: 10 }}>
             <ArrowLeft size={16} /> Back
           </button>
