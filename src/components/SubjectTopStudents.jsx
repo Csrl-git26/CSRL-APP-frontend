@@ -5,10 +5,18 @@ import { Activity } from 'lucide-react';
 const renderBarShape = (props, dataKey, activeItem) => {
   const { fill, x, y, width, height, index } = props;
   const isActive = activeItem && activeItem.index === index && activeItem.dataKey === dataKey;
-  if (isActive) {
-    return <rect x={x - 3} y={y - 3} width={width + 6} height={height + 3} fill={fill} rx={4} ry={4} style={{ filter: 'brightness(1.1)', transition: 'all 0.2s' }} />;
-  }
-  return <rect x={x} y={y} width={width} height={height} fill={fill} rx={4} ry={4} style={{ transition: 'all 0.2s' }} />;
+  
+  const adjustedX = isActive ? x - 2 : x;
+  const adjustedY = isActive ? y - 2 : y;
+  const adjustedWidth = isActive ? width + 4 : width;
+  const adjustedHeight = isActive ? height + 2 : height;
+  
+  return (
+    <g>
+      <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill={fill} rx={6} ry={6} style={{ filter: isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+      <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill="url(#bar3DVertical)" rx={6} ry={6} style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', pointerEvents: 'none', mixBlendMode: 'overlay' }} />
+    </g>
+  );
 };
 
 const renderCustomLabel = (props) => {
@@ -42,6 +50,13 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
       <div style={{ flex: 1, minHeight: 180 }}>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={chartData} margin={{ top: 30, right: 10, left: -20, bottom: 0 }} barGap={2} barCategoryGap="15%">
+            <defs>
+              <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+                <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+                <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+              </linearGradient>
+            </defs>
             <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
             <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={25} />
