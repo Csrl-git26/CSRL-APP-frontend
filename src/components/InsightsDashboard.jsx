@@ -684,22 +684,19 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       
 
 
-      </div> {/* End Main Dashboard Layout */}
-
       {/* Subject Top 3 Centres */}
       <SubjectTopCentres centreBoard={centreBoard} onViewCentre={onViewCentre} />
       
-      {/* Subject Top 3 Students & Top/Bottom 5 Students Layout */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        {/* Subject Top 3 Students */}
-        <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
+      {/* Subject Top 3 Students */}
+      <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
 
-        {/* Top & Bottom 5 Students */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 10 }}>
-          {renderStudentChart(top5, 'Top 5 Students', Trophy, '#2563eb')}
-          {renderStudentChart(bottom5, 'Bottom 5 Students', Star, '#ef4444')}
-        </div>
+      {/* Top & Bottom 5 Students */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 10 }}>
+        {renderStudentChart(top5, 'Top 5 Students', Trophy, '#2563eb')}
+        {renderStudentChart(bottom5, 'Bottom 5 Students', Star, '#ef4444')}
       </div>
+
+      </div> {/* End Main Dashboard Layout */}
 
     </div>
   );
