@@ -190,8 +190,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                    const centre = s.center || '';
                    const label = centre ? `${shortName} (${centre})` : shortName;
                    
-                   let d = { name: label, total: s.marks ?? s.score };
-                   ['Physics','Chemistry','Math','Mathematics','Biology','Botany','Zoology'].forEach(s => { d[`${s}_pos`] = 0; d[`${s}_neg`] = 0; d[`${s}_val`] = 0; });
+                   let d = { name: label, total: s.marks ?? s.score, Physics: 0, Chemistry: 0, Math: 0, Mathematics: 0, Biology: 0, Botany: 0, Zoology: 0 };
                    if (s.rawScores) {
                       ['Physics','Chemistry','Math','Mathematics','Biology','Botany','Zoology'].forEach(sub => {
                           const keys = Object.keys(s.rawScores);
@@ -203,13 +202,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                              matchedKey = keys.find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()));
                           }
                           if (matchedKey && !isNaN(Number(s.rawScores[matchedKey]))) {
-                             let val = Number(s.rawScores[matchedKey]);
-                             if (val > 0) {
-                                 d[`${sub}_pos`] = val;
-                             } else if (val < 0) {
-                                 d[`${sub}_neg`] = val;
-                             }
-                             d[`${sub}_val`] = val;
+                             d[sub] = Number(s.rawScores[matchedKey]);
                           }
                       });
                    }
@@ -233,58 +226,34 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 return (
                   <div style={{ height: 210, width: '100%', marginTop: 8 }}>
                     <ResponsiveContainer width="100%" height={210}>
-                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 20, left: 5, bottom: 5 }}>
+                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 20, left: 5, bottom: 5 }} stackOffset="sign">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
                         <XAxis type="number" domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
-                        <Tooltip 
+                                                <Tooltip 
                            contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }}
                            cursor={{ fill: '#f8fafc' }}
                         />
-                        {/* Positive Bars */}
-                        <Bar dataKey="Physics_pos" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Physics_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `P${v}` : ''} />
+                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Physics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `P${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Chemistry_pos" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Chemistry_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `C${v}` : ''} />
+                        <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Chemistry" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `C${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Math_pos" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Math_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `M${v}` : ''} />
+                        <Bar dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Math" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `M${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Mathematics_pos" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Mathematics_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `M${v}` : ''} />
+                        <Bar dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Mathematics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `M${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Biology_pos" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Biology_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `B${v}` : ''} />
+                        <Bar dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Biology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `B${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Botany_pos" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Botany_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Bo${v}` : ''} />
+                        <Bar dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Botany" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `Bo${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Zoology_pos" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Zoology_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v > 0 ? `Z${v}` : ''} />
-                        </Bar>
-
-                        {/* Negative Bars */}
-                        <Bar dataKey="Physics_neg" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Physics_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `P${v}` : ''} />
-                        </Bar>
-                        <Bar dataKey="Chemistry_neg" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Chemistry_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `C${v}` : ''} />
-                        </Bar>
-                        <Bar dataKey="Math_neg" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Math_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `M${v}` : ''} />
-                        </Bar>
-                        <Bar dataKey="Mathematics_neg" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Mathematics_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `M${v}` : ''} />
-                        </Bar>
-                        <Bar dataKey="Biology_neg" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Biology_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `B${v}` : ''} />
-                        </Bar>
-                        <Bar dataKey="Botany_neg" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Botany_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `Bo${v}` : ''} />
-                        </Bar>
-                        <Bar dataKey="Zoology_neg" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false}>
-                          <LabelList dataKey="Zoology_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v < 0 ? `Z${v}` : ''} />
+                        <Bar dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Zoology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 && v !== undefined ? `Z${v}` : ''} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
