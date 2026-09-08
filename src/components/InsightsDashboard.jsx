@@ -541,8 +541,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <ResponsiveContainer width="100%" height={180}>
                   <PieChart>
                     <Pie 
-                      data={sorted.map(c => ({...c, equalValue: 1}))} 
-                      dataKey="equalValue" 
+                      data={sorted} 
+                      dataKey="avg" 
                       nameKey="code" 
                       cx="50%" 
                       cy="50%" 
