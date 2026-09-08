@@ -191,6 +191,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                    const label = centre ? `${shortName} (${centre})` : shortName;
                    
                    let d = { name: label, total: s.marks ?? s.score, Physics: 0, Chemistry: 0, Math: 0, Mathematics: 0, Biology: 0, Botany: 0, Zoology: 0 };
+                   let posSum = 0;
+                   let negSum = 0;
                    if (s.rawScores) {
                       ['Physics','Chemistry','Math','Mathematics','Biology','Botany','Zoology'].forEach(sub => {
                           const keys = Object.keys(s.rawScores);
@@ -203,7 +205,15 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                           }
                           if (matchedKey && !isNaN(Number(s.rawScores[matchedKey]))) {
                              let val = Number(s.rawScores[matchedKey]);
-                             d[sub] = val;
+                             if (val === 0) return;
+                             if (val > 0) {
+                                 d[sub] = [posSum, posSum + val];
+                                 posSum += val;
+                             } else {
+                                 d[sub] = [negSum + val, negSum];
+                                 negSum += val;
+                             }
+                             d[`${sub}_val`] = val;
                           }
                       });
                    }
@@ -227,7 +237,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 return (
                   <div style={{ height: 210, width: '100%', marginTop: 8 }}>
                     <ResponsiveContainer width="100%" height={210}>
-                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 20, left: 5, bottom: 5 }}>
+                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 20, left: 5, bottom: 5 }} barGap="-100%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
                         <XAxis type="number" domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
@@ -235,26 +245,26 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                            contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }}
                            cursor={{ fill: '#f8fafc' }}
                         />
-                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24}>
-                          <LabelList dataKey="Physics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `P${v}` : ''} />
+                        <Bar dataKey="Physics" fill="#3b82f6" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Physics_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `P${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6">
-                          <LabelList dataKey="Chemistry" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `C${v}` : ''} />
+                        <Bar dataKey="Chemistry" fill="#8b5cf6" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Chemistry_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `C${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Math" stackId="a" fill="#0ea5e9">
-                          <LabelList dataKey="Math" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `M${v}` : ''} />
+                        <Bar dataKey="Math" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Math_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `M${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Mathematics" stackId="a" fill="#0ea5e9">
-                          <LabelList dataKey="Mathematics" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `M${v}` : ''} />
+                        <Bar dataKey="Mathematics" fill="#0ea5e9" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Mathematics_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `M${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Biology" stackId="a" fill="#ec4899">
-                          <LabelList dataKey="Biology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `B${v}` : ''} />
+                        <Bar dataKey="Biology" fill="#ec4899" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Biology_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `B${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Botany" stackId="a" fill="#14b8a6">
-                          <LabelList dataKey="Botany" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `Bo${v}` : ''} />
+                        <Bar dataKey="Botany" fill="#14b8a6" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Botany_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `Bo${v}` : ''} />
                         </Bar>
-                        <Bar dataKey="Zoology" stackId="a" fill="#f59e0b">
-                          <LabelList dataKey="Zoology" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `Z${v}` : ''} />
+                        <Bar dataKey="Zoology" fill="#f59e0b" barSize={24} isAnimationActive={false}>
+                          <LabelList dataKey="Zoology_val" position="center" fill="#fff" fontSize={8} fontWeight={700} formatter={(v) => v !== 0 ? `Z${v}` : ''} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
