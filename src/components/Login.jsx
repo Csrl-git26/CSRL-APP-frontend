@@ -35,12 +35,18 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
+  const [loadingText, setLoadingText] = useState('Signing in...');
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
     setError('');
     setLoading(true);
+    setLoadingText('Signing in...');
     isLoggingIn.current = true;
+
+    const timer = setTimeout(() => {
+      setLoadingText('Waking server (takes up to 50s)...');
+    }, 4000);
 
     try {
       if (role === 'student') {
@@ -72,7 +78,9 @@ export default function Login() {
     } catch (err) {
       setError(err?.message || 'Sign-in failed. Please try again.');
     } finally {
+      clearTimeout(timer);
       setLoading(false);
+      setLoadingText('Signing in...');
     }
   };
 
@@ -233,7 +241,7 @@ export default function Login() {
             style={{ width: '100%', justifyContent: 'center', fontSize: 15, padding: 12 }}
           >
             <LogIn size={16} />
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? loadingText : 'Sign In'}
           </button>
           </form>
 
