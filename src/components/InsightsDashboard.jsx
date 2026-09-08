@@ -322,7 +322,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div>
 
       {/* ── Main Dashboard Layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
@@ -580,6 +580,85 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         if (active && payload && payload.length) {
                           const data = payload[0].payload;
                           const isAbove = (data.avg || 0) >= overallAvg;
+                          return (
+                            <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                              <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
+                                Centre {payload[0].name}
+                              </span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
+                    <span style={{ fontWeight: 600 }}>Above Average</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
+                    <span style={{ fontWeight: 600 }}>Below Average</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+      })()}
+      
+      {/* Fourth Column: Qual Pie Chart */}
+        {centreBoard.length > 0 && (() => {
+            const sorted = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0));
+            const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
+            return (
+            <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
+              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total qualification %</SectionTitle>
+              <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                <ResponsiveContainer width="100%" height={180}>
+                  <PieChart>
+                    <Pie 
+                      data={sorted} 
+                      dataKey="qualRate"
+                      startAngle={180}
+                      endAngle={-180} 
+                      nameKey="code" 
+                      cx="50%" 
+                      cy="50%" 
+                      innerRadius={35} 
+                      outerRadius={55} 
+                      paddingAngle={1}
+                      label={({ cx, cy, midAngle, outerRadius, name, index }) => {
+                        const RADIAN = Math.PI / 180;
+                        const radius = outerRadius + 8;
+                        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                        const isAbove = (sorted[index]?.qualRate || 0) >= overallAvg;
+                        const textRotation = -midAngle + (x < cx ? 180 : 0);
+                        return (
+                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9} fontWeight={600} transform={`rotate(${textRotation}, ${x}, ${y})`}>
+                            {name}
+                          </text>
+                        );
+                      }}
+                      labelLine={false}
+                    >
+                      {sorted.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={(entry.qualRate||0) >= overallAvg ? '#3b82f6' : '#f97316'} 
+                          style={{ cursor: onViewCentre ? 'pointer' : 'default', outline: 'none' }}
+                          onClick={() => onViewCentre && onViewCentre(entry.code)}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          const isAbove = (data.qualRate || 0) >= overallAvg;
                           return (
                             <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                               <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
