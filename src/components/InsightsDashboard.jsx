@@ -299,6 +299,16 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
 };
 
 
+
+const renderStudentBarShape = (props, dataKey, chartId, activeStudentBar) => {
+  const { fill, x, y, width, height, index } = props;
+  const isActive = activeStudentBar && activeStudentBar.chartId === chartId && activeStudentBar.index === index && activeStudentBar.dataKey === dataKey;
+  if (isActive) {
+    return <rect x={x - 2} y={y - 2} width={width + 4} height={height + 4} fill={fill} style={{ filter: 'brightness(1.1)', transition: 'all 0.2s' }} />;
+  }
+  return <rect x={x} y={y} width={width} height={height} fill={fill} style={{ transition: 'all 0.2s' }} />;
+};
+
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
@@ -383,25 +393,25 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         <XAxis type="number" domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
 
-                        <Bar dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Physics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Physics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Physics_orig" content={(props) => <CustomBarLabel {...props} prefix="P" />} />
                         </Bar>
-                        <Bar dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Chemistry", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Chemistry"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Chemistry_orig" content={(props) => <CustomBarLabel {...props} prefix="C" />} />
                         </Bar>
-                        <Bar dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Math", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Math"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Math_orig" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
-                        <Bar dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Mathematics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Mathematics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Mathematics_orig" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
-                        <Bar dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Biology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Biology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Biology_orig" content={(props) => <CustomBarLabel {...props} prefix="B" />} />
                         </Bar>
-                        <Bar dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Botany", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Botany"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Botany_orig" content={(props) => <CustomBarLabel {...props} prefix="Bo" />} />
                         </Bar>
-                        <Bar dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Zoology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Zoology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Zoology_orig" content={(props) => <CustomBarLabel {...props} prefix="Z" />} />
                         </Bar>
                       </BarChart>
