@@ -226,7 +226,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-const InteractivePieChart = ({ sorted, overallAvg, onViewCentre }) => {
+const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   return (
     <PieChart>
@@ -253,7 +253,8 @@ const InteractivePieChart = ({ sorted, overallAvg, onViewCentre }) => {
           const radius = outerRadius + 15;
           const x = cx + radius * Math.cos(-midAngle * RADIAN);
           const y = cy + radius * Math.sin(-midAngle * RADIAN);
-          const isAbove = (sorted[index]?.avg !== undefined ? sorted[index].avg : sorted[index]?.qualRate || 0) >= overallAvg;
+          const val = sorted[index]?.[compareKey] || 0;
+          const isAbove = val >= cutoff;
           const textRotation = -midAngle + (x < cx ? 180 : 0);
           const isActive = index === activeIndex;
           return (
@@ -265,7 +266,8 @@ const InteractivePieChart = ({ sorted, overallAvg, onViewCentre }) => {
         labelLine={false}
       >
         {sorted.map((entry, index) => {
-           const isAbove = (entry.avg !== undefined ? entry.avg : entry.qualRate || 0) >= overallAvg;
+           const val = entry[compareKey] || 0;
+           const isAbove = val >= cutoff;
            return (
           <Cell 
             key={`cell-${index}`} 
@@ -279,7 +281,8 @@ const InteractivePieChart = ({ sorted, overallAvg, onViewCentre }) => {
         content={({ active, payload }) => {
           if (active && payload && payload.length) {
             const data = payload[0].payload;
-            const isAbove = (data.avg !== undefined ? data.avg : data.qualRate || 0) >= overallAvg;
+            const val = data[compareKey] || 0;
+            const isAbove = val >= cutoff;
             return (
               <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                 <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
@@ -679,7 +682,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total Average Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
-                  <InteractivePieChart sorted={sorted} overallAvg={overallAvg} onViewCentre={onViewCentre} />
+                  <InteractivePieChart sorted={sorted} cutoff={overallAvg} compareKey="avg" onViewCentre={onViewCentre} />
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
@@ -706,16 +709,16 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total qualification %</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
-                  <InteractivePieChart sorted={sorted} overallAvg={overallAvg} onViewCentre={onViewCentre} />
+                  <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>Above Average</span>
+                    <span style={{ fontWeight: 600 }}>&ge; 80% Qual</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>Below Average</span>
+                    <span style={{ fontWeight: 600 }}>&lt; 80% Qual</span>
                   </div>
                 </div>
               </div>
