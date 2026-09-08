@@ -57,15 +57,15 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
             <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
             <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={25} />
-            <Bar shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Rank 1" onClick={(data) => onViewCentre && data.top1Code && onViewCentre(data.top1Code)} style={{ cursor: 'pointer' }}>
+            <Bar isAnimationActive={false} shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Rank 1" onClick={(data) => onViewCentre && data.top1Code && onViewCentre(data.top1Code)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top1Code" position="top" fill="#475569" fontSize={8} fontWeight={700} formatter={(v) => v || ''} />
               <LabelList dataKey="top1Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
-            <Bar shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Rank 2" onClick={(data) => onViewCentre && data.top2Code && onViewCentre(data.top2Code)} style={{ cursor: 'pointer' }}>
+            <Bar isAnimationActive={false} shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Rank 2" onClick={(data) => onViewCentre && data.top2Code && onViewCentre(data.top2Code)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top2Code" position="top" fill="#475569" fontSize={8} fontWeight={700} formatter={(v) => v || ''} />
               <LabelList dataKey="top2Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
-            <Bar shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Rank 3" onClick={(data) => onViewCentre && data.top3Code && onViewCentre(data.top3Code)} style={{ cursor: 'pointer' }}>
+            <Bar isAnimationActive={false} shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Rank 3" onClick={(data) => onViewCentre && data.top3Code && onViewCentre(data.top3Code)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top3Code" position="top" fill="#475569" fontSize={8} fontWeight={700} formatter={(v) => v || ''} />
               <LabelList dataKey="top3Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
