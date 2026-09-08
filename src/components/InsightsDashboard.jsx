@@ -553,7 +553,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       paddingAngle={1}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
-                        const radius = outerRadius + 18;
+                        const radius = outerRadius + 8;
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
                         const isAbove = (sorted[index]?.avg || 0) >= overallAvg;
