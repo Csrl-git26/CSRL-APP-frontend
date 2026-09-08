@@ -536,7 +536,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             return (
             <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
               boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total Average Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
                   <PieChart>
