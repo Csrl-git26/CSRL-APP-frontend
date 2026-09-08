@@ -231,7 +231,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                    const centre = s.center || '';
                    const label = centre ? `${shortName} (${centre})` : shortName;
                    
-                   let d = { name: label, total: s.marks ?? s.score, Physics: 0, Chemistry: 0, Math: 0, Mathematics: 0, Biology: 0, Botany: 0, Zoology: 0 };
+                   let d = { studentId: s.roll || s.id, name: label, total: s.marks ?? s.score, Physics: 0, Chemistry: 0, Math: 0, Mathematics: 0, Biology: 0, Botany: 0, Zoology: 0 };
                    if (s.rawScores) {
                       ['Physics','Chemistry','Math','Mathematics','Biology','Botany','Zoology'].forEach(sub => {
                           const keys = Object.keys(s.rawScores);
@@ -267,7 +267,18 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 return (
                   <div style={{ height: 210, width: '100%', marginTop: 8 }}>
                     <ResponsiveContainer width="100%" height={210}>
-                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 20, left: 5, bottom: 5 }} stackOffset="sign">
+                      <BarChart 
+                        data={chartData} 
+                        layout="vertical" 
+                        margin={{ top: 10, right: 20, left: 5, bottom: 5 }} 
+                        stackOffset="sign"
+                        onClick={(e) => {
+                          if (e && e.activePayload && e.activePayload.length > 0 && e.activePayload[0].payload.studentId) {
+                            if (onViewStudent) onViewStudent(e.activePayload[0].payload.studentId);
+                          }
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
                         <XAxis type="number" domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
