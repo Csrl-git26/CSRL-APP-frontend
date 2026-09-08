@@ -20,7 +20,6 @@ import {
 const ADMIN_NAV = [
   { section: 'Overview' },
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
-  { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { section: 'Data Management' },
   { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
 ];
