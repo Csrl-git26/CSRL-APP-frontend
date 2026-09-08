@@ -554,12 +554,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
                         // Alternate radius to prevent overlapping
-                        const radius = outerRadius + 10 + (index % 2 === 0 ? 0 : 12);
+                        const radius = outerRadius + 8 + (index % 3) * 12;
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
                         const isAbove = (sorted[index]?.avg || 0) >= overallAvg;
                         return (
-                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={10} fontWeight={600}>
+                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9} fontWeight={600}>
                             {name}
                           </text>
                         );
