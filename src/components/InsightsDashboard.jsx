@@ -629,7 +629,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       onMouseLeave={() => setActiveAvgIndex(-1)}
                       onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
                       style={{ cursor: 'pointer' }}
-                      label={({ cx, cy, midAngle, outerRadius, name, index }) => {
+                      label={({ cx, cy, midAngle, outerRadius, payload, index }) => {
                         const RADIAN = Math.PI / 180;
                         const radius = outerRadius + 15;
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -638,7 +638,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         const textRotation = -midAngle + (x < cx ? 180 : 0);
                         return (
                           <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9} fontWeight={600} transform={`rotate(${textRotation}, ${x}, ${y})`}>
-                            {name}
+                            {payload?.code || ""}
                           </text>
                         );
                       }}
@@ -714,7 +714,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       onMouseLeave={() => setActiveQualIndex(-1)}
                       onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
                       style={{ cursor: 'pointer' }}
-                      label={({ cx, cy, midAngle, outerRadius, name, index }) => {
+                      label={({ cx, cy, midAngle, outerRadius, payload, index }) => {
                         const RADIAN = Math.PI / 180;
                         const radius = outerRadius + 15;
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -723,7 +723,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         const textRotation = -midAngle + (x < cx ? 180 : 0);
                         return (
                           <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9} fontWeight={600} transform={`rotate(${textRotation}, ${x}, ${y})`}>
-                            {name}
+                            {payload?.code || ""}
                           </text>
                         );
                       }}
