@@ -210,7 +210,12 @@ const CustomBarLabel = (props) => {
 
 
 const renderActiveShape = (props) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, midAngle } = props;
+  const RADIAN = Math.PI / 180;
+  const radius = outerRadius + 15;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const textRotation = -midAngle + (x < cx ? 180 : 0);
   return (
     <g>
       <Sector
@@ -222,14 +227,83 @@ const renderActiveShape = (props) => {
         endAngle={endAngle}
         fill={fill}
       />
+      <text x={x} y={y} fill={fill} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={10} fontWeight={800} transform={`rotate(${textRotation}, ${x}, ${y})`}>
+        {payload?.code || ""}
+      </text>
     </g>
   );
 };
 
+const InteractivePieChart = ({ sorted, overallAvg, onViewCentre }) => {
+  const [activeIndex, setActiveIndex] = useState(-1);
+  return (
+    <PieChart>
+      <Pie 
+        data={sorted} 
+        dataKey="equalSlice"
+        startAngle={180}
+        endAngle={-180} 
+        nameKey="code" 
+        cx="50%" 
+        cy="50%" 
+        innerRadius={35} 
+        outerRadius={55} 
+        paddingAngle={1}
+        activeIndex={activeIndex}
+        activeShape={renderActiveShape}
+        onMouseEnter={(_, index) => setActiveIndex(index)}
+        onMouseLeave={() => setActiveIndex(-1)}
+        onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
+        style={{ cursor: 'pointer' }}
+        label={({ cx, cy, midAngle, outerRadius, payload, index }) => {
+          const RADIAN = Math.PI / 180;
+          const radius = outerRadius + 15;
+          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+          const isAbove = (sorted[index]?.avg !== undefined ? sorted[index].avg : sorted[index]?.qualRate || 0) >= overallAvg;
+          const textRotation = -midAngle + (x < cx ? 180 : 0);
+          return (
+            <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9} fontWeight={600} transform={`rotate(${textRotation}, ${x}, ${y})`}>
+              {payload?.code || ""}
+            </text>
+          );
+        }}
+        labelLine={false}
+      >
+        {sorted.map((entry, index) => {
+           const isAbove = (entry.avg !== undefined ? entry.avg : entry.qualRate || 0) >= overallAvg;
+           return (
+          <Cell 
+            key={`cell-${index}`} 
+            fill={isAbove ? '#3b82f6' : '#f97316'} 
+            style={{ cursor: onViewCentre ? 'pointer' : 'default', outline: 'none' }}
+            onClick={() => onViewCentre && onViewCentre(entry.code)}
+          />
+        )})}
+      </Pie>
+      <Tooltip 
+        content={({ active, payload }) => {
+          if (active && payload && payload.length) {
+            const data = payload[0].payload;
+            const isAbove = (data.avg !== undefined ? data.avg : data.qualRate || 0) >= overallAvg;
+            return (
+              <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
+                  Centre {payload[0].name}
+                </span>
+              </div>
+            );
+          }
+          return null;
+        }}
+      />
+    </PieChart>
+  );
+};
+
+
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
-  const [activeAvgIndex, setActiveAvgIndex] = useState(-1);
-  const [activeQualIndex, setActiveQualIndex] = useState(-1);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -611,65 +685,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total Average Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
-                  <PieChart>
-                    <Pie 
-                      data={sorted} 
-                      dataKey="equalSlice"
-                      startAngle={180}
-                      endAngle={-180} 
-                      nameKey="code" 
-                      cx="50%" 
-                      cy="50%" 
-                      innerRadius={35} 
-                      outerRadius={55} 
-                      paddingAngle={1}
-                      activeIndex={activeAvgIndex}
-                      activeShape={renderActiveShape}
-                      onMouseEnter={(_, index) => setActiveAvgIndex(index)}
-                      onMouseLeave={() => setActiveAvgIndex(-1)}
-                      onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
-                      style={{ cursor: 'pointer' }}
-                      label={({ cx, cy, midAngle, outerRadius, payload, index }) => {
-                        const RADIAN = Math.PI / 180;
-                        const radius = outerRadius + 15;
-                        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                        const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                        const isAbove = (sorted[index]?.avg || 0) >= overallAvg;
-                        const textRotation = -midAngle + (x < cx ? 180 : 0);
-                        return (
-                          <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={9} fontWeight={600} transform={`rotate(${textRotation}, ${x}, ${y})`}>
-                            {payload?.code || ""}
-                          </text>
-                        );
-                      }}
-                      labelLine={false}
-                    >
-                      {sorted.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={(entry.avg||0) >= overallAvg ? '#3b82f6' : '#f97316'} 
-                          style={{ cursor: onViewCentre ? 'pointer' : 'default', outline: 'none' }}
-                          onClick={() => onViewCentre && onViewCentre(entry.code)}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      content={({ active, payload }) => {
-                        if (active && payload && payload.length) {
-                          const data = payload[0].payload;
-                          const isAbove = (data.avg || 0) >= overallAvg;
-                          return (
-                            <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                              <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
-                                Centre {payload[0].name}
-                              </span>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                  </PieChart>
+                  <InteractivePieChart sorted={sorted} overallAvg={overallAvg} onViewCentre={onViewCentre} />
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
