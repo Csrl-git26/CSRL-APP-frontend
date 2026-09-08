@@ -310,6 +310,7 @@ const renderStudentBarShape = (props, dataKey, chartId, activeStudentBar) => {
 };
 
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
+  const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
