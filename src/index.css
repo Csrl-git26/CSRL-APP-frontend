@@ -22,9 +22,9 @@
   --red-bg: #fdecea;
   --yellow: #d97706;
   --yellow-bg: #fffbeb;
-  --shadow: 0 2px 12px rgba(26, 79, 160, .10);
+  --shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025);
   --shadow-lg: 0 8px 32px rgba(26, 79, 160, .18);
-  --radius: 10px;
+  --radius: 16px;
   --radius-sm: 6px;
 }
 html {
@@ -103,6 +103,7 @@ input, select, textarea {
   background: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  border: 1px solid #f1f5f9;
   padding: 20px;
 }
 .badge {

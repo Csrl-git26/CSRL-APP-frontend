@@ -18,22 +18,22 @@ const AVATAR_COLORS = [
   ['#7c3aed', '#f3f0ff'], ['#0891b2', '#e0f7fa'],
 ];
 
-function SectionTitle({ Icon, children, color = '#1a4fa0' }) {
+function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   return (
-    <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:6,
-      fontSize:14, fontWeight:800, color, letterSpacing:0.2 }}>
-      <Icon size={15} />{children}
+    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10,
+      fontSize:15, fontWeight:800, color: '#0f172a', letterSpacing:0.2 }}>
+      <Icon size={18} color={color} />{children}
     </div>
   );
 }
 
 function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
   return (
-    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, borderRadius:10, padding:'6px 12px', display:'flex',
-      alignItems:'center', gap:12, boxShadow:'0 1px 4px rgba(0,0,0,0.07)', flex:1, minWidth:0 }}>
-      <div style={{ width:34, height:34, borderRadius:8, background:color+'22',
+    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, borderRadius:16, padding:'14px 18px', display:'flex',
+      alignItems:'center', gap:12, boxShadow:'0 4px 6px -1px rgba(0, 0, 0, 0.05)', flex:1, minWidth:0 }}>
+      <div style={{ width:42, height:42, borderRadius:12, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-        <Icon size={18} color={color}/>
+        <Icon size={22} color={color}/>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
@@ -454,7 +454,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard icon={Users}    value={totalStudents} label="Total Students" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="Active Centres" onClick={onActiveCentresClick}
-          sub={`${redFlagCentres.length} need attention`} bg="#fff7ed" color="#b45309"/>
+          sub={`${redFlagCentres.length} need attention`} bg="linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)" color="#b45309"/>
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
@@ -465,7 +465,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
-          sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#faf5ff" color="#7c3aed"/>
+          sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)" color="#7c3aed"/>
       </div>
 
       {/* ── Main Dashboard Layout ── */}
@@ -477,8 +477,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
         return (
-            <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
-              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0' }}>
+            <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
+              boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9' }}>
               
               {(() => {
                 const topCentres = sorted.slice(0,5).map((c,i) => ({...c, rank: i+1}));
@@ -581,7 +581,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         </div> {/* Close Stacked Left Column */}
             
         {/* Middle Column: Radial Progress Chart */}
-        <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+        <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px', boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <SectionTitle Icon={PieChartIcon} color="#2563eb">
               {showBottom5Qual ? 'Bottom 5 Centres - Qual %' : 'Top 5 Centres - Qual %'}
@@ -677,8 +677,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
-            <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
-              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+            <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
+              boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total Average Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
@@ -704,8 +704,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const sorted = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
-            <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
-              boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+            <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
+              boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">Centre Distribution - Total qualification %</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
