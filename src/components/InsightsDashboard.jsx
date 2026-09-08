@@ -441,7 +441,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px', boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <SectionTitle Icon={PieChartIcon} color="#2563eb">
-              {showBottom5Qual ? 'Bottom 5 Centres Qual %' : 'Top 5 Centres Qual %'}
+              {showBottom5Qual ? 'Bottom 5 Centres - Qual %' : 'Top 5 Centres - Qual %'}
             </SectionTitle>
             <span 
               onClick={() => setShowBottom5Qual(!showBottom5Qual)}
