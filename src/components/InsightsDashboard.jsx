@@ -217,7 +217,7 @@ const renderActiveShape = (props) => {
         cx={cx}
         cy={cy}
         innerRadius={innerRadius}
-        outerRadius={outerRadius + 8}
+        outerRadius={outerRadius + 5}
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
@@ -631,7 +631,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       style={{ cursor: 'pointer' }}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
-                        const radius = outerRadius + 8;
+                        const radius = outerRadius + 15;
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
                         const isAbove = (sorted[index]?.avg || 0) >= overallAvg;
@@ -716,7 +716,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       style={{ cursor: 'pointer' }}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
-                        const radius = outerRadius + 8;
+                        const radius = outerRadius + 15;
                         const x = cx + radius * Math.cos(-midAngle * RADIAN);
                         const y = cy + radius * Math.sin(-midAngle * RADIAN);
                         const isAbove = (sorted[index]?.qualRate || 0) >= overallAvg;
