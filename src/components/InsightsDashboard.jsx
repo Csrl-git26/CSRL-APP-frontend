@@ -250,6 +250,7 @@ const InteractivePieChart = ({ sorted, overallAvg, onViewCentre }) => {
         outerRadius={55} 
         paddingAngle={1}
         activeIndex={activeIndex}
+        isAnimationActive={false}
         activeShape={renderActiveShape}
         onMouseEnter={(_, index) => setActiveIndex(index)}
         onMouseLeave={() => setActiveIndex(-1)}
