@@ -1988,7 +1988,7 @@ export default function AdminDashboard() {
           </div>
         )}
         <div>
-          <h1>CSRL Management Dashboard</h1>
+          <h1>CSRL Dashboard</h1>
 
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
