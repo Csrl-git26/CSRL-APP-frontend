@@ -5,7 +5,7 @@ import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
 } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
+import { Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
 
 function pct(n, d) { return !d ? 0 : Math.round((n / d) * 100); }
 
@@ -208,8 +208,28 @@ const CustomBarLabel = (props) => {
 
 
 
+
+const renderActiveShape = (props) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 8}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+    </g>
+  );
+};
+
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
+  const [activeAvgIndex, setActiveAvgIndex] = useState(-1);
+  const [activeQualIndex, setActiveQualIndex] = useState(-1);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -603,6 +623,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       innerRadius={35} 
                       outerRadius={55} 
                       paddingAngle={1}
+                      activeIndex={activeAvgIndex}
+                      activeShape={renderActiveShape}
+                      onMouseEnter={(_, index) => setActiveAvgIndex(index)}
+                      onMouseLeave={() => setActiveAvgIndex(-1)}
+                      onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
+                      style={{ cursor: 'pointer' }}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
                         const radius = outerRadius + 8;
@@ -682,6 +708,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       innerRadius={35} 
                       outerRadius={55} 
                       paddingAngle={1}
+                      activeIndex={activeQualIndex}
+                      activeShape={renderActiveShape}
+                      onMouseEnter={(_, index) => setActiveQualIndex(index)}
+                      onMouseLeave={() => setActiveQualIndex(-1)}
+                      onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
+                      style={{ cursor: 'pointer' }}
                       label={({ cx, cy, midAngle, outerRadius, name, index }) => {
                         const RADIAN = Math.PI / 180;
                         const radius = outerRadius + 8;
