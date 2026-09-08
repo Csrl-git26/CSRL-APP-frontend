@@ -531,7 +531,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
         {/* Right Column: Pie Chart */}
         {centreBoard.length > 0 && (() => {
-            const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0));
+            const sorted = [...centreBoard].sort((a,b) => (a.avg||0)-(b.avg||0));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
             <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
