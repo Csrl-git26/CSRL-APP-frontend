@@ -190,7 +190,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                    const centre = s.center || '';
                    const label = centre ? `${shortName} (${centre})` : shortName;
                    
-                   let d = { name: label, total: s.marks ?? s.score };
+                   let d = { name: label, total: s.marks ?? s.score, Physics: 0, Chemistry: 0, Math: 0, Mathematics: 0, Biology: 0, Botany: 0, Zoology: 0 };
                    if (s.rawScores) {
                       ['Physics','Chemistry','Math','Mathematics','Biology','Botany','Zoology'].forEach(sub => {
                           const keys = Object.keys(s.rawScores);
@@ -226,11 +226,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 
                 return (
                   <div style={{ height: 210, width: '100%', marginTop: 8 }}>
-                    <ResponsiveContainer>
-                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 10, left: 40, bottom: 5 }}>
+                    <ResponsiveContainer width="100%" height={210}>
+                      <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 20, left: 60, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
-                        <XAxis type="number" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
-                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={70} />
+                        <XAxis type="number" domain={[0, 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
+                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={80} />
                         <Tooltip 
                            contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }}
                            cursor={{ fill: '#f8fafc' }}
