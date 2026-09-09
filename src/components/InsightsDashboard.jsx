@@ -380,7 +380,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
     return (
         <div style={{ background:'#fff', borderRadius:14, padding: 20,
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', flex: 1, minWidth: 0 }}>
-          <SectionTitle Icon={icon} color={color}>{title} — {selectedTestKey||'Overall'}</SectionTitle>
+          <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
           {students.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : (() => {
