@@ -21,7 +21,7 @@ const AVATAR_COLORS = [
 function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   return (
     <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10,
-      fontSize:15, fontWeight:800, color: '#0f172a', letterSpacing:0.2 }}>
+      fontSize:15, fontWeight:800, color: '#0f172a', letterSpacing:0.2, whiteSpace: 'nowrap' }}>
       <Icon size={18} color={color} />{children}
     </div>
   );
