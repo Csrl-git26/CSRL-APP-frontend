@@ -324,9 +324,10 @@ const renderStudentBarShape = (props, dataKey, chartId, activeStudentBar) => {
   );
 };
 
-const renderRadialBarShape = (props, activeRadialIndex) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, index } = props;
-  const isActive = activeRadialIndex === index;
+const renderRadialBarShape = (props, activeRadialId) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, name, payload } = props;
+  const currentId = name || payload?.name;
+  const isActive = activeRadialId && currentId && activeRadialId === currentId;
   
   const currentInner = isActive ? innerRadius - 2 : innerRadius;
   const currentOuter = isActive ? outerRadius + 2 : outerRadius;
@@ -342,7 +343,7 @@ const renderRadialBarShape = (props, activeRadialIndex) => {
 
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [activeStudentBar, setActiveStudentBar] = useState(null);
-  const [activeRadialIndex, setActiveRadialIndex] = useState(null);
+  const [activeRadialId, setActiveRadialId] = useState(null);
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
@@ -695,9 +696,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       background={{ fill: '#f1f5f9' }} 
                       clockWise={true} 
                       dataKey="value" 
-                      shape={(props) => renderRadialBarShape(props, activeRadialIndex)}
-                      onMouseEnter={(_, index) => setActiveRadialIndex(index)}
-                      onMouseLeave={() => setActiveRadialIndex(null)}
+                      shape={(props) => renderRadialBarShape(props, activeRadialId)}
+                      onMouseEnter={(data) => setActiveRadialId(data?.name || data?.payload?.name)}
+                      onMouseLeave={() => setActiveRadialId(null)}
                       label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%` }}
                       onClick={(data, index) => { if (onViewCentre && data && data.name) { onViewCentre(data.name); } else if (onViewCentre && data && data.payload && data.payload.name) { onViewCentre(data.payload.name); } }}
                       style={{ cursor: 'pointer' }}
