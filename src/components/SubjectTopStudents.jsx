@@ -3,8 +3,15 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, C
 import { Activity } from 'lucide-react';
 
 const renderBarShape = (props, dataKey, activeItem) => {
-  const { fill, x, y, width, height, index } = props;
+  const { fill, x, y, width, height, index, payload } = props;
   const isActive = activeItem && activeItem.index === index && activeItem.dataKey === dataKey;
+  
+  let barFill = fill;
+  if (payload && payload.subject) {
+    if (payload.subject === 'PHY') barFill = '#3b82f6';
+    else if (payload.subject === 'CHEM') barFill = '#8b5cf6';
+    else if (payload.subject === 'MATH') barFill = '#0ea5e9';
+  }
   
   const adjustedX = isActive ? x - 2 : x;
   const adjustedY = isActive ? y - 2 : y;
@@ -13,7 +20,7 @@ const renderBarShape = (props, dataKey, activeItem) => {
   
   return (
     <g>
-      <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill={fill} rx={6} ry={6} style={{ filter: isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+      <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill={barFill} rx={6} ry={6} style={{ filter: isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }} />
       <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill="url(#bar3DVertical)" rx={6} ry={6} style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', pointerEvents: 'none', mixBlendMode: 'overlay' }} />
     </g>
   );
