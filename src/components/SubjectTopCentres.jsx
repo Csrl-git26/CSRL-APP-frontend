@@ -63,9 +63,11 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
       <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 15, fontWeight: 800, color: '#0f172a', letterSpacing: 0.2, whiteSpace: 'nowrap' }}>
-          <Activity size={18} color="#3b82f6" aria-hidden="true" />
-          Subject Top 3 CNT
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', width:28, height:28, borderRadius:8, background:'linear-gradient(135deg,#3b82f622,#3b82f644)', border:'1px solid #3b82f633', boxShadow:'0 2px 8px #3b82f633', flexShrink:0 }}>
+            <Activity size={15} color="#3b82f6" strokeWidth={2.5} aria-hidden="true" />
+          </div>
+          <span style={{ fontSize:14, fontWeight:800, letterSpacing:0.1, background:'linear-gradient(90deg,#0f172a 0%,#1e40af 60%,#3b82f6 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>Subject Top 3 CNT</span
         </div>
         <div style={{
           position: 'absolute', bottom: 0, left: 0, width: '100%', height: 2,

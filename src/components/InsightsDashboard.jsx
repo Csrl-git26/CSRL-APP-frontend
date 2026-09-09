@@ -20,19 +20,42 @@ const AVATAR_COLORS = [
 
 function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   return (
-    <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
-      <div style={{ display:'flex', alignItems:'center', gap:8, 
-        fontSize:15, fontWeight:800, color: '#0f172a', letterSpacing:0.2, whiteSpace: 'nowrap' }}>
-        <Icon size={18} color={color} />{children}
+    <div style={{ position: 'relative', paddingBottom: 10, marginBottom: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
+        {/* Icon in a small glassy pill */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          width: 28, height: 28, borderRadius: 8,
+          background: `linear-gradient(135deg, ${color}22, ${color}44)`,
+          border: `1px solid ${color}33`,
+          boxShadow: `0 2px 8px ${color}33`,
+          flexShrink: 0,
+        }}>
+          <Icon size={15} color={color} strokeWidth={2.5} />
+        </div>
+        {/* Gradient text title */}
+        <span style={{
+          fontSize: 14,
+          fontWeight: 800,
+          letterSpacing: 0.1,
+          background: `linear-gradient(90deg, #0f172a 0%, #1e40af 60%, ${color} 100%)`,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}>
+          {children}
+        </span>
       </div>
+      {/* Glowing underline */}
       <div style={{
         position: 'absolute',
         bottom: 0,
         left: 0,
-        width: '100%',
+        width: '60%',
         height: 2,
-        background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.5), transparent)',
-        boxShadow: '0 1px 3px rgba(59, 130, 246, 0.3)'
+        borderRadius: 2,
+        background: `linear-gradient(90deg, ${color}, ${color}44, transparent)`,
+        boxShadow: `0 1px 6px ${color}55`,
       }} />
     </div>
   );
