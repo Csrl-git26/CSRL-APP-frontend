@@ -624,7 +624,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
                 return (
                   <>
-                    <SectionTitle Icon={Star} color="#2563eb">Top 5 CNT - Average Score</SectionTitle>
+                    <SectionTitle Icon={Star} color="#2563eb">Top 5 CNT - Avg Score</SectionTitle>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 6 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
@@ -747,7 +747,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             return (
             <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
               boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Distribution - Total Average Score</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Distribution - Total Avg Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={overallAvg} compareKey="avg" onViewCentre={onViewCentre} />
@@ -755,11 +755,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>Above Average</span>
+                    <span style={{ fontWeight: 600 }}>Above Avg</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>Below Average</span>
+                    <span style={{ fontWeight: 600 }}>Below Avg</span>
                   </div>
                 </div>
               </div>
