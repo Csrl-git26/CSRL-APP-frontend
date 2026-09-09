@@ -624,7 +624,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
                 return (
                   <>
-                    <SectionTitle Icon={Star} color="#2563eb">Top 5 Centres by Average Score</SectionTitle>
+                    <SectionTitle Icon={Star} color="#2563eb">Top 5 Centres - Average Score</SectionTitle>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 6 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
