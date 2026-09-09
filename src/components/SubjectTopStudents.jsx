@@ -48,18 +48,38 @@ const renderCentreLabel = (props) => {
   const { x, y, width, height, value } = props;
   if (!value) return null;
   return (
-    <text
-      x={x + width / 2}
-      y={y + 17}
-      fill="#fff"
-      fontSize={7}
-      fontWeight={900}
-      textAnchor="middle"
-      dominantBaseline="auto"
-      letterSpacing={0.5}
-    >
-      {value}
-    </text>
+    <g>
+      {/* Sharp outline stroke first (rendered behind) */}
+      <text
+        x={x + width / 2}
+        y={y + 17}
+        fill="rgba(0,0,0,0.35)"
+        fontSize={6}
+        fontWeight={900}
+        textAnchor="middle"
+        dominantBaseline="auto"
+        letterSpacing={0.8}
+        stroke="rgba(0,0,0,0.35)"
+        strokeWidth={2.5}
+        strokeLinejoin="round"
+      >
+        {value}
+      </text>
+      {/* Crisp white text on top */}
+      <text
+        x={x + width / 2}
+        y={y + 17}
+        fill="#ffffff"
+        fontSize={6}
+        fontWeight={900}
+        textAnchor="middle"
+        dominantBaseline="auto"
+        letterSpacing={0.8}
+        style={{ filter: 'drop-shadow(0px 0px 1px rgba(255,255,255,0.9))' }}
+      >
+        {value}
+      </text>
+    </g>
   );
 };
 
