@@ -27,8 +27,12 @@ const renderBarShape = (props, dataKey, activeItem) => {
 };
 
 const renderCustomLabel = (props) => {
-  const { x, y, width, value } = props;
+  const { x, y, width, value, viewBox, payload } = props;
   if (!value) return null;
+  // value is student name (top1Code), payload has full row data
+  const centreKey = props.dataKey?.replace('Code', 'Centre');
+  const centre = props.payload?.[centreKey] || '';
+  const label = centre ? `${value} (${centre})` : value;
   return (
     <text 
       x={x + width / 2} 
@@ -39,7 +43,7 @@ const renderCustomLabel = (props) => {
       textAnchor="start" 
       transform={`rotate(-45 ${x + width / 2} ${y - 2})`}
     >
-      {value}
+      {label}
     </text>
   );
 };

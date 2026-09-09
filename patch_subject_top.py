@@ -1,0 +1,78 @@
+import sys
+
+filepath = 'src/components/SubjectTopCentres.jsx'
+with open(filepath, 'r') as f:
+    content = f.read()
+
+new_content = """import React, { useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, CartesianGrid } from 'recharts';
+import { Activity } from 'lucide-react';
+
+export default function SubjectTopCentres({ centreBoard }) {
+  const chartData = useMemo(() => {
+    if (!centreBoard || centreBoard.length === 0) return [];
+    
+    // Sort by Physics
+    const topPhy = [...centreBoard].sort((a,b) => (b.Physics || 0) - (a.Physics || 0)).slice(0, 3);
+    // Sort by Chemistry
+    const topChe = [...centreBoard].sort((a,b) => (b.Chemistry || 0) - (a.Chemistry || 0)).slice(0, 3);
+    // Sort by Math
+    const topMath = [...centreBoard].sort((a,b) => (b.Math || 0) - (a.Math || 0)).slice(0, 3);
+    
+    return [
+      {
+        subject: 'PHY',
+        top1Code: topPhy[0]?.code || '', top1Val: Math.round(topPhy[0]?.Physics || 0),
+        top2Code: topPhy[1]?.code || '', top2Val: Math.round(topPhy[1]?.Physics || 0),
+        top3Code: topPhy[2]?.code || '', top3Val: Math.round(topPhy[2]?.Physics || 0),
+      },
+      {
+        subject: 'CHEM',
+        top1Code: topChe[0]?.code || '', top1Val: Math.round(topChe[0]?.Chemistry || 0),
+        top2Code: topChe[1]?.code || '', top2Val: Math.round(topChe[1]?.Chemistry || 0),
+        top3Code: topChe[2]?.code || '', top3Val: Math.round(topChe[2]?.Chemistry || 0),
+      },
+      {
+        subject: 'MATH',
+        top1Code: topMath[0]?.code || '', top1Val: Math.round(topMath[0]?.Math || 0),
+        top2Code: topMath[1]?.code || '', top2Val: Math.round(topMath[1]?.Math || 0),
+        top3Code: topMath[2]?.code || '', top3Val: Math.round(topMath[2]?.Math || 0),
+      }
+    ];
+  }, [centreBoard]);
+
+  return (
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 800, color: '#2563eb', letterSpacing: '-0.3px', borderBottom: '2px solid #2563eb20', paddingBottom: 4, marginBottom: 12 }}>
+        <Activity size={16} aria-hidden="true" />
+        Subject Top 3
+      </div>
+      <div style={{ flex: 1, minHeight: 180 }}>
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart data={chartData} margin={{ top: 15, right: 5, left: -20, bottom: 0 }} barGap={2} barCategoryGap="15%">
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+            <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={25} />
+            <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', fontSize: 11 }} />
+            <Bar dataKey="top1Val" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Rank 1">
+              <LabelList dataKey="top1Code" position="top" fill="#475569" fontSize={8} fontWeight={700} formatter={(v) => v || ''} />
+              <LabelList dataKey="top1Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
+            </Bar>
+            <Bar dataKey="top2Val" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Rank 2">
+              <LabelList dataKey="top2Code" position="top" fill="#475569" fontSize={8} fontWeight={700} formatter={(v) => v || ''} />
+              <LabelList dataKey="top2Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
+            </Bar>
+            <Bar dataKey="top3Val" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Rank 3">
+              <LabelList dataKey="top3Code" position="top" fill="#475569" fontSize={8} fontWeight={700} formatter={(v) => v || ''} />
+              <LabelList dataKey="top3Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+"""
+
+with open(filepath, 'w') as f:
+    f.write(new_content)
