@@ -27,10 +27,8 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
           fontSize: 15,
           fontWeight: 800,
           letterSpacing: 0.2,
-          background: `linear-gradient(90deg, #1e3a8a, #4f46e5, #0ea5e9)`,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
+          color: 'rgba(37, 99, 235, 0.85)',
+          textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)',
         }}>
           {children}
         </span>
