@@ -266,7 +266,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
         style={{ cursor: 'pointer' }}
         label={({ cx, cy, midAngle, outerRadius, payload, index }) => {
           const RADIAN = Math.PI / 180;
-          const radius = outerRadius + 8;
+          const radius = outerRadius + 3;
           const x = cx + radius * Math.cos(-midAngle * RADIAN);
           const y = cy + radius * Math.sin(-midAngle * RADIAN);
           const val = sorted[index]?.[compareKey] || 0;
