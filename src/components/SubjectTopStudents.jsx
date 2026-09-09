@@ -26,11 +26,9 @@ const renderBarShape = (props, dataKey, activeItem) => {
   );
 };
 
-const makeLabel = (centreKey) => (props) => {
-  const { x, y, width, value, payload } = props;
+const renderCustomLabel = (props) => {
+  const { x, y, width, value } = props;
   if (!value) return null;
-  const centre = payload?.[centreKey] || '';
-  const label = centre ? `${value} (${centre})` : value;
   return (
     <text 
       x={x + width / 2} 
@@ -41,7 +39,7 @@ const makeLabel = (centreKey) => (props) => {
       textAnchor="start" 
       transform={`rotate(-45 ${x + width / 2} ${y - 2})`}
     >
-      {label}
+      {value}
     </text>
   );
 };
@@ -77,15 +75,15 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
             <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
             <YAxis domain={[0, 120]} ticks={[0, 30, 60, 90, 120]} tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={32} />
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Rank 1" onClick={(data) => onViewStudent && data.top1Roll && onViewStudent(data.top1Roll)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top1Code" content={makeLabel("top1Centre")} />
+              <LabelList dataKey="top1Code" content={renderCustomLabel} />
               <LabelList dataKey="top1Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Rank 2" onClick={(data) => onViewStudent && data.top2Roll && onViewStudent(data.top2Roll)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top2Code" content={makeLabel("top2Centre")} />
+              <LabelList dataKey="top2Code" content={renderCustomLabel} />
               <LabelList dataKey="top2Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Rank 3" onClick={(data) => onViewStudent && data.top3Roll && onViewStudent(data.top3Roll)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top3Code" content={makeLabel("top3Centre")} />
+              <LabelList dataKey="top3Code" content={renderCustomLabel} />
               <LabelList dataKey="top3Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
           </BarChart>
