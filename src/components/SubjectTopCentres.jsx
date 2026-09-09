@@ -57,7 +57,7 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
     <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.3px', borderBottom: '1px solid #f1f5f9', paddingBottom: 6, marginBottom: 14 }}>
         <Activity size={18} color="#3b82f6" aria-hidden="true" />
-        Subject Top 3
+        Subject Top 3 CNT
       </div>
       <div style={{ flex: 1, minHeight: 180 }}>
         <ResponsiveContainer width="100%" height={180}>
