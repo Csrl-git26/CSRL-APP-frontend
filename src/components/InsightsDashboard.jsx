@@ -706,7 +706,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     <Tooltip 
                       cursor={{ fill: 'transparent' }} 
                       contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }} 
-                      labelFormatter={(label, payload) => `Rank ${payload?.[0]?.payload?.rank || (5 - Number(label))}`}
+                      labelStyle={{ display: 'none' }}
                       formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
                     />
                     <Legend 
