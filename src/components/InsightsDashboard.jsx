@@ -703,12 +703,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       onClick={(data, index) => { if (onViewCentre && data && data.name) { onViewCentre(data.name); } else if (onViewCentre && data && data.payload && data.payload.name) { onViewCentre(data.payload.name); } }}
                       style={{ cursor: 'pointer' }}
                     />
-                    <Tooltip 
-                      cursor={{ fill: 'transparent' }} 
-                      contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12, fontWeight: 600 }} 
-                      labelStyle={{ display: 'none' }}
-                      formatter={(val, name, props) => [`${val}%`, props?.payload?.name || 'Qual Rate']}
-                    />
+
                     <Legend 
                       layout="vertical" 
                       verticalAlign="middle" 
