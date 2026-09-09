@@ -224,17 +224,30 @@ const renderPieShape = (props, activeIndex) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, index } = props;
   const isActive = activeIndex === index;
   const isBlue = fill === '#3b82f6';
-  
+
   const currentOuter = isActive ? outerRadius + 6 : outerRadius;
-  const glowColor = isBlue ? 'rgba(59,130,246,0.6)' : 'rgba(249,115,22,0.6)';
+  const depthOffset = isActive ? 6 : 4;
+
+  // Darker colors for the 3D side/depth layer
+  const depthFill = isBlue ? '#1e40af' : '#c2410c';
+
+  const glowColor = isBlue ? 'rgba(59,130,246,0.7)' : 'rgba(249,115,22,0.7)';
   const shadow = isActive
-    ? `drop-shadow(0px 0px 8px ${glowColor}) drop-shadow(0px 4px 10px rgba(0,0,0,0.3)) brightness(1.2)`
-    : `drop-shadow(0px 2px 5px rgba(0,0,0,0.18)) brightness(1.05)`;
-  
+    ? `drop-shadow(0px 0px 10px ${glowColor}) drop-shadow(0px 8px 14px rgba(0,0,0,0.45)) brightness(1.25)`
+    : `drop-shadow(0px 4px 7px rgba(0,0,0,0.28)) brightness(1.06)`;
+
   return (
     <g style={{ filter: shadow, transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={6} />
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#pieGloss)" cornerRadius={6} style={{ mixBlendMode: 'overlay', pointerEvents: 'none', opacity: 0.7 }} />
+      {/* 3D depth/side layer — darker, shifted down to create elevation */}
+      <Sector cx={cx} cy={cy + depthOffset} innerRadius={innerRadius - 1} outerRadius={currentOuter + 1}
+        startAngle={startAngle} endAngle={endAngle} fill={depthFill} cornerRadius={6} opacity={0.85} />
+      {/* Main top-face layer */}
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter}
+        startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={6} />
+      {/* Top-light gloss overlay */}
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter}
+        startAngle={startAngle} endAngle={endAngle} fill="url(#pieGloss)" cornerRadius={6}
+        style={{ mixBlendMode: 'overlay', pointerEvents: 'none', opacity: 0.75 }} />
     </g>
   );
 };
