@@ -690,6 +690,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     </defs>
                     <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                     <RadialBar 
+                      isAnimationActive={false}
                       minAngle={15} 
                       background={{ fill: '#f1f5f9' }} 
                       clockWise={true} 
