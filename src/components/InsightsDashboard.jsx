@@ -3,7 +3,7 @@ import SubjectTopCentres from './SubjectTopCentres';
 import SubjectTopStudents from './SubjectTopStudents';
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
-  BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
+  BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon, RefreshCcw
 } from 'lucide-react';
 import { Rectangle, Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
 
@@ -19,7 +19,82 @@ const AVATAR_COLORS = [
 ];
 
 function SectionTitle({ Icon, children, color = '#3b82f6' }) {
+
+  const renderQualCardSide = (isBottom5) => {
+    return (
+      <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', backfaceVisibility: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <SectionTitle Icon={PieChartIcon} color="#2563eb">
+            {isBottom5 ? 'Bottom 5 CNT - Qual\u00A0%' : 'Top 5 CNT - Qual\u00A0%'}
+          </SectionTitle>
+          <div 
+            onClick={() => setShowBottom5Qual(!showBottom5Qual)}
+            style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
+            title={`Flip to ${isBottom5 ? 'Top 5' : 'Bottom 5'}`}
+          >
+            <RefreshCcw size={16} />
+          </div>
+        </div>
+        <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          {(() => {
+            if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
+            const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
+            const top5Qual = isBottom5 ? sortedByQual.slice(-5) : sortedByQual.slice(0, 5);
+            
+            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+            const radialData = top5Qual.map((c, i) => {
+              const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
+              return { name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank };
+            }).reverse();
+            
+            const legendPayload = top5Qual.map((c, i) => {
+              const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
+              return { value: `${rank}. ${c.code}`, type: 'square', color: colors[i % colors.length] };
+            });
+
+            return (
+              <ResponsiveContainer width="100%" height={180}>
+                <RadialBarChart 
+                  cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} 
+                  data={radialData} startAngle={90} endAngle={-270}
+                >
+                  <defs>
+                    <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+                      <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+                      <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+                    </linearGradient>
+                  </defs>
+                  <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                  <RadialBar 
+                    isAnimationActive={false} minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" 
+                    shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)}
+                    label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }}
+                  />
+                  <Legend 
+                    layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} 
+                    content={(props) => (
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        {legendPayload.map((entry, index) => (
+                          <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
+                            <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
+                            {entry.value}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  />
+                </RadialBarChart>
+              </ResponsiveContainer>
+            );
+          })()}
+        </div>
+      </div>
+    );
+  };
+
   return (
+
     <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, whiteSpace:'nowrap' }}>
         <Icon size={18} color={color} />
