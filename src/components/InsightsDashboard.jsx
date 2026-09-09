@@ -20,9 +20,20 @@ const AVATAR_COLORS = [
 
 function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   return (
-    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10,
-      fontSize:15, fontWeight:800, color: '#0f172a', letterSpacing:0.2, whiteSpace: 'nowrap' }}>
-      <Icon size={18} color={color} />{children}
+    <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, 
+        fontSize:15, fontWeight:800, color: '#0f172a', letterSpacing:0.2, whiteSpace: 'nowrap' }}>
+        <Icon size={18} color={color} />{children}
+      </div>
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: 2,
+        background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.5), transparent)',
+        boxShadow: '0 1px 3px rgba(59, 130, 246, 0.3)'
+      }} />
     </div>
   );
 }
