@@ -330,18 +330,25 @@ const renderStudentBarShape = (props, dataKey, chartId, activeStudentBar) => {
   );
 };
 
-const renderRadialBarShape = (props) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+const renderRadialBarShape = (props, activeRadialIndex) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, index } = props;
+  const isActive = activeRadialIndex === index;
+  
+  const currentInner = isActive ? innerRadius - 2 : innerRadius;
+  const currentOuter = isActive ? outerRadius + 2 : outerRadius;
+  const shadow = isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))';
+  
   return (
-    <g style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))' }}>
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={10} />
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={10} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+    <g style={{ filter: shadow, transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+      <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={10} />
+      <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={10} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
     </g>
   );
 };
 
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [activeStudentBar, setActiveStudentBar] = useState(null);
+  const [activeRadialIndex, setActiveRadialIndex] = useState(null);
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
@@ -693,7 +700,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       background={{ fill: '#f1f5f9' }} 
                       clockWise={true} 
                       dataKey="value" 
-                      shape={renderRadialBarShape}
+                      shape={(props) => renderRadialBarShape(props, activeRadialIndex)}
+                      onMouseEnter={(_, index) => setActiveRadialIndex(index)}
+                      onMouseLeave={() => setActiveRadialIndex(null)}
                       label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%` }}
                       onClick={(data, index) => { if (onViewCentre && data && data.name) { onViewCentre(data.name); } else if (onViewCentre && data && data.payload && data.payload.name) { onViewCentre(data.payload.name); } }}
                       style={{ cursor: 'pointer' }}
