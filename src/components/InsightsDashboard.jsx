@@ -20,39 +20,30 @@ const AVATAR_COLORS = [
 
 function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   return (
-    <div style={{ position: 'relative', paddingBottom: 10, marginBottom: 14 }}>
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7,
-        background: `linear-gradient(135deg, ${color}18 0%, ${color}08 100%)`,
-        border: `1px solid ${color}30`,
-        borderRadius: 10,
-        padding: '5px 12px 5px 7px',
-        boxShadow: `0 2px 12px ${color}20, inset 0 1px 0 rgba(255,255,255,0.7)`,
-        backdropFilter: 'blur(4px)',
-      }}>
-        {/* Glowing icon */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          width: 24, height: 24, borderRadius: 7,
-          background: `linear-gradient(135deg, ${color}dd, ${color})`,
-          boxShadow: `0 2px 8px ${color}66`,
-          flexShrink: 0,
-        }}>
-          <Icon size={13} color="#fff" strokeWidth={2.5} />
-        </div>
-        {/* Vivid gradient text */}
+    <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, whiteSpace:'nowrap' }}>
+        <Icon size={18} color={color} />
         <span style={{
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: 800,
           letterSpacing: 0.2,
-          background: `linear-gradient(90deg, ${color} 0%, #7c3aed 60%, #0ea5e9 100%)`,
+          background: `linear-gradient(90deg, #1e3a8a, #4f46e5, #0ea5e9)`,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
-          lineHeight: 1,
         }}>
           {children}
         </span>
       </div>
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: 2,
+        background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.5), transparent)',
+        boxShadow: '0 1px 3px rgba(59, 130, 246, 0.3)'
+      }} />
     </div>
   );
 }
