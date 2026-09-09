@@ -56,7 +56,7 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
       </div>
       <div style={{ flex: 1, minHeight: 180 }}>
         <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={chartData} margin={{ top: 30, right: 10, left: -20, bottom: 0 }} barGap={4} barCategoryGap="5%" maxBarSize={30}>
+          <BarChart data={chartData} margin={{ top: 30, right: 5, left: -20, bottom: 0 }} barGap={4} barSize={26}>
             <defs>
               <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
