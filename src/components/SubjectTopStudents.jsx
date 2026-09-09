@@ -46,7 +46,7 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
       <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.3px', whiteSpace: 'nowrap' }}>
           <Activity size={18} color="#3b82f6" aria-hidden="true" />
-          Subject Top 3 Students
+          Subject Top 3 Stud
         </div>
         <div style={{
           position: 'absolute', bottom: 0, left: 0, width: '100%', height: 2,

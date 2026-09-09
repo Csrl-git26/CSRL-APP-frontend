@@ -529,7 +529,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
-        <KpiCard icon={Users}    value={totalStudents} label="Total Students" onClick={onTotalStudentsClick}
+        <KpiCard icon={Users}    value={totalStudents} label="Total Stud" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="Active CNT" onClick={onActiveCentresClick}
           sub={`${redFlagCentres.length} need attention`} bg="linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)" color="#b45309"/>
@@ -814,8 +814,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
 
       {/* Top & Bottom 5 Students (Each taking 1 column in the 4-col grid) */}
-      {renderStudentChart(top5, 'Top 5 Students', Trophy, '#2563eb')}
-      {renderStudentChart(bottom5, 'Bottom 5 Students', Star, '#2563eb')}
+      {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb')}
+      {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb')}
 
       </div> {/* End Main Dashboard Layout */}
 
