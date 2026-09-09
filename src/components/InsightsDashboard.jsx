@@ -770,96 +770,115 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
         </div> {/* Close Stacked Left Column */}
             
-        {/* Middle Column: Radial Progress Chart */}
-        <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <SectionTitle Icon={PieChartIcon} color="#2563eb">
-              {showBottom5Qual ? 'Bottom 5 CNT - Qual\u00A0%' : 'Top 5 CNT - Qual\u00A0%'}
-            </SectionTitle>
-            <span 
-              onClick={() => setShowBottom5Qual(!showBottom5Qual)}
-              style={{ fontSize: 10, fontWeight: 800, color: '#3b82f6', cursor: 'pointer', userSelect: 'none', padding: '2px 6px', background: '#eff6ff', borderRadius: 4, marginBottom: 6 }}
-            >
-              Show {showBottom5Qual ? 'Top 5' : 'Bottom 5'}
-            </span>
-          </div>
-          <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-            {(() => {
-              if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
-              const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
-              const top5Qual = showBottom5Qual ? sortedByQual.slice(-5) : sortedByQual.slice(0, 5);
-              
-              const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
-              // Reverse so the #1 rank is on the outermost ring
-              const radialData = top5Qual.map((c, i) => {
-                const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
-                return {
-                  name: c.code,
-                  value: Math.round(c.qualRate || 0),
-                  fill: colors[i % colors.length],
-                  rank
-                };
-              }).reverse();
-              
-              const legendPayload = top5Qual.map((c, i) => {
-                const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
-                return {
-                  value: `${rank}. ${c.code}`,
-                  type: 'square',
-                  color: colors[i % colors.length]
-                };
-              });
-              
-              const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
-
-              return (
-                <ResponsiveContainer width="100%" height={180}>
-                  <RadialBarChart 
-                    cx="40%" cy="50%" 
-                    innerRadius="30%" outerRadius="90%" 
-                    barSize={10} 
-                    data={radialData}
-                    startAngle={90} endAngle={-270}
+        {/* Middle Column: Radial Progress Chart (3D Flip Card) */}
+        <div style={{ perspective: 1000, height: '100%' }}>
+          <div style={{
+            position: 'relative', width: '100%', height: '100%',
+            transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            transformStyle: 'preserve-3d',
+            transform: showBottom5Qual ? 'rotateY(180deg)' : 'rotateY(0deg)'
+          }}>
+            {/* Front Side */}
+            <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
+              <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">Top 5 CNT - Qual&nbsp;%</SectionTitle>
+                  <div 
+                    onClick={() => setShowBottom5Qual(true)}
+                    style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
+                    title="Flip to Bottom 5"
                   >
-                    <defs>
-                      <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
-                        <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
-                        <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
-                      </linearGradient>
-                    </defs>
-                    <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                    <RadialBar 
-                      isAnimationActive={false}
-                      minAngle={15} 
-                      background={{ fill: '#f1f5f9' }} 
-                      clockWise={true} 
-                      dataKey="value" 
-                      shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)}
-                      label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }}
-                    />
+                    <RefreshCcw size={16} />
+                  </div>
+                </div>
+                <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  {(() => {
+                    if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
+                    const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
+                    const top5Qual = sortedByQual.slice(0, 5);
+                    const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+                    const radialData = top5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
+                    const legendPayload = top5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
+                    return (
+                      <ResponsiveContainer width="100%" height={180}>
+                        <RadialBarChart cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
+                          <defs>
+                            <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+                              <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+                              <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+                            </linearGradient>
+                          </defs>
+                          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                          <RadialBar isAnimationActive={false} minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }} />
+                          <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
+                            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                              {legendPayload.map((entry, index) => (
+                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
+                                  <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
+                                  {entry.value}
+                                </li>
+                              ))}
+                            </ul>
+                          )} />
+                        </RadialBarChart>
+                      </ResponsiveContainer>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
 
-                    <Legend 
-                      layout="vertical" 
-                      verticalAlign="middle" 
-                      wrapperStyle={{ right: 0 }} 
-                      content={(props) => (
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                          {legendPayload.map((entry, index) => (
-                            <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
-                              <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
-                              {entry.value}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    />
-                    
-                    
-                  </RadialBarChart>
-                </ResponsiveContainer>
-              );
-            })()}
+            {/* Back Side */}
+            <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+              <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">Bottom 5 CNT - Qual&nbsp;%</SectionTitle>
+                  <div 
+                    onClick={() => setShowBottom5Qual(false)}
+                    style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
+                    title="Flip to Top 5"
+                  >
+                    <RefreshCcw size={16} />
+                  </div>
+                </div>
+                <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  {(() => {
+                    if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
+                    const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
+                    const bottom5Qual = sortedByQual.slice(-5);
+                    const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+                    const radialData = bottom5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
+                    const legendPayload = bottom5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
+                    return (
+                      <ResponsiveContainer width="100%" height={180}>
+                        <RadialBarChart cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
+                          <defs>
+                            <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+                              <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+                              <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+                            </linearGradient>
+                          </defs>
+                          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                          <RadialBar isAnimationActive={false} minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }} />
+                          <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
+                            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                              {legendPayload.map((entry, index) => (
+                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
+                                  <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
+                                  {entry.value}
+                                </li>
+                              ))}
+                            </ul>
+                          )} />
+                        </RadialBarChart>
+                      </ResponsiveContainer>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
