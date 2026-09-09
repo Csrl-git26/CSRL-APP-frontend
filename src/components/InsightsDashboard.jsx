@@ -642,7 +642,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     
                     {bottomCentres.length > 0 && (
                       <>
-                        <SectionTitle Icon={Star} color="#2563eb">Bottom 5 CNT</SectionTitle>
+                        <SectionTitle Icon={Star} color="#2563eb">Bottom 5 CNT - Avg Score</SectionTitle>
                         <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
