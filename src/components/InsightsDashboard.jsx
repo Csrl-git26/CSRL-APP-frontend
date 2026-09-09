@@ -747,7 +747,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             return (
             <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
               boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Distribution - Total Avg Score</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Total Avg Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={overallAvg} compareKey="avg" onViewCentre={onViewCentre} />
@@ -774,7 +774,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             return (
             <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
               boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Distribution - Qual.</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Qual.</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
