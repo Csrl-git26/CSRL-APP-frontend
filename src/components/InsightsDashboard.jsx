@@ -5,7 +5,7 @@ import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon
 } from 'lucide-react';
-import { Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
+import { Rectangle, Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
 
 function pct(n, d) { return !d ? 0 : Math.round((n / d) * 100); }
 
@@ -309,17 +309,23 @@ const renderStudentBarShape = (props, dataKey, chartId, activeStudentBar) => {
   const { fill, x, y, width, height, index } = props;
   const isActive = activeStudentBar && activeStudentBar.chartId === chartId && activeStudentBar.index === index;
   
-  const gap = 2;
-  const adjustedX = x + gap/2;
-  const adjustedWidth = Math.max(0, width - gap);
+  let radius = [0, 0, 0, 0];
+  if (dataKey === "Physics") {
+    radius = [6, 0, 0, 6];
+  } else if (dataKey === "Math" || dataKey === "Mathematics" || dataKey === "Zoology" || dataKey === "Biology") {
+    radius = [0, 6, 6, 0];
+  }
+
+  const adjustedX = x;
+  const adjustedWidth = Math.max(0, width);
   
   const adjustedY = isActive ? y - 2 : y;
   const adjustedHeight = isActive ? height + 4 : height;
   
   return (
     <g>
-      <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill={fill} rx={6} ry={6} style={{ filter: isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }} />
-      <rect x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill="url(#bar3D)" rx={6} ry={6} style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', pointerEvents: 'none', mixBlendMode: 'overlay' }} />
+      <Rectangle x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill={fill} radius={radius} style={{ filter: isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+      <Rectangle x={adjustedX} y={adjustedY} width={adjustedWidth} height={adjustedHeight} fill="url(#bar3D)" radius={radius} style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', pointerEvents: 'none', mixBlendMode: 'overlay' }} />
     </g>
   );
 };
