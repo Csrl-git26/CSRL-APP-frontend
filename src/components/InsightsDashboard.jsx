@@ -21,42 +21,38 @@ const AVATAR_COLORS = [
 function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   return (
     <div style={{ position: 'relative', paddingBottom: 10, marginBottom: 14 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
-        {/* Icon in a small glassy pill */}
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7,
+        background: `linear-gradient(135deg, ${color}18 0%, ${color}08 100%)`,
+        border: `1px solid ${color}30`,
+        borderRadius: 10,
+        padding: '5px 12px 5px 7px',
+        boxShadow: `0 2px 12px ${color}20, inset 0 1px 0 rgba(255,255,255,0.7)`,
+        backdropFilter: 'blur(4px)',
+      }}>
+        {/* Glowing icon */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          width: 28, height: 28, borderRadius: 8,
-          background: `linear-gradient(135deg, ${color}22, ${color}44)`,
-          border: `1px solid ${color}33`,
-          boxShadow: `0 2px 8px ${color}33`,
+          width: 24, height: 24, borderRadius: 7,
+          background: `linear-gradient(135deg, ${color}dd, ${color})`,
+          boxShadow: `0 2px 8px ${color}66`,
           flexShrink: 0,
         }}>
-          <Icon size={15} color={color} strokeWidth={2.5} />
+          <Icon size={13} color="#fff" strokeWidth={2.5} />
         </div>
-        {/* Gradient text title */}
+        {/* Vivid gradient text */}
         <span style={{
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: 800,
-          letterSpacing: 0.1,
-          background: `linear-gradient(90deg, #0f172a 0%, #1e40af 60%, ${color} 100%)`,
+          letterSpacing: 0.2,
+          background: `linear-gradient(90deg, ${color} 0%, #7c3aed 60%, #0ea5e9 100%)`,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
+          lineHeight: 1,
         }}>
           {children}
         </span>
       </div>
-      {/* Glowing underline */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        width: '60%',
-        height: 2,
-        borderRadius: 2,
-        background: `linear-gradient(90deg, ${color}, ${color}44, transparent)`,
-        boxShadow: `0 1px 6px ${color}55`,
-      }} />
     </div>
   );
 }
