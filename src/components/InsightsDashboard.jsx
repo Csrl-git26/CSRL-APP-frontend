@@ -287,15 +287,9 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
           return (
             <g transform={transform}>
-              {/* Dark outline stroke for contrast */}
-              <text x={lx} y={ly} fill="rgba(255,255,255,0.9)" textAnchor={lAnchor} dominantBaseline="central"
-                fontSize={lSize} fontWeight={900} stroke="rgba(255,255,255,0.9)" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
-                {payload?.code || ""}
-              </text>
-              {/* Colored text on top */}
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
                 fontSize={lSize} fontWeight={900}
-                style={{ filter: `drop-shadow(0px 0px 2px ${lFill})` }}>
+                stroke="rgba(255,255,255,0.85)" strokeWidth={2} strokeLinejoin="round" paintOrder="stroke">
                 {payload?.code || ""}
               </text>
             </g>
