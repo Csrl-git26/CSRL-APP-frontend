@@ -209,22 +209,17 @@ const CustomBarLabel = (props) => {
 
 
 
-const renderPieShape = (props) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+const renderPieShape = (props, activeIndex) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, index } = props;
+  const isActive = activeIndex === index;
+  
+  const currentOuter = isActive ? outerRadius + 4 : outerRadius;
+  const shadow = isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))';
+  
   return (
-    <g style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))' }}>
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={4} />
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={4} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
-    </g>
-  );
-};
-
-const renderActiveShape = (props) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
-  return (
-    <g style={{ filter: 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' }}>
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 4} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={4} />
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 4} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={4} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+    <g style={{ filter: shadow, transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={4} />
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={4} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
     </g>
   );
 };
@@ -253,8 +248,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
         paddingAngle={3}
         activeIndex={activeIndex}
         isAnimationActive={false}
-        shape={renderPieShape}
-        activeShape={renderActiveShape}
+        shape={(props) => renderPieShape(props, activeIndex)}
         onMouseEnter={(_, index) => setActiveIndex(index)}
         onMouseLeave={() => setActiveIndex(-1)}
         onClick={(entry) => onViewCentre && onViewCentre(entry.code || entry.payload?.code)}
