@@ -774,7 +774,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <div style={{ perspective: 1000, height: '100%' }}>
           <div style={{
             position: 'relative', width: '100%', height: '100%',
-            transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            transition: 'transform 1.2s ease-in-out',
             transformStyle: 'preserve-3d',
             transform: showBottom5Qual ? 'rotateY(180deg)' : 'rotateY(0deg)'
           }}>
