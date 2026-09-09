@@ -223,14 +223,18 @@ const CustomBarLabel = (props) => {
 const renderPieShape = (props, activeIndex) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, index } = props;
   const isActive = activeIndex === index;
+  const isBlue = fill === '#3b82f6';
   
-  const currentOuter = isActive ? outerRadius + 4 : outerRadius;
-  const shadow = isActive ? 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.15)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))';
+  const currentOuter = isActive ? outerRadius + 6 : outerRadius;
+  const glowColor = isBlue ? 'rgba(59,130,246,0.6)' : 'rgba(249,115,22,0.6)';
+  const shadow = isActive
+    ? `drop-shadow(0px 0px 8px ${glowColor}) drop-shadow(0px 4px 10px rgba(0,0,0,0.3)) brightness(1.2)`
+    : `drop-shadow(0px 2px 5px rgba(0,0,0,0.18)) brightness(1.05)`;
   
   return (
-    <g style={{ filter: shadow, transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={4} />
-      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={4} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+    <g style={{ filter: shadow, transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={6} />
+      <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#pieGloss)" cornerRadius={6} style={{ mixBlendMode: 'overlay', pointerEvents: 'none', opacity: 0.7 }} />
     </g>
   );
 };
@@ -240,11 +244,14 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
   return (
     <PieChart>
       <defs>
-        <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
-          <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
-          <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+        <linearGradient id="pieGloss" x1="0" y1="0" x2="0.5" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity={0.55} />
+          <stop offset="40%" stopColor="#ffffff" stopOpacity={0.1} />
+          <stop offset="100%" stopColor="#000000" stopOpacity={0.15} />
         </linearGradient>
+        <filter id="pieShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.2" />
+        </filter>
       </defs>
       <Pie 
         data={sorted} 
@@ -273,10 +280,25 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const isAbove = val >= cutoff;
           const textRotation = -midAngle + (x < cx ? 180 : 0);
           const isActive = index === activeIndex;
+          const lx = x, ly = y;
+          const lFill = isAbove ? '#3b82f6' : '#f97316';
+          const lSize = isActive ? 11 : 9;
+          const lAnchor = x > cx ? 'start' : 'end';
+          const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
           return (
-            <text x={x} y={y} fill={isAbove ? '#3b82f6' : '#f97316'} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={isActive ? 11 : 9} fontWeight={isActive ? 900 : 600} transform={`rotate(${textRotation}, ${x}, ${y})`}>
-              {payload?.code || ""}
-            </text>
+            <g transform={transform}>
+              {/* Dark outline stroke for contrast */}
+              <text x={lx} y={ly} fill="rgba(255,255,255,0.9)" textAnchor={lAnchor} dominantBaseline="central"
+                fontSize={lSize} fontWeight={900} stroke="rgba(255,255,255,0.9)" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
+                {payload?.code || ""}
+              </text>
+              {/* Colored text on top */}
+              <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
+                fontSize={lSize} fontWeight={900}
+                style={{ filter: `drop-shadow(0px 0px 2px ${lFill})` }}>
+                {payload?.code || ""}
+              </text>
+            </g>
           );
         }}
         labelLine={false}
