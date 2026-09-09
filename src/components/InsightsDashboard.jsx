@@ -781,11 +781,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             {/* Front Side */}
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
               <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">Top 5 CNT - Qual&nbsp;%</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(true)}
-                    style={{ position: 'absolute', top: 12, right: 12, zIndex: 10, cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
+                    style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
                     title="Flip to Bottom 5"
                   >
                     <RefreshCcw size={16} />
@@ -832,11 +832,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             {/* Back Side */}
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
               <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">Bottom 5 CNT - Qual&nbsp;%</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(false)}
-                    style={{ position: 'absolute', top: 12, right: 12, zIndex: 10, cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
+                    style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex' }}
                     title="Flip to Top 5"
                   >
                     <RefreshCcw size={16} />
