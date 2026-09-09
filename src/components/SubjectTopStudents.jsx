@@ -50,7 +50,7 @@ const renderCentreLabel = (props) => {
   return (
     <text
       x={x + width / 2}
-      y={y + height - 4}
+      y={y + 17}
       fill="#fff"
       fontSize={7}
       fontWeight={900}
