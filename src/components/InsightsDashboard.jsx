@@ -378,7 +378,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   
   const renderStudentChart = (students, title, icon, color) => {
     return (
-        <div style={{ background:'#fff', borderRadius:14, padding:'6px 8px',
+        <div style={{ background:'#fff', borderRadius:14, padding: 20,
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', flex: 1, minWidth: 0 }}>
           <SectionTitle Icon={icon} color={color}>{title} — {selectedTestKey||'Overall'}</SectionTitle>
           {students.length === 0
@@ -555,7 +555,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
         return (
-            <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
+            <div style={{ background:'#fff', borderRadius:16, padding: 20,
               boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9' }}>
               
               {(() => {
@@ -659,7 +659,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         </div> {/* Close Stacked Left Column */}
             
         {/* Middle Column: Radial Progress Chart */}
-        <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px', boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+        <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <SectionTitle Icon={PieChartIcon} color="#2563eb">
               {showBottom5Qual ? 'Bottom 5 CNT - Qual\u00A0%' : 'Top 5 CNT - Qual\u00A0%'}
@@ -756,7 +756,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
-            <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
+            <div style={{ background:'#fff', borderRadius:16, padding: 20,
               boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Total Avg Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -783,7 +783,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const sorted = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
-            <div style={{ background:'#fff', borderRadius:16, padding:'16px 14px',
+            <div style={{ background:'#fff', borderRadius:16, padding: 20,
               boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Qual.</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
