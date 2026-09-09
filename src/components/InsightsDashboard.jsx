@@ -376,7 +376,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const tests    = data?.tests    || [];
 
   
-  const renderStudentChart = (students, title, icon, color) => {
+  const renderStudentChart = (students, title, icon, color, fixedMax = false) => {
     return (
         <div style={{ background:'#fff', borderRadius:14, padding: 20,
           boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', flex: 1, minWidth: 0 }}>
@@ -458,7 +458,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
-                        <XAxis type="number" domain={[0, 360]} ticks={[0, 60, 120, 180, 240, 300, 360]} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
+                        <XAxis type="number" domain={fixedMax ? [0, 360] : ['auto', 'auto']} ticks={fixedMax ? [0, 60, 120, 180, 240, 300, 360] : undefined} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
 
                         <Bar shape={(props) => renderStudentBarShape(props, "Physics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Physics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
@@ -814,8 +814,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
 
       {/* Top & Bottom 5 Students (Each taking 1 column in the 4-col grid) */}
-      {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb')}
-      {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb')}
+      {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb', true)}
+      {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb', false)}
 
       </div> {/* End Main Dashboard Layout */}
 
