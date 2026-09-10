@@ -71,7 +71,7 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
       </div>
       <div style={{ flex: 1, minHeight: 180 }}>
         <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={chartData} margin={{ top: 25, right: 5, left: 5, bottom: 0 }} barGap={0} barSize={26}>
+          <BarChart data={chartData} margin={{ top: 40, right: 5, left: 5, bottom: 0 }} barGap={0} barSize={26}>
             <defs>
               <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
