@@ -945,17 +945,17 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       
 
 
-      {/* Subject Top 3 Centres */}
-      <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
-
-      {/* Subject Top 3 Students */}
-      <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
-
-      {/* Top & Bottom 5 Students (Each taking 1 column in the 4-col grid) */}
-      {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb', true)}
-      {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb', false)}
 
       </div> {/* End Main Dashboard Layout */}
+
+      {/* ── Second Row: Subject & Student Charts ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 20 }}>
+        <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
+        <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
+        {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb', true)}
+        {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb', false)}
+      </div>
+
 
     </div>
   );
