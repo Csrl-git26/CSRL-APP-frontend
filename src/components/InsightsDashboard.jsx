@@ -500,9 +500,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             : (() => {
                 const chartData = students.map(s => {
                    let nameSplit = (s.name || s.roll || '—').split(' ');
-                   let shortName = nameSplit[0].substring(0, 5); // truncate to 8 chars
+                   let shortName = nameSplit[0].substring(0, 12); // truncate to 12 chars
                    if (shortName.length < 3 && nameSplit.length > 1) {
-                       shortName += ' ' + nameSplit[1].substring(0, 3);
+                       shortName += ' ' + nameSplit[1].substring(0, 5);
                    }
                    const centre = s.center || '';
                    const label = centre ? `${shortName} (${centre})` : shortName;
