@@ -67,8 +67,8 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
         </div>
         <div style={{ position:'absolute', bottom:0, left:0, width:'100%', height:2, background:'linear-gradient(90deg,rgba(59,130,246,0.5),transparent)', boxShadow:'0 1px 3px rgba(59,130,246,0.3)' }} />
       </div>
-      <div style={{ flex: 1, minHeight: 180 }}>
-        <ResponsiveContainer width="100%" height={180}>
+      <div style={{ flex: 1, minHeight: 150 }}>
+        <ResponsiveContainer width="100%" height={150}>
           <BarChart data={chartData} margin={{ top: 50, right: 45, left: 5, bottom: 0 }} barGap={0} barSize={26} style={{ overflow: 'visible' }}>
             <defs>
               <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">

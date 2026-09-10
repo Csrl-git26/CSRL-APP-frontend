@@ -550,8 +550,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 };
                 
                 return (
-                  <div style={{ height: 210, width: '100%', marginTop: 8 }}>
-                    <ResponsiveContainer width="100%" height={210}>
+                  <div style={{ height: 180, width: '100%', marginTop: 8 }}>
+                    <ResponsiveContainer width="100%" height={180}>
                       <BarChart 
                         data={chartData} 
                         layout="vertical" 
