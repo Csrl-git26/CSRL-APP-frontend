@@ -104,7 +104,7 @@ export default function Layout() {
       <aside className="sidebar">
         {/* Logo */}
         <div className="sidebar-logo">
-          <img src="/logo.png" alt="CSRL logo" style={{ width: 34, height: 34, objectFit: 'cover', borderRadius: '50%' }} />
+          <img src="/logo_new.jpg" alt="CSRL logo" style={{ width: 34, height: 34, objectFit: 'cover', borderRadius: '50%' }} />
           <div>
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>CSRL</div>
           </div>
