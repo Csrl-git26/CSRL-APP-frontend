@@ -293,7 +293,7 @@ const CustomBarLabel = (props) => {
        fontWeight={900} 
        textAnchor="middle" 
        dominantBaseline="central"
-       style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}
+       style={{ filter: 'drop-shadow(1px 2px 0px rgba(37,99,235,0.7))' }}
        transform={isThin ? `rotate(-90, ${cx}, ${cy})` : ''}
     >
       {prefix}{val}
@@ -386,7 +386,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
             <g transform={transform}>
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
                 fontSize={lSize} fontWeight={900} letterSpacing="0.5px"
-                style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.6))' }}
+                style={{ filter: 'drop-shadow(1px 2px 0px rgba(37,99,235,0.6))' }}
                 stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
                 {payload?.code || ""}
               </text>
@@ -543,8 +543,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#475569" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}>{name} {extra}</text>
-                      <text x={-5} y={9} textAnchor="end" fill="#0f172a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}>{total}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#475569" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}>{name} {extra}</text>
+                      <text x={-5} y={9} textAnchor="end" fill="#0f172a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}>{total}</text>
                     </g>
                   );
                 };
@@ -740,7 +740,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       </div>
                       
 
-                      <div style={{ fontSize:10, fontWeight:900, color: '#334155', display: 'flex', alignItems: 'center', gap: 2, letterSpacing: '0.5px', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>
+                      <div style={{ fontSize:10, fontWeight:900, color: '#334155', display: 'flex', alignItems: 'center', gap: 2, letterSpacing: '0.5px', textShadow: '1px 1px 0px rgba(37,99,235,0.3)' }}>
                         {medals[c.rank] && <span style={{fontSize:10, textShadow:'none'}}>{medals[c.rank]}</span>} {c.code}
                       </div>
                     </div>

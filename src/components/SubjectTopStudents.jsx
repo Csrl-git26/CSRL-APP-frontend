@@ -39,7 +39,7 @@ const renderNameLabel = (props) => {
       textAnchor="start" 
       letterSpacing="0.5px"
       transform={`rotate(-45 ${x + width / 2} ${y - 2})`}
-      style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}
+      style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}
     >
       {value}
     </text>
