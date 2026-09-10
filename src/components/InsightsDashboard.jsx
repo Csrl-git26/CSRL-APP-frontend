@@ -487,9 +487,9 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
-  useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
   const [activeRadialIndex, setActiveRadialIndex] = useState(null);
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
+  useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
