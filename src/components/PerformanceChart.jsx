@@ -13,9 +13,9 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
   ));
 
   return (
-    <div className={noCard ? "" : "card"} style={{ marginBottom: noCard ? 0 : '24px' }}>
+    <div className={noCard ? "" : "card"} style={{ marginBottom: noCard ? 0 : '24px', display: 'flex', flexDirection: 'column', height: typeof height === 'string' && height.includes('%') ? '100%' : 'auto' }}>
       {!noCard && <div className="section-title">📈 Performance Trend</div>}
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
         <div style={{ display: 'flex', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
           {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
             <button
@@ -51,7 +51,8 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
           ))}
         </div>
 
-        <ResponsiveContainer width="100%" height={height}>
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <ResponsiveContainer width="100%" height={height}>
           <LineChart data={chartData} margin={{ top: 15, right: 15, left: 0, bottom: 70 }}>
             <CartesianGrid strokeDasharray="4 6" vertical={false} stroke="#e2e8f020" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-700)', fontWeight: 700 }} interval={0} angle={-35} textAnchor="end" />
@@ -114,6 +115,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
             )}
           </LineChart>
         </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

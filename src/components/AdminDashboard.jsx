@@ -1304,8 +1304,8 @@ export default function AdminDashboard() {
 
               </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} height={240} />
+            <div style={{ flex: 1, height: '100%' }}>
+              <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} height="100%" />
             </div>
           </div>
           
@@ -1328,7 +1328,9 @@ export default function AdminDashboard() {
               {trendChartLoading ? (
                 <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
               ) : trendChartData.length > 0 ? (
-                <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} height={240} />
+                <div style={{ height: '100%' }}>
+                  <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} height="100%" />
+                </div>
               ) : (
                 <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
               )}
