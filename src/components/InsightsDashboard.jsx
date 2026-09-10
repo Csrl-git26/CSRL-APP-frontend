@@ -468,6 +468,11 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
     if (onViewCentre && id) onViewCentre(id);
   };
   
+  const midRadius = currentInner + (currentOuter - currentInner) / 2;
+  const radian = -(startAngle * Math.PI) / 180;
+  const textX = cx + midRadius * Math.cos(radian) + 10;
+  const textY = cy + midRadius * Math.sin(radian);
+
   return (
     <g 
       style={{ filter: shadow, transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }}
@@ -477,6 +482,18 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
     >
       <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={12} stroke="#ffffff" strokeWidth={1} strokeOpacity={0.8} />
       <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={12} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+      <text
+        x={textX}
+        y={textY}
+        textAnchor="start"
+        dominantBaseline="central"
+        fill="#ffffff"
+        fontSize={10}
+        fontWeight={900}
+        style={{ filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))', pointerEvents: 'none' }}
+      >
+        {payload.value}%
+      </text>
     </g>
   );
 };
@@ -809,7 +826,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </linearGradient>
                           </defs>
                           <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
+                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} />
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
@@ -860,7 +877,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </linearGradient>
                           </defs>
                           <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
+                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} />
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
