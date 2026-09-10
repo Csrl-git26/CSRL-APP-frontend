@@ -728,9 +728,15 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             strokeDasharray={circumference}
                             strokeDashoffset={dashoffset}
                             filter={`url(#glow-${c.code})`}
-                            style={{ transition: 'stroke-dashoffset 1s ease-in-out' }}
+                            style={{ animation: `drawArc-${c.code} 2s ease-out forwards` }}
                           />
                         </svg>
+                        <style>{`
+                          @keyframes drawArc-${c.code} {
+                            from { stroke-dashoffset: ${circumference}; }
+                            to { stroke-dashoffset: ${dashoffset}; }
+                          }
+                        `}</style>
                         <div style={{ position: 'absolute', bottom: '-4px', left: 0, width: '100%', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: color, letterSpacing: '-0.5px' }}>
                           {score}
                         </div>
@@ -745,21 +751,21 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 };
 
                 return (
-                  <>
+                  <div key={selectedTestKey}>
                     <SectionTitle Icon={Star} color="#2563eb">Top 5 CNT - Avg Score</SectionTitle>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 32 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
                     
                     {bottomCentres.length > 0 && (
-                      <>
+                      <div style={{ marginTop: 8 }}>
                         <SectionTitle Icon={Star} color="#2563eb">Bottom 5 CNT - Avg Score</SectionTitle>
                         <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
-                      </>
+                      </div>
                     )}
-                  </>
+                  </div>
                 );
               })()}
             </div>
@@ -889,7 +895,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Total Avg Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={overallAvg} compareKey="avg" onViewCentre={onViewCentre} />
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
@@ -915,7 +921,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Qual.</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
@@ -936,10 +942,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
 
       {/* Subject Top 3 Centres */}
-      <SubjectTopCentres centreBoard={centreBoard} onViewCentre={onViewCentre} />
+      <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
       
       {/* Subject Top 3 Students */}
-      <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
+      <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
 
       {/* Top & Bottom 5 Students (Each taking 1 column in the 4-col grid) */}
       {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb', true)}
