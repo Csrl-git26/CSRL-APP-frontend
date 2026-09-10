@@ -799,7 +799,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     const radialData = top5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
                     const legendPayload = top5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
-                      <ResponsiveContainer width="100%" height={180}>
+                      <ResponsiveContainer width="100%" height={180} key={`front-${showBottom5Qual}`}>
                         <RadialBarChart cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
                           <defs>
                             <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
@@ -809,7 +809,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </linearGradient>
                           </defs>
                           <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={false} minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
+                          <RadialBar isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
@@ -850,7 +850,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     const radialData = bottom5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
                     const legendPayload = bottom5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
-                      <ResponsiveContainer width="100%" height={180}>
+                      <ResponsiveContainer width="100%" height={180} key={`back-${showBottom5Qual}`}>
                         <RadialBarChart cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
                           <defs>
                             <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
@@ -860,7 +860,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </linearGradient>
                           </defs>
                           <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={false} minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
+                          <RadialBar isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
