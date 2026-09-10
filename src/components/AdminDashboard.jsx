@@ -1283,7 +1283,7 @@ export default function AdminDashboard() {
               <button type="button" className="modal-close" onClick={() => setShowGraphsModal(false)} aria-label="Close">×</button>
             </div>
             <div className="modal-body" style={{ background: '#f8fafc', padding: 20, flex: 1, overflowY: 'auto' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr) minmax(0, 0.7fr)', gap: '15px', height: '100%' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '15px', height: '100%' }}>
           {/* Left Side: Centre Rankings (Bar Chart) */}
           <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
