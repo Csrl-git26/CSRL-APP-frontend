@@ -809,7 +809,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </linearGradient>
                           </defs>
                           <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
+                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
@@ -860,7 +860,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </linearGradient>
                           </defs>
                           <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
+                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} label={{ position: 'insideStart', fill: '#fff', fontSize: 10, fontWeight: 900, formatter: (val) => `${val}%`, pointerEvents: 'none', style: { filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' } }} />
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
