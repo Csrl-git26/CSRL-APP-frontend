@@ -34,13 +34,13 @@ const renderCodeLabel = (props) => {
     <text 
       x={x + width / 2} 
       y={y - 2} 
-      fill="#334155" 
-      fontSize={9} 
+      fill="#1e293b" 
+      fontSize={10} 
       fontWeight={900} 
       textAnchor="start" 
       letterSpacing="0.5px"
       transform={`rotate(-45 ${x + width / 2} ${y - 2})`}
-      style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}
+      style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}
     >
       {value}
     </text>

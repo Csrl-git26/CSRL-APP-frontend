@@ -541,8 +541,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#475569" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}>{name} {extra}</text>
-                      <text x={-5} y={9} textAnchor="end" fill="#0f172a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}>{total}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#1e293b" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>{name} {extra}</text>
+                      <text x={-5} y={9} textAnchor="end" fill="#1e293b" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>{total}</text>
                     </g>
                   );
                 };
