@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import SubjectTopStudents from './SubjectTopStudents';
+import SubjectTopCentres from './SubjectTopCentres';
 
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
@@ -943,6 +944,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
       
 
+
+      {/* Subject Top 3 Centres */}
+      <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
 
       {/* Subject Top 3 Students */}
       <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
