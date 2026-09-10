@@ -340,7 +340,7 @@ const renderPieShape = (props, activeIndex) => {
 const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [shouldAnimate, setShouldAnimate] = useState(true);
-  useEffect(() => { const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, []);
+  useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
   return (
     <PieChart>
       <defs>
@@ -487,7 +487,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
   const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
-  useEffect(() => { const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, []);
+  useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
   const [activeRadialIndex, setActiveRadialIndex] = useState(null);
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const profiles = data?.profiles || [];
