@@ -22,7 +22,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
 
   const renderQualCardSide = (isBottom5) => {
     return (
-      <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', backfaceVisibility: 'hidden', padding: 20 }}>
+      <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', backfaceVisibility: 'hidden' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <SectionTitle Icon={PieChartIcon} color="#2563eb">
             {isBottom5 ? 'Bottom 5 CNT - Qual\u00A0%' : 'Top 5 CNT - Qual\u00A0%'}
@@ -67,7 +67,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
                   </defs>
                   <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                   <RadialBar 
-                    isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" 
+                    isAnimationActive={false} minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" 
                     shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)}
                     label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }}
                   />
@@ -76,7 +76,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
                     content={(props) => (
                       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                         {legendPayload.map((entry, index) => (
-                          <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
+                          <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
                             <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
                             {entry.value}
                           </li>
@@ -123,18 +123,18 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
 
 function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
   return (
-    <div className="card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
-      alignItems:'center', gap:12, flex:1, minWidth:0 }}>
+    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, borderRadius:16, padding:'14px 18px', display:'flex',
+      alignItems:'center', gap:12, boxShadow:'0 4px 6px -1px rgba(0, 0, 0, 0.05)', flex:1, minWidth:0 }}>
       <div style={{ width:42, height:42, borderRadius:12, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
         <Icon size={22} color={color}/>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
-          <div style={{ fontSize:11, fontWeight:700, color:'#475569', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
+          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1 }}>{value}</div>
+          <div style={{ fontSize:11, fontWeight:700, color:'#475569', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{label}</div>
         </div>
-        {sub && <div style={{ fontSize:10, color:'#94a3b8', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
+        {sub && <div style={{ fontSize:10, color:'#94a3b8', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{sub}</div>}
       </div>
     </div>
   );
@@ -201,7 +201,7 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, selectedTest
       <div style={{ width:16, textAlign:'center', fontSize:10, fontWeight:800, flexShrink:0,
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `${rank}`}</div>
       <div style={{ flex:1, minWidth:0, display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div style={{ fontSize:10, fontWeight:700, color:'#1e3a8a', whiteSpace:'nowrap', flexShrink:0 }}>{name}</div>
+        <div style={{ fontSize:10, fontWeight:700, color:'#1e293b', whiteSpace:'nowrap', flexShrink:0 }}>{name}</div>
         <div style={{ fontSize:8, color:'#64748b', fontWeight:600, flexShrink:0 }}>{center}</div>
         
         {parsedScores.length > 0 && (
@@ -289,11 +289,10 @@ const CustomBarLabel = (props) => {
        x={cx} 
        y={cy} 
        fill="#fff" 
-       fontSize={10} 
-       fontWeight={900} 
+       fontSize={8} 
+       fontWeight={700} 
        textAnchor="middle" 
        dominantBaseline="central"
-       style={{ filter: 'drop-shadow(1px 2px 0px rgba(37,99,235,0.7))' }}
        transform={isThin ? `rotate(-90, ${cx}, ${cy})` : ''}
     >
       {prefix}{val}
@@ -362,7 +361,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
         outerRadius={55} 
         paddingAngle={3}
         activeIndex={activeIndex}
-        isAnimationActive={true} animationDuration={2000} animationEasing="ease-out"
+        isAnimationActive={false}
         shape={(props) => renderPieShape(props, activeIndex)}
         onMouseEnter={(_, index) => setActiveIndex(index)}
         onMouseLeave={() => setActiveIndex(-1)}
@@ -379,14 +378,14 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const isActive = index === activeIndex;
           const lx = x, ly = y;
           const lFill = isAbove ? '#3b82f6' : '#f97316';
-          const lSize = isActive ? 14 : 12;
+          const lSize = isActive ? 11 : 9;
           const lAnchor = x > cx ? 'start' : 'end';
           const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
           return (
             <g transform={transform}>
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
-                fontSize={lSize} fontWeight={900} letterSpacing="0.5px"
-                stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
+                fontSize={lSize} fontWeight={900}
+                stroke="rgba(255,255,255,0.85)" strokeWidth={2} strokeLinejoin="round" paintOrder="stroke">
                 {payload?.code || ""}
               </text>
             </g>
@@ -406,6 +405,23 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           />
         )})}
       </Pie>
+      <Tooltip 
+        content={({ active, payload }) => {
+          if (active && payload && payload.length) {
+            const data = payload[0].payload;
+            const val = data[compareKey] || 0;
+            const isAbove = val >= cutoff;
+            return (
+              <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
+                  Centre {payload[0].name}
+                </span>
+              </div>
+            );
+          }
+          return null;
+        }}
+      />
     </PieChart>
   );
 };
@@ -443,7 +459,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
   
   const currentInner = isActive ? innerRadius - 2 : innerRadius;
   const currentOuter = isActive ? outerRadius + 4 : outerRadius;
-  const shadow = isActive ? 'drop-shadow(0px 8px 16px rgba(0,0,0,0.4)) brightness(1.2)' : 'drop-shadow(0px 4px 8px rgba(0,0,0,0.25)) brightness(1.05)';
+  const shadow = isActive ? 'drop-shadow(0px 6px 12px rgba(0,0,0,0.3)) brightness(1.2)' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.12))';
   
   const handleClick = (e) => {
     e.stopPropagation();
@@ -451,11 +467,6 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
     if (onViewCentre && id) onViewCentre(id);
   };
   
-  const midRadius = currentInner + (currentOuter - currentInner) / 2;
-  const radian = -(startAngle * Math.PI) / 180;
-  const textX = cx;
-  const textY = cy + midRadius * Math.sin(radian);
-
   return (
     <g 
       style={{ filter: shadow, transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' }}
@@ -463,20 +474,8 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
       onMouseLeave={() => setActiveRadialIndex(null)}
       onClick={handleClick}
     >
-      <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={12} stroke="#ffffff" strokeWidth={1} strokeOpacity={0.8} />
-      <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={12} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
-      <text
-        x={textX}
-        y={textY}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fill="#ffffff"
-        fontSize={10}
-        fontWeight={900}
-        style={{ filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))', pointerEvents: 'none' }}
-      >
-        {payload.value}%
-      </text>
+      <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill={fill} cornerRadius={10} />
+      <Sector cx={cx} cy={cy} innerRadius={currentInner} outerRadius={currentOuter} startAngle={startAngle} endAngle={endAngle} fill="url(#bar3DVertical)" cornerRadius={10} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
     </g>
   );
 };
@@ -491,16 +490,17 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   
   const renderStudentChart = (students, title, icon, color, fixedMax = false) => {
     return (
-        <div className="card" style={{ padding: 20, flex: 1, minWidth: 0 }}>
+        <div style={{ background:'#fff', borderRadius:14, padding: 20,
+          boxShadow:'0 2px 8px rgba(0,0,0,0.07)', border:'1px solid #e8f0fc', flex: 1, minWidth: 0 }}>
           <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
           {students.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : (() => {
                 const chartData = students.map(s => {
                    let nameSplit = (s.name || s.roll || '—').split(' ');
-                   let shortName = nameSplit[0].substring(0, 12); // truncate to 12 chars
+                   let shortName = nameSplit[0].substring(0, 5); // truncate to 8 chars
                    if (shortName.length < 3 && nameSplit.length > 1) {
-                       shortName += ' ' + nameSplit[1].substring(0, 5);
+                       shortName += ' ' + nameSplit[1].substring(0, 3);
                    }
                    const centre = s.center || '';
                    const label = centre ? `${shortName} (${centre})` : shortName;
@@ -541,15 +541,15 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#1e3a8a" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>{name} {extra}</text>
-                      <text x={-5} y={9} textAnchor="end" fill="#1e3a8a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>{total}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#64748b" fontSize={9} fontWeight={700}>{name} {extra}</text>
+                      <text x={-5} y={8} textAnchor="end" fill="#1e293b" fontSize={10} fontWeight={900}>{total}</text>
                     </g>
                   );
                 };
                 
                 return (
-                  <div style={{ height: 180, width: '100%', marginTop: 8 }}>
-                    <ResponsiveContainer width="100%" height={180}>
+                  <div style={{ height: 210, width: '100%', marginTop: 8 }}>
+                    <ResponsiveContainer width="100%" height={210}>
                       <BarChart 
                         data={chartData} 
                         layout="vertical" 
@@ -573,25 +573,25 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         <XAxis type="number" domain={fixedMax ? [0, 360] : ['auto', 'auto']} ticks={fixedMax ? [0, 60, 120, 180, 240, 300, 360] : undefined} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
                         <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={95} />
 
-                        <Bar shape={(props) => renderStudentBarShape(props, "Physics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Physics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Physics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Physics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Physics_orig" content={(props) => <CustomBarLabel {...props} prefix="P" />} />
                         </Bar>
-                        <Bar shape={(props) => renderStudentBarShape(props, "Chemistry", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Chemistry"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Chemistry", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Chemistry"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Chemistry" stackId="a" fill="#8b5cf6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Chemistry_orig" content={(props) => <CustomBarLabel {...props} prefix="C" />} />
                         </Bar>
-                        <Bar shape={(props) => renderStudentBarShape(props, "Math", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Math"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Math", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Math"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Math" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Math_orig" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
-                        <Bar shape={(props) => renderStudentBarShape(props, "Mathematics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Mathematics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Mathematics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Mathematics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Mathematics" stackId="a" fill="#0ea5e9" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Mathematics_orig" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
-                        <Bar shape={(props) => renderStudentBarShape(props, "Biology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Biology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Biology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Biology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Biology" stackId="a" fill="#ec4899" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Biology_orig" content={(props) => <CustomBarLabel {...props} prefix="B" />} />
                         </Bar>
-                        <Bar shape={(props) => renderStudentBarShape(props, "Botany", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Botany"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Botany", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Botany"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Botany" stackId="a" fill="#14b8a6" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Botany_orig" content={(props) => <CustomBarLabel {...props} prefix="Bo" />} />
                         </Bar>
-                        <Bar shape={(props) => renderStudentBarShape(props, "Zoology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Zoology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
+                        <Bar shape={(props) => renderStudentBarShape(props, "Zoology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Zoology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Zoology" stackId="a" fill="#f59e0b" barSize={24} isAnimationActive={false} onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Zoology_orig" content={(props) => <CustomBarLabel {...props} prefix="Z" />} />
                         </Bar>
                       </BarChart>
@@ -667,7 +667,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
         return (
-            <div className="card" style={{ padding: 20 }}>
+            <div style={{ background:'#fff', borderRadius:16, padding: 20,
+              boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9' }}>
               
               {(() => {
                 const topCentres = sorted.slice(0,5).map((c,i) => ({...c, rank: i+1}));
@@ -737,8 +738,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       </div>
                       
 
-                      <div style={{ fontSize:10, fontWeight:900, color: '#334155', display: 'flex', alignItems: 'center', gap: 2, letterSpacing: '0.5px', textShadow: '1px 1px 0px rgba(37,99,235,0.3)' }}>
-                        {medals[c.rank] && <span style={{fontSize:10, textShadow:'none'}}>{medals[c.rank]}</span>} {c.code}
+                      <div style={{ fontSize:8, fontWeight:600, color: '#64748b', display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {medals[c.rank] && <span style={{fontSize:9}}>{medals[c.rank]}</span>} {c.code}
                       </div>
                     </div>
                   );
@@ -769,115 +770,96 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
         </div> {/* Close Stacked Left Column */}
             
-        {/* Middle Column: Radial Progress Chart (3D Flip Card) */}
-        <div style={{ perspective: 1000, height: '100%' }}>
-          <div style={{
-            position: 'relative', width: '100%', height: '100%',
-            transition: 'transform 1.2s ease-in-out',
-            transformStyle: 'preserve-3d',
-            transform: showBottom5Qual ? 'rotateY(180deg)' : 'rotateY(0deg)'
-          }}>
-            {/* Front Side */}
-            <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
-              <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">Top 5 CNT - Qual&nbsp;%</SectionTitle>
-                  <div 
-                    onClick={() => setShowBottom5Qual(true)}
-                    style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
-                    title="Flip to Bottom 5"
-                  >
-                    <RefreshCcw size={16} />
-                  </div>
-                </div>
-                <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  {(() => {
-                    if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
-                    const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
-                    const top5Qual = sortedByQual.slice(0, 5);
-                    const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
-                    const radialData = top5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
-                    const legendPayload = top5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
-                    return (
-                      <ResponsiveContainer width="100%" height={180} key={`front-${showBottom5Qual}`}>
-                        <RadialBarChart cx="35%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
-                          <defs>
-                            <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
-                              <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
-                              <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
-                              <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
-                            </linearGradient>
-                          </defs>
-                          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} />
-                          <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                              {legendPayload.map((entry, index) => (
-                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
-                                  <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
-                                  {entry.value}
-                                </li>
-                              ))}
-                            </ul>
-                          )} />
-                        </RadialBarChart>
-                      </ResponsiveContainer>
-                    );
-                  })()}
-                </div>
-              </div>
-            </div>
+        {/* Middle Column: Radial Progress Chart */}
+        <div style={{ background:'#fff', borderRadius:16, padding: 20, boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <SectionTitle Icon={PieChartIcon} color="#2563eb">
+              {showBottom5Qual ? 'Bottom 5 CNT - Qual\u00A0%' : 'Top 5 CNT - Qual\u00A0%'}
+            </SectionTitle>
+            <span 
+              onClick={() => setShowBottom5Qual(!showBottom5Qual)}
+              style={{ fontSize: 10, fontWeight: 800, color: '#3b82f6', cursor: 'pointer', userSelect: 'none', padding: '2px 6px', background: '#eff6ff', borderRadius: 4, marginBottom: 6 }}
+            >
+              Show {showBottom5Qual ? 'Top 5' : 'Bottom 5'}
+            </span>
+          </div>
+          <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            {(() => {
+              if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
+              const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
+              const top5Qual = showBottom5Qual ? sortedByQual.slice(-5) : sortedByQual.slice(0, 5);
+              
+              const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
+              // Reverse so the #1 rank is on the outermost ring
+              const radialData = top5Qual.map((c, i) => {
+                const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
+                return {
+                  name: c.code,
+                  value: Math.round(c.qualRate || 0),
+                  fill: colors[i % colors.length],
+                  rank
+                };
+              }).reverse();
+              
+              const legendPayload = top5Qual.map((c, i) => {
+                const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
+                return {
+                  value: `${rank}. ${c.code}`,
+                  type: 'square',
+                  color: colors[i % colors.length]
+                };
+              });
+              
+              const avgQual = Math.round(top5Qual.reduce((s, c) => s + (c.qualRate||0), 0) / (top5Qual.length||1));
 
-            {/* Back Side */}
-            <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-              <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">Bottom 5 CNT - Qual&nbsp;%</SectionTitle>
-                  <div 
-                    onClick={() => setShowBottom5Qual(false)}
-                    style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
-                    title="Flip to Top 5"
+              return (
+                <ResponsiveContainer width="100%" height={180}>
+                  <RadialBarChart 
+                    cx="40%" cy="50%" 
+                    innerRadius="30%" outerRadius="90%" 
+                    barSize={10} 
+                    data={radialData}
+                    startAngle={90} endAngle={-270}
                   >
-                    <RefreshCcw size={16} />
-                  </div>
-                </div>
-                <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  {(() => {
-                    if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
-                    const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
-                    const bottom5Qual = sortedByQual.slice(-5);
-                    const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'];
-                    const radialData = bottom5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
-                    const legendPayload = bottom5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
-                    return (
-                      <ResponsiveContainer width="100%" height={180} key={`back-${showBottom5Qual}`}>
-                        <RadialBarChart cx="35%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
-                          <defs>
-                            <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
-                              <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
-                              <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
-                              <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
-                            </linearGradient>
-                          </defs>
-                          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                          <RadialBar isAnimationActive={true} animationBegin={600} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)} />
-                          <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                              {legendPayload.map((entry, index) => (
-                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
-                                  <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
-                                  {entry.value}
-                                </li>
-                              ))}
-                            </ul>
-                          )} />
-                        </RadialBarChart>
-                      </ResponsiveContainer>
-                    );
-                  })()}
-                </div>
-              </div>
-            </div>
+                    <defs>
+                      <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
+                        <stop offset="30%" stopColor="#ffffff" stopOpacity={0.1} />
+                        <stop offset="100%" stopColor="#000000" stopOpacity={0.2} />
+                      </linearGradient>
+                    </defs>
+                    <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                    <RadialBar 
+                      isAnimationActive={false}
+                      minAngle={15} 
+                      background={{ fill: '#f1f5f9' }} 
+                      clockWise={true} 
+                      dataKey="value" 
+                      shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)}
+                      label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }}
+                    />
+
+                    <Legend 
+                      layout="vertical" 
+                      verticalAlign="middle" 
+                      wrapperStyle={{ right: 0 }} 
+                      content={(props) => (
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                          {legendPayload.map((entry, index) => (
+                            <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 10, color: entry.color, fontWeight: 700 }}>
+                              <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
+                              {entry.value}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    />
+                    
+                    
+                  </RadialBarChart>
+                </ResponsiveContainer>
+              );
+            })()}
           </div>
         </div>
 
@@ -886,7 +868,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
-            <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+            <div style={{ background:'#fff', borderRadius:16, padding: 20,
+              boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Total Avg Score</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
@@ -895,11 +878,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>Above Avg</span>
+                    <span style={{ fontWeight: 600 }}>Above Avg</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>Below Avg</span>
+                    <span style={{ fontWeight: 600 }}>Below Avg</span>
                   </div>
                 </div>
               </div>
@@ -912,7 +895,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const sorted = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0)).map(c => ({...c, equalSlice: 1}));
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
-            <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+            <div style={{ background:'#fff', borderRadius:16, padding: 20,
+              boxShadow:'0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025)', border:'1px solid #f1f5f9', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
               <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Qual.</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={180}>
@@ -921,11 +905,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&ge; 80% Qual</span>
+                    <span style={{ fontWeight: 600 }}>&ge; 80% Qual</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&lt; 80% Qual</span>
+                    <span style={{ fontWeight: 600 }}>&lt; 80% Qual</span>
                   </div>
                 </div>
               </div>

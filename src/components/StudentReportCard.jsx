@@ -104,10 +104,10 @@ export default function StudentReportCard({
                           if (metric === 'ACCURACY') dataKey = `${sub}_Accuracy`;
                           if (metric === 'RANK') dataKey = `${sub}_Rank`;
                           return (
-                            <Line key={sub} type="monotone" dataKey={dataKey} stroke={subjectColor(sub)} strokeWidth={1.5} dot={{ r: 1.5 }} isAnimationActive={false} />
+                            <Line key={sub} type="monotone" dataKey={dataKey} stroke={subjectColor(sub)} strokeWidth={1.5} dot={{ r: 1.5 }} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" />
                           );
                         })}
-                        <Line type="monotone" dataKey={metric === 'MARKS' ? 'Total' : `Total_${metric.charAt(0).toUpperCase() + metric.slice(1).toLowerCase()}`} stroke="#1a4fa0" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                        <Line type="monotone" dataKey={metric === 'MARKS' ? 'Total' : `Total_${metric.charAt(0).toUpperCase() + metric.slice(1).toLowerCase()}`} stroke="#1a4fa0" strokeWidth={2} dot={{ r: 2 }} isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" />
                       </LineChart>
                   </div>
                 </div>
