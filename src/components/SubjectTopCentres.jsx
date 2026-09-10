@@ -26,6 +26,28 @@ const renderBarShape = (props, dataKey, activeItem) => {
   );
 };
 
+};
+
+const renderCodeLabel = (props) => {
+  const { x, y, width, value } = props;
+  if (!value) return null;
+  return (
+    <text 
+      x={x + width / 2} 
+      y={y - 2} 
+      fill="#334155" 
+      fontSize={9} 
+      fontWeight={900} 
+      textAnchor="start" 
+      letterSpacing="0.5px"
+      transform={`rotate(-45 ${x + width / 2} ${y - 2})`}
+      style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }}
+    >
+      {value}
+    </text>
+  );
+};
+
 export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
   const [activeItem, setActiveItem] = useState(null);
   const chartData = useMemo(() => {
@@ -69,9 +91,9 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
         </div>
         <div style={{ position:'absolute', bottom:0, left:0, width:'100%', height:2, background:'linear-gradient(90deg,rgba(59,130,246,0.5),transparent)', boxShadow:'0 1px 3px rgba(59,130,246,0.3)' }} />
       </div>
-      <div style={{ flex: 1, minHeight: 180 }}>
-        <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={chartData} margin={{ top: 40, right: 5, left: 5, bottom: 0 }} barGap={0} barSize={26}>
+      <div style={{ flex: 1, minHeight: 220 }}>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart data={chartData} margin={{ top: 80, right: 5, left: 5, bottom: 0 }} barGap={0} barSize={26} style={{ overflow: 'visible' }}>
             <defs>
               <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
@@ -83,15 +105,15 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
             <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
             <YAxis domain={[0, 120]} ticks={[0, 30, 60, 90, 120]} tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={32} />
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Rank 1" onClick={(data) => onViewCentre && data.top1Code && onViewCentre(data.top1Code)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top1Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }} formatter={(v) => v || ''} />
+              <LabelList dataKey="top1Code" content={renderCodeLabel} />
               <LabelList dataKey="top1Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Rank 2" onClick={(data) => onViewCentre && data.top2Code && onViewCentre(data.top2Code)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top2Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }} formatter={(v) => v || ''} />
+              <LabelList dataKey="top2Code" content={renderCodeLabel} />
               <LabelList dataKey="top2Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Rank 3" onClick={(data) => onViewCentre && data.top3Code && onViewCentre(data.top3Code)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top3Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(37,99,235,0.25))' }} formatter={(v) => v || ''} />
+              <LabelList dataKey="top3Code" content={renderCodeLabel} />
               <LabelList dataKey="top3Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
           </BarChart>
