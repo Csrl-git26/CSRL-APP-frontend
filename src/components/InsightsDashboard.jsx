@@ -76,7 +76,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
                     content={(props) => (
                       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                         {legendPayload.map((entry, index) => (
-                          <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e293b', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>
+                          <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
                             <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
                             {entry.value}
                           </li>
@@ -201,7 +201,7 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, selectedTest
       <div style={{ width:16, textAlign:'center', fontSize:10, fontWeight:800, flexShrink:0,
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `${rank}`}</div>
       <div style={{ flex:1, minWidth:0, display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div style={{ fontSize:10, fontWeight:700, color:'#1e293b', whiteSpace:'nowrap', flexShrink:0 }}>{name}</div>
+        <div style={{ fontSize:10, fontWeight:700, color:'#1e3a8a', whiteSpace:'nowrap', flexShrink:0 }}>{name}</div>
         <div style={{ fontSize:8, color:'#64748b', fontWeight:600, flexShrink:0 }}>{center}</div>
         
         {parsedScores.length > 0 && (
@@ -541,8 +541,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#1e293b" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>{name} {extra}</text>
-                      <text x={-5} y={9} textAnchor="end" fill="#1e293b" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>{total}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#1e3a8a" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>{name} {extra}</text>
+                      <text x={-5} y={9} textAnchor="end" fill="#1e3a8a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>{total}</text>
                     </g>
                   );
                 };
@@ -813,7 +813,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
-                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e293b', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>
+                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
                                   <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
                                   {entry.value}
                                 </li>
@@ -864,7 +864,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                           <Legend layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0 }} content={(props) => (
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                               {legendPayload.map((entry, index) => (
-                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e293b', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(15,23,42,0.15)' }}>
+                                <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
                                   <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
                                   {entry.value}
                                 </li>
