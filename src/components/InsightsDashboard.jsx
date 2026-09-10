@@ -470,7 +470,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
   
   const midRadius = currentInner + (currentOuter - currentInner) / 2;
   const radian = -(startAngle * Math.PI) / 180;
-  const textX = cx + midRadius * Math.cos(radian) + 10;
+  const textX = cx;
   const textY = cy + midRadius * Math.sin(radian);
 
   return (
@@ -485,7 +485,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
       <text
         x={textX}
         y={textY}
-        textAnchor="start"
+        textAnchor="middle"
         dominantBaseline="central"
         fill="#ffffff"
         fontSize={10}
@@ -817,7 +817,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     const legendPayload = top5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
                       <ResponsiveContainer width="100%" height={180} key={`front-${showBottom5Qual}`}>
-                        <RadialBarChart cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
+                        <RadialBarChart cx="35%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
                           <defs>
                             <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
@@ -868,7 +868,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     const legendPayload = bottom5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
                       <ResponsiveContainer width="100%" height={180} key={`back-${showBottom5Qual}`}>
-                        <RadialBarChart cx="40%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
+                        <RadialBarChart cx="35%" cy="50%" innerRadius="30%" outerRadius="90%" barSize={10} data={radialData} startAngle={90} endAngle={-270}>
                           <defs>
                             <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
