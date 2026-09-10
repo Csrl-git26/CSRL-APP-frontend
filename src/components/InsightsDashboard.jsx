@@ -406,23 +406,6 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           />
         )})}
       </Pie>
-      <Tooltip 
-        content={({ active, payload }) => {
-          if (active && payload && payload.length) {
-            const data = payload[0].payload;
-            const val = data[compareKey] || 0;
-            const isAbove = val >= cutoff;
-            return (
-              <div style={{ background: '#fff', padding: '8px 12px', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                <span style={{ color: isAbove ? '#3b82f6' : '#f97316', fontWeight: 600, fontSize: 13 }}>
-                  Centre {payload[0].name}
-                </span>
-              </div>
-            );
-          }
-          return null;
-        }}
-      />
     </PieChart>
   );
 };
