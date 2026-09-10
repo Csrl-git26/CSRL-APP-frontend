@@ -123,8 +123,8 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
 
 function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
   return (
-    <div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, borderRadius:16, padding:'14px 18px', display:'flex',
-      alignItems:'center', gap:12, boxShadow:'0 4px 6px -1px rgba(0, 0, 0, 0.05)', flex:1, minWidth:0 }}>
+    <div className="card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
+      alignItems:'center', gap:12, flex:1, minWidth:0 }}>
       <div style={{ width:42, height:42, borderRadius:12, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
         <Icon size={22} color={color}/>
