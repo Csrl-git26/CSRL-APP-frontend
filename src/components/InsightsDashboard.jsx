@@ -386,7 +386,6 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
             <g transform={transform}>
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
                 fontSize={lSize} fontWeight={900} letterSpacing="0.5px"
-                style={{ filter: 'drop-shadow(1px 2px 0px rgba(37,99,235,0.6))' }}
                 stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
                 {payload?.code || ""}
               </text>
