@@ -26,7 +26,6 @@ const renderBarShape = (props, dataKey, activeItem) => {
   );
 };
 
-};
 
 const renderCodeLabel = (props) => {
   const { x, y, width, value } = props;
