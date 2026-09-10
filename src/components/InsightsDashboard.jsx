@@ -339,6 +339,8 @@ const renderPieShape = (props, activeIndex) => {
 
 const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [shouldAnimate, setShouldAnimate] = useState(true);
+  useEffect(() => { const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, []);
   return (
     <PieChart>
       <defs>
@@ -363,7 +365,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
         outerRadius={55} 
         paddingAngle={3}
         activeIndex={activeIndex}
-        isAnimationActive={true} animationDuration={2000} animationEasing="ease-out"
+        isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out"
         shape={(props) => renderPieShape(props, activeIndex)}
         onMouseEnter={(_, index) => setActiveIndex(index)}
         onMouseLeave={() => setActiveIndex(-1)}
