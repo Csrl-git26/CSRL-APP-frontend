@@ -340,7 +340,7 @@ const renderPieShape = (props, activeIndex) => {
 const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [shouldAnimate, setShouldAnimate] = useState(true);
-  useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
+  useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, []);
   return (
     <PieChart>
       <defs>
