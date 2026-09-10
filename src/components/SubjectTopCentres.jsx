@@ -83,15 +83,15 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
             <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
             <YAxis domain={[0, 120]} ticks={[0, 30, 60, 90, 120]} tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={32} />
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Rank 1" onClick={(data) => onViewCentre && data.top1Code && onViewCentre(data.top1Code)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top1Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.15))' }} formatter={(v) => v || ''} />
+              <LabelList dataKey="top1Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }} formatter={(v) => v || ''} />
               <LabelList dataKey="top1Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Rank 2" onClick={(data) => onViewCentre && data.top2Code && onViewCentre(data.top2Code)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top2Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.15))' }} formatter={(v) => v || ''} />
+              <LabelList dataKey="top2Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }} formatter={(v) => v || ''} />
               <LabelList dataKey="top2Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
             <Bar barSize={18} isAnimationActive={false} shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Rank 3" onClick={(data) => onViewCentre && data.top3Code && onViewCentre(data.top3Code)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top3Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.15))' }} formatter={(v) => v || ''} />
+              <LabelList dataKey="top3Code" position="top" fill="#334155" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }} formatter={(v) => v || ''} />
               <LabelList dataKey="top3Val" position="insideTop" fill="#fff" fontSize={7} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
           </BarChart>

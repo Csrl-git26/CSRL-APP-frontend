@@ -131,10 +131,10 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 4px rgba(0,0,0,0.15)' }}>{value}</div>
-          <div style={{ fontSize:11, fontWeight:700, color:'#475569', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.1)' }}>{label}</div>
+          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
+          <div style={{ fontSize:11, fontWeight:700, color:'#475569', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
-        {sub && <div style={{ fontSize:10, color:'#94a3b8', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.1)' }}>{sub}</div>}
+        {sub && <div style={{ fontSize:10, color:'#94a3b8', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
       </div>
     </div>
   );
@@ -289,10 +289,11 @@ const CustomBarLabel = (props) => {
        x={cx} 
        y={cy} 
        fill="#fff" 
-       fontSize={8} 
-       fontWeight={700} 
+       fontSize={10} 
+       fontWeight={900} 
        textAnchor="middle" 
        dominantBaseline="central"
+       style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}
        transform={isThin ? `rotate(-90, ${cx}, ${cy})` : ''}
     >
       {prefix}{val}
@@ -385,7 +386,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
             <g transform={transform}>
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
                 fontSize={lSize} fontWeight={900} letterSpacing="0.5px"
-                style={{ filter: 'drop-shadow(1px 2px 0px rgba(0,0,0,0.3))' }}
+                style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.6))' }}
                 stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
                 {payload?.code || ""}
               </text>
@@ -542,8 +543,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#475569" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.15))' }}>{name} {extra}</text>
-                      <text x={-5} y={9} textAnchor="end" fill="#0f172a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.2))' }}>{total}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#475569" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}>{name} {extra}</text>
+                      <text x={-5} y={9} textAnchor="end" fill="#0f172a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(0px 1px 1px rgba(255,255,255,0.9)) drop-shadow(0px 2px 5px rgba(37,99,235,0.4))' }}>{total}</text>
                     </g>
                   );
                 };
@@ -739,7 +740,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       </div>
                       
 
-                      <div style={{ fontSize:10, fontWeight:900, color: '#334155', display: 'flex', alignItems: 'center', gap: 2, letterSpacing: '0.5px', textShadow: '1px 1px 0px rgba(0,0,0,0.15)' }}>
+                      <div style={{ fontSize:10, fontWeight:900, color: '#334155', display: 'flex', alignItems: 'center', gap: 2, letterSpacing: '0.5px', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>
                         {medals[c.rank] && <span style={{fontSize:10, textShadow:'none'}}>{medals[c.rank]}</span>} {c.code}
                       </div>
                     </div>
@@ -898,11 +899,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>Above Avg</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>Above Avg</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>Below Avg</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>Below Avg</span>
                   </div>
                 </div>
               </div>
@@ -925,11 +926,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>&ge; 80% Qual</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&ge; 80% Qual</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>&lt; 80% Qual</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&lt; 80% Qual</span>
                   </div>
                 </div>
               </div>
