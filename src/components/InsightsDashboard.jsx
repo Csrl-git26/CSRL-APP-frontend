@@ -131,10 +131,10 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1 }}>{value}</div>
-          <div style={{ fontSize:11, fontWeight:700, color:'#475569', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{label}</div>
+          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 4px rgba(0,0,0,0.15)' }}>{value}</div>
+          <div style={{ fontSize:11, fontWeight:700, color:'#475569', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.1)' }}>{label}</div>
         </div>
-        {sub && <div style={{ fontSize:10, color:'#94a3b8', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{sub}</div>}
+        {sub && <div style={{ fontSize:10, color:'#94a3b8', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.1)' }}>{sub}</div>}
       </div>
     </div>
   );
@@ -898,11 +898,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>Above Avg</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>Above Avg</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>Below Avg</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>Below Avg</span>
                   </div>
                 </div>
               </div>
@@ -925,11 +925,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>&ge; 80% Qual</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>&ge; 80% Qual</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>&lt; 80% Qual</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(0,0,0,0.15)' }}>&lt; 80% Qual</span>
                   </div>
                 </div>
               </div>
