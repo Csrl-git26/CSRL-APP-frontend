@@ -22,8 +22,8 @@
   --red-bg: #fdecea;
   --yellow: #d97706;
   --yellow-bg: #fffbeb;
-  --shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025);
-  --shadow-lg: 0 8px 32px rgba(26, 79, 160, .18);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
   --radius: 16px;
   --radius-sm: 6px;
 }
@@ -105,6 +105,11 @@ input, select, textarea {
   box-shadow: var(--shadow);
   border: 1px solid #f1f5f9;
   padding: 20px;
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 .badge {
   display: inline-block;
@@ -251,13 +256,20 @@ input, select, textarea {
 }
 
 .stat-card {
+  flex: 1;
   background: #fff;
   border-radius: var(--radius);
-  padding: 16px 18px;
+  padding: 20px;
   box-shadow: var(--shadow);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  min-width: 200px;
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 .stat-icon {
   width: 44px;
@@ -515,7 +527,8 @@ input, select, textarea {
 .upload-zone.error-zone { border-color: var(--red); background: var(--red-bg); }
 
 /* CENTRE LEADERBOARD */
-.centre-rank-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 20px; display: flex; align-items: center; gap: 14px; border-left: 4px solid transparent; transition: all .2s; }
+.centre-rank-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 20px; display: flex; align-items: center; gap: 14px; border-left: 4px solid transparent; transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.2s; }
+.centre-rank-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .centre-rank-card:hover { transform: translateX(3px); }
 .rank-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; }
 
