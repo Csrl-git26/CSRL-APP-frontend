@@ -542,8 +542,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#64748b" fontSize={9} fontWeight={700}>{name} {extra}</text>
-                      <text x={-5} y={8} textAnchor="end" fill="#1e293b" fontSize={10} fontWeight={900}>{total}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#475569" fontSize={10} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.15))' }}>{name} {extra}</text>
+                      <text x={-5} y={9} textAnchor="end" fill="#0f172a" fontSize={11} fontWeight={900} letterSpacing="0.5px" style={{ filter: 'drop-shadow(1px 1px 0px rgba(0,0,0,0.2))' }}>{total}</text>
                     </g>
                   );
                 };
@@ -739,8 +739,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       </div>
                       
 
-                      <div style={{ fontSize:8, fontWeight:600, color: '#64748b', display: 'flex', alignItems: 'center', gap: 2 }}>
-                        {medals[c.rank] && <span style={{fontSize:9}}>{medals[c.rank]}</span>} {c.code}
+                      <div style={{ fontSize:10, fontWeight:900, color: '#334155', display: 'flex', alignItems: 'center', gap: 2, letterSpacing: '0.5px', textShadow: '1px 1px 0px rgba(0,0,0,0.15)' }}>
+                        {medals[c.rank] && <span style={{fontSize:10, textShadow:'none'}}>{medals[c.rank]}</span>} {c.code}
                       </div>
                     </div>
                   );
