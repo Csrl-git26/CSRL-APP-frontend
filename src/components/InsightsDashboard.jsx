@@ -68,7 +68,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
                   </defs>
                   <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                   <RadialBar 
-                    isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" 
+                    isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" minAngle={15} background={{ fill: '#f1f5f9' }} clockWise={true} dataKey="value" 
                     shape={(props) => renderRadialBarShape(props, activeRadialIndex, onViewCentre, setActiveRadialIndex)}
                     label={{ position: 'insideStart', fill: '#fff', fontSize: 9, fontWeight: 700, formatter: (val) => `${val}%`, pointerEvents: 'none' }}
                   />
@@ -363,7 +363,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
         outerRadius={55} 
         paddingAngle={3}
         activeIndex={activeIndex}
-        isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out"
+        isAnimationActive={true} animationDuration={2000} animationEasing="ease-out"
         shape={(props) => renderPieShape(props, activeIndex)}
         onMouseEnter={(_, index) => setActiveIndex(index)}
         onMouseLeave={() => setActiveIndex(-1)}
