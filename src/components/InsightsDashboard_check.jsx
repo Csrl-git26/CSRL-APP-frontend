@@ -1,6 +1,4 @@
 import { useMemo, useState } from 'react';
-import SubjectTopCentres from './SubjectTopCentres';
-import SubjectTopStudents from './SubjectTopStudents';
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon, RefreshCcw
@@ -919,15 +917,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       
 
 
-      {/* Subject Top 3 Centres */}
-      <SubjectTopCentres centreBoard={centreBoard} onViewCentre={onViewCentre} />
       
-      {/* Subject Top 3 Students */}
-      <SubjectTopStudents subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
-
-      {/* Top & Bottom 5 Students (Each taking 1 column in the 4-col grid) */}
-      {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb', true)}
-      {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb', false)}
 
       </div> {/* End Main Dashboard Layout */}
 
