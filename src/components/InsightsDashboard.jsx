@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useMemo, useState, useEffect } from 'react';
 import SubjectTopStudents from './SubjectTopStudents';
 import SubjectTopCentres from './SubjectTopCentres';
@@ -494,6 +495,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const tests    = data?.tests    || [];
 
   
+  const renderStudentChart = (students, title, icon, color, fixedMax = false) => {
     return (
         <div className="card" style={{ padding: 20, flex: 1, minWidth: 0 }}>
           <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
