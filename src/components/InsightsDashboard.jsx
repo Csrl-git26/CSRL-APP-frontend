@@ -27,7 +27,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
       <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', backfaceVisibility: 'hidden', padding: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <SectionTitle Icon={PieChartIcon} color="#2563eb">
-            {isBottom5 ? 'BOTTOM 5 CENTRE - QUAL %' : 'TOP 5 CENTRE - QUAL %'}
+            {isBottom5 ? 'BOTTOM 5 CENTRE - QUAL' : 'TOP 5 CENTRE - QUAL %'}
           </SectionTitle>
           <div 
             onClick={() => setShowBottom5Qual(!showBottom5Qual)}
@@ -844,7 +844,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
               <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL %</SectionTitle>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(false)}
                     style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
