@@ -27,7 +27,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
       <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', backfaceVisibility: 'hidden', padding: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <SectionTitle Icon={PieChartIcon} color="#2563eb">
-            {isBottom5 ? 'Bottom 5 CNT - Qual\u00A0%' : 'Top 5 CNT - Qual\u00A0%'}
+            {isBottom5 ? 'BOTTOM 5 CENTRE - QUAL %' : 'TOP 5 CENTRE - QUAL %'}
           </SectionTitle>
           <div 
             onClick={() => setShowBottom5Qual(!showBottom5Qual)}
@@ -647,9 +647,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
-        <KpiCard icon={Users}    value={totalStudents} label="Total Stud" onClick={onTotalStudentsClick}
+        <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
-        <KpiCard icon={BarChart3} value={centreBoard.length} label="Active CNT" onClick={onActiveCentresClick}
+        <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
           sub={`${redFlagCentres.length} need attention`} bg="linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)" color="#b45309"/>
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
@@ -758,14 +758,14 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
                 return (
                   <div key={selectedTestKey}>
-                    <SectionTitle Icon={Star} color="#2563eb">Top 5 CNT - Avg Score</SectionTitle>
+                    <SectionTitle Icon={Star} color="#2563eb">TOP 5 CENTRE - AVG SCORE</SectionTitle>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 32 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
                     
                     {bottomCentres.length > 0 && (
                       <div style={{ marginTop: 8 }}>
-                        <SectionTitle Icon={Star} color="#2563eb">Bottom 5 CNT - Avg Score</SectionTitle>
+                        <SectionTitle Icon={Star} color="#2563eb">BOTTOM 5 CENTRE - AVG SCORE</SectionTitle>
                         <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
                           {bottomCentres.map(renderCard)}
                         </div>
@@ -793,7 +793,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
               <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">Top 5 CNT - Qual&nbsp;%</SectionTitle>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(true)}
                     style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
@@ -844,7 +844,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
               <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">Bottom 5 CNT - Qual&nbsp;%</SectionTitle>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL %</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(false)}
                     style={{ cursor: 'pointer', padding: 6, background: '#eff6ff', borderRadius: '50%', color: '#3b82f6', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
@@ -899,7 +899,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const overallAvg = sorted.reduce((sum, c) => sum + (c.avg||0), 0) / (sorted.length || 1);
             return (
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Total Avg Score</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">CENTRE DISTRIBUTION - TOTAL AVG SCORE</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={overallAvg} compareKey="avg" onViewCentre={onViewCentre} />
@@ -925,7 +925,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CNT Dist. - Qual.</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">CENTRE DISTRIBUTION - QUAL.</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
@@ -957,8 +957,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 20 }}>
         <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
-        {renderStudentChart(top5, 'Top 5 Stud', Trophy, '#2563eb', true)}
-        {renderStudentChart(bottom5, 'Bottom 5 Stud', Star, '#2563eb', false)}
+        {renderStudentChart(top5, 'TOP 5 STUDENT', Trophy, '#2563eb', true)}
+        {renderStudentChart(bottom5, 'BOTTOM 5 STUDENT', Star, '#2563eb', false)}
       </div>
 
 

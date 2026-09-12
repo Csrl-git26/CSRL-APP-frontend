@@ -88,7 +88,7 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
       <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
           <Activity size={18} color="#3b82f6" aria-hidden="true" />
-          <span style={{ fontSize:15, fontWeight:800, letterSpacing:0.2, color: 'rgba(37, 99, 235, 0.95)', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>Subject Top 3 CNT</span>
+          <span style={{ fontSize:15, fontWeight:800, letterSpacing:0.2, color: 'rgba(37, 99, 235, 0.95)', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>SUBJECTWISE TOP 3 CENTRE</span>
         </div>
         <div style={{ position:'absolute', bottom:0, left:0, width:'100%', height:2, background:'linear-gradient(90deg,rgba(59,130,246,0.5),transparent)', boxShadow:'0 1px 3px rgba(59,130,246,0.3)' }} />
       </div>
