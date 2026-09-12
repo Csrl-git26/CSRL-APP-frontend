@@ -497,7 +497,7 @@ input, select, textarea {
 
 /* MODAL */
 .modal-overlay { position: fixed; top: 0; right: 0; bottom: 0; left: 220px; background: rgba(15,23,42,0.35); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
-.modal { background: rgba(255,255,255,0.60); backdrop-filter: blur(28px) saturate(2.2); -webkit-backdrop-filter: blur(28px) saturate(2.2); border: 1px solid rgba(255,255,255,0.45); border-radius: var(--radius); box-shadow: 0 12px 48px rgba(0,0,0,.18), 0 4px 16px rgba(37,99,235,0.12), inset 0 1px 0 rgba(255,255,255,0.8); width: 100%; max-width: 700px; margin: auto; }
+.modal { background: rgba(255,255,255,0.30); backdrop-filter: blur(32px) saturate(2.5); -webkit-backdrop-filter: blur(32px) saturate(2.5); border: 1px solid rgba(255,255,255,0.35); border-radius: var(--radius); box-shadow: 0 12px 48px rgba(0,0,0,.15), 0 4px 16px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.6); width: 100%; max-width: 700px; margin: auto; }
 .modal-header { padding: 18px 22px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .modal-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .modal-close { background: none; border: none; font-size: 22px; color: var(--gray-400); cursor: pointer; line-height: 1; padding: 2px; }
