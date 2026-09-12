@@ -1275,11 +1275,8 @@ export default function AdminDashboard() {
         {showGraphsModal && (
         <div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
           <div className="modal" style={{ maxWidth: 1200, width: '95%', height: '80vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Trophy size={16} aria-hidden="true" />
-                Centre Insights - {selectedTrendCentre}
-              </div>
+            <div className="modal-header" style={{ padding: '10px 18px' }}>
+              <div></div>
               <button type="button" className="modal-close" onClick={() => setShowGraphsModal(false)} aria-label="Close">×</button>
             </div>
             <div className="modal-body" style={{ background: '#f8fafc', padding: 20, flex: 1, overflowY: 'auto' }}>
