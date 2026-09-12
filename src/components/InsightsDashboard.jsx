@@ -925,7 +925,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CENTRE - QUAL.</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">CENTRE - QUALIFICATION</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
