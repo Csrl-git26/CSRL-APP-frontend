@@ -659,8 +659,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           labelFontSize={12}
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg="#f0f5ff" 
-          color="#1a4fa0"
-          valueColor={(qualRate !== null && qualRate < 80) ? "var(--red)" : "#1a4fa0"}
+          color={(qualRate !== null && qualRate < 80) ? "#dc2626" : "#1a4fa0"}
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
