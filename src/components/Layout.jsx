@@ -22,12 +22,14 @@ const ADMIN_NAV = [
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
   { section: 'Data Management' },
   { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
+  { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty'    },
 ];
 
 const CENTRE_NAV = [
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
   { key: 'topbottom',  Icon: Trophy,          label: 'Student Ranking'  },
   { key: 'pastyear',   Icon: Archive,         label: 'Past Year Data' },
+  { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty' },
 ];
 
 const STUDENT_NAV = [

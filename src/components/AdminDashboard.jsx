@@ -112,6 +112,7 @@ const ALL_TABS = [
   { key: 'centre-overview', Icon: Building2, label: 'Centre Overview'      },
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
+  { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty'    },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
 ];
 const isDataAdmin = typeof window !== 'undefined' && localStorage.getItem('subRole') === 'DATA_ADMIN';
@@ -2016,6 +2017,7 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {activePage === 'leaderboard' && <h1>CSRL Dashboard</h1>}
           {activePage === 'pastyear' && <h1>Past Year Data</h1>}
+          {activePage === 'traineefaculty' && <h1>Trainee Faculty</h1>}
           {activePage === 'import' && <h1>Import Excel</h1>}
           {activePage === 'leaderboard' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -2057,6 +2059,13 @@ export default function AdminDashboard() {
           {activePage === 'import'      && <ImportExportSection />}
           {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
+          {activePage === 'traineefaculty' && (
+            <div style={{ padding: 60, textAlign: 'center', color: 'var(--gray-400)', fontSize: 16, background: '#fff', borderRadius: 12, border: '2px dashed var(--gray-200)', marginTop: 20 }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>👨‍🏫</div>
+              <div style={{ fontWeight: 700, color: 'var(--gray-600)', fontSize: 20, marginBottom: 8 }}>Trainee Faculty</div>
+              <div>This tab is currently vacant. Details will be added here later.</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
