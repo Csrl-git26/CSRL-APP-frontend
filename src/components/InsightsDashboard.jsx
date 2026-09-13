@@ -43,7 +43,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
             const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
             const top5Qual = isBottom5 ? sortedByQual.slice(-5) : sortedByQual.slice(0, 5);
             
-            const colors = ['#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'];
+            const colors = isBottom5 ? ["#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74"] : ["#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd"];
             const radialData = top5Qual.map((c, i) => {
               const rank = sortedByQual.findIndex(x => x.code === c.code) + 1;
               return { name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank };
