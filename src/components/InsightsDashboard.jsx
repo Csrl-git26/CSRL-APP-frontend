@@ -719,7 +719,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
-           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: 'Qualified' }}
+           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: 'Qualified / Total Student' }}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
           progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6', tooltipText: 'Centres OK' }}
@@ -729,7 +729,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           value={qualRate !== null ? `${qualRate}%` : '—'} 
           label="CSRL QUALIFICATION"
           labelFontSize={12}
-          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltipText: 'Qualified' }}
+          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltipText: 'Qualified / Appeared' }}
           bg="#f0f5ff" 
           color="#1a4fa0"
         />
