@@ -1193,9 +1193,9 @@ export default function AdminDashboard() {
     const neetCount      = data.profiles.filter((p) => p.stream === 'NEET').length;
 
     const statCards = [
-      { Icon: Users,         value: totalStudents,                      label: 'Total Students',     bg: '#e8f0fc', color: '#1a4fa0' },
-      { Icon: Building2,     value: Math.max(0, centersList.length - 1), label: 'Active Centres',    bg: '#fff3e0', color: '#b45309' },
-      { Icon: FileText,      value: data?.tests?.length || 0,           label: 'Marks Entries',      bg: '#e6f5ed', color: '#1a6e3b' },
+      { Icon: Users,         value: totalStudents,                      label: 'Total Students',     bg: '#f0f5ff', color: '#1a4fa0' },
+      { Icon: Building2,     value: Math.max(0, centersList.length - 1), label: 'Active Centres',    bg: '#f0f5ff', color: '#1a4fa0' },
+      { Icon: FileText,      value: data?.tests?.length || 0,           label: 'Marks Entries',      bg: '#f0f5ff', color: '#1a4fa0' },
     ];
 
     return (

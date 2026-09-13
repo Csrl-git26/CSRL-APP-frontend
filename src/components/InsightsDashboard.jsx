@@ -650,18 +650,18 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
-          sub={`${redFlagCentres.length} need attention`} bg="linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)" color="#b45309"/>
+          sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
           label="Overall Qual. Rate"
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
-          bg={(qualRate !== null && qualRate < 80) ? "#fef2f2" : "#f0fdf4"} 
-          color={(qualRate !== null && qualRate < 80) ? "#f97316" : "#16a34a"}
+          bg="#f0f5ff" 
+          color="#1a4fa0"
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
-          sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)" color="#7c3aed"/>
+          sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
       </div>
 
       {/* ── Main Dashboard Layout ── */}

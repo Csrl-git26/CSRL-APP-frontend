@@ -569,10 +569,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     const topScore = topRanked.length && typeof topRanked[0]?.marks === 'number' ? topRanked[0].marks : 0;
 
     const statCards = [
-      { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#e8f0fc', color: '#1a4fa0' },
-      { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#fdecea', color: 'var(--red)' },
-      { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#e6f5ed', color: '#1a6e3b' },
-      { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#fff3e0', color: '#b45309' },
+      { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#f0f5ff', color: '#1a4fa0' },
+      { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#f0f5ff', color: '#1a4fa0' },
+      { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#f0f5ff', color: '#1a4fa0' },
+      { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#f0f5ff', color: '#1a4fa0' },
     ];
 
     return (
