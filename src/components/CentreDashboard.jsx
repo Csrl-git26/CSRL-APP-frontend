@@ -82,6 +82,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const [prefetchedData, setPrefetchedData] = useState({});
   const [filterCategory,   setFilterCategory]   = useState('ALL');
   const [filterStream,     setFilterStream]     = useState('ALL');
+  const [globalStream,     setGlobalStream]     = useState('JEE');
   const [filterSponsor,    setFilterSponsor]    = useState('ALL');
   const [filterGender,     setFilterGender]     = useState('ALL');
   const [filterState,      setFilterState]      = useState('ALL');
@@ -181,10 +182,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
        ? baseKeys 
        : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
-    fetchCentreLeaderboard(null, combinedKey)
+    fetchCentreLeaderboard(null, combinedKey, globalStream)
       .then(board => setCentreBoard(Array.isArray(board) ? board : []))
       .catch(() => setCentreBoard([]));
-  }, [selectedLeaderboardTestKeys, selectedSubject]);
+  }, [selectedLeaderboardTestKeys, selectedSubject, globalStream]);
 
   useEffect(() => {
     if (!selectedTrendCentre) return;
@@ -269,7 +270,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     let cancelled = false;
     setTestInsightsLoading(true);
     setTestInsightsError('');
-    fetchTestInsights(null, selectedTestKey, null)
+    fetchTestInsights(null, selectedTestKey, null, globalStream)
       .then((d) => {
         if (!cancelled) setTestInsights(d);
       })
@@ -313,13 +314,27 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     [data]
   );
 
+  const streamTestOptions = useMemo(() => {
+    if (!globalStream || globalStream === 'ALL') return allTestOptions;
+    const profs = data?.profiles || [];
+    const tests = data?.tests || [];
+    const rollKeys = new Set(profs.filter(p => (p.stream || 'JEE') === globalStream).map(p => p.ROLL_KEY));
+    const keys = new Set(
+      tests.filter(t => rollKeys.has(t.ROLL_KEY))
+        .flatMap(t => Object.keys(t).filter(k => k.startsWith('FMT') && !k.includes('_') && t[k] != null && t[k] !== ''))
+    );
+    if (keys.size === 0) return [];
+    return [...keys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+  }, [allTestOptions, globalStream, data]);
+
   const filteredStudents = useMemo(() => {
     if (!data) return [];
     const q = searchTerm.toLowerCase();
     return data.profiles.filter((p) => {
       const matchSearch  = !q || (p["STUDENT'S NAME"] || '').toLowerCase().includes(q) || (p.ROLL_KEY || '').toLowerCase().includes(q);
       const matchCat     = filterCategory === 'ALL' || p.CATEGORY   === filterCategory;
-      const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
+      const effStream = filterStream !== 'ALL' ? filterStream : (globalStream !== 'ALL' ? globalStream : 'ALL');
+      const matchStream  = effStream === 'ALL' || (p.stream || 'JEE') === effStream;
       const matchSponsor = filterSponsor  === 'ALL' || (p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))) === filterSponsor;
       const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
       const matchState   = filterState    === 'ALL' || p.STATE === filterState;
@@ -337,7 +352,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       const p = profileByRoll.get(s.roll);
       if (!p) return true;
       const matchCat     = filterCategory === 'ALL' || p.CATEGORY   === filterCategory;
-      const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
+      const effStream = filterStream !== 'ALL' ? filterStream : (globalStream !== 'ALL' ? globalStream : 'ALL');
+      const matchStream  = effStream === 'ALL' || (p.stream || 'JEE') === effStream;
       const matchSponsor = filterSponsor  === 'ALL' || (p.SPONSOR || (p.centerCode === 'KNP' || p.centerCode === 'GAIL' ? 'GAIL' : (p.centerCode === 'JDH' || p.centerCode === 'OIL_INDIA' ? 'OIL_INDIA' : '—'))) === filterSponsor;
       const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
       const matchState   = filterState    === 'ALL' || p.STATE === filterState;
@@ -490,7 +506,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
             <MultiSelectDropdown 
-              options={allTestOptions} 
+              options={streamTestOptions.length > 0 ? streamTestOptions : allTestOptions} 
               selectedOptions={selectedLeaderboardTestKeys} 
               onChange={setSelectedLeaderboardTestKeys} 
             />
@@ -976,9 +992,22 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
               <Building2 size={24} color="var(--csrl-blue)" aria-hidden="true" />
             )}
           </div>
-          <div>
-            <h1>{centreTitle}</h1>
-            <p>{data.profiles.length} students</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div>
+              <h1>{centreTitle}</h1>
+              <p>{data.profiles.length} students</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
+              <select
+                value={globalStream}
+                onChange={(e) => setGlobalStream(e.target.value)}
+                style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 8, padding: '5px 10px', fontSize: 13, fontWeight: 700, cursor: 'pointer', outline: 'none' }}
+              >
+                <option value="JEE" style={{ color: '#333', background: '#fff' }}>JEE</option>
+                <option value="NEET" style={{ color: '#333', background: '#fff' }}>NEET</option>
+              </select>
+            </div>
           </div>
           <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: activePage === 'leaderboard' ? 'none' : 'flex', gap: 12 }}>
             <select
