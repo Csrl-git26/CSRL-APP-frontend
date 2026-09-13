@@ -935,7 +935,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     if (!centreBoard || centreBoard.length === 0) return <div>No Data</div>;
                     const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
                     const bottom5Qual = sortedByQual.slice(-5);
-                    const colors = ['#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'];
+                    const colors = ["#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74"];
                     const radialData = bottom5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
                     const legendPayload = bottom5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
