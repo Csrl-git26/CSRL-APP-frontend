@@ -282,7 +282,7 @@ input, select, textarea {
   flex-shrink: 0;
 }
 .stat-val { font-size: 24px; font-weight: 800; line-height: 1; }
-.stat-lbl { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+.stat-lbl { font-size: 13px; font-weight: 700; color: var(--gray-500); margin-top: 2px; }
 
 .tab-bar {
   display: flex;
