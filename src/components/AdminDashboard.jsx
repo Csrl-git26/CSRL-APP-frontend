@@ -542,6 +542,23 @@ export default function AdminDashboard() {
     return ['ALL_FMT', ...sorted];
   }, [manualTestOptions, rankingTestColumns]);
 
+  // Stream-filtered test options: only show tests that have at least 1 student of the selected stream
+  const streamTestOptions = useMemo(() => {
+    if (!globalStream || globalStream === 'ALL') return allTestOptions;
+    const profiles = data?.profiles || [];
+    const tests = data?.tests || [];
+    const streamProfiles = profiles.filter(p => (p.stream || 'JEE') === globalStream);
+    const streamRollKeys = new Set(streamProfiles.map(p => p.ROLL_KEY));
+    const baseKeys = new Set(
+      tests
+        .filter(t => streamRollKeys.has(t.ROLL_KEY))
+        .flatMap(t => Object.keys(t).filter(k => k.startsWith('FMT') && !k.includes('_') && t[k] != null && t[k] !== ''))
+    );
+    if (baseKeys.size === 0) return []; // No tests for this stream
+    const sorted = [...baseKeys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+    return ['ALL_FMT', ...sorted];
+  }, [allTestOptions, globalStream, data]);
+
   const filteredStudents = useMemo(() => {
     if (!data) return [];
     const q = searchTerm.toLowerCase();
@@ -1262,7 +1279,7 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
               <span style={{ fontSize: 11, color: 'var(--gray-600)', fontWeight: 600 }}>Test:</span>
               <MultiSelectDropdown 
-                options={allTestOptions.filter(o => o !== 'ALL_FMT')} 
+                options={streamTestOptions.filter(o => o !== 'ALL_FMT')} 
                 selectedOptions={selectedLeaderboardTestKeys} 
                 onChange={setSelectedLeaderboardTestKeys} 
               />
@@ -1272,7 +1289,15 @@ export default function AdminDashboard() {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <InsightsDashboard key={selectedLeaderboardTestKeys.join(',')} testInsights={testInsights} data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} />
+          {(data?.profiles || []).filter(p => (p.stream || 'JEE') === globalStream).length === 0 ? (
+            <div style={{ padding: 60, textAlign: 'center', color: 'var(--gray-400)', fontSize: 15, background: '#fff', borderRadius: 12, border: '2px dashed var(--gray-200)', margin: '20px 0' }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>📂</div>
+              <div style={{ fontWeight: 700, color: 'var(--gray-600)', fontSize: 17, marginBottom: 6 }}>No {globalStream} Data Uploaded Yet</div>
+              <div>Upload {globalStream} student profiles and test scores to see analytics for this stream.</div>
+            </div>
+          ) : (
+          <InsightsDashboard key={selectedLeaderboardTestKeys.join(',') + globalStream} testInsights={testInsights} data={data} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} />
+          )}
         </div>
         {showGraphsModal && (
         <div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
@@ -2010,7 +2035,7 @@ export default function AdminDashboard() {
               onChange={(e) => setSelectedTestKey(e.target.value)}
               style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 148, fontSize: 13 }}
             >
-              {allTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t === 'ALL_FMT' ? 'All FMT Average' : t}</option>)}
+              {streamTestOptions.length === 0 ? <option value="">No tests for {globalStream}</option> : streamTestOptions.map((t) => <option key={t} value={t} style={{ color: '#333' }}>{t === 'ALL_FMT' ? 'All FMT Average' : t}</option>)}
             </select>
           )}
         </div>
