@@ -1278,7 +1278,7 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 6 }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-              <span style={{ fontSize: 11, color: 'var(--gray-600)', fontWeight: 600 }}>Test:</span>
+              <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
               <MultiSelectDropdown 
                 options={streamTestOptions.filter(o => o !== 'ALL_FMT')} 
                 selectedOptions={selectedLeaderboardTestKeys} 
@@ -1319,7 +1319,7 @@ export default function AdminDashboard() {
               </div>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                 <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-                  <span style={{ fontSize: 11, color: 'var(--gray-600)', fontWeight: 600 }}>Test:</span>
+                  <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
                   <MultiSelectDropdown 
                     options={streamTestOptions.filter(o => o !== 'ALL_FMT')} 
                     selectedOptions={selectedLeaderboardTestKeys} 

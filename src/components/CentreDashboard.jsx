@@ -504,7 +504,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         </div>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Test:</span>
+            <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
             <MultiSelectDropdown 
               options={streamTestOptions.length > 0 ? streamTestOptions : allTestOptions} 
               selectedOptions={selectedLeaderboardTestKeys} 
