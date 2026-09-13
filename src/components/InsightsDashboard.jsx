@@ -123,7 +123,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   );
 }
 
-function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontSize = 14, valueColor, subColor }) {
+function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontSize = 14, valueColor, subColor, progressBar }) {
   return (
     <div className="card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
       alignItems:'center', gap:12, flex:1, minWidth:0 }}>
@@ -131,7 +131,12 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
         <Icon size={22} color={color}/>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, justifyContent: 'center' }}>
+        {progressBar && (
+          <div style={{ width: '100%', height: 5, background: '#cbd5e1', borderRadius: 3, marginBottom: 6, overflow: 'hidden' }}>
+            <div style={{ width: `${(progressBar.value / progressBar.max) * 100}%`, height: '100%', background: progressBar.color || color, borderRadius: 3 }} />
+          </div>
+        )}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
           <div style={{ fontSize:22, fontWeight:900, color: valueColor || color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
           <div style={{ fontSize:labelFontSize, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
@@ -688,6 +693,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
+           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6' }}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
           sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
