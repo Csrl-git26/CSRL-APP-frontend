@@ -536,7 +536,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <SectionTitle Icon={AlertTriangle} color="#2563eb"><span style={{ fontSize: 11 }}>STUDENT NO. SUBJECTWISE MARKS &lt;=30</span></SectionTitle>
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 12, flex: 1 }}>
           {subjects.map((sub) => (
-            <div key={sub} style={{ background: '#f8fafc', borderRadius: 8, padding: 8, minWidth: 0 }}>
+            <div key={sub} style={{ background: 'rgba(248, 250, 252, 0.65)', borderRadius: 8, padding: 8, minWidth: 0 }}>
               <div style={{ fontWeight: 700, marginBottom: 8, color: '#1a4fa0', fontSize: 14 }}>{sub}</div>
               <ul className="custom-scrollbar" style={{ margin: 0, paddingLeft: 12, fontSize: 11, lineHeight: 1.7, maxHeight: 130, overflowY: 'auto', paddingRight: 2 }}>
                 {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
@@ -750,7 +750,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {centreBoard.length > 0 && (() => {
         const sorted = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0)).map(c => ({...c, equalSlice: 1}));
         return (
-            <div className="card" style={{ padding: 20, cursor: 'pointer' }} onClick={() => setShowRankingModal(true)} title="Click to view full Centre Rankings">
+            <div className="card" style={{ padding: 20, cursor: 'pointer' }} onClick={() => setShowRankingModal(true)} title="Click to view full Centre Ranking Average Score">
               
               {(() => {
                 const topCentres = sorted.slice(0,5).map((c,i) => ({...c, rank: i+1}));
@@ -1050,11 +1050,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             </div>
 
             {/* Inner white card */}
-            <div style={{ flex: 1, background: '#f8fafc', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+            <div style={{ flex: 1, background: 'rgba(248, 250, 252, 0.65)', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '2px solid rgba(59, 130, 246, 0.15)', paddingBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
                   <Trophy size={20} />
-                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Rankings — {selectedTestKey || 'Latest'}</span>
+                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Ranking Average Score — {selectedTestKey || 'Latest'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                    <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>
