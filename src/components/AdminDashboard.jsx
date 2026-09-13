@@ -2061,7 +2061,7 @@ export default function AdminDashboard() {
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'traineefaculty' && (
             <div style={{ padding: 60, textAlign: 'center', color: 'var(--gray-400)', fontSize: 16, background: '#fff', borderRadius: 12, border: '2px dashed var(--gray-200)', marginTop: 20 }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>👨‍🏫</div>
+              <div style={{ marginBottom: 16 }}><Users size={48} color="var(--gray-400)" /></div>
               <div style={{ fontWeight: 700, color: 'var(--gray-600)', fontSize: 20, marginBottom: 8 }}>Trainee Faculty</div>
               <div>This tab is currently vacant. Details will be added here later.</div>
             </div>
