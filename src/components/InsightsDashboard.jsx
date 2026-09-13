@@ -136,7 +136,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
           <div style={{ fontSize:22, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
           <div style={{ fontSize:labelFontSize, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
-        {sub && <div style={{ fontSize:12, fontWeight:600, color:'#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
+        {sub && <div style={{ fontSize:13, fontWeight:600, color:'#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
       </div>
     </div>
   );
