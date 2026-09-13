@@ -123,7 +123,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   );
 }
 
-function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontSize = 14, valueColor }) {
+function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontSize = 14, valueColor, subColor }) {
   return (
     <div className="card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
       alignItems:'center', gap:12, flex:1, minWidth:0 }}>
@@ -136,7 +136,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
           <div style={{ fontSize:22, fontWeight:900, color: valueColor || color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
           <div style={{ fontSize:labelFontSize, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
-        {sub && <div style={{ fontSize:13, fontWeight:600, color:'#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
+        {sub && <div style={{ fontSize:13, fontWeight:600, color: subColor || '#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
       </div>
     </div>
   );
@@ -204,7 +204,7 @@ function RankRow({ rank, name, center, score, idx, roll, rawScores, selectedTest
         color: rank <= 3 ? '#f59e0b' : '#94a3b8' }}>{medals[rank] || `${rank}`}</div>
       <div style={{ flex:1, minWidth:0, display: 'flex', alignItems: 'center', gap: 6 }}>
         <div style={{ fontSize:10, fontWeight:700, color:'#1e3a8a', whiteSpace:'nowrap', flexShrink:0 }}>{name}</div>
-        <div style={{ fontSize:8, color:'#64748b', fontWeight:600, flexShrink:0 }}>{center}</div>
+        <div style={{ fontSize:8, color: subColor || '#64748b', fontWeight:600, flexShrink:0 }}>{center}</div>
         
         {parsedScores.length > 0 && (
           <div style={{ 
@@ -650,7 +650,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
-          sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
+          sub={`${redFlagCentres.length} need attention`} subColor={(redFlagCentres.length > 0) ? "var(--red)" : undefined} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
