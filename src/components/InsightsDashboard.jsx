@@ -654,7 +654,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
-          label="Overall Qual. Rate"
+          label="CSRL QUALIFICATION"
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg="#f0f5ff" 
           color="#1a4fa0"
