@@ -723,7 +723,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
           progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6', tooltipText: 'Centres OK' }}
-          sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
+          bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
