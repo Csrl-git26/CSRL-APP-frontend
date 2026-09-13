@@ -703,6 +703,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           value={qualRate !== null ? `${qualRate}%` : '—'} 
           label="CSRL QUALIFICATION"
           labelFontSize={12}
+          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6' }}
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg="#f0f5ff" 
           color="#1a4fa0"
