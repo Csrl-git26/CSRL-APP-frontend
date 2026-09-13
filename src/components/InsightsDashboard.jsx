@@ -505,7 +505,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           {subjects.map((sub) => (
             <div key={sub} style={{ background: '#f8fafc', borderRadius: 8, padding: 12 }}>
               <div style={{ fontWeight: 700, marginBottom: 8, color: '#1a4fa0', fontSize: 14 }}>{sub}</div>
-              <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.7 }}>
+              <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.7, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
                 {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
                   .filter(([, n]) => n > 0)
                   .sort((a, b) => b[1] - a[1])
