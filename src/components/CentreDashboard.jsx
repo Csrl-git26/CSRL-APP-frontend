@@ -33,7 +33,7 @@ import TestRecordsTable from './TestRecordsTable';
 
 const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
-  { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
+  { key: 'topbottom',  Icon: Trophy,          label: 'Student Ranking'  },
   { key: 'pastyear',   Icon: Package,         label: 'Past Year Data' },
 ];
 
