@@ -994,8 +994,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div>
-              <h1>{centreTitle}</h1>
-              <p>{data.profiles.length} students</p>
+              <h1>CSRL Dashboard</h1>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
