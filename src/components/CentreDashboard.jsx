@@ -995,17 +995,19 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <div>
               <h1>{TABS.find(t => t.key === activePage)?.label || (activePage === 'overview' ? 'Overview' : 'CSRL Dashboard')}</h1>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
-              <select
-                value={globalStream}
-                onChange={(e) => setGlobalStream(e.target.value)}
-                style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 8, padding: '5px 10px', fontSize: 13, fontWeight: 700, cursor: 'pointer', outline: 'none' }}
-              >
-                <option value="JEE" style={{ color: '#333', background: '#fff' }}>JEE</option>
-                <option value="NEET" style={{ color: '#333', background: '#fff' }}>NEET</option>
-              </select>
-            </div>
+            {activePage === 'leaderboard' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
+                <select
+                  value={globalStream}
+                  onChange={(e) => setGlobalStream(e.target.value)}
+                  style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 8, padding: '5px 10px', fontSize: 13, fontWeight: 700, cursor: 'pointer', outline: 'none' }}
+                >
+                  <option value="JEE" style={{ color: '#333', background: '#fff' }}>JEE</option>
+                  <option value="NEET" style={{ color: '#333', background: '#fff' }}>NEET</option>
+                </select>
+              </div>
+            )}
           </div>
           <div className="page-header-toolbar" style={{ marginLeft: 'auto', display: activePage === 'leaderboard' ? 'none' : 'flex', gap: 12 }}>
             <select
