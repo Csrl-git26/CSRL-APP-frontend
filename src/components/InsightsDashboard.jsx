@@ -125,7 +125,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
 
 function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontSize = 14, valueColor, subColor, progressBar }) {
   return (
-    <div className="card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
+    <div className="card" onClick={onClick} title={progressBar?.tooltip || label} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
       alignItems:'center', gap:12, flex:1, minWidth:0 }}>
       <div style={{ width:42, height:42, borderRadius:12, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -693,24 +693,24 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
-           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6' }}
+           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltip: `${totalQualified} / ${totalStudents} Qualified` }}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
-          progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6' }}
+          progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6', tooltip: `${centreBoard.length - redFlagCentres.length} / ${centreBoard.length} Centres OK` }}
           sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
           label="CSRL QUALIFICATION"
           labelFontSize={12}
-          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6' }}
+          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltip: `${totalQualified} / ${totalAppeared} Qualified` }}
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg="#f0f5ff" 
           color="#1a4fa0"
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
-          progressBar={{ value: avgScore || 0, max: topCentre ? topCentre.avg : 300, color: '#3b82f6' }}
+          progressBar={{ value: avgScore || 0, max: topCentre ? topCentre.avg : 300, color: '#3b82f6', tooltip: `Average: ${avgScore} / Best: ${topCentre ? Math.round(topCentre.avg) : 300}` }}
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
       </div>
 
