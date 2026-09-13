@@ -391,7 +391,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
                 fontSize={lSize} fontWeight={900} letterSpacing="0.5px"
                 stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
-                {payload?.code || ""}
+                {payload?.code || ""}{isActive ? ` (${Math.round(val)}${compareKey === 'qualRate' ? '%' : ''})` : ""}
               </text>
             </g>
           );
