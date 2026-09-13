@@ -689,7 +689,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
-          sub={`${redFlagCentres.length} need attention`} subColor={(redFlagCentres.length > 0) ? "var(--red)" : undefined} bg="#f0f5ff" color="#1a4fa0"/>
+          sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
