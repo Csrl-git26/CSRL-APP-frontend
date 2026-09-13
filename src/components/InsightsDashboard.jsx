@@ -722,7 +722,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
            progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: 'Qualified / Total Student' }}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
-          progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6', tooltipText: 'Centres OK' }}
+          progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6', tooltipText: 'OK Centres / Total Centres' }}
           bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={Award}    
