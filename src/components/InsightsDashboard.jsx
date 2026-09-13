@@ -135,7 +135,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
       {isHovered && progressBar && (
         <div style={{
           position: 'absolute', top: -30, left: '50%', transform: 'translateX(-50%)',
-          background: '#1e293b', color: 'white', padding: '4px 10px', borderRadius: 6,
+          background: '#1a4fa0', color: 'white', padding: '4px 10px', borderRadius: 6,
           fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8,
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 10, whiteSpace: 'nowrap'
         }}>
@@ -149,7 +149,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
             <span>{progressBar.max}</span>
           </div>
           {progressBar.tooltipText && <span style={{ marginLeft: 2, color: '#cbd5e1', fontWeight: 600 }}>{progressBar.tooltipText}</span>}
-          <div style={{ position: 'absolute', bottom: -4, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: '#1e293b' }} />
+          <div style={{ position: 'absolute', bottom: -4, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: '#1a4fa0' }} />
         </div>
       )}
 
