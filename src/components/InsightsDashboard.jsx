@@ -545,11 +545,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     <li 
                       key={code} 
                       onClick={() => onViewCentre && onViewCentre(code)}
-                      style={{ color: '#dc2626', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline transparent', transition: 'text-decoration 0.2s' }}
+                      style={{ color: '#2563eb', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline transparent', transition: 'text-decoration 0.2s', display: 'flex', justifyContent: 'space-between', gap: 4 }}
                       onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                       onMouseLeave={(e) => e.target.style.textDecoration = 'underline transparent'}
                     >
-                      {code}: {n}
+                      <span style={{ color: '#2563eb' }}>{code}</span>
+                      <span style={{ color: '#f97316', fontWeight: 700 }}>{n}</span>
                     </li>
                   ))}
                 {!Object.values((insights.notQualifiedBySubject || {})[sub] || {}).some((n) => n > 0) && (
