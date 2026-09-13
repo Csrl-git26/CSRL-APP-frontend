@@ -496,6 +496,38 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const tests    = data?.tests    || [];
 
   
+  const renderLowScorersCount = (insights) => {
+    const subjects = Object.keys(insights?.notQualifiedBySubject || {});
+    return (
+      <div className="card" style={{ padding: 20, flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ fontSize: 14, fontWeight: 800, color: '#1a202c', marginBottom: 16 }}>student no. subjectwise marks <=30 - count by centre</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12, flex: 1 }}>
+          {subjects.map((sub) => (
+            <div key={sub} style={{ background: '#f8fafc', borderRadius: 8, padding: 12 }}>
+              <div style={{ fontWeight: 700, marginBottom: 8, color: '#1a4fa0', fontSize: 14 }}>{sub}</div>
+              <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.7 }}>
+                {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
+                  .filter(([, n]) => n > 0)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([code, n]) => (
+                    <li key={code} style={{ color: '#dc2626', fontWeight: 600 }}>
+                      {code}: {n}
+                    </li>
+                  ))}
+                {!Object.values((insights.notQualifiedBySubject || {})[sub] || {}).some((n) => n > 0) && (
+                  <li style={{ color: '#94a3b8' }}>None</li>
+                )}
+              </ul>
+            </div>
+          ))}
+          {subjects.length === 0 && (
+             <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center', gridColumn:'1/-1' }}>No marks data available</div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderStudentChart = (students, title, icon, color, fixedMax = false) => {
     return (
         <div className="card" style={{ padding: 20, flex: 1, minWidth: 0 }}>
@@ -960,7 +992,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
         {renderStudentChart(top5, 'TOP 5 STUDENT', Trophy, '#2563eb', true)}
-        {renderStudentChart(bottom5, 'BOTTOM 5 STUDENT', Star, '#2563eb', false)}
+        {renderLowScorersCount(testInsights)}
       </div>
 
 
