@@ -716,7 +716,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div style={{ display:'flex', flexDirection:'column', gap:20, position: 'relative' }}>
 
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
@@ -1041,7 +1041,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
 
       {showRankingModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }} onClick={() => setShowRankingModal(false)}>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 40 }} onClick={() => setShowRankingModal(false)}>
           <div style={{ background: '#eef2f6', borderRadius: 16, width: '100%', maxWidth: 1000, height: '85vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', padding: 24, overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottom: '2px solid rgba(59, 130, 246, 0.2)', paddingBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
