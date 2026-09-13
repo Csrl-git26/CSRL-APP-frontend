@@ -99,7 +99,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
 
     <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, whiteSpace:'nowrap' }}>
-        <Icon size={18} color={color} />
+        
         <span style={{
           fontSize: 15,
           fontWeight: 800,
