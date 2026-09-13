@@ -389,6 +389,7 @@ export default function AdminDashboard() {
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [filterCenter,   setFilterCenter]   = useState('ALL');
   const [filterStream,   setFilterStream]   = useState('ALL');
+  const [globalStream,   setGlobalStream]   = useState('JEE');
   const [filterSponsor,  setFilterSponsor]  = useState('ALL');
   const [filterGender,   setFilterGender]   = useState('ALL');
   const [filterState,    setFilterState]    = useState('ALL');
@@ -493,25 +494,25 @@ export default function AdminDashboard() {
        ? baseKeys 
        : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
-    fetchCentreLeaderboard(null, combinedKey)
+    fetchCentreLeaderboard(null, combinedKey, globalStream)
       .then(board => setCentreBoard(Array.isArray(board) ? board : []))
       .catch(() => setCentreBoard([]));
       
     Promise.all([
-      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc', stream: globalStream }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc',  stream: globalStream }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom]) => {
       setLeaderboardTopRanked(top.ranked || []);
       setLeaderboardBottomRanked(bottom.ranked || []);
     });
-  }, [selectedLeaderboardTestKeys, selectedSubject, refreshTrigger]);
+  }, [selectedLeaderboardTestKeys, selectedSubject, refreshTrigger, globalStream]);
 
   useEffect(() => {
     if (!selectedTestKey) return undefined;
     let cancelled = false;
     setTestInsightsLoading(true);
     setTestInsightsError('');
-    fetchTestInsights(null, selectedTestKey, null)
+    fetchTestInsights(null, selectedTestKey, null, globalStream)
       .then((d) => {
         if (!cancelled) setTestInsights(d);
       })
@@ -548,7 +549,8 @@ export default function AdminDashboard() {
       const matchSearch  = !q || (p["STUDENT'S NAME"] || '').toLowerCase().includes(q) || (p.ROLL_KEY || '').toLowerCase().includes(q);
       const matchCat     = filterCategory === 'ALL' || p.CATEGORY   === filterCategory;
       const matchCenter  = filterCenter   === 'ALL' || p.centerCode === filterCenter;
-      const matchStream  = filterStream   === 'ALL' || (p.stream || 'JEE') === filterStream;
+      const effectiveStream = filterStream !== 'ALL' ? filterStream : (globalStream !== 'ALL' ? globalStream : 'ALL');
+      const matchStream  = effectiveStream === 'ALL' || (p.stream || 'JEE') === effectiveStream;
       const matchSponsor = filterSponsor  === 'ALL' || (p.SPONSOR || displaySponsor(p.centerCode)) === filterSponsor;
       const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
       const matchState   = filterState    === 'ALL' || p.STATE === filterState;
@@ -1986,9 +1988,19 @@ export default function AdminDashboard() {
             <ShieldCheck size={24} color="#fff" aria-hidden="true" />
           </div>
         )}
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <h1>CSRL Dashboard</h1>
-
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
+            <select
+              value={globalStream}
+              onChange={(e) => setGlobalStream(e.target.value)}
+              style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 8, padding: '5px 10px', fontSize: 13, fontWeight: 700, cursor: 'pointer', outline: 'none', backdropFilter: 'blur(4px)' }}
+            >
+              <option value="JEE" style={{ color: '#333', background: '#fff' }}>JEE</option>
+              <option value="NEET" style={{ color: '#333', background: '#fff' }}>NEET</option>
+            </select>
+          </div>
         </div>
         <div className="page-header-toolbar" style={{ marginLeft: 'auto' }}>
           {['centre-overview', 'ranking'].includes(activePage) && (

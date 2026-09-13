@@ -338,14 +338,16 @@ export async function fetchOverview(_token, centerCode) {
   return apiFetch(`/api/analytics/overview${qs}`);
 }
 
-export async function fetchRankings(_token, { testKey, centerCode, limit = 30, order = 'desc' } = {}) {
+export async function fetchRankings(_token, { testKey, centerCode, limit = 30, order = 'desc', stream } = {}) {
   const params = new URLSearchParams({ testKey, limit, order });
   if (centerCode) params.set('centerCode', centerCode);
+  if (stream && stream !== 'ALL') params.set('stream', stream);
   return apiFetch(`/api/analytics/rankings?${params}`);
 }
 
-export async function fetchCentreLeaderboard(_token, testKey) {
-  return apiFetch(`/api/analytics/centre-leaderboard?testKey=${encodeURIComponent(testKey)}`);
+export async function fetchCentreLeaderboard(_token, testKey, stream) {
+  const streamParam = stream && stream !== 'ALL' ? `&stream=${encodeURIComponent(stream)}` : '';
+  return apiFetch(`/api/analytics/centre-leaderboard?testKey=${encodeURIComponent(testKey)}${streamParam}`);
 }
 
 export async function fetchSubjectAverages(_token, centerCode, testKey) {
@@ -357,9 +359,10 @@ export async function fetchSubjectAverages(_token, centerCode, testKey) {
 }
 
 /** CAT-style test analysis (marks-based). Optional rollKey highlights one student in the payload. */
-export async function fetchTestInsights(_token, testKey, rollKey) {
+export async function fetchTestInsights(_token, testKey, rollKey, stream) {
   const params = new URLSearchParams({ testKey });
   if (rollKey) params.set('rollKey', rollKey);
+  if (stream && stream !== 'ALL') params.set('stream', stream);
   return apiFetch(`/api/analytics/test-insights?${params}`);
 }
 
