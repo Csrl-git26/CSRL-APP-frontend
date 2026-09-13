@@ -710,6 +710,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
+          progressBar={{ value: avgScore || 0, max: topCentre ? topCentre.avg : 300, color: '#3b82f6' }}
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
       </div>
 
