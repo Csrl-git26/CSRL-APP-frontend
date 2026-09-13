@@ -123,7 +123,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
   );
 }
 
-function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
+function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontSize = 14 }) {
   return (
     <div className="card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
       alignItems:'center', gap:12, flex:1, minWidth:0 }}>
@@ -134,7 +134,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
           <div style={{ fontSize:22, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
-          <div style={{ fontSize:12, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
+          <div style={{ fontSize:labelFontSize, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
         {sub && <div style={{ fontSize:12, fontWeight:600, color:'#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
       </div>
@@ -655,6 +655,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
           label="CSRL QUALIFICATION"
+          labelFontSize={12}
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg="#f0f5ff" 
           color="#1a4fa0"
