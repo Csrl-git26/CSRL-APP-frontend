@@ -1041,7 +1041,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
 
       {showRankingModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setShowRankingModal(false)}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: 80, padding: 20 }} onClick={() => setShowRankingModal(false)}>
           <div style={{ background: 'rgba(255, 255, 255, 0.45)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 24, width: '90vw', maxWidth: 1000, height: '85vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.2)', padding: 24, position: 'relative', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
             
             {/* Close button */}
