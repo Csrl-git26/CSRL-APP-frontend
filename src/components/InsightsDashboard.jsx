@@ -510,7 +510,13 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   .filter(([, n]) => n > 0)
                   .sort((a, b) => b[1] - a[1])
                   .map(([code, n]) => (
-                    <li key={code} style={{ color: '#dc2626', fontWeight: 600 }}>
+                    <li 
+                      key={code} 
+                      onClick={() => onViewCentre && onViewCentre(code)}
+                      style={{ color: '#dc2626', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline transparent', transition: 'text-decoration 0.2s' }}
+                      onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                      onMouseLeave={(e) => e.target.style.textDecoration = 'underline transparent'}
+                    >
                       {code}: {n}
                     </li>
                   ))}
