@@ -500,7 +500,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
     const subjects = Object.keys(insights?.notQualifiedBySubject || {});
     return (
       <div className="card" style={{ padding: 20, flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-        <SectionTitle Icon={AlertTriangle} color="#2563eb">STUDENT NO. SUBJECTWISE MARKS &lt;=30</SectionTitle>
+        <SectionTitle Icon={AlertTriangle} color="#2563eb"><span style={{ fontSize: 11 }}>STUDENT NO. SUBJECTWISE MARKS &lt;=30</span></SectionTitle>
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 12, flex: 1 }}>
           {subjects.map((sub) => (
             <div key={sub} style={{ background: '#f8fafc', borderRadius: 8, padding: 8, minWidth: 0 }}>
