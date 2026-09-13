@@ -383,15 +383,16 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const isActive = index === activeIndex;
           const lx = x, ly = y;
           const lFill = isAbove ? '#3b82f6' : '#f97316';
-          const lSize = isActive ? 14 : 12;
+          const lSize = 11;
           const lAnchor = x > cx ? 'start' : 'end';
           const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
           return (
             <g transform={transform}>
               <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
-                fontSize={lSize} fontWeight={900} letterSpacing="0.5px"
+                fontSize={isActive ? 12 : 11} fontWeight={900} letterSpacing="0.5px"
                 stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
-                {payload?.code || ""}{isActive ? ` (${Math.round(val)}${compareKey === 'qualRate' ? '%' : ''})` : ""}
+                {payload?.code || ""}
+                {isActive && <tspan fontSize={9.5}> ({Math.round(val)}{compareKey === 'qualRate' ? '%' : ''})</tspan>}
               </text>
             </g>
           );
