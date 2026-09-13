@@ -7,7 +7,7 @@ import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
   BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon, RefreshCcw
 } from 'lucide-react';
-import { Rectangle, Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
+import { Rectangle, Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList, LineChart, Line } from 'recharts';
 
 function pct(n, d) { return !d ? 0 : Math.round((n / d) * 100); }
 
@@ -716,7 +716,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:20, position: 'relative' }}>
+    <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
 
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
