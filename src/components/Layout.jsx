@@ -26,7 +26,6 @@ const ADMIN_NAV = [
 
 const CENTRE_NAV = [
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
-  { key: 'overview',   Icon: LayoutDashboard, label: 'Overview'  },
   { key: 'topbottom',  Icon: Trophy,          label: 'Rankings'  },
   { key: 'pastyear',   Icon: Archive,         label: 'Past Year Data' },
 ];
