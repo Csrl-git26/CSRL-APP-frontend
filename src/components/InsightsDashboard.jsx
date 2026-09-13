@@ -691,13 +691,13 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
           sub={`${redFlagCentres.length} need attention`} bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
-          icon={(qualRate !== null && qualRate < 80) ? Flag : Award}    
+          icon={Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
           label="CSRL QUALIFICATION"
           labelFontSize={12}
           sub={`${totalQualified} / ${totalAppeared} qualified`} 
           bg="#f0f5ff" 
-          color={(qualRate !== null && qualRate < 80) ? "#dc2626" : "#1a4fa0"}
+          color="#1a4fa0"
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
