@@ -501,11 +501,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
     return (
       <div className="card" style={{ padding: 20, flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ fontSize: 14, fontWeight: 800, color: '#1a202c', marginBottom: 16 }}>student no. subjectwise marks &lt;=30 - count by centre</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12, flex: 1 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 12, flex: 1 }}>
           {subjects.map((sub) => (
-            <div key={sub} style={{ background: '#f8fafc', borderRadius: 8, padding: 12 }}>
+            <div key={sub} style={{ background: '#f8fafc', borderRadius: 8, padding: 8, minWidth: 0 }}>
               <div style={{ fontWeight: 700, marginBottom: 8, color: '#1a4fa0', fontSize: 14 }}>{sub}</div>
-              <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.7, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
+              <ul className="custom-scrollbar" style={{ margin: 0, paddingLeft: 12, fontSize: 11, lineHeight: 1.7, maxHeight: 130, overflowY: 'auto', paddingRight: 2 }}>
                 {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
                   .filter(([, n]) => n > 0)
                   .sort((a, b) => b[1] - a[1])
