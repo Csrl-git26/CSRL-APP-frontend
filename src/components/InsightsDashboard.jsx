@@ -133,10 +133,10 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <div style={{ fontSize:18, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
-          <div style={{ fontSize:12, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
+          <div style={{ fontSize:22, fontWeight:900, color, lineHeight:1.1, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{value}</div>
+          <div style={{ fontSize:14, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
-        {sub && <div style={{ fontSize:11, fontWeight:600, color:'#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
+        {sub && <div style={{ fontSize:12, fontWeight:600, color:'#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
       </div>
     </div>
   );
