@@ -474,10 +474,14 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
         y={textY}
         textAnchor="middle"
         dominantBaseline="central"
-        fill="#1a4fa0"
-        fontSize={12}
+        fill={fill}
+        fontSize={13}
         fontWeight={900}
-        style={{ filter: 'drop-shadow(0px 1px 2px rgba(255,255,255,0.8))', pointerEvents: 'none' }}
+        stroke="#ffffff"
+        strokeWidth={2.5}
+        strokeLinejoin="round"
+        paintOrder="stroke"
+        style={{ filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.3))', pointerEvents: 'none' }}
       >
         {payload.value}%
       </text>
