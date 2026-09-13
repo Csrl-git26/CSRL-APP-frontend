@@ -252,9 +252,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   useEffect(() => {
     if (!selectedTestKey) return;
     Promise.all([
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: 10, order: 'asc'  }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, stream: globalStream, limit: 10, order: 'desc' }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, stream: globalStream, limit: 10, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, stream: globalStream, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom, all]) => {
       const validRolls = new Set((data?.profiles || []).map(p => p.ROLL_KEY));
       const filterRanked = (list) => (list || []).filter(s => validRolls.has(s.roll));
@@ -262,7 +262,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       setBottomRanked(filterRanked(bottom.ranked));
       setAllRanked(filterRanked(all.ranked));
     });
-  }, [selectedTestKey, selectedCenterCode, data?.profiles]);
+  }, [selectedTestKey, selectedCenterCode, globalStream, data?.profiles]);
 
   useEffect(() => {
     if (activePage !== 'topbottom' || !selectedTestKey) return undefined;
