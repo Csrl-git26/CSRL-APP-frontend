@@ -11,10 +11,11 @@ const renderCustomLabel = (props) => {
       x={x + 28} 
       y={y + height / 2 + 3} 
       fill="#ffffff" 
+      stroke="#1e3a8a" strokeWidth={0.3} strokeOpacity={0.8} 
       fontSize={10} 
       fontWeight={800} 
       textAnchor="start" 
-      style={{ textShadow: '1px 1px 0 #1e3a8a, -1px -1px 0 #1e3a8a, 1px -1px 0 #1e3a8a, -1px 1px 0 #1e3a8a, 0px 2px 4px rgba(0,0,0,0.3)' }}
+      style={{ textShadow: '0px 1px 2px rgba(0,0,0,0.4)' }}
     >
       {value}
     </text>
@@ -72,7 +73,7 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
       </div>
       <div style={{ flex: 1, minHeight: 200 }}>
         <ResponsiveContainer width="100%" height={200}>
-          <BarChart layout="vertical" data={chartData} margin={{ top: 10, right: 150, left: -10, bottom: 0 }} barGap={2} barSize={18} style={{ overflow: 'visible' }}>
+          <BarChart layout="vertical" data={chartData} margin={{ top: 10, right: 40, left: -10, bottom: 0 }} barGap={2} barSize={18} style={{ overflow: 'visible' }}>
             <defs>
               <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
