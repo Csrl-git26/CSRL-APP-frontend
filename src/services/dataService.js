@@ -327,6 +327,15 @@ export async function bulkUpsertTestScoresApi(_token, marks) {
   });
 }
 
+
+export function deleteAllStudentDataApi() {
+  return apiFetch(`/api/students/clear-all`, { method: 'DELETE' });
+}
+
+export function deleteAllTestDataApi() {
+  return apiFetch(`/api/admin/tests-all/clear`, { method: 'DELETE' });
+}
+
 export function deleteTestApi(dummy, testKey) {
   return apiFetch(`/api/admin/tests/${encodeURIComponent(testKey)}`, { method: 'DELETE' });
 }

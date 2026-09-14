@@ -58,6 +58,8 @@ import {
   getStreamConfig,
   resolveStudentPhotoUrl,
   deleteTestApi,
+  deleteAllStudentDataApi,
+  deleteAllTestDataApi,
   uploadPastYearData,
 } from '../services/dataService';
 import { useToast } from '../context/ToastContext';
@@ -726,11 +728,7 @@ export default function AdminDashboard() {
     if (doubleCheck !== "DELETE ALL") return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/students/clear-all`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
+      const data = await deleteAllStudentDataApi();
       if (data.success) {
         showToast("All student data cleared successfully.", "success");
         fetchGlobalData();
@@ -752,11 +750,7 @@ export default function AdminDashboard() {
     if (doubleCheck !== "DELETE ALL TESTS") return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/tests-all/clear`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
+      const data = await deleteAllTestDataApi();
       if (data.success) {
         showToast(data.message, "success");
         fetchGlobalData();
