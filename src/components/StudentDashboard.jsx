@@ -68,7 +68,7 @@ export default function StudentDashboard() {
   const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   const [chartMetric, setChartMetric] = useState('MARKS');
-  const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
+  const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Botany', 'Zoology', 'Total']);
 
   useEffect(() => {
     if (!auth.id) return;
@@ -154,20 +154,17 @@ export default function StudentDashboard() {
         const biology = toNum(normalized.Biology);
         const botany = toNum(normalized.Botany);
         const zoology = toNum(normalized.Zoology);
-
-        const mergedBiology = biology ?? ((botany ?? 0) + (zoology ?? 0) || null);
-        normalized.Biology = mergedBiology;
         delete normalized.Botany;
         delete normalized.Zoology;
 
-        const parts = [physics, chemistry, mergedBiology].filter((v) => v !== null);
+        const parts = [physics, chemistry, math, botany, zoology, biology].filter((v) => v !== null);
         const computedTotal = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) : null;
         
         // Handle Absent explicitly
         const isAbsent = ['a', 'A', 'absent', 'Absent'].includes(String(row.Total).trim()) ||
           (['a', 'A', 'absent', 'Absent'].includes(String(row.Physics).trim()) &&
            ['a', 'A', 'absent', 'Absent'].includes(String(row.Chemistry).trim()) &&
-           (['a', 'A', 'absent', 'Absent'].includes(String(row.Biology).trim()) || ['a', 'A', 'absent', 'Absent'].includes(String(row.Botany).trim())));
+           (['a', 'A', 'absent', 'Absent'].includes(String(row.Botany).trim()) || ['a', 'A', 'absent', 'Absent'].includes(String(row.Zoology).trim())));
         
         if (isAbsent) {
           normalized.Total = 'Absent';

@@ -64,7 +64,8 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 const p = Number(row.Physics || 0);
                 const c = Number(row.Chemistry || 0);
                 const m = Number(row.Math || 0);
-                const b = Number(row.Biology || 0);
+                const bot = Number(row.Botany || 0);
+                const zoo = Number(row.Zoology || 0);
 
                 if (stream === 'JEE') {
                   const cat = (profile?.CATEGORY || '').toUpperCase().trim();
@@ -161,7 +162,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 
                 let threshold = 35;
                 if (stream === 'NEET') {
-                  threshold = (subject === 'Biology' || subject === 'Botany' || subject === 'Zoology') ? 126 : 63;
+                  threshold = 63;
                 }
 
                 chartData.forEach(row => {

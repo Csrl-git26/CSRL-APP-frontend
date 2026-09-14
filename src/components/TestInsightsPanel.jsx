@@ -264,7 +264,7 @@ export default function TestInsightsPanel({
                 <th>Student</th>
                 <th>Centre</th>
                 {subjects.map((s) => {
-                  const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
+                  const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Botany' ? 'Bot' : s === 'Zoology' ? 'Zoo' : s === 'Biology' ? 'B' : s.substring(0, 3);
                   return <th key={s} title={s}>{abbr}</th>;
                 })}
                 <th>Total</th>

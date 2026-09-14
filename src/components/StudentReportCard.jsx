@@ -198,7 +198,7 @@ export default function StudentReportCard({
             Detailed Weak Topics Analysis <span style={{ fontSize: '9px', color: '#64748b', fontWeight: 600, textTransform: 'none' }}>(Based on {overallWeakTopicsData.totalTests} tests)</span>
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-            {['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Botany', 'Zoology'].map((subject) => {
+            {['Physics', 'Chemistry', 'Mathematics', 'Botany', 'Zoology'].map((subject) => {
               const subjData = overallWeakTopicsData.overallWeakTopics[subject];
               if (!subjData || (!subjData.strongWeak.length && !subjData.mediumWeak.length)) return null;
               

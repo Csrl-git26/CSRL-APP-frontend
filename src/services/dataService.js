@@ -39,9 +39,9 @@ export const STREAMS = {
   },
   NEET: {
     label: 'NEET',
-    subjects: ['Physics', 'Chemistry', 'Biology'],
+    subjects: ['Physics', 'Chemistry', 'Botany', 'Zoology'],
     maxTotal: 720,
-    maxBySubject: { Physics: 180, Chemistry: 180, Biology: 360 },
+    maxBySubject: { Physics: 180, Chemistry: 180, Botany: 180, Zoology: 180 },
   },
 };
 

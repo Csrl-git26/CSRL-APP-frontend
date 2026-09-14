@@ -6,7 +6,7 @@ const SUBJECT_COLORS = ['#6366f1', '#f97316', '#10b981', '#f43f5e'];
 
 export default function PerformanceChart({ chartData, streamCfg, noCard, height = 350 }) {
   const [chartMetric, setChartMetric] = useState('MARKS');
-  const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Biology', 'Total']);
+  const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Botany', 'Zoology', 'Total']);
 
   const subjects = streamCfg.subjects.filter((sub) => chartData.some((row) => 
     row[sub] !== undefined && row[sub] !== null

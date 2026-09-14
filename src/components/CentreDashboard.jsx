@@ -650,7 +650,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <tr>
               <th>#</th><th>Student</th><th>Cat.</th>
               {rankingSubjects.map((s) => {
-                const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
+                const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Botany' ? 'Bot' : s === 'Zoology' ? 'Zoo' : s === 'Biology' ? 'B' : s.substring(0, 3);
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
@@ -715,7 +715,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <tr>
               <th>Rank</th><th>Student</th><th>Cat.</th>
               {rankingSubjects.map((s) => {
-                const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Biology' ? 'B' : s.substring(0, 3);
+                const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Botany' ? 'Bot' : s === 'Zoology' ? 'Zoo' : s === 'Biology' ? 'B' : s.substring(0, 3);
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
