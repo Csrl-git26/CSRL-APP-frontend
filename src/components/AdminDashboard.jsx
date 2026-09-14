@@ -163,7 +163,7 @@ function getRowField(row, keys) {
 }
 
 function mapExcelStudentToProfile(row) {
-  const roll   = normalizeRollKey(getRowField(row, ['Roll Number', 'roll_number', 'ROLL_NUMBER', 'roll', 'ROLL_KEY', 'Registration no.']));
+  const roll   = normalizeRollKey(getRowField(row, ['Roll Number', 'roll_number', 'ROLL_NUMBER', 'roll', 'ROLL_KEY', 'Registration no.', 'ROLL NO.', 'ROLL NO', 'ROO NUMBER']));
   const name   = normalizeCellValue(getRowField(row, ["STUDENT'S NAME", 'name', 'Name']));
   const centre = normalizeCenterCode(getRowField(row, ['CENTRE CODE', 'centre', 'Center', 'center', 'centerCode']));
   const stream = normalizeCellValue(getRowField(row, ['stream', 'Stream', 'STREAM'])).toUpperCase() || 'JEE';
@@ -250,7 +250,7 @@ function mapExcelStudentToProfile(row) {
 }
 
 function mapExcelMarkRow(row, testKey) {
-  const roll = normalizeRollKey(getRowField(row, ['roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY']));
+  const roll = normalizeRollKey(getRowField(row, ['roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY', 'ROLL NO.', 'ROLL NO', 'ROO NUMBER']));
   
   const updateObj = {};
   
