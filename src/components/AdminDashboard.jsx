@@ -731,7 +731,7 @@ export default function AdminDashboard() {
       const data = await deleteAllStudentDataApi();
       if (data.success) {
         showToast("All student data cleared successfully.", "success");
-        fetchGlobalData();
+        setTimeout(() => window.location.reload(), 1000);
       } else {
         showToast(data.message || 'Failed to clear data', "error");
       }
@@ -753,7 +753,7 @@ export default function AdminDashboard() {
       const data = await deleteAllTestDataApi();
       if (data.success) {
         showToast(data.message, "success");
-        fetchGlobalData();
+        setTimeout(() => window.location.reload(), 1000);
       } else {
         showToast(data.message || 'Failed to format all test data', "error");
       }
