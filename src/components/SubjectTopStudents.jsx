@@ -2,6 +2,25 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, CartesianGrid } from 'recharts';
 import { Activity } from 'lucide-react';
 
+
+const renderCustomLabel = (props) => {
+  const { x, y, width, height, value } = props;
+  if (!value) return null;
+  return (
+    <text 
+      x={x + 28} 
+      y={y + height / 2 + 3} 
+      fill="#ffffff" 
+      fontSize={10} 
+      fontWeight={800} 
+      textAnchor="start" 
+      style={{ textShadow: '1px 1px 0 #1e3a8a, -1px -1px 0 #1e3a8a, 1px -1px 0 #1e3a8a, -1px 1px 0 #1e3a8a, 0px 2px 4px rgba(0,0,0,0.3)' }}
+    >
+      {value}
+    </text>
+  );
+};
+
 const renderBarShape = (props, dataKey, activeItem) => {
   const { fill, x, y, width, height, index, payload } = props;
   const isActive = activeItem && activeItem.index === index && activeItem.dataKey === dataKey;
@@ -64,16 +83,16 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
             <CartesianGrid strokeDasharray="4 4" horizontal={false} stroke="#f1f5f9" />
             <XAxis type="number" domain={[0, "auto"]} tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} hide={true} />
             <YAxis type="category" dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} width={45} />
-            <Bar minPointSize={160} barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[0, 4, 4, 0]} name="Rank 1" onClick={(data) => onViewStudent && data.top1Roll && onViewStudent(data.top1Roll)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top1Combined" position="insideRight" fill="#ffffff" fontSize={10} fontWeight={800} offset={8} />
+            <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[0, 4, 4, 0]} name="Rank 1" onClick={(data) => onViewStudent && data.top1Roll && onViewStudent(data.top1Roll)} style={{ cursor: 'pointer' }}>
+              <LabelList dataKey="top1Combined" content={renderCustomLabel} />
               <LabelList dataKey="top1Val" position="insideLeft" fill="#fff" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
-            <Bar minPointSize={160} barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[0, 4, 4, 0]} name="Rank 2" onClick={(data) => onViewStudent && data.top2Roll && onViewStudent(data.top2Roll)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top2Combined" position="insideRight" fill="#ffffff" fontSize={10} fontWeight={800} offset={8} />
+            <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[0, 4, 4, 0]} name="Rank 2" onClick={(data) => onViewStudent && data.top2Roll && onViewStudent(data.top2Roll)} style={{ cursor: 'pointer' }}>
+              <LabelList dataKey="top2Combined" content={renderCustomLabel} />
               <LabelList dataKey="top2Val" position="insideLeft" fill="#fff" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
-            <Bar minPointSize={160} barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[0, 4, 4, 0]} name="Rank 3" onClick={(data) => onViewStudent && data.top3Roll && onViewStudent(data.top3Roll)} style={{ cursor: 'pointer' }}>
-              <LabelList dataKey="top3Combined" position="insideRight" fill="#ffffff" fontSize={10} fontWeight={800} offset={8} />
+            <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[0, 4, 4, 0]} name="Rank 3" onClick={(data) => onViewStudent && data.top3Roll && onViewStudent(data.top3Roll)} style={{ cursor: 'pointer' }}>
+              <LabelList dataKey="top3Combined" content={renderCustomLabel} />
               <LabelList dataKey="top3Val" position="insideLeft" fill="#fff" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
             </Bar>
           </BarChart>
