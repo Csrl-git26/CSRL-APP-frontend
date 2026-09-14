@@ -745,6 +745,30 @@ export default function AdminDashboard() {
 
   // ── Export helpers ─────────────────────────────────────────────────────────
 
+
+  const handleFormatAllTestData = async () => {
+    if (!window.confirm(`WARNING: You are about to DELETE ALL TEST MARKS for EVERY test across all students! Are you absolutely sure?`)) return;
+    const doubleCheck = window.prompt("Type 'DELETE ALL TESTS' to confirm.");
+    if (doubleCheck !== "DELETE ALL TESTS") return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/tests-all/clear`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(data.message, "success");
+        fetchGlobalData();
+      } else {
+        showToast(data.message || 'Failed to format all test data', "error");
+      }
+    } catch (e) {
+      console.error(e);
+      showToast("Error formatting all test data", "error");
+    }
+  };
+
   const downloadStudentTemplate = () => {
     const rows = [
       STUDENT_TEMPLATE_COLUMNS,
@@ -1853,6 +1877,7 @@ export default function AdminDashboard() {
           <button type="button" className="btn btn-outline btn-sm" onClick={exportMarksXlsx}><Download size={13} /> Export selected test</button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={exportCombinedWorkbook}><Package size={13} /> Full workbook</button>
           <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)' }} onClick={handleFormatTestData}><Trash2 size={13} /> Format selected test</button>
+          <button type="button" className="btn btn-sm" style={{ background: '#ef4444', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', gap: 6, padding: '0 12px', borderRadius: 6, fontWeight: 600 }} onClick={handleFormatAllTestData}><Trash2 size={13} /> Delete all test data</button>
         </div>
       </div>
 
