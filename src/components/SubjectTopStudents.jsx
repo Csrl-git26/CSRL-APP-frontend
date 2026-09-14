@@ -73,7 +73,7 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
       </div>
       <div style={{ flex: 1, minHeight: 200 }}>
         <ResponsiveContainer width="100%" height={200}>
-          <BarChart layout="vertical" data={chartData} margin={{ top: 10, right: 40, left: -10, bottom: 0 }} barGap={2} barSize={18} style={{ overflow: 'visible' }}>
+          <BarChart layout="vertical" data={chartData} margin={{ top: 10, right: 40, left: 10, bottom: 0 }} barGap={2} barSize={18} style={{ overflow: 'visible' }}>
             <defs>
               <linearGradient id="bar3DVertical" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#ffffff" stopOpacity={0.4} />
@@ -83,7 +83,7 @@ export default function SubjectTopStudents({ subjectTopStudents, onViewStudent }
             </defs>
             <CartesianGrid strokeDasharray="4 4" horizontal={false} stroke="#f1f5f9" />
             <XAxis type="number" domain={[0, "auto"]} tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} hide={true} />
-            <YAxis type="category" dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} width={45} />
+            <YAxis type="category" dataKey="subject" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} width={55} />
             <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[0, 4, 4, 0]} name="Rank 1" onClick={(data) => onViewStudent && data.top1Roll && onViewStudent(data.top1Roll)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top1Combined" content={renderCustomLabel} />
               <LabelList dataKey="top1Val" position="insideLeft" fill="#fff" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
