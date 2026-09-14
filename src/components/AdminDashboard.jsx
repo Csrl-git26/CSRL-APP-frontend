@@ -555,7 +555,7 @@ export default function AdminDashboard() {
     const baseKeys = new Set(
       tests
         .filter(t => streamRollKeys.has(t.ROLL_KEY))
-        .flatMap(t => Object.keys(t).filter(k => k.startsWith('FMT') && !k.includes('_') && t[k] != null && t[k] !== ''))
+        .flatMap(t => Object.keys(t).filter(k => allTestOptions.includes(k) && !k.includes('_') && t[k] != null && t[k] !== ''))
     );
     if (baseKeys.size === 0) return []; // No tests for this stream
     const sorted = [...baseKeys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
@@ -1305,7 +1305,7 @@ export default function AdminDashboard() {
   const LeaderboardSection = () => {
     let testCount = selectedLeaderboardTestKeys.length;
     if (testCount === 1 && selectedLeaderboardTestKeys[0] === 'ALL_FMT') {
-      testCount = allTestOptions.filter(o => String(o).startsWith('FMT') && o !== 'ALL_FMT').length;
+      testCount = allTestOptions.filter(o => o !== 'ALL_FMT').length;
     }
     const numTests = Math.max(1, testCount);
     
@@ -1658,7 +1658,7 @@ export default function AdminDashboard() {
               return <th key={s} title={s}>{abbr}</th>;
             })}
             <th>Total</th>
-            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
+            {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1707,12 +1707,12 @@ export default function AdminDashboard() {
                   );
                 })}
                 <td><strong style={{ fontSize: 13, color: '#1a4fa0' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
+                {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
               </tr>
             );
           })}
           {!topRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1735,7 +1735,7 @@ export default function AdminDashboard() {
               return <th key={s} title={s}>{abbr}</th>;
             })}
             <th>Total</th>
-            {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
+            {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1783,11 +1783,11 @@ export default function AdminDashboard() {
                 );
               })}
               <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
+                {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
             </tr>
           )})}
           {!bottomRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o).startsWith('FMT') && String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>

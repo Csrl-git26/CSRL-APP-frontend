@@ -16,11 +16,11 @@ export default function MultiSelectDropdown({ options, selectedOptions, onChange
 
   const handleSelectAllFmt = (e) => {
     e.stopPropagation();
-    const fmtOptions = options.filter(o => String(o).toUpperCase().startsWith('FMT'));
+    const fmtOptions = options;
     const allFmtSelected = fmtOptions.length > 0 && fmtOptions.every(o => selectedOptions.includes(o));
     
     if (allFmtSelected) {
-      onChange(selectedOptions.filter(o => !String(o).toUpperCase().startsWith('FMT')));
+      onChange([]);
     } else {
       onChange([...new Set([...selectedOptions, ...fmtOptions])]);
     }
@@ -57,10 +57,10 @@ export default function MultiSelectDropdown({ options, selectedOptions, onChange
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', margin: 0 }}>
               <input 
                 type="checkbox" 
-                checked={options.filter(o => String(o).toUpperCase().startsWith('FMT')).length > 0 && options.filter(o => String(o).toUpperCase().startsWith('FMT')).every(o => selectedOptions.includes(o))} 
+                checked={options.length > 0 && options.every(o => selectedOptions.includes(o))} 
                 readOnly
               />
-              <strong style={{ fontSize: 13 }}>All FMT Tests</strong>
+              <strong style={{ fontSize: 13 }}>Select All Tests</strong>
             </label>
           </div>
           <div style={{ padding: '4px 0' }}>
