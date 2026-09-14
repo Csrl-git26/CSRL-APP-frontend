@@ -458,7 +458,7 @@ export default function AdminDashboard() {
         setData(d);
         const rankingCols = (d.testColumns || [])
           .filter((c) => !String(c).includes('_'))
-          .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+          .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
         const candidate   = rankingCols.length ? rankingCols[0] : d.testColumns?.[0];
         if (candidate && !selectedTestKey) setSelectedTestKey(candidate);
       })
@@ -535,13 +535,13 @@ export default function AdminDashboard() {
   const rankingTestColumns = useMemo(
     () => (data?.testColumns || [])
       .filter((c) => !String(c).includes('_'))
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
+      .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' })),
     [data]
   );
 
   const allTestOptions = useMemo(() => {
     const sorted = [...new Set([...manualTestOptions, ...rankingTestColumns])]
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+      .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
     return ['ALL_FMT', ...sorted];
   }, [manualTestOptions, rankingTestColumns]);
 
@@ -558,7 +558,7 @@ export default function AdminDashboard() {
         .flatMap(t => Object.keys(t).filter(k => allTestOptions.includes(k) && !k.includes('_') && t[k] != null && t[k] !== ''))
     );
     if (baseKeys.size === 0) return []; // No tests for this stream
-    const sorted = [...baseKeys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+    const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
     return ['ALL_FMT', ...sorted];
   }, [allTestOptions, globalStream, data]);
 
