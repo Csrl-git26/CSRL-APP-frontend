@@ -83,7 +83,7 @@ import { clearWeakTopicsApi, clearRawMarksApi } from '../services/weakTopicApi';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const STUDENT_TEMPLATE_COLUMNS = [
-  'YEAR', 'SPONSOR', 'PROJECT NAME', 'CENTRE CODE', 'Roll Number',
+  'YEAR', 'Stream', 'SPONSOR', 'PROJECT NAME', 'CENTRE CODE', 'Roll Number',
   'Registration No. (SSRP, CBT, CLT)',
   'PEER GROUP (A, B, C, D, ...)', "STUDENT'S NAME", 'GENDER', 'CATEGORY',
   'Embibe Email Id', 'Embibe Mobile No.', 'Mobile No.', 'DATE OF BIRTH',
@@ -767,8 +767,8 @@ export default function AdminDashboard() {
     const rows = [
       STUDENT_TEMPLATE_COLUMNS,
       [
-        // SPONSOR, PROJECT NAME, CENTRE CODE, Roll Number
-        'GAIL', 'PROJECT XYZ', 'KNP', '2701001',
+        // YEAR, Stream, SPONSOR, PROJECT NAME, CENTRE CODE, Roll Number
+        '2024-25', 'JEE', 'GAIL', 'PROJECT XYZ', 'KNP', '2701001',
         // PEER GROUP, STUDENT'S NAME, GENDER, CATEGORY
         'A', 'Aarav Sharma', 'Male', 'OBC',
         // Embibe Email, Embibe Mobile, Mobile No, DATE OF BIRTH
