@@ -897,10 +897,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
                   <div 
                     onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(true); }}
-                    className="flip-button-3d" style={{ marginTop: -4 }}
+                    className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0, marginTop: -4 }}
                     title="Flip to Bottom 5"
                   >
-                    <Repeat size={18} strokeWidth={2.5} />
+                    <Repeat size={12} color="#64748b" strokeWidth={2.5} />
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -948,10 +948,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
                   <div 
                     onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(false); }}
-                    className="flip-button-3d" style={{ marginTop: -4 }}
+                    className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0, marginTop: -4 }}
                     title="Flip to Top 5"
                   >
-                    <Repeat size={18} strokeWidth={2.5} />
+                    <Repeat size={12} color="#64748b" strokeWidth={2.5} />
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
