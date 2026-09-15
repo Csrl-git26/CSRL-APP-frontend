@@ -31,10 +31,22 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
           </SectionTitle>
           <div 
             onClick={() => setShowBottom5Qual(!showBottom5Qual)}
-            style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex' }}
+            style={{ 
+              cursor: 'pointer', width: 48, height: 26, 
+              background: isBottom5 ? '#94a3b8' : '#2563eb', 
+              borderRadius: 20, position: 'relative', 
+              boxShadow: 'inset 0px 2px 5px rgba(0,0,0,0.4), 0px 1px 1px rgba(255,255,255,0.9)', 
+              transition: 'background 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
             title={`Flip to ${isBottom5 ? 'Top 5' : 'Bottom 5'}`}
           >
-            {isBottom5 ? <ToggleLeft size={22} strokeWidth={2.5} /> : <ToggleRight size={22} strokeWidth={2.5} />}
+            <div style={{
+              width: 22, height: 22, background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
+              borderRadius: '50%', position: 'absolute',
+              top: 2, left: isBottom5 ? 2 : 24,
+              boxShadow: '0 2px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(0,0,0,0.1)',
+              transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            }} />
           </div>
         </div>
         <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -873,10 +885,22 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(true)}
-                    style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
+                    style={{ 
+                      cursor: 'pointer', width: 48, height: 26, 
+                      background: '#2563eb', 
+                      borderRadius: 20, position: 'relative', 
+                      boxShadow: 'inset 0px 2px 5px rgba(0,0,0,0.4), 0px 1px 1px rgba(255,255,255,0.9)', 
+                      transition: 'background 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
+                    }}
                     title="Flip to Bottom 5"
                   >
-                    <ToggleRight size={22} strokeWidth={2.5} />
+                    <div style={{
+                      width: 22, height: 22, background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
+                      borderRadius: '50%', position: 'absolute',
+                      top: 2, left: 24,
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(0,0,0,0.1)',
+                      transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }} />
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -924,10 +948,22 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(false)}
-                    style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
+                    style={{ 
+                      cursor: 'pointer', width: 48, height: 26, 
+                      background: '#94a3b8', 
+                      borderRadius: 20, position: 'relative', 
+                      boxShadow: 'inset 0px 2px 5px rgba(0,0,0,0.4), 0px 1px 1px rgba(255,255,255,0.9)', 
+                      transition: 'background 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
+                    }}
                     title="Flip to Top 5"
                   >
-                    <ToggleLeft size={22} strokeWidth={2.5} />
+                    <div style={{
+                      width: 22, height: 22, background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
+                      borderRadius: '50%', position: 'absolute',
+                      top: 2, left: 2,
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(0,0,0,0.1)',
+                      transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }} />
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
