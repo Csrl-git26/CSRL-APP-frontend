@@ -553,6 +553,7 @@ input, select, textarea {
 
 @media(max-width: 900px) {
   .sidebar { display: none; }
+  .modal-overlay { left: 0 !important; }
   .mobile-topbar { display: flex; }
   .page-header { padding: 16px; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
   .page-header h1 { font-size: 18px; }

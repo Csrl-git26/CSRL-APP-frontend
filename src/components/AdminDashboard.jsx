@@ -2116,8 +2116,8 @@ export default function AdminDashboard() {
       </div>
 
       {showStudentRankingModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: 80, padding: 20 }} onClick={() => setShowStudentRankingModal(null)}>
-          <div style={{ background: 'rgba(255, 255, 255, 0.95)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 24, width: '90vw', maxWidth: 1200, height: '85vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.2)', padding: 24, position: 'relative', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={() => setShowStudentRankingModal(null)}>
+          <div className="modal" style={{ maxWidth: 1200, height: '85vh', display: 'flex', flexDirection: 'column', padding: 24, overflow: 'hidden', position: 'relative' }} onClick={e => e.stopPropagation()}>
             <div style={{ position: 'absolute', top: 12, right: 16, cursor: 'pointer', width: 32, height: 32, borderRadius: '50%', background: 'rgba(100,116,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }} onClick={() => setShowStudentRankingModal(null)}>
               <span style={{ fontSize: 22, lineHeight: 1, fontWeight: 400, color: '#64748b' }}>×</span>
             </div>
