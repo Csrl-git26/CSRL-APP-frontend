@@ -621,7 +621,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   return (
                     <g transform={`translate(${x},${y})`} onClick={() => { if(onViewStudent && studentId) onViewStudent(studentId); }} style={{ cursor: 'pointer' }}>
                       <rect x={-90} y={-15} width={90} height={30} fill="transparent" />
-                      <text x={-5} y={-4} textAnchor="end" fill="#1e293b" fontSize={10} fontWeight={900} letterSpacing="0.5px">{name} {extra}</text>
+                      <text x={-5} y={-4} textAnchor="end" fill="#1e293b" fontSize={9} fontWeight={900} letterSpacing="0.5px">{name} {extra}</text>
                       <text x={-5} y={9} textAnchor="end" fill="#1e293b" fontSize={11} fontWeight={900} letterSpacing="0.5px">{total}</text>
                     </g>
                   );
@@ -651,7 +651,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
                         <XAxis type="number" domain={[0, maxTotal]} allowDataOverflow={true} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} hide={true} />
-                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={90} />
+                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={100} />
 
                         <Bar shape={(props) => renderStudentBarShape(props, "Physics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Physics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Physics_orig" content={(props) => <CustomBarLabel {...props} prefix="P" />} />
