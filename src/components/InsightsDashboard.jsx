@@ -31,7 +31,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
           </SectionTitle>
           <div 
             onClick={() => setShowBottom5Qual(!showBottom5Qual)}
-            style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex' }}
+            style={{ cursor: 'pointer', padding: 8, borderRadius: '50%', color: '#1d4ed8', background: 'linear-gradient(145deg, #ffffff, #dbeafe)', boxShadow: '4px 4px 8px rgba(186, 203, 245, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255,255,255,1), inset -1px -1px 2px rgba(186, 203, 245, 0.3)', border: '1px solid rgba(255,255,255,0.7)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             title={`Flip to ${isBottom5 ? 'Top 5' : 'Bottom 5'}`}
           >
             <Repeat size={18} strokeWidth={2.5} />
@@ -873,7 +873,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(true)}
-                    style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
+                    style={{ cursor: 'pointer', padding: 8, borderRadius: '50%', color: '#1d4ed8', background: 'linear-gradient(145deg, #ffffff, #dbeafe)', boxShadow: '4px 4px 8px rgba(186, 203, 245, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255,255,255,1), inset -1px -1px 2px rgba(186, 203, 245, 0.3)', border: '1px solid rgba(255,255,255,0.7)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: -4 }}
                     title="Flip to Bottom 5"
                   >
                     <Repeat size={18} strokeWidth={2.5} />
@@ -924,7 +924,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
                   <div 
                     onClick={() => setShowBottom5Qual(false)}
-                    style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
+                    style={{ cursor: 'pointer', padding: 8, borderRadius: '50%', color: '#1d4ed8', background: 'linear-gradient(145deg, #ffffff, #dbeafe)', boxShadow: '4px 4px 8px rgba(186, 203, 245, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8), inset 1px 1px 2px rgba(255,255,255,1), inset -1px -1px 2px rgba(186, 203, 245, 0.3)', border: '1px solid rgba(255,255,255,0.7)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: -4 }}
                     title="Flip to Top 5"
                   >
                     <Repeat size={18} strokeWidth={2.5} />
