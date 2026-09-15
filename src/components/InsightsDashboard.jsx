@@ -400,7 +400,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const lAnchor = x > cx ? 'start' : 'end';
           const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
           
-          const midR = 12; // shift inwards into the donut hole
+          const midR = 18; // shift inwards into the donut hole
           const mx = cx + midR * Math.cos(-midAngle * RADIAN);
           const my = cy + midR * Math.sin(-midAngle * RADIAN);
 
