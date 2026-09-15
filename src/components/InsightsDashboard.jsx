@@ -5,7 +5,7 @@ import SubjectTopCentres from './SubjectTopCentres';
 
 import {
   Trophy, TrendingUp, TrendingDown, Users, AlertTriangle,
-  BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon, RefreshCcw
+  BarChart3, Target, Award, BookOpen, Star, Flag, PieChart as PieChartIcon, ArrowUpDown
 } from 'lucide-react';
 import { Rectangle, Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList, LineChart, Line } from 'recharts';
 
@@ -34,7 +34,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
             style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex' }}
             title={`Flip to ${isBottom5 ? 'Top 5' : 'Bottom 5'}`}
           >
-            <RefreshCcw size={18} strokeWidth={3} />
+            <ArrowUpDown size={18} strokeWidth={3} />
           </div>
         </div>
         <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -876,7 +876,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
                     title="Flip to Bottom 5"
                   >
-                    <RefreshCcw size={18} strokeWidth={3} />
+                    <ArrowUpDown size={18} strokeWidth={3} />
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -927,7 +927,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     style={{ cursor: 'pointer', padding: 8, background: '#e0e7ff', borderRadius: '50%', color: '#1d4ed8', boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)', border: '1px solid #bfdbfe', transition: 'all 0.2s', display: 'flex', marginTop: -4 }}
                     title="Flip to Top 5"
                   >
-                    <RefreshCcw size={18} strokeWidth={3} />
+                    <ArrowUpDown size={18} strokeWidth={3} />
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
