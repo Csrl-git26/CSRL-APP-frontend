@@ -516,6 +516,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
 
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
     const [showRankingModal, setShowRankingModal] = useState(false);
+  const [showQualRankingModal, setShowQualRankingModal] = useState(false);
   const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const [activeRadialIndex, setActiveRadialIndex] = useState(null);
@@ -868,11 +869,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           }}>
             {/* Front Side */}
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
-              <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+              <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
                   <div 
-                    onClick={() => setShowBottom5Qual(true)}
+                    onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(true); }}
                     className="flip-button-3d" style={{ marginTop: -4 }}
                     title="Flip to Bottom 5"
                   >
@@ -919,11 +920,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
             {/* Back Side */}
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-              <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+              <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
                   <div 
-                    onClick={() => setShowBottom5Qual(false)}
+                    onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(false); }}
                     className="flip-button-3d" style={{ marginTop: -4 }}
                     title="Flip to Top 5"
                   >
@@ -1089,6 +1090,79 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                           <g>
                             <text x={x + width / 2} y={y - 12} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
                               {Math.round(value)}
+                            </text>
+                            {isAlert && (
+                              <g>
+                                <circle cx={x + width / 2} cy={y - 2} r={7} fill="rgba(239, 68, 68, 0.6)">
+                                  <animate attributeName="r" values="4;10;4" dur="1.5s" repeatCount="indefinite" />
+                                  <animate attributeName="opacity" values="0.8;0;0.8" dur="1.5s" repeatCount="indefinite" />
+                                </circle>
+                                <circle cx={x + width / 2} cy={y - 2} r={4.5} fill="#ef4444" stroke="#fff" strokeWidth={1.5} />
+                              </g>
+                            )}
+                          </g>
+                        );
+                      }} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* QUALIFICATION % RANKING MODAL */}
+      {showQualRankingModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: 80, padding: 20 }} onClick={() => setShowQualRankingModal(false)}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.45)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 24, width: '90vw', maxWidth: 1000, height: '85vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.2)', padding: 24, position: 'relative', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
+            
+            {/* Close button */}
+            <div style={{ position: 'absolute', top: 12, right: 16, cursor: 'pointer', width: 32, height: 32, borderRadius: '50%', background: 'rgba(100,116,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }} onClick={() => setShowQualRankingModal(false)}>
+              <span style={{ fontSize: 22, lineHeight: 1, fontWeight: 400, color: '#64748b' }}>×</span>
+            </div>
+
+            {/* Inner white card */}
+            <div style={{ flex: 1, background: 'rgba(248, 250, 252, 0.65)', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '2px solid rgba(59, 130, 246, 0.15)', paddingBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
+                  <PieChartIcon size={20} />
+                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Rankings Qualification % — {selectedTestKey || 'Latest'}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                   <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>
+                   <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{selectedTestKey || 'Latest'}</span>
+                   <span style={{ fontSize: 10, color: '#94a3b8' }}>▼</span>
+                </div>
+              </div>
+              
+              <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={[...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))} margin={{ top: 30, right: 10, left: 0, bottom: 40 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
+                    <XAxis dataKey="code" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#1e293b', angle: -90, textAnchor: 'end' }} interval={0} dx={-4} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }} domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} label={{ value: 'Qual %', angle: -90, position: 'insideLeft', style: { fontWeight: 900, fill: '#475569', fontSize: 14 } }} />
+                    <Tooltip cursor={{ fill: 'rgba(0,0,0,0.04)' }} content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div style={{ background: '#1e293b', color: 'white', padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600 }}>
+                            <div style={{ marginBottom: 4, color: '#93c5fd' }}>{payload[0].payload.code}</div>
+                            <div>Qual: {Math.round(payload[0].payload.qualRate)}%</div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }} />
+                    <Bar dataKey="qualRate" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22}>
+                      <LabelList dataKey="qualRate" content={(props) => {
+                        const { x, y, width, value, index } = props;
+                        const c = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))[index];
+                        const isAlert = (c.qualRate??0) < 80;
+                        return (
+                          <g>
+                            <text x={x + width / 2} y={y - 12} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
+                              {Math.round(value)}%
                             </text>
                             {isAlert && (
                               <g>
