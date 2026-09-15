@@ -1088,16 +1088,17 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         const isAlert = c.avg < 100 || (c.qualRate??0) < 80;
                         return (
                           <g>
-                            <text x={x + width / 2} y={y - 12} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
+                            <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
                               {Math.round(value)}
                             </text>
                             {isAlert && (
                               <g>
-                                <circle cx={x + width / 2} cy={y - 2} r={7} fill="rgba(239, 68, 68, 0.6)">
-                                  <animate attributeName="r" values="4;10;4" dur="1.5s" repeatCount="indefinite" />
-                                  <animate attributeName="opacity" values="0.8;0;0.8" dur="1.5s" repeatCount="indefinite" />
+                                <circle cx={x + width / 2} cy={y - 6} r={8} fill="#ef4444">
+                                  <animate attributeName="opacity" values="0.7;0;0.7" dur="1.2s" repeatCount="indefinite" />
+                                  <animate attributeName="r" values="8;18;8" dur="1.2s" repeatCount="indefinite" />
                                 </circle>
-                                <circle cx={x + width / 2} cy={y - 2} r={4.5} fill="#ef4444" stroke="#fff" strokeWidth={1.5} />
+                                <circle cx={x + width / 2} cy={y - 6} r={5.5} fill="#ef4444" stroke="#ffffff" strokeWidth={1.5} />
+                                <circle cx={x + width / 2 - 1.5} cy={y - 7.5} r={1.5} fill="#fca5a5" />
                               </g>
                             )}
                           </g>
@@ -1158,19 +1159,20 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       <LabelList dataKey="qualRate" content={(props) => {
                         const { x, y, width, value, index } = props;
                         const c = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))[index];
-                        const isAlert = (c.qualRate??0) < 80;
+                        const isAlert = (c.qualRate??0) < 50;
                         return (
                           <g>
-                            <text x={x + width / 2} y={y - 12} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
+                            <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
                               {Math.round(value)}%
                             </text>
                             {isAlert && (
                               <g>
-                                <circle cx={x + width / 2} cy={y - 2} r={7} fill="rgba(239, 68, 68, 0.6)">
-                                  <animate attributeName="r" values="4;10;4" dur="1.5s" repeatCount="indefinite" />
-                                  <animate attributeName="opacity" values="0.8;0;0.8" dur="1.5s" repeatCount="indefinite" />
+                                <circle cx={x + width / 2} cy={y - 6} r={8} fill="#ef4444">
+                                  <animate attributeName="opacity" values="0.7;0;0.7" dur="1.2s" repeatCount="indefinite" />
+                                  <animate attributeName="r" values="8;18;8" dur="1.2s" repeatCount="indefinite" />
                                 </circle>
-                                <circle cx={x + width / 2} cy={y - 2} r={4.5} fill="#ef4444" stroke="#fff" strokeWidth={1.5} />
+                                <circle cx={x + width / 2} cy={y - 6} r={5.5} fill="#ef4444" stroke="#ffffff" strokeWidth={1.5} />
+                                <circle cx={x + width / 2 - 1.5} cy={y - 7.5} r={1.5} fill="#fca5a5" />
                               </g>
                             )}
                           </g>
