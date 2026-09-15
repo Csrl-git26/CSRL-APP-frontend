@@ -405,7 +405,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
                 fontSize={isActive ? 12 : 11} fontWeight={900} letterSpacing="0.5px"
                 stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
                 {payload?.code || ""}
-                {isActive && <tspan fontSize={9.5}> ({Math.round(val)}{compareKey === 'qualRate' ? '%' : ''})</tspan>}
+                
               </text>
             </g>
           );
@@ -424,6 +424,11 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           />
         )})}
       </Pie>
+      {activeIndex !== -1 && sorted[activeIndex] && (
+        <text x="50%" y="50%" fill="#1e293b" textAnchor="middle" dominantBaseline="central" fontSize={24} fontWeight={900} style={{ filter: 'drop-shadow(0px 1px 2px rgba(255,255,255,0.9))' }}>
+          {Math.round(sorted[activeIndex][compareKey] || 0)}{compareKey === 'qualRate' ? '%' : ''}
+        </text>
+      )}
     </PieChart>
   );
 };
