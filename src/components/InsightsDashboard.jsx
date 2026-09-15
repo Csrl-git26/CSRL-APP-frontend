@@ -532,13 +532,13 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const renderLowScorersCount = (insights) => {
     const subjects = Object.keys(insights?.notQualifiedBySubject || {});
     return (
-      <div className="card" style={{ padding: 20, flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
+      <div className="card" style={{ padding: '20px 10px', flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
         <SectionTitle Icon={AlertTriangle} color="#2563eb"><span style={{ fontSize: 11 }}>STUDENT NO. SUBJECTWISE MARKS &lt;=30</span></SectionTitle>
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 6, flex: 1 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 4, flex: 1 }}>
           {subjects.map((sub) => (
-            <div key={sub} style={{ background: 'rgba(248, 250, 252, 0.65)', borderRadius: 8, padding: 8, minWidth: 0 }}>
-              <div style={{ fontWeight: 800, marginBottom: 8, color: '#1e293b', fontSize: 14 }}>{sub}</div>
-              <ul className="custom-scrollbar" style={{ margin: 0, paddingLeft: 12, fontSize: 11, lineHeight: 1.7, maxHeight: 130, overflowY: 'auto', paddingRight: 2 }}>
+            <div key={sub} style={{ background: 'rgba(248, 250, 252, 0.65)', borderRadius: 8, padding: '6px 4px', minWidth: 0 }}>
+              <div style={{ fontWeight: 800, marginBottom: 6, color: '#1e293b', fontSize: 12, textAlign: 'center' }}>{sub}</div>
+              <ul className="custom-scrollbar" style={{ margin: 0, paddingLeft: 4, fontSize: 10, lineHeight: 1.7, maxHeight: 130, overflowY: 'auto', paddingRight: 4 }}>
                 {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
                   .filter(([, n]) => n > 0)
                   .sort((a, b) => b[1] - a[1])
@@ -1035,7 +1035,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr)', gap: 20, marginTop: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
         {renderStudentChart(top5, 'TOP 5 STUDENT', Trophy, '#2563eb', true)}
