@@ -2116,7 +2116,7 @@ export default function AdminDashboard() {
       </div>
 
       {showStudentRankingModal && (
-        <div className="modal-overlay" onClick={() => setShowStudentRankingModal(null)}>
+        <div className="modal-overlay" style={{ paddingTop: 90 }} onClick={() => setShowStudentRankingModal(null)}>
           <div className="modal" style={{ maxWidth: 1200, height: '85vh', display: 'flex', flexDirection: 'column', padding: 24, overflow: 'hidden', position: 'relative' }} onClick={e => e.stopPropagation()}>
             <div style={{ position: 'absolute', top: 12, right: 16, cursor: 'pointer', width: 32, height: 32, borderRadius: '50%', background: 'rgba(100,116,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }} onClick={() => setShowStudentRankingModal(null)}>
               <span style={{ fontSize: 22, lineHeight: 1, fontWeight: 400, color: '#64748b' }}>×</span>
