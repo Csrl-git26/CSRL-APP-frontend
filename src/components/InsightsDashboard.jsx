@@ -400,7 +400,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const lAnchor = x > cx ? 'start' : 'end';
           const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
           
-          const midR = 45;
+          const midR = 22; // shift inwards into the donut hole
           const mx = cx + midR * Math.cos(-midAngle * RADIAN);
           const my = cy + midR * Math.sin(-midAngle * RADIAN);
 
@@ -415,7 +415,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
               </g>
               {isActive && (
                 <g transform={`rotate(${textRotation}, ${mx}, ${my})`}>
-                  <text x={mx} y={my} fill="#ffffff" textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight={900}>
+                  <text x={mx} y={my} fill={lFill} textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={900} letterSpacing="0.5px">
                     {Math.round(val)}{compareKey === 'qualRate' ? '%' : ''}
                   </text>
                 </g>
