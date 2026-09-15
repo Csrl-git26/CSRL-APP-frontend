@@ -1092,7 +1092,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                             </text>
                             {isAlert && (
                               <g>
-                                <circle cx={x + width / 2} cy={y - 2} r={7} fill="rgba(239, 68, 68, 0.35)" />
+                                <circle cx={x + width / 2} cy={y - 2} r={7} fill="rgba(239, 68, 68, 0.6)">
+                                  <animate attributeName="r" values="4;10;4" dur="1.5s" repeatCount="indefinite" />
+                                  <animate attributeName="opacity" values="0.8;0;0.8" dur="1.5s" repeatCount="indefinite" />
+                                </circle>
                                 <circle cx={x + width / 2} cy={y - 2} r={4.5} fill="#ef4444" stroke="#fff" strokeWidth={1.5} />
                               </g>
                             )}
