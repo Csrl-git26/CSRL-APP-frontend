@@ -626,7 +626,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                    return d;
                 });
                 
-                const maxTotal = Math.max(1, ...chartData.map(d => Number(d.total) || 0));
+                const maxTotal = Math.max(1, ...chartData.map(d => {
+                  const sumAbs = ['Physics','Chemistry','Math','Mathematics','Biology','Botany','Zoology'].reduce((sum, sub) => sum + (Number(d[sub]) || 0), 0);
+                  return Math.max(Number(d.total) || 0, sumAbs);
+                }));
                 const renderCustomTick = (props) => {
                   const { x, y, payload } = props;
                   const nameParts = payload.value.split(' (');
