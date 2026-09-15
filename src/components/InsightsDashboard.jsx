@@ -537,7 +537,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 12, flex: 1 }}>
           {subjects.map((sub) => (
             <div key={sub} style={{ background: 'rgba(248, 250, 252, 0.65)', borderRadius: 8, padding: 8, minWidth: 0 }}>
-              <div style={{ fontWeight: 700, marginBottom: 8, color: '#1a4fa0', fontSize: 14 }}>{sub}</div>
+              <div style={{ fontWeight: 800, marginBottom: 8, color: '#1e293b', fontSize: 14 }}>{sub}</div>
               <ul className="custom-scrollbar" style={{ margin: 0, paddingLeft: 12, fontSize: 11, lineHeight: 1.7, maxHeight: 130, overflowY: 'auto', paddingRight: 2 }}>
                 {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
                   .filter(([, n]) => n > 0)
@@ -546,11 +546,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     <li 
                       key={code} 
                       onClick={() => onViewCentre && onViewCentre(code)}
-                      style={{ color: '#2563eb', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline transparent', transition: 'text-decoration 0.2s', display: 'flex', justifyContent: 'space-between', gap: 4 }}
+                      style={{ color: '#1e293b', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline transparent', transition: 'text-decoration 0.2s', display: 'flex', justifyContent: 'space-between', gap: 4 }}
                       onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                       onMouseLeave={(e) => e.target.style.textDecoration = 'underline transparent'}
                     >
-                      <span style={{ color: '#2563eb' }}>{code}</span>
+                      <span style={{ color: '#1e293b' }}>{code}</span>
                       <span style={{ color: '#f97316', fontWeight: 700 }}>{n}</span>
                     </li>
                   ))}
