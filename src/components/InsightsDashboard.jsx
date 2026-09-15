@@ -537,7 +537,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 4, flex: 1 }}>
           {subjects.map((sub) => (
             <div key={sub} style={{ background: 'rgba(248, 250, 252, 0.65)', borderRadius: 8, padding: '6px 4px', minWidth: 0 }}>
-              <div style={{ fontWeight: 800, marginBottom: 6, color: '#1e293b', fontSize: 12, textAlign: 'center' }}>{sub}</div>
+              <div style={{ fontWeight: 800, marginBottom: 6, color: '#1e293b', fontSize: 12, textAlign: 'center' }}>{sub.toUpperCase() === 'CHEMISTRY' ? 'CHEM' : sub.toUpperCase() === 'BIOLOGY' ? 'BIO' : sub.toUpperCase() === 'BOTANY' ? 'BOT' : sub.toUpperCase() === 'ZOOLOGY' ? 'ZOO' : sub.toUpperCase()}</div>
               <ul className="custom-scrollbar" style={{ margin: 0, paddingLeft: 4, fontSize: 10, lineHeight: 1.7, maxHeight: 130, overflowY: 'auto', paddingRight: 4 }}>
                 {Object.entries((insights.notQualifiedBySubject || {})[sub] || {})
                   .filter(([, n]) => n > 0)
