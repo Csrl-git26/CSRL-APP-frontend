@@ -633,14 +633,14 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       <BarChart 
                         data={chartData} 
                         layout="vertical" 
-                        margin={{ top: 10, right: 20, left: 15, bottom: 5 }} 
+                        margin={{ top: 10, right: 5, left: 0, bottom: 5 }} 
                         
                         onClick={(e) => {
                           if (e && e.activePayload && e.activePayload.length > 0 && e.activePayload[0].payload.studentId) {
                             if (onViewStudent) onViewStudent(e.activePayload[0].payload.studentId);
                           }
                         }}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', overflow: 'visible' }}
                       >
                         <defs>
                           <linearGradient id="bar3D" x1="0" y1="0" x2="0" y2="1">
@@ -651,7 +651,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f1f5f9" />
                         <XAxis type="number" domain={[0, maxTotal]} allowDataOverflow={true} axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} hide={true} />
-                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={120} />
+                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={renderCustomTick} interval={0} width={90} />
 
                         <Bar shape={(props) => renderStudentBarShape(props, "Physics", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Physics"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Physics" stackId="a" fill="#3b82f6" barSize={24} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
                           <LabelList dataKey="Physics_orig" content={(props) => <CustomBarLabel {...props} prefix="P" />} />
