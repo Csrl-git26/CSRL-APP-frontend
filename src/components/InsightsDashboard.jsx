@@ -581,7 +581,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 View 15
               </div>
               <div 
-                onClick={(e) => { e.stopPropagation(); setShowBottom5Student(!isTop); }}
+                onClick={(e) => { e.stopPropagation(); setShowBottom5Student(prev => !prev); }}
                 className="flip-button-3d" style={{ marginTop: -4 }}
                 title={`Flip to ${isTop ? 'Bottom' : 'Top'} 5`}
               >
