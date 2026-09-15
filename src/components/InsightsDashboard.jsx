@@ -321,12 +321,12 @@ const CustomBarLabel = (props) => {
     <text 
        x={cx} 
        y={cy} 
-       fill="#fff" 
+       fill="#1e293b" 
        fontSize={10} 
        fontWeight={900} 
        textAnchor="middle" 
        dominantBaseline="central"
-       style={{ filter: 'drop-shadow(1px 2px 0px rgba(37,99,235,0.7))' }}
+       style={{}}
        transform={isThin ? `rotate(-90, ${cx}, ${cy})` : ''}
     >
       {prefix}{val}
