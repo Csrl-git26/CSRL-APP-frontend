@@ -399,14 +399,27 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           const lSize = 11;
           const lAnchor = x > cx ? 'start' : 'end';
           const transform = `rotate(${textRotation}, ${lx}, ${ly})`;
+          
+          const midR = 45;
+          const mx = cx + midR * Math.cos(-midAngle * RADIAN);
+          const my = cy + midR * Math.sin(-midAngle * RADIAN);
+
           return (
-            <g transform={transform}>
-              <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
-                fontSize={isActive ? 12 : 11} fontWeight={900} letterSpacing="0.5px"
-                stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
-                {payload?.code || ""}
-                
-              </text>
+            <g>
+              <g transform={transform}>
+                <text x={lx} y={ly} fill={lFill} textAnchor={lAnchor} dominantBaseline="central"
+                  fontSize={isActive ? 12 : 11} fontWeight={900} letterSpacing="0.5px"
+                  stroke="#ffffff" strokeWidth={2.5} strokeLinejoin="round" paintOrder="stroke">
+                  {payload?.code || ""}
+                </text>
+              </g>
+              {isActive && (
+                <g transform={`rotate(${textRotation}, ${mx}, ${my})`}>
+                  <text x={mx} y={my} fill="#ffffff" textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight={900}>
+                    {Math.round(val)}{compareKey === 'qualRate' ? '%' : ''}
+                  </text>
+                </g>
+              )}
             </g>
           );
         }}
@@ -424,11 +437,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
           />
         )})}
       </Pie>
-      {activeIndex !== -1 && sorted[activeIndex] && (
-        <text x="50%" y="50%" fill="#1e293b" textAnchor="middle" dominantBaseline="central" fontSize={24} fontWeight={900} style={{ filter: 'drop-shadow(0px 1px 2px rgba(255,255,255,0.9))' }}>
-          {Math.round(sorted[activeIndex][compareKey] || 0)}{compareKey === 'qualRate' ? '%' : ''}
-        </text>
-      )}
+
     </PieChart>
   );
 };
