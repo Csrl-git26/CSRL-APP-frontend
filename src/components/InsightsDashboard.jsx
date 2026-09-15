@@ -569,20 +569,20 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const renderStudentChart = (students, title, icon, color, fixedMax = false) => {
     const isTop = title.includes('TOP');
     return (
-        <div className="card" onClick={() => onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom')} style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', flex: 1, minWidth: 0, cursor: 'pointer' }} title={`Click to view full ${isTop ? 'Top' : 'Bottom'} Student Rankings`}>
+        <div className="card" onClick={() => onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom')} style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', flex: 1, minWidth: 0, cursor: 'pointer', position: 'relative' }} title={`Click to view full ${isTop ? 'Top' : 'Bottom'} Student Rankings`}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
-            <div style={{ display: 'flex', gap: 6, zIndex: 10 }}>
+            <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6, zIndex: 10 }}>
               <div 
                 onClick={(e) => { e.stopPropagation(); onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom'); }}
-                className="flip-button-3d" style={{ marginTop: -4, padding: '4px 10px', fontSize: 11, width: 'auto' }}
+                className="flip-button-3d" style={{ padding: '4px 10px', fontSize: 11, width: 'auto', whiteSpace: 'nowrap' }}
                 title="View Full List"
               >
                 View 15
               </div>
               <div 
                 onClick={(e) => { e.stopPropagation(); setShowBottom5Student(prev => !prev); }}
-                className="flip-button-3d" style={{ marginTop: -4 }}
+                className="flip-button-3d"
                 title={`Flip to ${isTop ? 'Bottom' : 'Top'} 5`}
               >
                 <Repeat size={14} color="#64748b" />
