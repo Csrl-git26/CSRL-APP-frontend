@@ -575,17 +575,17 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6, zIndex: 10 }}>
               <div 
                 onClick={(e) => { e.stopPropagation(); onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom'); }}
-                className="flip-button-3d" style={{ padding: '4px 10px', fontSize: 11, width: 'auto', whiteSpace: 'nowrap' }}
+                className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
                 title="View Full List"
               >
                 View 15
               </div>
               <div 
                 onClick={(e) => { e.stopPropagation(); setShowBottom5Student(prev => !prev); }}
-                className="flip-button-3d"
+                className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0 }}
                 title={`Flip to ${isTop ? 'Bottom' : 'Top'} 5`}
               >
-                <Repeat size={14} color="#64748b" />
+                <Repeat size={12} color="#64748b" />
               </div>
             </div>
           </div>
