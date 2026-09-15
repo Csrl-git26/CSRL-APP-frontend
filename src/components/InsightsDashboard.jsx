@@ -30,11 +30,11 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
             {isBottom5 ? 'BOTTOM 5 CENTRE - QUAL' : 'TOP 5 CENTRE - QUAL %'}
           </SectionTitle>
           <div 
-            onClick={() => setShowBottom5Qual(!showBottom5Qual)}
-            className="flip-button-3d"
-            title={`Flip to ${isBottom5 ? 'Top 5' : 'Bottom 5'}`}
+            onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(!showBottom5Qual); }}
+            className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0 }}
+            title={`Flip to ${isBottom5 ? 'Top' : 'Bottom'} 5`}
           >
-            <Repeat size={18} strokeWidth={2.5} />
+            <Repeat size={12} color="#64748b" strokeWidth={2.5} />
           </div>
         </div>
         <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
