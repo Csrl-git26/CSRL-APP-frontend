@@ -514,13 +514,14 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
   );
 };
 
-export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick }) {
+export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick }) {
     const [showRankingModal, setShowRankingModal] = useState(false);
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
   const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const [activeRadialIndex, setActiveRadialIndex] = useState(null);
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
+  const [showBottom5Student, setShowBottom5Student] = useState(false);
   useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
@@ -566,9 +567,28 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   };
 
   const renderStudentChart = (students, title, icon, color, fixedMax = false) => {
+    const isTop = title.includes('TOP');
     return (
-        <div className="card" style={{ padding: 20, flex: 1, minWidth: 0 }}>
-          <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
+        <div className="card" onClick={() => onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom')} style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', flex: 1, minWidth: 0, cursor: 'pointer' }} title={`Click to view full ${isTop ? 'Top' : 'Bottom'} Student Rankings`}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
+            <div style={{ display: 'flex', gap: 6, zIndex: 10 }}>
+              <div 
+                onClick={(e) => { e.stopPropagation(); onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom'); }}
+                className="flip-button-3d" style={{ marginTop: -4, padding: '4px 10px', fontSize: 11, width: 'auto' }}
+                title="View Full List"
+              >
+                View 15
+              </div>
+              <div 
+                onClick={(e) => { e.stopPropagation(); setShowBottom5Student(!isTop); }}
+                className="flip-button-3d" style={{ marginTop: -4 }}
+                title={`Flip to ${isTop ? 'Bottom' : 'Top'} 5`}
+              >
+                <Repeat size={14} color="#64748b" />
+              </div>
+            </div>
+          </div>
           {students.length === 0
             ? <div style={{ color:'#94a3b8', fontSize:13, padding:'20px 0', textAlign:'center' }}>Select a test to see rankings</div>
             : (() => {
@@ -1035,7 +1055,26 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
-        {renderStudentChart(top5, 'TOP 5 STUDENT', Trophy, '#2563eb', true)}
+        
+        {/* STUDENT FLIP CARD */}
+        <div style={{ perspective: '1000px', height: '100%' }}>
+          <div style={{
+            position: 'relative', width: '100%', height: '100%',
+            transition: 'transform 1.2s ease-in-out',
+            transformStyle: 'preserve-3d',
+            transform: showBottom5Student ? 'rotateY(180deg)' : 'rotateY(0deg)'
+          }}>
+            {/* Front Side (Top 5) */}
+            <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
+              {renderStudentChart(top5, 'TOP 5 STUDENT', Trophy, '#2563eb', true)}
+            </div>
+            {/* Back Side (Bottom 5) */}
+            <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+              {renderStudentChart(bottom5, 'BOTTOM 5 STUDENT', Trophy, '#ef4444', true)}
+            </div>
+          </div>
+        </div>
+
         {renderLowScorersCount(testInsights)}
       </div>
 
