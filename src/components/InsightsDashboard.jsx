@@ -532,9 +532,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const renderLowScorersCount = (insights) => {
     const subjects = Object.keys(insights?.notQualifiedBySubject || {});
     return (
-      <div className="card" style={{ padding: 20, flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+      <div className="card" style={{ padding: 20, flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
         <SectionTitle Icon={AlertTriangle} color="#2563eb"><span style={{ fontSize: 11 }}>STUDENT NO. SUBJECTWISE MARKS &lt;=30</span></SectionTitle>
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 12, flex: 1 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, subjects.length)}, 1fr)`, gap: 6, flex: 1 }}>
           {subjects.map((sub) => (
             <div key={sub} style={{ background: 'rgba(248, 250, 252, 0.65)', borderRadius: 8, padding: 8, minWidth: 0 }}>
               <div style={{ fontWeight: 800, marginBottom: 8, color: '#1e293b', fontSize: 14 }}>{sub}</div>
@@ -1035,7 +1035,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr)', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
         {renderStudentChart(top5, 'TOP 5 STUDENT', Trophy, '#2563eb', true)}
