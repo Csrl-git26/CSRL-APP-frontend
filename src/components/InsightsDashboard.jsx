@@ -127,31 +127,12 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
   const [isHovered, setIsHovered] = useState(false);
   return (
     <div className="card" onClick={onClick} 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      
+      
       style={{ position: 'relative', cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
       alignItems:'center', gap:12, flex:1, minWidth:0 }}>
       
-      {isHovered && progressBar && (
-        <div style={{
-          position: 'absolute', top: -30, left: '50%', transform: 'translateX(-50%)',
-          background: '#1a4fa0', color: 'white', padding: '4px 10px', borderRadius: 6,
-          fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8,
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)', zIndex: 10, whiteSpace: 'nowrap'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: progressBar.color || color }} />
-            <span>{progressBar.value}</span>
-          </div>
-          <span style={{ color: '#94a3b8' }}>/</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#cbd5e1' }} />
-            <span>{progressBar.max}</span>
-          </div>
-          {progressBar.tooltipText && <span style={{ marginLeft: 2, color: '#cbd5e1', fontWeight: 600 }}>{progressBar.tooltipText}</span>}
-          <div style={{ position: 'absolute', bottom: -4, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: '#1a4fa0' }} />
-        </div>
-      )}
+      
 
       <div style={{ width:42, height:42, borderRadius:12, background:color+'22',
         display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -168,6 +149,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
           <div style={{ fontSize:labelFontSize, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
         {sub && <div style={{ fontSize:13, fontWeight:600, color: subColor || '#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
+        {progressBar && <div style={{ fontSize:11, fontWeight:700, color: '#64748b', marginTop:4 }}><span style={{ color: progressBar.color || color }}>{progressBar.value}</span> / {progressBar.max} <span style={{ fontWeight: 600 }}>{progressBar.tooltipText}</span></div>}
       </div>
     </div>
   );
