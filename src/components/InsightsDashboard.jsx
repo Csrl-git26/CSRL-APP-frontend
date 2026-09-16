@@ -527,6 +527,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
   const [showSubjectRankingModal, setShowSubjectRankingModal] = useState(false);
   const [selectedModalSubject, setSelectedModalSubject] = useState('');
+  const dashSubjects = testInsights?.subjects || ['Physics', 'Chemistry', 'Math'];
   const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const [activeRadialIndex, setActiveRadialIndex] = useState(null);
@@ -1100,7 +1101,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           centreBoard={centreBoard} 
           onViewCentre={onViewCentre} 
           onViewAllClick={() => {
-            if (!selectedModalSubject && subjects.length > 0) setSelectedModalSubject(subjects[0]);
+            if (!selectedModalSubject && dashSubjects.length > 0) setSelectedModalSubject(dashSubjects[0]);
             setShowSubjectRankingModal(true);
           }} 
         />
@@ -1228,7 +1229,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     onChange={e => setSelectedModalSubject(e.target.value)}
                     style={{ fontWeight: 700, color: '#1e293b', background: '#fff', border: '1px solid #e2e8f0', padding: '4px 12px', borderRadius: 8 }}
                   >
-                    {subjects.map(s => (
+                    {dashSubjects.map(s => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
