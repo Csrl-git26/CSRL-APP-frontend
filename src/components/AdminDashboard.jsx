@@ -493,10 +493,10 @@ export default function AdminDashboard() {
   // Separate effect for Leaderboard
   useEffect(() => {
     if (selectedLeaderboardTestKeys.length === 0) return;
-    const baseKeys = selectedLeaderboardTestKeys.join(',');
+    const baseKeys = activeLeaderboardKeys.join(',');
     const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
        ? baseKeys 
-       : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
+       : activeLeaderboardKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
     fetchCentreLeaderboard(null, combinedKey, globalStream)
       .then(board => setCentreBoard(Array.isArray(board) ? board : []))
@@ -582,6 +582,13 @@ export default function AdminDashboard() {
     const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
     return ['ALL_FMT', ...sorted];
   }, [allTestOptions, globalStream, data]);
+
+  const activeLeaderboardKeys = useMemo(() => {
+    const valid = selectedLeaderboardTestKeys.filter(k => streamTestOptions.includes(k));
+    if (valid.length > 0) return valid;
+    const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+    return fallback ? [fallback] : [];
+  }, [selectedLeaderboardTestKeys, streamTestOptions]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -1343,7 +1350,7 @@ export default function AdminDashboard() {
               <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
               <MultiSelectDropdown 
                 options={streamTestOptions.filter(o => o !== 'ALL_FMT')} 
-                selectedOptions={selectedLeaderboardTestKeys} 
+                selectedOptions={activeLeaderboardKeys} 
                 onChange={setSelectedLeaderboardTestKeys} 
               />
             </div>
@@ -1359,7 +1366,7 @@ export default function AdminDashboard() {
               <div>Upload {globalStream} student profiles and test scores to see analytics for this stream.</div>
             </div>
           ) : (
-          <InsightsDashboard key={selectedLeaderboardTestKeys.join(',') + globalStream} testInsights={testInsights} data={{ ...data, profiles: (data?.profiles || []).filter(p => (p.stream || 'JEE') === globalStream) }} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} onStudentRankingClick={(type) => setShowStudentRankingModal(type)} testOptions={streamTestOptions} onTestKeyChange={(val) => { setSelectedTestKey(val); setSelectedLeaderboardTestKeys([val]); }} />
+          <InsightsDashboard key={activeLeaderboardKeys.join(',') + globalStream} testInsights={testInsights} data={{ ...data, profiles: (data?.profiles || []).filter(p => (p.stream || 'JEE') === globalStream) }} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={activeLeaderboardKeys.length > 1 ? 'Multiple Tests' : (activeLeaderboardKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} onStudentRankingClick={(type) => setShowStudentRankingModal(type)} testOptions={streamTestOptions} onTestKeyChange={(val) => { setSelectedTestKey(val); setSelectedLeaderboardTestKeys([val]); }} />
           )}
         </div>
         {showGraphsModal && (
@@ -1384,7 +1391,7 @@ export default function AdminDashboard() {
                   <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
                   <MultiSelectDropdown 
                     options={streamTestOptions.filter(o => o !== 'ALL_FMT')} 
-                    selectedOptions={selectedLeaderboardTestKeys} 
+                    selectedOptions={activeLeaderboardKeys} 
                     onChange={setSelectedLeaderboardTestKeys} 
                   />
                 </div>

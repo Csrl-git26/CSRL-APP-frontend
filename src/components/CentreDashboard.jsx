@@ -176,11 +176,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   }, [selectedTestKey]);
 
   useEffect(() => {
-    if (selectedLeaderboardTestKeys.length === 0) return;
-    const baseKeys = selectedLeaderboardTestKeys.join(',');
+    if (activeLeaderboardKeys.length === 0) return;
+    const baseKeys = activeLeaderboardKeys.join(',');
     const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
        ? baseKeys 
-       : selectedLeaderboardTestKeys.map(k => `${k}_${selectedSubject}`).join(',');
+       : activeLeaderboardKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
     fetchCentreLeaderboard(null, combinedKey, globalStream)
       .then(board => setCentreBoard(Array.isArray(board) ? board : []))
@@ -336,6 +336,13 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     if (keys.size === 0) return [];
     return [...keys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
   }, [allTestOptions, globalStream, data]);
+
+  const activeLeaderboardKeys = useMemo(() => {
+    const valid = selectedLeaderboardTestKeys.filter(k => streamTestOptions.includes(k));
+    if (valid.length > 0) return valid;
+    const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+    return fallback ? [fallback] : [];
+  }, [selectedLeaderboardTestKeys, streamTestOptions]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -517,7 +524,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
             <MultiSelectDropdown 
               options={streamTestOptions.length > 0 ? streamTestOptions : allTestOptions} 
-              selectedOptions={selectedLeaderboardTestKeys} 
+              selectedOptions={activeLeaderboardKeys} 
               onChange={setSelectedLeaderboardTestKeys} 
             />
           </div>
