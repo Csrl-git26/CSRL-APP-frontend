@@ -55,33 +55,31 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre, onViewAll
   const chartData = useMemo(() => {
     if (!centreBoard || centreBoard.length === 0) return [];
     
-    // Sort by Physics
-    const topPhy = [...centreBoard].sort((a,b) => (b.Physics || 0) - (a.Physics || 0)).slice(0, 3);
-    // Sort by Chemistry
-    const topChe = [...centreBoard].sort((a,b) => (b.Chemistry || 0) - (a.Chemistry || 0)).slice(0, 3);
-    // Sort by Math
-    const topMath = [...centreBoard].sort((a,b) => (b.Math || 0) - (a.Math || 0)).slice(0, 3);
-    
-    return [
-      {
-        subject: 'PHY',
-        top1Code: topPhy[0]?.code || '', top1Val: Math.round(topPhy[0]?.Physics || 0),
-        top2Code: topPhy[1]?.code || '', top2Val: Math.round(topPhy[1]?.Physics || 0),
-        top3Code: topPhy[2]?.code || '', top3Val: Math.round(topPhy[2]?.Physics || 0),
-      },
-      {
-        subject: 'CHEM',
-        top1Code: topChe[0]?.code || '', top1Val: Math.round(topChe[0]?.Chemistry || 0),
-        top2Code: topChe[1]?.code || '', top2Val: Math.round(topChe[1]?.Chemistry || 0),
-        top3Code: topChe[2]?.code || '', top3Val: Math.round(topChe[2]?.Chemistry || 0),
-      },
-      {
-        subject: 'MATH',
-        top1Code: topMath[0]?.code || '', top1Val: Math.round(topMath[0]?.Math || 0),
-        top2Code: topMath[1]?.code || '', top2Val: Math.round(topMath[1]?.Math || 0),
-        top3Code: topMath[2]?.code || '', top3Val: Math.round(topMath[2]?.Math || 0),
+    const subjectDisplayNames = {
+      Physics: "PHY",
+      Chemistry: "CHEM",
+      Math: "MATH",
+      Biology: "BIO",
+      Botany: "BOT",
+      Zoology: "ZOO"
+    };
+
+    const data = [];
+    const availableSubjects = Object.keys(subjectDisplayNames).filter(sub => centreBoard.some(c => c[sub] !== undefined));
+
+    availableSubjects.forEach(sub => {
+      const topCentres = [...centreBoard].sort((a,b) => (b[sub] || 0) - (a[sub] || 0)).slice(0, 3);
+      if (topCentres.length > 0 && topCentres[0][sub] > 0) {
+        data.push({
+          subject: subjectDisplayNames[sub],
+          top1Code: topCentres[0]?.code || '', top1Val: Math.round(topCentres[0]?.[sub] || 0),
+          top2Code: topCentres[1]?.code || '', top2Val: Math.round(topCentres[1]?.[sub] || 0),
+          top3Code: topCentres[2]?.code || '', top3Val: Math.round(topCentres[2]?.[sub] || 0),
+        });
       }
-    ];
+    });
+    
+    return data;
   }, [centreBoard]);
 
   return (
