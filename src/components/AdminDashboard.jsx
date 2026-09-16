@@ -483,6 +483,27 @@ export default function AdminDashboard() {
     });
   }, [selectedTestKey, selectedSubject, refreshTrigger]);
 
+  // Reset selected test when stream changes and invalidates current selection
+  useEffect(() => {
+    if (streamTestOptions && streamTestOptions.length > 0) {
+      const validTest = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+      
+      // Check if current selectedTestKey is valid
+      if (selectedTestKey && !streamTestOptions.includes(selectedTestKey)) {
+        setSelectedTestKey(validTest);
+      }
+      
+      // Check if selectedLeaderboardTestKeys are valid
+      const validSelectedKeys = selectedLeaderboardTestKeys.filter(k => streamTestOptions.includes(k));
+      if (validSelectedKeys.length === 0 && selectedLeaderboardTestKeys.length > 0) {
+        setSelectedLeaderboardTestKeys([validTest]);
+      }
+    } else if (streamTestOptions && streamTestOptions.length === 0) {
+      if (selectedTestKey !== '') setSelectedTestKey('');
+      if (selectedLeaderboardTestKeys.length > 0) setSelectedLeaderboardTestKeys([]);
+    }
+  }, [streamTestOptions, selectedTestKey, selectedLeaderboardTestKeys]);
+
   // Sync selectedTestKey to leaderboard default
   useEffect(() => {
     if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {

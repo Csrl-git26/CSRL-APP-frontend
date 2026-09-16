@@ -169,6 +169,19 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     };
   }, [selectedCenterCode, selectedTestKey]);
 
+  // Reset selected test when stream changes
+  useEffect(() => {
+    if (streamTestOptions && streamTestOptions.length > 0) {
+      const validTest = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+      if (selectedTestKey && !streamTestOptions.includes(selectedTestKey)) setSelectedTestKey(validTest);
+      const validSelectedKeys = selectedLeaderboardTestKeys.filter(k => streamTestOptions.includes(k));
+      if (validSelectedKeys.length === 0 && selectedLeaderboardTestKeys.length > 0) setSelectedLeaderboardTestKeys([validTest]);
+    } else if (streamTestOptions && streamTestOptions.length === 0) {
+      if (selectedTestKey !== '') setSelectedTestKey('');
+      if (selectedLeaderboardTestKeys.length > 0) setSelectedLeaderboardTestKeys([]);
+    }
+  }, [streamTestOptions, selectedTestKey, selectedLeaderboardTestKeys]);
+
   useEffect(() => {
     if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {
       setSelectedLeaderboardTestKeys([selectedTestKey]);
