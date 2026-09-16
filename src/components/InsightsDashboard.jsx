@@ -305,7 +305,7 @@ const CustomBarLabel = (props) => {
   const cy = y + height / 2;
   
   // Rotate 90 degrees if it's too thin to fit horizontal text
-  const isThin = absWidth < 18;
+  const isThin = absWidth < 26;
 
   return (
     <text 
@@ -700,10 +700,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                           <LabelList dataKey="Mathematics_orig" content={(props) => <CustomBarLabel {...props} prefix="M" />} />
                         </Bar>
                         <Bar shape={(props) => renderStudentBarShape(props, "Botany", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Botany"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Botany" stackId="a" fill="#fbbf24" barSize={24} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
-                          <LabelList dataKey="Botany_orig" content={(props) => <CustomBarLabel {...props} prefix="Bot" />} />
+                          <LabelList dataKey="Botany_orig" content={(props) => <CustomBarLabel {...props} prefix="B" />} />
                         </Bar>
 <Bar shape={(props) => renderStudentBarShape(props, "Zoology", title, activeStudentBar)} onMouseEnter={(_, index) => setActiveStudentBar({chartId: title, index, dataKey: "Zoology"})} onMouseLeave={() => setActiveStudentBar(null)} dataKey="Zoology" stackId="a" fill="#34d399" barSize={24} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" onClick={(data) => onViewStudent && onViewStudent(data.studentId)} style={{ cursor: 'pointer' }}>
-                          <LabelList dataKey="Zoology_orig" content={(props) => <CustomBarLabel {...props} prefix="Zoo" />} />
+                          <LabelList dataKey="Zoology_orig" content={(props) => <CustomBarLabel {...props} prefix="Z" />} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -1092,7 +1092,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres 
           key={selectedTestKey} 
           centreBoard={centreBoard} 
