@@ -523,6 +523,9 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
 };
 
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange }) {
+  const currentStream = data?.profiles?.[0]?.stream || 'JEE';
+  const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
+
     const [showRankingModal, setShowRankingModal] = useState(false);
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
   const [showSubjectRankingModal, setShowSubjectRankingModal] = useState(false);
@@ -772,7 +775,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         />
         <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
-          progressBar={{ value: avgScore || 0, max: maxScore, color: '#3b82f6', tooltipText: `Avg / Max(${maxScore})` }}
+          progressBar={{ value: avgScore || 0, max: dynamicMaxScore, color: '#3b82f6', tooltipText: `Avg / Max(${dynamicMaxScore})` }}
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
       </div>
 
