@@ -795,7 +795,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   
                   // Gauge chart calculations
                   const score = Math.round(c.avg);
-                  const maxScore = 300; // standard JEE max, adjust if needed
+                  const maxScore = dynamicMaxScore || 720;
                   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
                   const strokeWidth = 10;
                   const radius = 40;
