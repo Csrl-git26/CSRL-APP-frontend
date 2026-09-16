@@ -30,6 +30,9 @@ const renderBarShape = (props, dataKey, activeItem) => {
     if (payload.subject === 'PHY') barFill = '#3b82f6';
     else if (payload.subject === 'CHEM') barFill = '#8b5cf6';
     else if (payload.subject === 'MATH') barFill = '#0ea5e9';
+    else if (payload.subject === 'BIO') barFill = '#10b981';
+    else if (payload.subject === 'BOT') barFill = '#fbbf24';
+    else if (payload.subject === 'ZOO') barFill = '#34d399';
   }
   
   const adjustedX = isActive ? x - 2 : x;
