@@ -628,7 +628,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                              matchedKey = keys.find(k => k === `${selectedTestKey}_${sub}` || k === `${selectedTestKey}_${sub.toUpperCase()}` || k === `${selectedTestKey}_${sub.toLowerCase()}`);
                           }
                           if (!matchedKey) {
-                             matchedKey = keys.find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()));
+                             matchedKey = keys.find(k => k === sub || k.toLowerCase().endsWith('_' + sub.toLowerCase()) || (sub === 'Botany' && k.toLowerCase().endsWith('_botnay')));
                           }
                           if (matchedKey && !isNaN(Number(s.rawScores[matchedKey]))) {
                              let val = Number(s.rawScores[matchedKey]);
