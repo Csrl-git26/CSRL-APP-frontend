@@ -130,7 +130,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
       style={{ position: 'relative', cursor: onClick ? 'pointer' : 'default', background:bg, padding:'14px 18px', display:'flex',
       alignItems:'center', gap:12, flex:1, minWidth:0 }}>
       {onClick && (
-        <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: 8, right: 12, zIndex: 10 }}>
           <div 
             className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
             title="View Details"
@@ -148,7 +148,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, justifyContent: 'center' }}>
         {progressBar && (
-          <div style={{ width: '100%', height: 5, background: '#cbd5e1', borderRadius: 3, marginBottom: 6, overflow: 'hidden' }}>
+          <div style={{ width: onClick ? 'calc(100% - 65px)' : '100%', height: 5, background: '#cbd5e1', borderRadius: 3, marginBottom: 6, overflow: 'hidden' }}>
             <div style={{ width: `${(progressBar.value / progressBar.max) * 100}%`, height: '100%', background: progressBar.color || color, borderRadius: 3 }} />
           </div>
         )}
