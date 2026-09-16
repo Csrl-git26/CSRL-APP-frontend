@@ -529,7 +529,7 @@ export default function AdminDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [activePage, selectedTestKey, refreshTrigger]);
+  }, [activePage, selectedTestKey, refreshTrigger, globalStream]);
 
   // ── Derived data ───────────────────────────────────────────────────────────
 
