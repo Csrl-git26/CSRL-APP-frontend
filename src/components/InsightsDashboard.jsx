@@ -510,7 +510,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
         y={textY}
         textAnchor="middle"
         dominantBaseline="central"
-        fill="#1e3a8a"
+        fill="#2563eb"
         fontSize={11}
         fontWeight={900}
         letterSpacing="-0.5px"
@@ -1181,7 +1181,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       }
                       return null;
                     }} />
-                    <Bar dataKey="avg" fill="#1e3a8a" radius={[6, 6, 6, 6]} barSize={22}>
+                    <Bar dataKey="avg" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22}>
                       <LabelList dataKey="avg" content={(props) => {
                         const { x, y, width, value, index } = props;
                         const c = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))[index];

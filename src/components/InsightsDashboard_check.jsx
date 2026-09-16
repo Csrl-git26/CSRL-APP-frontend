@@ -690,7 +690,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   const dashoffset = circumference - (percentage / 100) * circumference;
                   
                   // Vibrant colors
-                  const color = isAlert ? '#f97316' : '#2563eb'; // Orange if alert, Blue otherwise
+                  const color = isBottom ? '#f97316' : '#2563eb'; // Orange if alert, Blue otherwise
                   const bg = '#e2e8f080';
 
                   return (
