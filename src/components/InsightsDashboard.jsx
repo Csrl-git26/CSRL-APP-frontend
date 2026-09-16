@@ -781,7 +781,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 const bottomCentres = sorted.length > 5 ? sorted.slice(-5).map((c,i) => ({...c, rank: sorted.length - 5 + i + 1})) : [];
                 
                 const renderCard = (c) => {
-                  const isAlert = c.avg < 100 || (c.qualRate??0) < 80;
+                  const isAlert = c.avg < 100 || (c.qualRate??0) <= 80;
                   const medals = {1:'🥇',2:'🥈',3:'🥉'};
                   const rankDisplay = medals[c.rank] || `${c.rank}`;
                   
@@ -1156,7 +1156,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       <LabelList dataKey="avg" content={(props) => {
                         const { x, y, width, value, index } = props;
                         const c = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))[index];
-                        const isAlert = c.avg < 100 || (c.qualRate??0) < 80;
+                        const isAlert = c.avg < 100 || (c.qualRate??0) <= 80;
                         return (
                           <g>
                             <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
@@ -1230,7 +1230,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       <LabelList dataKey="qualRate" content={(props) => {
                         const { x, y, width, value, index } = props;
                         const c = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))[index];
-                        const isAlert = (c.qualRate??0) < 50;
+                        const isAlert = (c.qualRate??0) <= 80;
                         return (
                           <g>
                             <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
