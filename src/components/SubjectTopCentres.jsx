@@ -88,7 +88,7 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre, onViewAll
     <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
       <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
         {onViewAllClick && (
-          <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 10 }}>
+          <div style={{ position: 'absolute', top: 32, right: 0, zIndex: 10 }}>
             <div 
               className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
               onClick={onViewAllClick}
