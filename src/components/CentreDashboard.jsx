@@ -20,7 +20,6 @@ import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import { fetchStudentChart } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
-import ErrorBoundary from './ErrorBoundary';
 import CentreLeaderboard from './CentreLeaderboard';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { CENTERS } from '../config/centers';

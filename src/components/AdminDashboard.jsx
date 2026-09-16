@@ -64,7 +64,6 @@ import {
 } from '../services/dataService';
 import { useToast } from '../context/ToastContext';
 import StudentProfileView from './StudentProfileView';
-import ErrorBoundary from './ErrorBoundary';
 import StudentFormModal from './StudentFormModal';
 import TestDataModal from './TestDataModal';
 import CentreLeaderboard from './CentreLeaderboard';

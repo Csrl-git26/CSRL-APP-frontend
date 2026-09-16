@@ -63,8 +63,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 const tot = Number(total);
                 const p = Number(row.Physics || 0);
                 const c = Number(row.Chemistry || 0);
-                const m = Number(row.Math || 0);
-                const bot = Number(row.Botany || 0);
+                                const bot = Number(row.Botany || 0);
                 const zoo = Number(row.Zoology || 0);
                 const b = Number(row.Biology || (bot + zoo) || 0);
 
