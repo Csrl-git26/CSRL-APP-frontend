@@ -48,7 +48,7 @@ const renderBarShape = (props, dataKey, activeItem) => {
 
 
 
-export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
+export default function SubjectTopCentres({ centreBoard, onViewCentre, onViewAllClick }) {
   const [activeItem, setActiveItem] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   useEffect(() => { const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, []);
@@ -87,6 +87,17 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
       <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
+        {onViewAllClick && (
+          <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 10 }}>
+            <div 
+              className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
+              onClick={onViewAllClick}
+              title="View Full List"
+            >
+              View All
+            </div>
+          </div>
+        )}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
           
           <span style={{ fontSize:15, fontWeight:800, letterSpacing:0.2, color: 'rgba(37, 99, 235, 0.95)', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>SUBJECTWISE TOP 3 CENTRE</span>

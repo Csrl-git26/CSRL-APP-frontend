@@ -525,6 +525,8 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick }) {
     const [showRankingModal, setShowRankingModal] = useState(false);
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
+  const [showSubjectRankingModal, setShowSubjectRankingModal] = useState(false);
+  const [selectedModalSubject, setSelectedModalSubject] = useState('');
   const [activeStudentBar, setActiveStudentBar] = useState(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const [activeRadialIndex, setActiveRadialIndex] = useState(null);
@@ -1093,7 +1095,15 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
       {/* ── Second Row: Subject & Student Charts ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
-        <SubjectTopCentres key={selectedTestKey} centreBoard={centreBoard} onViewCentre={onViewCentre} />
+        <SubjectTopCentres 
+          key={selectedTestKey} 
+          centreBoard={centreBoard} 
+          onViewCentre={onViewCentre} 
+          onViewAllClick={() => {
+            if (!selectedModalSubject && subjects.length > 0) setSelectedModalSubject(subjects[0]);
+            setShowSubjectRankingModal(true);
+          }} 
+        />
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
         
         {/* STUDENT FLIP CARD */}
@@ -1189,6 +1199,80 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      
+      {/* SUBJECTWISE AVERAGE MARKS MODAL */}
+      {showSubjectRankingModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: 80, padding: 20 }} onClick={() => setShowSubjectRankingModal(false)}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.45)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 24, width: '90vw', maxWidth: 1000, height: '85vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.2)', padding: 24, position: 'relative', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
+            
+            {/* Close button */}
+            <div style={{ position: 'absolute', top: 12, right: 16, cursor: 'pointer', width: 32, height: 32, borderRadius: '50%', background: 'rgba(100,116,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }} onClick={() => setShowSubjectRankingModal(false)}>
+              <span style={{ fontSize: 22, lineHeight: 1, fontWeight: 400, color: '#64748b' }}>×</span>
+            </div>
+
+            {/* Inner white card */}
+            <div style={{ flex: 1, background: 'rgba(248, 250, 252, 0.65)', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '2px solid rgba(59, 130, 246, 0.15)', paddingBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
+                  <BarChart3 size={20} />
+                  <span style={{ fontSize: 17, fontWeight: 800 }}>Subjectwise Average Marks — {selectedTestKey || 'Latest'}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <select 
+                    className="input select" 
+                    value={selectedModalSubject} 
+                    onChange={e => setSelectedModalSubject(e.target.value)}
+                    style={{ fontWeight: 700, color: '#1e293b', background: '#fff', border: '1px solid #e2e8f0', padding: '4px 12px', borderRadius: 8 }}
+                  >
+                    {subjects.map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                     <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>
+                     <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{selectedTestKey || 'Latest'}</span>
+                     <span style={{ fontSize: 10, color: '#94a3b8' }}>▼</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={[...centreBoard].sort((a,b) => (b[selectedModalSubject]||0)-(a[selectedModalSubject]||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
+                    <XAxis dataKey="code" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#1e293b', angle: -90, textAnchor: 'end' }} interval={0} dx={-4} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }} domain={[0, 'dataMax']} label={{ value: 'Avg Marks', angle: -90, position: 'insideLeft', style: { fontWeight: 900, fill: '#475569', fontSize: 14 } }} />
+                    <Tooltip cursor={{ fill: 'rgba(0,0,0,0.04)' }} content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div style={{ background: '#1e293b', color: 'white', padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600 }}>
+                            <div style={{ marginBottom: 4, color: '#93c5fd' }}>{payload[0].payload.code}</div>
+                            <div>{selectedModalSubject}: {Math.round(payload[0].payload[selectedModalSubject] || 0)}</div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }} />
+                    <Bar dataKey={selectedModalSubject} fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22}>
+                      <LabelList dataKey={selectedModalSubject} content={(props) => {
+                        const { x, y, width, value } = props;
+                        return (
+                          <g>
+                            <text x={x + width / 2} y={y - 10} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
+                              {Math.round(value || 0)}
+                            </text>
+                          </g>
+                        );
+                      }} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
       )}
