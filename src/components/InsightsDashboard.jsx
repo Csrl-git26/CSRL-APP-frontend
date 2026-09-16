@@ -895,12 +895,21 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
-                  <div 
-                    onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(true); }}
-                    className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0, marginTop: -4 }}
-                    title="Flip to Bottom 5"
-                  >
-                    <Repeat size={12} color="#64748b" strokeWidth={2.5} />
+                  <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6, zIndex: 10 }}>
+                    <div 
+                      onClick={(e) => { e.stopPropagation(); setShowQualRankingModal(true); }}
+                      className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
+                      title="View Full List"
+                    >
+                      View All
+                    </div>
+                    <div 
+                      onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(true); }}
+                      className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0 }}
+                      title="Flip to Bottom 5"
+                    >
+                      <Repeat size={12} color="#64748b" strokeWidth={2.5} />
+                    </div>
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -946,12 +955,21 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
-                  <div 
-                    onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(false); }}
-                    className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0, marginTop: -4 }}
-                    title="Flip to Top 5"
-                  >
-                    <Repeat size={12} color="#64748b" strokeWidth={2.5} />
+                  <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6, zIndex: 10 }}>
+                    <div 
+                      onClick={(e) => { e.stopPropagation(); setShowQualRankingModal(true); }}
+                      className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
+                      title="View Full List"
+                    >
+                      View All
+                    </div>
+                    <div 
+                      onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(false); }}
+                      className="flip-button-3d" style={{ padding: 0, width: 24, height: 24, minHeight: 0 }}
+                      title="Flip to Top 5"
+                    >
+                      <Repeat size={12} color="#64748b" strokeWidth={2.5} />
+                    </div>
                   </div>
                 </div>
                 <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
