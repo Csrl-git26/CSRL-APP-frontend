@@ -572,7 +572,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <div className="card" onClick={() => onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom')} style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', flex: 1, minWidth: 0, cursor: 'pointer', position: 'relative' }} title={`Click to view full ${isTop ? 'Top' : 'Bottom'} Student Rankings`}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <SectionTitle Icon={icon} color={color}>{title}</SectionTitle>
-            <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 6, zIndex: 10, alignItems: 'flex-end' }}>
+            <div style={{ position: 'absolute', top: 8, right: 6, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 10, alignItems: 'flex-end' }}>
               <div 
                 onClick={(e) => { e.stopPropagation(); onStudentRankingClick && onStudentRankingClick(isTop ? 'top' : 'bottom'); }}
                 className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
@@ -895,7 +895,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
-                  <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 6, zIndex: 10, alignItems: 'flex-end' }}>
+                  <div style={{ position: 'absolute', top: 8, right: 6, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 10, alignItems: 'flex-end' }}>
                     <div 
                       onClick={(e) => { e.stopPropagation(); setShowQualRankingModal(true); }}
                       className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
@@ -955,7 +955,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
-                  <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 6, zIndex: 10, alignItems: 'flex-end' }}>
+                  <div style={{ position: 'absolute', top: 8, right: 6, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 10, alignItems: 'flex-end' }}>
                     <div 
                       onClick={(e) => { e.stopPropagation(); setShowQualRankingModal(true); }}
                       className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
