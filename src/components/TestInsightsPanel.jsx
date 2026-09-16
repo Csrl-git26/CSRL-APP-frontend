@@ -49,7 +49,27 @@ export default function TestInsightsPanel({
 
   const subjects = insights.subjects || [];
   const cut = insights.cutoffs;
-  const rankedStudents = insights.rankedStudents || [];
+  // Fix: if backend returned 'Absent' but rawScores have subject marks, compute total from subjects
+  const rankedStudents = (insights.rankedStudents || []).map(r => {
+    if (r.marks !== 'Absent' && r.marks !== null && r.marks !== undefined) return r;
+    if (!r.rawScores) return r;
+    const testKey = insights.testKey || '';
+    const SUBJECT_KEYS = ['Physics','Chemistry','Biology','Botany','Zoology','Math','Mathematics'];
+    let total = 0;
+    let found = 0;
+    SUBJECT_KEYS.forEach(sub => {
+      const k1 = `${testKey}_${sub}`;
+      let val = r.rawScores[k1] ?? r.rawScores[sub];
+      if (val === undefined) {
+        const fk = Object.keys(r.rawScores).find(k => k.toLowerCase().endsWith(`_${sub.toLowerCase()}`));
+        if (fk) val = r.rawScores[fk];
+      }
+      const n = parseFloat(val);
+      if (!isNaN(n)) { total += n; found++; }
+    });
+    if (found > 0) return { ...r, marks: Math.round(total), rank: r.rank || '-' };
+    return r;
+  });
 
   const [rankMode, setRankMode] = useState('all');
   const [sortOrder, setSortOrder] = useState('desc');
@@ -174,7 +194,15 @@ export default function TestInsightsPanel({
             </div>
             <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
               <div style={{ fontSize: 22, fontWeight: 800, color: '#1a4fa0' }}>
-                {insights.overallTopper?.total ?? insights.bestScorePercentStudent?.total ?? '—'}
+                {(() => {
+                  const t = insights.overallTopper?.total ?? insights.bestScorePercentStudent?.total;
+                  if (t === 'Absent' || t === null || t === undefined) {
+                    const roll = insights.overallTopper?.roll || insights.bestScorePercentStudent?.roll;
+                    const fromRanked = rankedStudents.find(r => String(r.roll) === String(roll));
+                    return fromRanked?.marks ?? '—';
+                  }
+                  return t;
+                })()}
                 <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', marginLeft: 6 }}>marks</span>
               </div>
               {insights.bestScorePercentStudent && (
