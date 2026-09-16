@@ -321,7 +321,17 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
     const rollKeys = new Set(profs.filter(p => (p.stream || 'JEE') === globalStream).map(p => p.ROLL_KEY));
     const keys = new Set(
       tests.filter(t => rollKeys.has(t.ROLL_KEY))
-        .flatMap(t => Object.keys(t).filter(k => allTestOptions.includes(k) && !k.includes('_') && t[k] != null && t[k] !== ''))
+        .flatMap(t => Object.keys(t).filter(k => {
+          if (!allTestOptions.includes(k) || k.includes('_') || t[k] == null || t[k] === '') return false;
+          if (data && data.testColumns) {
+            const cols = data.testColumns.filter(c => c.startsWith(k + '_'));
+            const hasMath = cols.some(c => c.toLowerCase().includes('math'));
+            const hasBio = cols.some(c => c.toLowerCase().includes('bio') || c.toLowerCase().includes('bot') || c.toLowerCase().includes('zoo'));
+            if (globalStream === 'NEET' && hasMath && !hasBio) return false;
+            if (globalStream === 'JEE' && hasBio && !hasMath) return false;
+          }
+          return true;
+        }))
     );
     if (keys.size === 0) return [];
     return [...keys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));

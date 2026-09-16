@@ -556,7 +556,18 @@ export default function AdminDashboard() {
     const baseKeys = new Set(
       tests
         .filter(t => streamRollKeys.has(t.ROLL_KEY))
-        .flatMap(t => Object.keys(t).filter(k => allTestOptions.includes(k) && !k.includes('_') && t[k] != null && t[k] !== ''))
+        .flatMap(t => Object.keys(t).filter(k => {
+          if (!allTestOptions.includes(k) || k.includes('_') || t[k] == null || t[k] === '') return false;
+          // Filter by stream-specific subjects if test columns are available
+          if (data && data.testColumns) {
+            const cols = data.testColumns.filter(c => c.startsWith(k + '_'));
+            const hasMath = cols.some(c => c.toLowerCase().includes('math'));
+            const hasBio = cols.some(c => c.toLowerCase().includes('bio') || c.toLowerCase().includes('bot') || c.toLowerCase().includes('zoo'));
+            if (globalStream === 'NEET' && hasMath && !hasBio) return false; // Hide JEE tests from NEET
+            if (globalStream === 'JEE' && hasBio && !hasMath) return false;  // Hide NEET tests from JEE
+          }
+          return true;
+        }))
     );
     if (baseKeys.size === 0) return []; // No tests for this stream
     const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
