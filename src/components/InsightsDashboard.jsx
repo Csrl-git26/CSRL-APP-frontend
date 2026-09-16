@@ -858,8 +858,19 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 };
 
                 return (
-                  <div key={selectedTestKey}>
-                    <SectionTitle Icon={Star} color="#2563eb">TOP 5 CENTRE - AVG SCORE</SectionTitle>
+                  <div key={selectedTestKey} style={{ position: 'relative' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <SectionTitle Icon={Star} color="#2563eb">TOP 5 CENTRE - AVG SCORE</SectionTitle>
+                      <div style={{ position: 'absolute', top: -4, right: -8, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 10, alignItems: 'flex-end' }}>
+                        <div 
+                          onClick={(e) => { e.stopPropagation(); setShowRankingModal(true); }}
+                          className="flip-button-3d" style={{ padding: '0 8px', fontSize: 10, width: 'auto', height: 24, borderRadius: 12, whiteSpace: 'nowrap', minHeight: 0 }}
+                          title="View Full List"
+                        >
+                          View All
+                        </div>
+                      </div>
+                    </div>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 32 : 0 }}>
                       {topCentres.map(renderCard)}
                     </div>
