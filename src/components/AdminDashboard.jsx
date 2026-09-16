@@ -64,6 +64,7 @@ import {
 } from '../services/dataService';
 import { useToast } from '../context/ToastContext';
 import StudentProfileView from './StudentProfileView';
+import ErrorBoundary from './ErrorBoundary';
 import StudentFormModal from './StudentFormModal';
 import TestDataModal from './TestDataModal';
 import CentreLeaderboard from './CentreLeaderboard';
@@ -1123,7 +1124,7 @@ export default function AdminDashboard() {
         </div>
         <div className="content dashboard-page-body">
           <div className="dashboard-scroll">
-            <StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} hidePersonalDetails={true} />
+            <ErrorBoundary><StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} hidePersonalDetails={true} /></ErrorBoundary>
           </div>
         </div>
       </div>
