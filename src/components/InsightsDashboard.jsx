@@ -1092,7 +1092,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20, marginTop: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres 
           key={selectedTestKey} 
           centreBoard={centreBoard} 
