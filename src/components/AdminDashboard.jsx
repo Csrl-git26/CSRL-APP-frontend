@@ -553,22 +553,31 @@ export default function AdminDashboard() {
     const tests = data?.tests || [];
     const streamProfiles = profiles.filter(p => (p.stream || 'JEE') === globalStream);
     const streamRollKeys = new Set(streamProfiles.map(p => p.ROLL_KEY));
-    const baseKeys = new Set(
-      tests
-        .filter(t => streamRollKeys.has(t.ROLL_KEY))
-        .flatMap(t => Object.keys(t).filter(k => {
-          if (!allTestOptions.includes(k) || k.includes('_') || t[k] == null || t[k] === '') return false;
-          // Filter by stream-specific subjects if test columns are available
-          if (data && data.testColumns) {
-            const cols = data.testColumns.filter(c => c.startsWith(k + '_'));
-            const hasMath = cols.some(c => c.toLowerCase().includes('math'));
-            const hasBio = cols.some(c => c.toLowerCase().includes('bio') || c.toLowerCase().includes('bot') || c.toLowerCase().includes('zoo'));
-            if (globalStream === 'NEET' && hasMath && !hasBio) return false; // Hide JEE tests from NEET
-            if (globalStream === 'JEE' && hasBio && !hasMath) return false;  // Hide NEET tests from JEE
+    
+    const streamTests = tests.filter(t => streamRollKeys.has(t.ROLL_KEY));
+    const baseKeys = new Set();
+    
+    for (const t of streamTests) {
+      for (const k of Object.keys(t)) {
+        if (allTestOptions.includes(k) && !k.includes('_')) {
+          const val = Number(t[k]);
+          // Only consider the test if the student has a non-zero, non-empty score. 
+          // (If all students in a stream have 0, they likely didn't take this test)
+          if (t[k] != null && t[k] !== '' && val !== 0 && !isNaN(val)) {
+            let include = true;
+            if (data && data.testColumns) {
+              const cols = data.testColumns.filter(c => c.startsWith(k + '_'));
+              const hasMath = cols.some(c => c.toLowerCase().includes('math'));
+              const hasBio = cols.some(c => c.toLowerCase().includes('bio') || c.toLowerCase().includes('bot') || c.toLowerCase().includes('zoo'));
+              if (globalStream === 'NEET' && hasMath && !hasBio) include = false;
+              if (globalStream === 'JEE' && hasBio && !hasMath) include = false;
+            }
+            if (include) baseKeys.add(k);
           }
-          return true;
-        }))
-    );
+        }
+      }
+    }
+    
     if (baseKeys.size === 0) return []; // No tests for this stream
     const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
     return ['ALL_FMT', ...sorted];
