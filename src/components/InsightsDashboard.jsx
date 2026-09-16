@@ -788,7 +788,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 const topCentres = sorted.slice(0,5).map((c,i) => ({...c, rank: i+1}));
                 const bottomCentres = sorted.length > 5 ? sorted.slice(-5).map((c,i) => ({...c, rank: sorted.length - 5 + i + 1})) : [];
                 
-                const renderCard = (c) => {
+                const renderCard = (c, isBottom = false) => {
                   const isAlert = c.avg < 100 || (c.qualRate??0) <= 80;
                   const medals = {1:'🥇',2:'🥈',3:'🥉'};
                   const rankDisplay = medals[c.rank] || `${c.rank}`;
@@ -803,7 +803,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   const dashoffset = circumference - (percentage / 100) * circumference;
                   
                   // Vibrant colors
-                  const color = isAlert ? '#f97316' : '#2563eb'; // Orange if alert, Blue otherwise
+                  const color = isBottom ? '#f97316' : '#2563eb';
                   const bg = '#e2e8f080';
 
                   return (
@@ -880,14 +880,14 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       </div>
                     </div>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 32 : 0 }}>
-                      {topCentres.map(renderCard)}
+                      {topCentres.map(c => renderCard(c, false))}
                     </div>
                     
                     {bottomCentres.length > 0 && (
                       <div style={{ marginTop: 8 }}>
                         <SectionTitle Icon={Star} color="#2563eb">BOTTOM 5 CENTRE - AVG SCORE</SectionTitle>
                         <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
-                          {bottomCentres.map(renderCard)}
+                          {bottomCentres.map(c => renderCard(c, true))}
                         </div>
                       </div>
                     )}
