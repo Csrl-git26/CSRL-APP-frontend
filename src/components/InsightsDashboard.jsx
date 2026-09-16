@@ -522,7 +522,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
   );
 };
 
-export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick }) {
+export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange }) {
     const [showRankingModal, setShowRankingModal] = useState(false);
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
   const [showSubjectRankingModal, setShowSubjectRankingModal] = useState(false);
@@ -1235,7 +1235,20 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   </select>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                      <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>
-                     <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{selectedTestKey || 'Latest'}</span>
+                     {testOptions && testOptions.length > 0 && typeof onTestKeyChange === 'function' ? (
+                       <select 
+                         value={selectedTestKey || ''} 
+                         onChange={e => onTestKeyChange(e.target.value)}
+                         style={{ fontWeight: 800, color: '#1e293b', fontSize: 13, background: 'transparent', border: 'none', outline: 'none', appearance: 'none', cursor: 'pointer', paddingRight: 4 }}
+                       >
+                         <option value="" disabled style={{display:'none'}}>{selectedTestKey === 'Multiple Tests' ? 'Multiple Tests' : 'Latest'}</option>
+                         {testOptions.filter(t => t !== 'ALL_FMT').map(t => (
+                           <option key={t} value={t}>{t}</option>
+                         ))}
+                       </select>
+                     ) : (
+                       <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{selectedTestKey || 'Latest'}</span>
+                     )}
                      <span style={{ fontSize: 10, color: '#94a3b8' }}>▼</span>
                   </div>
                 </div>
