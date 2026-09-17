@@ -22,10 +22,14 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
   const colors = subjectColor();
 
   const renderPill = (item, type) => {
-    const label = isCenter
-      ? `${item.topic} (${item.percentage}%)`
-      : item;
-    const key   = isCenter ? item.topic : item;
+    const isString = typeof item === 'string';
+    let label = item;
+    let key = item;
+    
+    if (!isString) {
+      label = isCenter && item.percentage ? `${item.topic} (${item.percentage}%)` : item.topic;
+      key = item.topic;
+    }
 
     let pillStyle = {
       display:      'inline-flex',
