@@ -9,7 +9,7 @@ import {
   fetchStudentData,
   fetchStudentChart,
   fetchTestInsights,
-  buildStudentChartData,
+  buildStudentChartData, sortTestRowsChronologically,
   computeWeakSubject,
   getStreamConfig,
   getExamResult,
@@ -138,7 +138,7 @@ export default function StudentDashboard() {
 
   // Prefer backend chart; fallback to local computation
   const chartData = useMemo(() => {
-    const rawRows = chart?.chartData ?? buildStudentChartData(studentTests, testColumns);
+    const rawRows = chart?.chartData ? sortTestRowsChronologically([...chart.chartData]) : buildStudentChartData(studentTests, testColumns);
 
     const toNum = (v) => {
       const n = Number(v);

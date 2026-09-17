@@ -4,7 +4,7 @@ import { Download, Loader2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl, fetchStudentChart, buildStudentChartData, getStreamConfig, computeWeakSubject, getMaxMarksForSubject } from '../services/dataService';
+import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl, fetchStudentChart, buildStudentChartData, sortTestRowsChronologically, getStreamConfig, computeWeakSubject, getMaxMarksForSubject } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import StudentReportCard from './StudentReportCard';
 import PerformanceChart from './PerformanceChart';
@@ -122,7 +122,7 @@ const actualChart = prefetchedChart || chart;
   const actualWeakTopics = prefetchedWeakTopics || overallWeakTopicsData;
   
   const chartData = useMemo(() => {
-    const rawRows = actualChart?.chartData ?? buildStudentChartData(studentTests, testColumns);
+    const rawRows = actualChart?.chartData ? sortTestRowsChronologically([...actualChart.chartData]) : buildStudentChartData(studentTests, testColumns);
     console.log('chartData rawRows:', rawRows);
 
     const toNum = (v) => {
