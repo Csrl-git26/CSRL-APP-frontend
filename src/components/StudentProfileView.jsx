@@ -356,21 +356,41 @@ const actualChart = prefetchedChart || chart;
               <div style={{ fontSize: 11, fontWeight: 700, color: '#9d174d', textTransform: 'uppercase', marginBottom: 4 }}>By Accuracy (Weakest)</div>
               <div style={{ fontWeight: 700, fontSize: 15, color: '#831843' }}>
                 {(() => {
-                  if (!overallWeakTopicsData || !overallWeakTopicsData.subjectWise) return 'Loading...';
-                  const weakest = [];
-                  const subjectWise = overallWeakTopicsData.subjectWise;
-                  Object.keys(subjectWise).forEach(sub => {
-                    const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
-                    if (subjectWise[sub]?.weak?.length > 0) weakest.push(formatSub === 'Mathematics' ? 'Math' : formatSub);
-                  });
-                  if (weakest.length === 0) {
-                    Object.keys(subjectWise).forEach(sub => {
-                      const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
-                      if (subjectWise[sub]?.moderate?.length > 0) weakest.push(`${formatSub === 'Mathematics' ? 'Math' : formatSub} (Medium)`);
-                    });
-                  }
-                  return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
-                })()}
+if (!overallWeakTopicsData || !overallWeakTopicsData.subjectWise) return 'Loading...';
+const subjectWise = overallWeakTopicsData.subjectWise;
+
+let maxCount = 0;
+let weakestSub = null;
+
+// 1. Find subject with highest number of weak topics
+Object.keys(subjectWise).forEach(sub => {
+const count = subjectWise[sub]?.weak?.length || 0;
+if (count > maxCount) {
+maxCount = count;
+weakestSub = sub;
+}
+});
+
+// 2. If no weak topics, find subject with highest number of moderate topics
+let isMed = false;
+if (!weakestSub) {
+Object.keys(subjectWise).forEach(sub => {
+const count = subjectWise[sub]?.moderate?.length || 0;
+if (count > maxCount) {
+maxCount = count;
+weakestSub = sub;
+isMed = true;
+}
+});
+}
+
+if (!weakestSub) return 'None Flagged';
+
+let formatSub = weakestSub.charAt(0) + weakestSub.slice(1).toLowerCase();
+if (formatSub === 'Mathematics') formatSub = 'Math';
+
+return formatSub + (isMed ? ' (Med)' : '');
+})()}
               </div>
             </div>
           </div>

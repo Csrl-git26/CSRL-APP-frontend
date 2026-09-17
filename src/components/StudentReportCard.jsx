@@ -62,21 +62,41 @@ export default function StudentReportCard({
             </h3>
             <InfoRow label="By Avg Score" value={weakSubject || 'N/A'} />
             <InfoRow label="By Accuracy" value={(() => {
-              if (!overallWeakTopicsData || !overallWeakTopicsData.subjectWise) return 'N/A';
-              const weakest = [];
-              const subjectWise = overallWeakTopicsData.subjectWise;
-              Object.keys(subjectWise).forEach(sub => {
-                const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
-                if (subjectWise[sub]?.weak?.length > 0) weakest.push(formatSub);
-              });
-              if (weakest.length === 0) {
-                Object.keys(subjectWise).forEach(sub => {
-                  const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
-                  if (subjectWise[sub]?.moderate?.length > 0) weakest.push(`${formatSub} (Med)`);
-                });
-              }
-              return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
-            })()} />
+if (!overallWeakTopicsData || !overallWeakTopicsData.subjectWise) return 'N/A';
+const subjectWise = overallWeakTopicsData.subjectWise;
+
+let maxCount = 0;
+let weakestSub = null;
+
+// 1. Find subject with highest number of weak topics
+Object.keys(subjectWise).forEach(sub => {
+const count = subjectWise[sub]?.weak?.length || 0;
+if (count > maxCount) {
+maxCount = count;
+weakestSub = sub;
+}
+});
+
+// 2. If no weak topics, find subject with highest number of moderate topics
+let isMed = false;
+if (!weakestSub) {
+Object.keys(subjectWise).forEach(sub => {
+const count = subjectWise[sub]?.moderate?.length || 0;
+if (count > maxCount) {
+maxCount = count;
+weakestSub = sub;
+isMed = true;
+}
+});
+}
+
+if (!weakestSub) return 'None Flagged';
+
+let formatSub = weakestSub.charAt(0) + weakestSub.slice(1).toLowerCase();
+if (formatSub === 'Mathematics') formatSub = 'Math';
+
+return formatSub + (isMed ? ' (Med)' : '');
+})()} />
           </div>
       </div>
 
