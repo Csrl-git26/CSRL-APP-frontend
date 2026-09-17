@@ -62,14 +62,17 @@ export default function StudentReportCard({
             </h3>
             <InfoRow label="By Avg Score" value={weakSubject || 'N/A'} />
             <InfoRow label="By Accuracy" value={(() => {
-              if (!overallWeakSubjects) return 'N/A';
+              if (!overallWeakTopicsData || !overallWeakTopicsData.subjectWise) return 'N/A';
               const weakest = [];
-              Object.keys(overallWeakSubjects).forEach(sub => {
-                if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub);
+              const subjectWise = overallWeakTopicsData.subjectWise;
+              Object.keys(subjectWise).forEach(sub => {
+                const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
+                if (subjectWise[sub]?.weak?.length > 0) weakest.push(formatSub);
               });
               if (weakest.length === 0) {
-                Object.keys(overallWeakSubjects).forEach(sub => {
-                  if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub} (Med)`);
+                Object.keys(subjectWise).forEach(sub => {
+                  const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
+                  if (subjectWise[sub]?.moderate?.length > 0) weakest.push(`${formatSub} (Med)`);
                 });
               }
               return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';

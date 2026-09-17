@@ -356,14 +356,17 @@ const actualChart = prefetchedChart || chart;
               <div style={{ fontSize: 11, fontWeight: 700, color: '#9d174d', textTransform: 'uppercase', marginBottom: 4 }}>By Accuracy (Weakest)</div>
               <div style={{ fontWeight: 700, fontSize: 15, color: '#831843' }}>
                 {(() => {
-                  if (!overallWeakSubjects) return 'Loading...';
+                  if (!overallWeakTopicsData || !overallWeakTopicsData.subjectWise) return 'Loading...';
                   const weakest = [];
-                  Object.keys(overallWeakSubjects).forEach(sub => {
-                    if (overallWeakSubjects[sub]?.strongWeak?.length > 0) weakest.push(sub === 'Mathematics' ? 'Math' : sub);
+                  const subjectWise = overallWeakTopicsData.subjectWise;
+                  Object.keys(subjectWise).forEach(sub => {
+                    const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
+                    if (subjectWise[sub]?.weak?.length > 0) weakest.push(formatSub === 'Mathematics' ? 'Math' : formatSub);
                   });
                   if (weakest.length === 0) {
-                    Object.keys(overallWeakSubjects).forEach(sub => {
-                      if (overallWeakSubjects[sub]?.mediumWeak?.length > 0) weakest.push(`${sub === 'Mathematics' ? 'Math' : sub} (Medium)`);
+                    Object.keys(subjectWise).forEach(sub => {
+                      const formatSub = sub.charAt(0) + sub.slice(1).toLowerCase();
+                      if (subjectWise[sub]?.moderate?.length > 0) weakest.push(`${formatSub === 'Mathematics' ? 'Math' : formatSub} (Medium)`);
                     });
                   }
                   return weakest.length > 0 ? weakest.join(', ') : 'None Flagged';
