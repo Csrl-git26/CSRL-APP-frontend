@@ -480,7 +480,7 @@ return formatSub + (isMed ? ' (Med)' : '');
             </tr>
           </thead>
           <tbody>
-            {chartData.map((row) => {
+            {[...chartData].reverse().map((row) => {
               const subScores = subjects.map((s) => {
                 const mark = row[s];
                 const attempted = row[`${s}_Attempted`];
