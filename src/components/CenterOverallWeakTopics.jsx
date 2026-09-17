@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { getCenterOverallWeakTopics } from '../services/weakTopicApi';
+import WeakTopicCard from './WeakTopicCard';
 
 const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 
@@ -38,7 +39,7 @@ export default function CenterOverallWeakTopics({ centerId }) {
     );
   }
 
-  const isEmpty = !data || !data.overallWeakTopics || Object.keys(data).length === 0;
+  const isEmpty = !data || !data.subjectWise || Object.keys(data).length === 0;
 
   if (isEmpty) {
     return (
@@ -58,112 +59,48 @@ export default function CenterOverallWeakTopics({ centerId }) {
     );
   }
 
-  const renderPill = (entry, type) => {
-    const isStrong = type === 'strong';
-    const pillStyle = isStrong
-      ? {
-          display: 'inline-flex', flexDirection: 'column', padding: '6px 12px',
-          borderRadius: 8, background: '#fdecea', border: '1px solid #f5a5a5',
-          margin: '4px 6px 4px 0'
-        }
-      : {
-          display: 'inline-flex', flexDirection: 'column', padding: '6px 12px',
-          borderRadius: 8, background: '#fff8e1', border: '1px solid #fcd5a0',
-          margin: '4px 6px 4px 0'
-        };
-
-    const titleColor = isStrong ? '#c0392b' : '#b45309';
-
-    return (
-      <span key={entry.topic} style={pillStyle}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: titleColor }}>{entry.topic}</span>
-        <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-600)', marginTop: 2 }}>
-          {entry.avgWeakPercentage}% avg students affected
-        </span>
-        <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-500)', marginTop: 2 }}>
-          ({entry.strongWeakCount + entry.mediumWeakCount} / {entry.testedCount} tests)
-        </span>
-      </span>
-    );
-  };
-
-  const subjectColor = (subject) => {
-    const map = {
-      Physics:     { bg: '#e8f0fc', color: '#1a4fa0', border: '#bbd0f8' },
-      Chemistry:   { bg: '#fff3e0', color: '#b45309', border: '#fcd5a0' },
-      Mathematics: { bg: '#e6f5ed', color: '#1a6e3b', border: '#a8dfc0' },
-    };
-    return map[subject] || { bg: '#f5f5f5', color: '#333', border: '#ddd' };
-  };
-
-  const firstTest = data.testsIncluded[0];
-  const lastTest = data.testsIncluded[data.testsIncluded.length - 1];
+  const firstTest = data.testsIncluded && data.testsIncluded.length > 0 ? data.testsIncluded[0] : 'N/A';
+  const lastTest = data.testsIncluded && data.testsIncluded.length > 0 ? data.testsIncluded[data.testsIncluded.length - 1] : 'N/A';
 
   return (
     <div className="card" style={{ marginTop: 20 }}>
-      {/* Header section */}
       <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--gray-200)' }}>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--gray-800)' }}>
-          Center Overall Weak Topics
+          Center Overall Topic Performance
         </h3>
         <p style={{ margin: '4px 0 0 0', fontSize: 13, color: 'var(--gray-500)' }}>
-          Based on {data.totalTests} tests ({firstTest} to {lastTest})
+          Based on {data.totalTests} tests ({firstTest} to {lastTest}) • {data.studentCount || 0} students max
         </p>
       </div>
+      
+      <div style={{ padding: '16px 24px 0', display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#27ae60', display: 'inline-block' }} />
+          <strong style={{ color: '#27ae60' }}>Strong</strong>
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#f39c12', display: 'inline-block' }} />
+          <strong style={{ color: '#f39c12' }}>Moderate</strong>
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#c0392b', display: 'inline-block' }} />
+          <strong style={{ color: '#c0392b' }}>Weak</strong>
+        </span>
+      </div>
 
-      <div style={{ padding: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+      <div style={{ padding: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
         {SUBJECTS.map((subject) => {
-          const subjData = data.overallWeakTopics[subject];
-          if (!subjData) return null;
-          if (!subjData.strongWeak.length && !subjData.mediumWeak.length) return null;
-
-          const colors = subjectColor(subject);
-
+          const subjectKey = subject.toUpperCase();
+          const subData = data.subjectWise ? (data.subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] }) : { strong: [], moderate: [], weak: [] };
           return (
-            <div key={subject} style={{
-              border: `1px solid ${colors.border}`,
-              borderRadius: 10,
-              padding: '14px 16px',
-              background: '#fff',
-            }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, paddingBottom: 8,
-                borderBottom: `2px solid ${colors.border}`,
-              }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: colors.color, flexShrink: 0 }} />
-                <span style={{ fontWeight: 700, fontSize: 14, color: colors.color }}>
-                  {subject}
-                </span>
-              </div>
-
-              {subjData.strongWeak.length > 0 && (
-                <div style={{ marginBottom: subjData.mediumWeak.length ? 14 : 0 }}>
-                  <div style={{
-                    fontSize: 11, fontWeight: 700, color: '#c0392b',
-                    textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
-                  }}>
-                    🔴 Weakest
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {subjData.strongWeak.map((entry) => renderPill(entry, 'strong'))}
-                  </div>
-                </div>
-              )}
-
-              {subjData.mediumWeak.length > 0 && (
-                <div>
-                  <div style={{
-                    fontSize: 11, fontWeight: 700, color: '#b45309',
-                    textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
-                  }}>
-                    🟡 Weak
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {subjData.mediumWeak.map((entry) => renderPill(entry, 'medium'))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <WeakTopicCard
+              key={subject}
+              subject={subject}
+              strongTopics={subData.strong || []}
+              moderateTopics={subData.moderate || []}
+              weakTopics={subData.weak || []}
+              isCenter={true}
+            />
           );
         })}
       </div>
