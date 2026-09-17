@@ -83,7 +83,7 @@ export default function CenterWeakTopics({ centerId, activeTestKey }) {
   const testList    = results.map((r) => r.testId);
   const resolvedTest = activeTestKey || selectedTest;
   const currentDoc  = results.find((r) => r.testId === resolvedTest);
-  const weakTopics  = currentDoc?.weakTopics || {};
+  const subjectWise  = currentDoc?.subjectWise || {};
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -152,13 +152,14 @@ export default function CenterWeakTopics({ centerId, activeTestKey }) {
       {currentDoc ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
           {SUBJECTS.map((subject) => {
-            const subData = weakTopics[subject] || { strongWeak: [], mediumWeak: [] };
+            const subjectKey = subject.toUpperCase();
+            const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
             return (
               <WeakTopicCard
                 key={subject}
                 subject={subject}
-                strongWeak={subData.strongWeak || []}
-                mediumWeak={subData.mediumWeak || []}
+                strongWeak={subData.weak || []}
+                mediumWeak={subData.moderate || []}
                 isCenter={true}
               />
             );
