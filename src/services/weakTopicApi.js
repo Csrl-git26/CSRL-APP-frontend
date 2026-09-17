@@ -148,29 +148,3 @@ export async function clearRawMarksApi(testId = null) {
   const res = await fetch(url, { method: 'DELETE', headers: authHeaders() });
   return handleResponse(res);
 }
-
-/**
- * uploadTopicMap — upload a standalone topic mapping CSV
- */
-export async function uploadTopicMap(formData) {
-  clearWeakTopicsFrontendCache();
-  const res = await fetch(`${BASE}/api/admin/weak-topics/upload-topic-map`, {
-    method:  'POST',
-    headers: authHeaders(),
-    body:    formData,
-  });
-  return handleResponse(res);
-}
-
-/**
- * uploadMarksSheet — upload a marks-only CSV (requires Topic Map to be uploaded first)
- */
-export async function uploadMarksSheet(formData) {
-  clearWeakTopicsFrontendCache();
-  const res = await fetch(`${BASE}/api/admin/weak-topics/upload-marks-sheet`, {
-    method:  'POST',
-    headers: authHeaders(),
-    body:    formData,
-  });
-  return handleResponse(res);
-}
