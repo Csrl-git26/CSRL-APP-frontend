@@ -158,8 +158,9 @@ export default function CenterWeakTopics({ centerId, activeTestKey }) {
               <WeakTopicCard
                 key={subject}
                 subject={subject}
-                strongWeak={subData.weak || []}
-                mediumWeak={subData.moderate || []}
+                strongTopics={subData.strong || []}
+                moderateTopics={subData.moderate || []}
+                weakTopics={subData.weak || []}
                 isCenter={true}
               />
             );

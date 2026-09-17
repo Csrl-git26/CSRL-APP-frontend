@@ -1,13 +1,14 @@
 // WeakTopicCard.jsx
-// Displays strong/weak topic pills for one subject.
+// Displays strong/moderate/weak topic pills for one subject.
 // Props:
-//   subject    — "Physics" | "Chemistry" | "Mathematics"
-//   strongWeak — string[] (student view) or {topic,count,percentage}[] (center view)
-//   mediumWeak — same
-//   isCenter   — boolean: center view vs student view
+//   subject        — "Physics" | "Chemistry" | "Mathematics"
+//   strongTopics   — string[] (student view) or {topic,count,percentage}[] (center view)
+//   moderateTopics — same
+//   weakTopics     — same
+//   isCenter       — boolean: center view vs student view
 
-export default function WeakTopicCard({ subject, strongWeak = [], mediumWeak = [], isCenter = false }) {
-  const isEmpty = !strongWeak.length && !mediumWeak.length;
+export default function WeakTopicCard({ subject, strongTopics = [], moderateTopics = [], weakTopics = [], isCenter = false }) {
+  const isEmpty = !strongTopics.length && !moderateTopics.length && !weakTopics.length;
 
   const subjectColor = () => {
     const map = {
@@ -26,31 +27,23 @@ export default function WeakTopicCard({ subject, strongWeak = [], mediumWeak = [
       : item;
     const key   = isCenter ? item.topic : item;
 
-    const pillStyle = type === 'strong'
-      ? {
-          display:      'inline-flex',
-          alignItems:   'center',
-          padding:      '4px 10px',
-          borderRadius: 999,
-          fontSize:     12,
-          fontWeight:   600,
-          background:   '#fdecea',
-          color:        '#c0392b',
-          border:       '1px solid #f5a5a5',
-          margin:       '3px 4px 3px 0',
-        }
-      : {
-          display:      'inline-flex',
-          alignItems:   'center',
-          padding:      '4px 10px',
-          borderRadius: 999,
-          fontSize:     12,
-          fontWeight:   600,
-          background:   '#fff8e1',
-          color:        '#b45309',
-          border:       '1px solid #fcd5a0',
-          margin:       '3px 4px 3px 0',
-        };
+    let pillStyle = {
+      display:      'inline-flex',
+      alignItems:   'center',
+      padding:      '4px 10px',
+      borderRadius: 999,
+      fontSize:     12,
+      fontWeight:   600,
+      margin:       '3px 4px 3px 0',
+    };
+
+    if (type === 'weak') {
+      pillStyle = { ...pillStyle, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5' };
+    } else if (type === 'moderate') {
+      pillStyle = { ...pillStyle, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0' };
+    } else if (type === 'strong') {
+      pillStyle = { ...pillStyle, background: '#e8f5e9', color: '#2e7d32', border: '1px solid #a5d6a7' };
+    }
 
     return (
       <span key={key} style={pillStyle}>
@@ -89,31 +82,31 @@ export default function WeakTopicCard({ subject, strongWeak = [], mediumWeak = [
 
       {isEmpty ? (
         <p style={{ color: 'var(--gray-400)', fontSize: 13, margin: 0 }}>
-          No weak topics
+          No topics evaluated
         </p>
       ) : (
-        <>
-          {/* Strong Weak */}
-          {strongWeak.length > 0 && (
-            <div style={{ marginBottom: mediumWeak.length ? 10 : 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* Strong */}
+          {strongTopics.length > 0 && (
+            <div>
               <div style={{
                 fontSize:     11,
                 fontWeight:   700,
-                color:        '#c0392b',
+                color:        '#2e7d32',
                 textTransform:'uppercase',
                 letterSpacing:0.5,
                 marginBottom: 6,
               }}>
-                🔴 Weakest
+                🟢 Strong
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {strongWeak.map((item) => renderPill(item, 'strong'))}
+                {strongTopics.map((item) => renderPill(item, 'strong'))}
               </div>
             </div>
           )}
 
-          {/* Medium Weak */}
-          {mediumWeak.length > 0 && (
+          {/* Moderate */}
+          {moderateTopics.length > 0 && (
             <div>
               <div style={{
                 fontSize:     11,
@@ -123,14 +116,33 @@ export default function WeakTopicCard({ subject, strongWeak = [], mediumWeak = [
                 letterSpacing:0.5,
                 marginBottom: 6,
               }}>
-                🟡 Weak
+                🟡 Moderate
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {mediumWeak.map((item) => renderPill(item, 'medium'))}
+                {moderateTopics.map((item) => renderPill(item, 'moderate'))}
               </div>
             </div>
           )}
-        </>
+
+          {/* Weak */}
+          {weakTopics.length > 0 && (
+            <div>
+              <div style={{
+                fontSize:     11,
+                fontWeight:   700,
+                color:        '#c0392b',
+                textTransform:'uppercase',
+                letterSpacing:0.5,
+                marginBottom: 6,
+              }}>
+                🔴 Weak
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {weakTopics.map((item) => renderPill(item, 'weak'))}
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

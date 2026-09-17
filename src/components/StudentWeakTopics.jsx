@@ -134,8 +134,9 @@ export default function StudentWeakTopics({ studentId, activeTestKey }) {
               <WeakTopicCard
                 key={subject}
                 subject={subject}
-                strongWeak={subData.weak || []}
-                mediumWeak={subData.moderate || []}
+                strongTopics={subData.strong || []}
+                moderateTopics={subData.moderate || []}
+                weakTopics={subData.weak || []}
                 isCenter={false}
               />
             );
