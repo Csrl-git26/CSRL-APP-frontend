@@ -34,7 +34,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
             </tr>
           </thead>
           <tbody>
-            {chartData.map((row) => {
+            {[...chartData].reverse().map((row) => {
               const subScores = subjects.map((s) => {
                 const mark = row[s];
                 const attempted = row[`${s}_Attempted`];
