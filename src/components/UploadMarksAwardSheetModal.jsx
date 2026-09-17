@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Upload, FileText, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
-import { uploadTestSheet } from '../services/weakTopicApi';
+import { uploadTestSheet, uploadTopicMap, uploadMarksSheet } from '../services/weakTopicApi';
 
 export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }) {
   const [testId, setTestId] = useState('');
+  const [uploadType, setUploadType] = useState('marks'); // 'topic' or 'marks'
   
   // Single upload state
   const [file, setFile] = useState(null);
@@ -40,7 +41,12 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
     formData.append('file', file);
 
     try {
-      const res = await uploadTestSheet(formData);
+      let res;
+      if (uploadType === 'topic') {
+        res = await uploadTopicMap(formData);
+      } else {
+        res = await uploadMarksSheet(formData);
+      }
       if (res.success) {
         setStatus('success');
         if (res.warnings && res.warnings.length > 0) {
@@ -75,7 +81,18 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
         
         <div className="modal-body">
           <div style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 20 }}>
-            Upload a single unified CSV test sheet (combining headers, topics, answer key, and student marks) to compute center and student weak subjects.
+            Step 1: Upload the Topic Mapping CSV. Step 2: Upload the Marks Awarded CSV. You must upload the Topic Map before the Marks Sheet.
+          </div>
+
+          <div style={{ marginBottom: 20, display: 'flex', gap: '20px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}>
+              <input type="radio" name="uploadType" checked={uploadType === 'topic'} onChange={() => { setUploadType('topic'); setFile(null); setStatus('idle'); }} />
+              1. Topic Mapping CSV
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}>
+              <input type="radio" name="uploadType" checked={uploadType === 'marks'} onChange={() => { setUploadType('marks'); setFile(null); setStatus('idle'); }} />
+              2. Marks Awarded CSV
+            </label>
           </div>
 
           <div style={{ marginBottom: 20 }}>
@@ -134,7 +151,7 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
                 </div>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--gray-800)' }}>Select Test Sheet CSV</div>
-                  <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>Row 1=Headers, Row 2=Topics, Row 3=Answers, Row 4+=Marks</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>{uploadType === 'topic' ? 'Format: Question, Topic, Subject' : 'Format: Location, Roll No, Name, Q1, Q2...'}</div>
                 </div>
                 <label className="button button-outline" style={{ cursor: 'pointer', marginTop: 8 }}>
                   Browse File
