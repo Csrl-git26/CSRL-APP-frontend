@@ -429,7 +429,17 @@ export function getExamResult(profile) {
 export function buildStudentChartData(studentTests, testColumns) {
   const testsMap = {};
 
-  (testColumns || []).forEach((col) => {
+  // Filter out cross-stream tests (e.g. NEET tests for JEE students)
+  const studentStream = ((studentTests && studentTests.stream) || 'JEE').toUpperCase();
+  const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+  const relevantColumns = (testColumns || []).filter((col) => {
+    const { testName } = parseTestColumn(col);
+    const isNeetTest = NEET_TEST_PREFIX.test(testName);
+    if (studentStream === 'NEET') return true;
+    return !isNeetTest;
+  });
+
+  relevantColumns.forEach((col) => {
     const { subject, testName, isTotal } = parseTestColumn(col);
     if (!testsMap[testName]) testsMap[testName] = { name: testName };
 
