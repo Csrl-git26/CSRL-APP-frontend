@@ -2,7 +2,7 @@
 // Displays strong/moderate/weak topic pills for one subject.
 // Props:
 //   subject        — "Physics" | "Chemistry" | "Mathematics"
-//   strongTopics   — string[] (student view) or {topic,count,percentage}[] (center view)
+//   strongTopics   — {topic,ar,acc}[] or string[] (legacy)
 //   moderateTopics — same
 //   weakTopics     — same
 //   isCenter       — boolean: center view vs student view
@@ -21,15 +21,24 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
 
   const colors = subjectColor();
 
-  const renderPill = (item, type) => {
-    const isString = typeof item === 'string';
-    let label = item;
-    let key = item;
-    
-    if (!isString) {
-      label = isCenter && item.percentage ? `${item.topic} (${item.percentage}%)` : item.topic;
-      key = item.topic;
+  // Build label from topic item (object with {topic,ar,acc} or legacy string)
+  const getTopicLabel = (item) => {
+    if (typeof item === 'string') return { key: item, name: item, meta: null };
+    const name = item.topic || '';
+    const key  = name;
+    // Show AT./AC. if we have them (new format)
+    if (item.ar !== undefined && item.acc !== undefined) {
+      return { key, name, meta: `AT.-${item.ar}% | AC.-${item.acc}%` };
     }
+    // Legacy center format with percentage
+    if (item.percentage !== undefined) {
+      return { key, name, meta: `${item.percentage}%` };
+    }
+    return { key, name, meta: null };
+  };
+
+  const renderPill = (item, type) => {
+    const { key, name, meta } = getTopicLabel(item);
 
     let pillStyle = {
       display:      'inline-flex',
@@ -50,8 +59,19 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
     }
 
     return (
-      <span key={key} style={pillStyle}>
-        {label}
+      <span key={key} style={pillStyle} title={meta || name}>
+        {name}
+        {meta && (
+          <span style={{
+            marginLeft: 5,
+            fontSize: 10,
+            fontWeight: 500,
+            opacity: 0.8,
+            whiteSpace: 'nowrap',
+          }}>
+            ({meta})
+          </span>
+        )}
       </span>
     );
   };

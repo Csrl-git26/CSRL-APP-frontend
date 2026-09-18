@@ -76,7 +76,7 @@ export default function StudentOverallWeakTopics({ studentId }) {
         </p>
       </div>
       
-      <div style={{ padding: '16px 24px 0', display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12 }}>
+      <div style={{ padding: '16px 24px 0', display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12, alignItems: 'center' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
           <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#27ae60', display: 'inline-block' }} />
           <strong style={{ color: '#27ae60' }}>Strong</strong>
@@ -88,6 +88,9 @@ export default function StudentOverallWeakTopics({ studentId }) {
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
           <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#c0392b', display: 'inline-block' }} />
           <strong style={{ color: '#c0392b' }}>Weak</strong>
+        </span>
+        <span style={{ marginLeft: 'auto', color: 'var(--gray-400)', fontSize: 11, fontStyle: 'italic' }}>
+          AT. = Attempted %, AC. = Accuracy %
         </span>
       </div>
 
