@@ -126,22 +126,41 @@ export default function StudentWeakTopics({ studentId, activeTestKey }) {
 
       {/* Subject cards */}
       {currentDoc ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-          {SUBJECTS.map((subject) => {
-            const subjectKey = subject.toUpperCase();
-            const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
-            return (
-              <WeakTopicCard
-                key={subject}
-                subject={subject}
-                strongTopics={subData.strong || []}
-                moderateTopics={subData.moderate || []}
-                weakTopics={subData.weak || []}
-                isCenter={false}
-              />
-            );
-          })}
-        </div>
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
+            {SUBJECTS.map((subject) => {
+              const subjectKey = subject.toUpperCase();
+              const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
+              return (
+                <WeakTopicCard
+                  key={subject}
+                  subject={subject}
+                  strongTopics={subData.strong || []}
+                  moderateTopics={subData.moderate || []}
+                  weakTopics={subData.weak || []}
+                  isCenter={false}
+                />
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12, alignItems: 'center', marginTop: 10 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#27ae60', display: 'inline-block' }} />
+              <strong style={{ color: '#27ae60' }}>Strong</strong>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#f39c12', display: 'inline-block' }} />
+              <strong style={{ color: '#f39c12' }}>Moderate</strong>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#c0392b', display: 'inline-block' }} />
+              <strong style={{ color: '#c0392b' }}>Weak</strong>
+            </span>
+            <span style={{ marginLeft: 'auto', color: 'var(--gray-400)', fontSize: 11, fontStyle: 'italic' }}>
+              AT. = Attempted %, AC. = Accuracy %
+            </span>
+          </div>
+        </>
       ) : (
         <div style={{ color: 'var(--gray-400)', padding: 20, textAlign: 'center' }}>
           No data for selected test.
