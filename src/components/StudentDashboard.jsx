@@ -453,7 +453,7 @@ return formatSub + (isMed ? ' (Med)' : '');
         </div>
       </div>
 
-      <StudentOverallWeakTopics studentId={auth.id} />
+      <StudentOverallWeakTopics studentId={auth.id} stream={stream} />
     </div>
   );
 
@@ -655,7 +655,7 @@ return formatSub + (isMed ? ' (Med)' : '');
       
       <div className="card" style={{ paddingBottom: 16 }}>
         <div className="section-title">Weak Topics</div>
-        <StudentWeakTopics studentId={auth.id} />
+        <StudentWeakTopics studentId={auth.id} stream={stream} />
       </div>
     </div>
   );

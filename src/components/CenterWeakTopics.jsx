@@ -8,9 +8,8 @@ import { Loader2, AlertTriangle, Users } from 'lucide-react';
 import { getCenterWeakTopics } from '../services/weakTopicApi';
 import WeakTopicCard from './WeakTopicCard';
 
-const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 
-export default function CenterWeakTopics({ centerId, activeTestKey }) {
+export default function CenterWeakTopics({ centerId, activeTestKey, stream = 'JEE' }) {
   const [results,      setResults]      = useState([]); // array of CenterWeakTopics docs
   const [selectedTest, setSelectedTest] = useState('');
   const [loading,      setLoading]      = useState(true);
@@ -151,7 +150,7 @@ export default function CenterWeakTopics({ centerId, activeTestKey }) {
       {/* Subject cards */}
       {currentDoc ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-          {SUBJECTS.map((subject) => {
+          {(stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics']).map((subject) => {
             const subjectKey = subject.toUpperCase();
             const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
             return (

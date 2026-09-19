@@ -7,7 +7,7 @@ import { Eye, Trash2 } from 'lucide-react';
 import CenterWeakTopics from './CenterWeakTopics';
 import { clearWeakTopicsApi, recomputeAllTopicsApi } from '../services/weakTopicApi';
 
-export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
+export default function AdminWeakTopics({ centersList = [], selectedTestKey, stream = 'JEE' }) {
   const [viewCenterId, setViewCenterId] = useState('');
   const [clearing, setClearing] = useState(false);
   const [recomputing, setRecomputing] = useState(false);
@@ -137,7 +137,7 @@ export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
         </div>
 
         {viewCenterId ? (
-          <CenterWeakTopics centerId={viewCenterId} activeTestKey={selectedTestKey} />
+          <CenterWeakTopics centerId={viewCenterId} activeTestKey={selectedTestKey} stream={stream} />
         ) : (
           <div style={{
             padding:      24,

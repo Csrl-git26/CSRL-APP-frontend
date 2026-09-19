@@ -7,9 +7,8 @@ import { Loader2, AlertTriangle } from 'lucide-react';
 import { getStudentWeakTopics } from '../services/weakTopicApi';
 import WeakTopicCard from './WeakTopicCard';
 
-const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 
-export default function StudentWeakTopics({ studentId, activeTestKey }) {
+export default function StudentWeakTopics({ studentId, activeTestKey, stream = 'JEE' }) {
   const [results,      setResults]      = useState([]);  // array of StudentWeakTopics docs
   const [selectedTest, setSelectedTest] = useState('');
   const [loading,      setLoading]      = useState(true);
@@ -128,7 +127,7 @@ export default function StudentWeakTopics({ studentId, activeTestKey }) {
       {currentDoc ? (
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-            {SUBJECTS.map((subject) => {
+            {(stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics']).map((subject) => {
               const subjectKey = subject.toUpperCase();
               const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
               return (

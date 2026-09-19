@@ -1330,7 +1330,7 @@ export default function AdminDashboard() {
         </div>
         
         <div style={{ marginTop: '24px' }}>
-          <AdminWeakTopics centersList={centersList} selectedTestKey={selectedTestKey} />
+          <AdminWeakTopics centersList={centersList} selectedTestKey={selectedTestKey} stream={globalStream} />
         </div>
       </div>
     );

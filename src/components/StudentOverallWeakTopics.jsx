@@ -3,9 +3,8 @@ import { Loader2 } from 'lucide-react';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
 import WeakTopicCard from './WeakTopicCard';
 
-const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 
-export default function StudentOverallWeakTopics({ studentId }) {
+export default function StudentOverallWeakTopics({ studentId, stream = 'JEE' }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -95,7 +94,7 @@ export default function StudentOverallWeakTopics({ studentId }) {
       </div>
 
       <div style={{ padding: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-        {SUBJECTS.map((subject) => {
+        {(stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics']).map((subject) => {
           const subjectKey = subject.toUpperCase();
           const subData = data.subjectWise ? (data.subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] }) : { strong: [], moderate: [], weak: [] };
           return (

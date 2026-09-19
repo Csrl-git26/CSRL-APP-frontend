@@ -616,11 +616,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         </div>
 
         <div style={{ marginTop: '24px' }}>
-          <CenterOverallWeakTopics centerId={selectedCenterCode} />
+          <CenterOverallWeakTopics centerId={selectedCenterCode} stream={activeCenter?.stream} />
         </div>
         
         <div style={{ marginTop: '24px' }}>
-          <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} />
+          <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} stream={activeCenter?.stream} />
         </div>
       </div>
     );
