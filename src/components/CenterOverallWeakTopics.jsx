@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { getCenterOverallWeakTopics } from '../services/weakTopicApi';
 import WeakTopicCard from './WeakTopicCard';
+import { topicRateLabel } from './topicRateLabel';
 
 const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
 
@@ -71,6 +72,9 @@ export default function CenterOverallWeakTopics({ centerId }) {
         <p style={{ margin: '4px 0 0 0', fontSize: 13, color: 'var(--gray-500)' }}>
           Based on {data.totalTests} tests ({firstTest} to {lastTest}) • {data.studentCount || 0} students max
         </p>
+        <p style={{ margin: '6px 0 0', fontSize: 12, color: 'var(--gray-500)' }}>
+          AT. = attempted / possible questions • AC. = correct / attempted questions. Rounded to whole percentages; N/A = unavailable or no attempts.
+        </p>
       </div>
       
       <div style={{ padding: '16px 24px 0', display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12, alignItems: 'center' }}>
@@ -99,9 +103,9 @@ export default function CenterOverallWeakTopics({ centerId }) {
             <WeakTopicCard
               key={subject}
               subject={subject}
-              strongTopics={subData.strong || []}
-              moderateTopics={subData.moderate || []}
-              weakTopics={subData.weak || []}
+              strongTopics={(subData.strong || []).map(topic => topicRateLabel(topic, subjectKey, data.topicRates))}
+              moderateTopics={(subData.moderate || []).map(topic => topicRateLabel(topic, subjectKey, data.topicRates))}
+              weakTopics={(subData.weak || []).map(topic => topicRateLabel(topic, subjectKey, data.topicRates))}
               isCenter={true}
             />
           );
