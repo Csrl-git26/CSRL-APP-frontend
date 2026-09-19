@@ -403,7 +403,7 @@ return formatSub + (isMed ? ' (Med)' : '');
       <TestRecordsTable chartData={chartData} streamCfg={streamCfg} stream={stream} profile={profile} />
 
       <div style={{ marginTop: '24px' }}>
-        <StudentOverallWeakTopics studentId={profile.ROLL_KEY} stream={profile.stream} />
+        <StudentOverallWeakTopics studentId={profile.ROLL_KEY} stream={stream} />
       </div>
       
       </>

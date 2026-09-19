@@ -388,7 +388,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
   const { minSubjectAvg, weakSubjectFromPerformance } = useMemo(() => {
     if (!subjectAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
     
-    const streamCfg = getStreamConfig(activeCenter?.stream || 'JEE');
+    const streamCfg = getStreamConfig(globalStream);
     
     // Average Marks
     const minAvg = Math.min(...subjectAvgs.map((s) => s.avg));
@@ -398,7 +398,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       : `${tiedAvg.map((t) => t.subject).join(', ')} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`;
       
     return { minSubjectAvg: minAvg, weakSubjectFromPerformance: labelAvg };
-  }, [subjectAvgs, activeCenter?.stream]);
+  }, [subjectAvgs, globalStream]);
 
   // ── Render states ─────────────────────────────────────────────────────────────
 
@@ -611,16 +611,16 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
         
 
         <div style={{ marginBottom: '24px' }}>
-          <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} />
-          <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} stream={activeCenter?.stream || 'JEE'} isCentre={true} />
+          <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} />
+          <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} stream={globalStream} isCentre={true} />
         </div>
 
         <div style={{ marginTop: '24px' }}>
-          <CenterOverallWeakTopics centerId={selectedCenterCode} stream={activeCenter?.stream} />
+          <CenterOverallWeakTopics centerId={selectedCenterCode} stream={globalStream} />
         </div>
         
         <div style={{ marginTop: '24px' }}>
-          <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} stream={activeCenter?.stream} />
+          <CenterWeakTopics centerId={selectedCenterCode} activeTestKey={selectedTestKey} stream={globalStream} />
         </div>
       </div>
     );
