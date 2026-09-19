@@ -618,10 +618,15 @@ export default function AdminDashboard() {
     const seen = new Set();
     (data?.testColumns || []).forEach((col) => {
       const { subject, isTotal } = parseTestColumn(col);
-      if (!isTotal && subject !== 'Total') seen.add(subject);
+      if (!isTotal && subject !== 'Total') {
+        const lower = subject.toLowerCase();
+        if (globalStream === 'JEE' && (lower.includes('bot') || lower.includes('zoo') || lower.includes('bio'))) return;
+        if (globalStream === 'NEET' && (lower.includes('math') || lower.includes('mat'))) return;
+        seen.add(subject);
+      }
     });
     return Array.from(seen);
-  }, [data]);
+  }, [data, globalStream]);
 
   const flatMarks = useMemo(
     () => buildMarksRows(data?.profiles || [], data?.tests || [], data?.testColumns || []),
@@ -1683,7 +1688,7 @@ export default function AdminDashboard() {
               return <th key={s} title={s}>{abbr}</th>;
             })}
             <th>Total</th>
-            {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
+            {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1732,12 +1737,12 @@ export default function AdminDashboard() {
                   );
                 })}
                 <td><strong style={{ fontSize: 13, color: '#1a4fa0' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
+                {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
               </tr>
             );
           })}
           {!topRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1760,7 +1765,7 @@ export default function AdminDashboard() {
               return <th key={s} title={s}>{abbr}</th>;
             })}
             <th>Total</th>
-            {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
+            {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1808,11 +1813,11 @@ export default function AdminDashboard() {
                 );
               })}
               <td><strong style={{ fontSize: 13, color: 'var(--red)' }}>{m.marks}</strong></td>
-                {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
+                {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{m.fmtRanks?.[t] || 'Absent'}</td>)}
             </tr>
           )})}
           {!bottomRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={allSubjects.length + 5 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
