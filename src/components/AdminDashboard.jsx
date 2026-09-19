@@ -78,7 +78,7 @@ import PastYearDataTab from './PastYearDataTab';
 import InsightsDashboard from './InsightsDashboard';
 import CentreDashboard from './CentreDashboard';
 import { mapProfileToExcelRow } from './exportUtils';
-import { clearWeakTopicsApi, clearRawMarksApi } from '../services/weakTopicApi';
+import { clearWeakTopicsApi, clearRawMarksApi, recomputeAllTopicsApi } from '../services/weakTopicApi';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -365,6 +365,7 @@ function pctBar(numerator, denominator) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
+  const [recomputingTopics, setRecomputingTopics] = useState(false);
   const { activePage, setActivePage } = useOutletContext();
   const showToast = useToast();
 
@@ -1819,6 +1820,20 @@ export default function AdminDashboard() {
     </div>
   );
 
+  const handleRecomputeTopics = async () => {
+    if (!window.confirm('This will recompute AT. (Attempt Rate) and AC. (Accuracy) for all tests and overall data based on existing marks. It may take 1-2 minutes. Continue?')) return;
+    setRecomputingTopics(true);
+    try {
+      const result = await recomputeAllTopicsApi();
+      const msg = `Done! ${result.step1?.message || ''} ${result.step2?.message || ''}`.trim();
+      showToast('Recomputation complete! ' + msg, 'success');
+    } catch (e) {
+      showToast('Recomputation failed: ' + e.message, 'error');
+    } finally {
+      setRecomputingTopics(false);
+    }
+  };
+
   const handleClearWeakTopics = async () => {
     if (!window.confirm('\u26A0\uFE0F This will DELETE all weak topic data across ALL tests and ALL centres. Are you sure?')) return;
     try {
@@ -1944,6 +1959,9 @@ export default function AdminDashboard() {
           </button>
           <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)', marginLeft: 4 }} onClick={handleClearWeakTopics}>
             <Trash2 size={13} /> Clear All Weak Topic Data
+          </button>
+          <button type="button" className="btn btn-outline btn-sm" style={{ color: '#1a4fa0', borderColor: '#1a4fa0', marginLeft: 4 }} onClick={handleRecomputeTopics} disabled={recomputingTopics}>
+            <span style={{ fontSize: 13, marginRight: 4 }}>📊</span> {recomputingTopics ? 'Recomputing...' : 'Recompute AT./AC. Values'}
           </button>
         </div>
       </div>
