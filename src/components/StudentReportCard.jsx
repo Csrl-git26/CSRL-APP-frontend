@@ -224,7 +224,12 @@ return formatSub + (isMed ? ' (Med)' : '');
             {['Physics', 'Chemistry', 'Mathematics', 'Botany', 'Zoology'].map((subject) => {
               const subjKey = subject.toUpperCase();
               const subjData = overallWeakTopicsData.subjectWise[subjKey];
-              if (!subjData || (!subjData.weak.length && !subjData.moderate.length && !subjData.strong.length)) return null;
+              
+              const strongArr = Array.isArray(subjData.strong) ? subjData.strong : [];
+              const modArr = Array.isArray(subjData.moderate) ? subjData.moderate : [];
+              const weakArr = Array.isArray(subjData.weak) ? subjData.weak : [];
+              if (!subjData || (!strongArr.length && !modArr.length && !weakArr.length)) return null;
+
               
               const colors = {
                 Physics:     { bg: '#e8f0fc', color: '#1a4fa0', border: '#bbd0f8' },
@@ -242,41 +247,47 @@ return formatSub + (isMed ? ' (Med)' : '');
                     <span style={{ fontWeight: 700, fontSize: '12px', color: colors.color }}>{subject}</span>
                   </div>
                   
-                  {subjData.strong.length > 0 && (
-                    <div style={{ marginBottom: (subjData.moderate.length || subjData.weak.length) ? '6px' : '0' }}>
+                  {strongArr.length > 0 && (
+                    <div style={{ marginBottom: (modArr.length || weakArr.length) ? '6px' : '0' }}>
                       <div style={{ fontSize: '9px', fontWeight: 700, color: '#166534', textTransform: 'uppercase', marginBottom: '2px' }}>🟢 Strong</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {subjData.strong.map(topic => (
-                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', margin: '1px 3px 1px 0' }}>
-                            {topic}
+                        {strongArr.map((t, idx) => {
+                          const topicName = typeof t === 'object' && t ? (t.topic || 'Unknown') : String(t);
+                          return (
+                          <span key={idx} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', margin: '1px 3px 1px 0' }}>
+                            {topicName}
                           </span>
-                        ))}
+                        )})}
                       </div>
                     </div>
                   )}
 
-                  {subjData.moderate.length > 0 && (
-                    <div style={{ marginBottom: subjData.weak.length ? '6px' : '0' }}>
+                  {modArr.length > 0 && (
+                    <div style={{ marginBottom: weakArr.length ? '6px' : '0' }}>
                       <div style={{ fontSize: '9px', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', marginBottom: '2px' }}>🟡 Moderate</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {subjData.moderate.map(topic => (
-                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0', margin: '1px 3px 1px 0' }}>
-                            {topic}
+                        {modArr.map((t, idx) => {
+                          const topicName = typeof t === 'object' && t ? (t.topic || 'Unknown') : String(t);
+                          return (
+                          <span key={idx} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0', margin: '1px 3px 1px 0' }}>
+                            {topicName}
                           </span>
-                        ))}
+                        )})}
                       </div>
                     </div>
                   )}
 
-                  {subjData.weak.length > 0 && (
+                  {weakArr.length > 0 && (
                     <div>
                       <div style={{ fontSize: '9px', fontWeight: 700, color: '#c0392b', textTransform: 'uppercase', marginBottom: '2px' }}>🔴 Weak</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {subjData.weak.map(topic => (
-                          <span key={topic} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5', margin: '1px 3px 1px 0' }}>
-                            {topic}
+                        {weakArr.map((t, idx) => {
+                          const topicName = typeof t === 'object' && t ? (t.topic || 'Unknown') : String(t);
+                          return (
+                          <span key={idx} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5', margin: '1px 3px 1px 0' }}>
+                            {topicName}
                           </span>
-                        ))}
+                        )})}
                       </div>
                     </div>
                   )}
