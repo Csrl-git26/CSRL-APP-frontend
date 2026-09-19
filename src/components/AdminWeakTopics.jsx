@@ -5,11 +5,13 @@
 import { useState } from 'react';
 import { Eye, Trash2 } from 'lucide-react';
 import CenterWeakTopics from './CenterWeakTopics';
-import { clearWeakTopicsApi } from '../services/weakTopicApi';
+import { clearWeakTopicsApi, recomputeAllTopicsApi } from '../services/weakTopicApi';
 
 export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
   const [viewCenterId, setViewCenterId] = useState('');
   const [clearing, setClearing] = useState(false);
+  const [recomputing, setRecomputing] = useState(false);
+  const [recomputeMsg, setRecomputeMsg] = useState('');
 
   // Drop 'ALL' from centers list if it exists
   const validCenters = centersList.filter(c => c !== 'ALL');
@@ -25,6 +27,24 @@ export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
       alert('Failed to clear data: ' + e.message);
     } finally {
       setClearing(false);
+    }
+  };
+
+  const handleRecompute = async () => {
+    if (!window.confirm('This will recompute AT. (Attempt Rate) and AC. (Accuracy) for all tests and overall data. It may take 1-2 minutes. Continue?')) return;
+    setRecomputing(true);
+    setRecomputeMsg('');
+    try {
+      const result = await recomputeAllTopicsApi();
+      const msg = `Done! ${result.step1?.message || ''} ${result.step2?.message || ''}`.trim();
+      setRecomputeMsg(msg);
+      alert('Recomputation complete! Refresh the page to see updated AT./AC. values.');
+      window.location.reload();
+    } catch (e) {
+      setRecomputeMsg('Error: ' + e.message);
+      alert('Recomputation failed: ' + e.message);
+    } finally {
+      setRecomputing(false);
     }
   };
 
@@ -51,6 +71,32 @@ export default function AdminWeakTopics({ centersList = [], selectedTestKey }) {
             disabled={clearing}
           >
             {clearing ? 'Clearing...' : 'Clear All Data'}
+          </button>
+        </div>
+      </div>
+
+      {/* ── SECTION: Recompute AT./AC. ─────────────────────────── */}
+      <div className="card">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ padding: '8px', borderRadius: 8, background: '#e8f0fc', flexShrink: 0 }}>
+              <span style={{ fontSize: 18 }}>📊</span>
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 16 }}>Recompute AT./AC. Values</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-600)', marginTop: 2 }}>
+                Recalculates Attempt Rate and Accuracy for all tests and overall data.
+                {recomputeMsg && <span style={{ marginLeft: 8, color: 'var(--csrl-blue)', fontWeight: 600 }}>{recomputeMsg}</span>}
+              </div>
+            </div>
+          </div>
+          <button
+            className="btn btn-outline"
+            style={{ color: '#1a4fa0', borderColor: '#1a4fa0' }}
+            onClick={handleRecompute}
+            disabled={recomputing}
+          >
+            {recomputing ? 'Recomputing...' : 'Recompute Now'}
           </button>
         </div>
       </div>

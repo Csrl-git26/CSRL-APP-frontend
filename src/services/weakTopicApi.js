@@ -148,3 +148,26 @@ export async function clearRawMarksApi(testId = null) {
   const res = await fetch(url, { method: 'DELETE', headers: authHeaders() });
   return handleResponse(res);
 }
+
+/**
+ * recomputeAllTopicsApi — Admin only: recompute all test-wise AND overall weak topics
+ * with AT./AC. rates from raw marks data. Use after upgrading from old string format.
+ */
+export async function recomputeAllTopicsApi() {
+  clearWeakTopicsFrontendCache();
+  // Step 1: Recompute per-test topic data (students + centers) with ar/acc fields
+  const r1 = await fetch(`${BASE}/api/admin/backfill-test-topics`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  const d1 = await handleResponse(r1);
+
+  // Step 2: Recompute overall (cross-test) aggregations
+  const r2 = await fetch(`${BASE}/api/admin/recompute-overall`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  const d2 = await handleResponse(r2);
+
+  return { step1: d1, step2: d2 };
+}
