@@ -223,7 +223,7 @@ return formatSub + (isMed ? ' (Med)' : '');
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
             {['Physics', 'Chemistry', 'Mathematics', 'Botany', 'Zoology'].map((subject) => {
               const subjKey = subject.toUpperCase();
-              const subjData = overallWeakTopicsData.subjectWise[subjKey];
+              const subjData = overallWeakTopicsData.subjectWise[subjKey] || {};
               
               const strongArr = Array.isArray(subjData.strong) ? subjData.strong : [];
               const modArr = Array.isArray(subjData.moderate) ? subjData.moderate : [];
