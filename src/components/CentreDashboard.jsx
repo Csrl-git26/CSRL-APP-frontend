@@ -42,7 +42,7 @@ function getInitials(name = '') {
   return name.trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
+export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adminStream }) {
   const outletContext = useOutletContext();
   const [localActivePage, setLocalActivePage] = useState('overview');
   
@@ -78,11 +78,27 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
       setSelectedTestKey(adminTestKey);
     }
   }, [adminTestKey]);
+
+  useEffect(() => {
+    if (adminStream) {
+      setGlobalStream(adminStream);
+    }
+  }, [adminStream]);
+
+  useEffect(() => {
+    if (selectedTestKey) {
+      if (selectedTestKey.toUpperCase().startsWith('NCT') || selectedTestKey.toUpperCase().includes('NEET')) {
+        setGlobalStream('NEET');
+      } else if (selectedTestKey.toUpperCase().startsWith('MT') || selectedTestKey.toUpperCase().startsWith('FMT') || selectedTestKey.toUpperCase().startsWith('CMT')) {
+        setGlobalStream('JEE');
+      }
+    }
+  }, [selectedTestKey]);
   const [searchTerm,       setSearchTerm]       = useState('');
   const [prefetchedData, setPrefetchedData] = useState({});
   const [filterCategory,   setFilterCategory]   = useState('ALL');
   const [filterStream,     setFilterStream]     = useState('ALL');
-  const [globalStream,     setGlobalStream]     = useState('JEE');
+  const [globalStream,     setGlobalStream]     = useState(adminStream || 'JEE');
   const [filterSponsor,    setFilterSponsor]    = useState('ALL');
   const [filterGender,     setFilterGender]     = useState('ALL');
   const [filterState,      setFilterState]      = useState('ALL');
@@ -986,7 +1002,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
             <div>
               <h1>{TABS.find(t => t.key === activePage)?.label || (activePage === 'overview' ? 'Overview' : 'CSRL Dashboard')}</h1>
             </div>
-            {activePage === 'leaderboard' && (
+            {(activePage === 'leaderboard' || activePage === 'overview') && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
                 <select

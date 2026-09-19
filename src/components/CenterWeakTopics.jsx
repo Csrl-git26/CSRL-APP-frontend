@@ -150,20 +150,26 @@ export default function CenterWeakTopics({ centerId, activeTestKey, stream = 'JE
       {/* Subject cards */}
       {currentDoc ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-          {(stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics']).map((subject) => {
-            const subjectKey = subject.toUpperCase();
-            const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
-            return (
-              <WeakTopicCard
-                key={subject}
-                subject={subject}
-                strongTopics={subData.strong || []}
-                moderateTopics={subData.moderate || []}
-                weakTopics={subData.weak || []}
-                isCenter={true}
-              />
-            );
-          })}
+          {(() => {
+            const isNeet = stream === 'NEET' ||
+              (resolvedTest && (resolvedTest.toUpperCase().startsWith('NCT') || resolvedTest.toUpperCase().includes('NEET'))) ||
+              (subjectWise && ((subjectWise.BOTANY?.strong?.length > 0 || subjectWise.BOTANY?.weak?.length > 0 || subjectWise.BOTANY?.moderate?.length > 0) || (subjectWise.ZOOLOGY?.strong?.length > 0 || subjectWise.ZOOLOGY?.weak?.length > 0 || subjectWise.ZOOLOGY?.moderate?.length > 0)));
+            const subjects = isNeet ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics'];
+            return subjects.map((subject) => {
+              const subjectKey = subject.toUpperCase();
+              const subData = subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] };
+              return (
+                <WeakTopicCard
+                  key={subject}
+                  subject={subject}
+                  strongTopics={subData.strong || []}
+                  moderateTopics={subData.moderate || []}
+                  weakTopics={subData.weak || []}
+                  isCenter={true}
+                />
+              );
+            });
+          })()}
         </div>
       ) : (
         <div style={{ color: 'var(--gray-400)', padding: 20, textAlign: 'center' }}>

@@ -27,7 +27,7 @@ export default function StudentOverallWeakTopics({ studentId, stream = 'JEE' }) 
       });
 
     return () => { cancelled = true; };
-  }, [studentId]);
+  }, [studentId, stream]);
 
   if (loading) {
     return (
@@ -94,20 +94,28 @@ export default function StudentOverallWeakTopics({ studentId, stream = 'JEE' }) 
       </div>
 
       <div style={{ padding: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-        {(stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics']).map((subject) => {
-          const subjectKey = subject.toUpperCase();
-          const subData = data.subjectWise ? (data.subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] }) : { strong: [], moderate: [], weak: [] };
-          return (
-            <WeakTopicCard
-              key={subject}
-              subject={subject}
-              strongTopics={subData.strong || []}
-              moderateTopics={subData.moderate || []}
-              weakTopics={subData.weak || []}
-              isCenter={false}
-            />
-          );
-        })}
+        {(() => {
+          const isNeet = stream === 'NEET' ||
+            (data?.subjectWise && (
+              (data.subjectWise.BOTANY?.strong?.length > 0 || data.subjectWise.BOTANY?.weak?.length > 0 || data.subjectWise.BOTANY?.moderate?.length > 0) ||
+              (data.subjectWise.ZOOLOGY?.strong?.length > 0 || data.subjectWise.ZOOLOGY?.weak?.length > 0 || data.subjectWise.ZOOLOGY?.moderate?.length > 0)
+            ));
+          const subjects = isNeet ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Mathematics'];
+          return subjects.map((subject) => {
+            const subjectKey = subject.toUpperCase();
+            const subData = data.subjectWise ? (data.subjectWise[subjectKey] || { strong: [], moderate: [], weak: [] }) : { strong: [], moderate: [], weak: [] };
+            return (
+              <WeakTopicCard
+                key={subject}
+                subject={subject}
+                strongTopics={subData.strong || []}
+                moderateTopics={subData.moderate || []}
+                weakTopics={subData.weak || []}
+                isCenter={false}
+              />
+            );
+          });
+        })()}
       </div>
     </div>
   );

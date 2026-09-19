@@ -2145,7 +2145,7 @@ export default function AdminDashboard() {
         <div className="dashboard-scroll">
           {activePage === 'leaderboard' && LeaderboardSection()}
           {activePage === 'overview'    && OverviewSection()}
-          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} />}
+          {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} adminStream={globalStream} />}
           {activePage === 'students'    && StudentsSection()}
           {activePage === 'marks'       && <MarksSection />}
           {activePage === 'import'      && <ImportExportSection />}

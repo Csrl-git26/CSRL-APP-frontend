@@ -98,7 +98,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
     }
     
     let cancelled = false;
-    getStudentOverallWeakTopics(profile.ROLL_KEY).then((res) => {
+    getStudentOverallWeakTopics(profile.ROLL_KEY, profile?.stream || "JEE").then((res) => {
       if (!cancelled && res.success && res.data) {
         if (res.data.overallWeakSubjects) setOverallWeakSubjects(res.data.overallWeakSubjects);
         setOverallWeakTopicsData(res.data);
