@@ -608,34 +608,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey }) {
           ))}
         </div>
 
-        {subjectAvgs.length > 0 && (
-          <div className="card">
-            <div className="section-title">Subject Performance — {selectedTestKey}</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-600)', marginTop: -8, marginBottom: 12 }}>
-              Averages for this test only. Weakest subject first (lowest average).
-            </div>
-            {subjectAvgs.map((s) => {
-              const isWeakest = minSubjectAvg != null && s.avg === minSubjectAvg;
-              return (
-                <div key={s.subject} style={{ marginBottom: 10 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 13 }}>
-                    <span style={{ fontWeight: isWeakest ? 700 : 400, color: isWeakest ? 'var(--red)' : 'inherit' }}>
-                      {s.subject}
-                      {isWeakest && <AlertTriangle size={12} style={{ marginLeft: 5 }} color="var(--red)" aria-hidden="true" />}
-                    </span>
-                    <span style={{ fontWeight: 600 }}>{s.avg}/{getStreamConfig(activeCenter?.stream || 'JEE').maxBySubject?.[s.subject] || 100}</span>
-                  </div>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${Math.min(100, s.avg)}%`, background: isWeakest ? '#e74c3c' : '#1a4fa0' }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        
 
         <div style={{ marginBottom: '24px' }}>
           <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(activeCenter?.stream || 'JEE')} />
