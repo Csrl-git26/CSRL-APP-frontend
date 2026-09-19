@@ -252,10 +252,12 @@ return formatSub + (isMed ? ' (Med)' : '');
                       <div style={{ fontSize: '9px', fontWeight: 700, color: '#166534', textTransform: 'uppercase', marginBottom: '2px' }}>🟢 Strong</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {strongArr.map((t, idx) => {
-                          const topicName = typeof t === 'object' && t ? (t.topic || 'Unknown') : String(t);
+                          const isObj = typeof t === 'object' && t;
+                          const topicName = isObj ? (t.topic || 'Unknown') : String(t);
+                          const meta = isObj && t.ar !== undefined && t.acc !== undefined ? `(AT.-${t.ar}% | AC.-${t.acc}%)` : (isObj && t.percentage !== undefined ? `(${t.percentage}%)` : '');
                           return (
-                          <span key={idx} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', margin: '1px 3px 1px 0' }}>
-                            {topicName}
+                          <span key={idx} style={{ display: 'inline-block', padding: '2px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', margin: '1px 3px 1px 0' }}>
+                            {topicName} {meta && <span style={{ marginLeft: 2, fontWeight: 500, opacity: 0.85 }}>{meta}</span>}
                           </span>
                         )})}
                       </div>
@@ -267,10 +269,12 @@ return formatSub + (isMed ? ' (Med)' : '');
                       <div style={{ fontSize: '9px', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', marginBottom: '2px' }}>🟡 Moderate</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {modArr.map((t, idx) => {
-                          const topicName = typeof t === 'object' && t ? (t.topic || 'Unknown') : String(t);
+                          const isObj = typeof t === 'object' && t;
+                          const topicName = isObj ? (t.topic || 'Unknown') : String(t);
+                          const meta = isObj && t.ar !== undefined && t.acc !== undefined ? `(AT.-${t.ar}% | AC.-${t.acc}%)` : (isObj && t.percentage !== undefined ? `(${t.percentage}%)` : '');
                           return (
-                          <span key={idx} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0', margin: '1px 3px 1px 0' }}>
-                            {topicName}
+                          <span key={idx} style={{ display: 'inline-block', padding: '2px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fff8e1', color: '#b45309', border: '1px solid #fcd5a0', margin: '1px 3px 1px 0' }}>
+                            {topicName} {meta && <span style={{ marginLeft: 2, fontWeight: 500, opacity: 0.85 }}>{meta}</span>}
                           </span>
                         )})}
                       </div>
@@ -282,10 +286,12 @@ return formatSub + (isMed ? ' (Med)' : '');
                       <div style={{ fontSize: '9px', fontWeight: 700, color: '#c0392b', textTransform: 'uppercase', marginBottom: '2px' }}>🔴 Weak</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {weakArr.map((t, idx) => {
-                          const topicName = typeof t === 'object' && t ? (t.topic || 'Unknown') : String(t);
+                          const isObj = typeof t === 'object' && t;
+                          const topicName = isObj ? (t.topic || 'Unknown') : String(t);
+                          const meta = isObj && t.ar !== undefined && t.acc !== undefined ? `(AT.-${t.ar}% | AC.-${t.acc}%)` : (isObj && t.percentage !== undefined ? `(${t.percentage}%)` : '');
                           return (
-                          <span key={idx} style={{ display: 'inline-block', padding: '1px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5', margin: '1px 3px 1px 0' }}>
-                            {topicName}
+                          <span key={idx} style={{ display: 'inline-block', padding: '2px 4px', borderRadius: '3px', fontSize: '8.5px', fontWeight: 700, background: '#fdecea', color: '#c0392b', border: '1px solid #f5a5a5', margin: '1px 3px 1px 0' }}>
+                            {topicName} {meta && <span style={{ marginLeft: 2, fontWeight: 500, opacity: 0.85 }}>{meta}</span>}
                           </span>
                         )})}
                       </div>
