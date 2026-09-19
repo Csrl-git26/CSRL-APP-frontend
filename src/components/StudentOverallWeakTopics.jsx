@@ -13,7 +13,7 @@ export default function StudentOverallWeakTopics({ studentId, stream = 'JEE' }) 
     let cancelled = false;
 
     setLoading(true);
-    getStudentOverallWeakTopics(studentId)
+    getStudentOverallWeakTopics(studentId, stream)
       .then((res) => {
         if (!cancelled && res.success) {
           setData(res.data);

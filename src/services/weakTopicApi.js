@@ -113,18 +113,18 @@ export async function uploadTestSheet(formData) {
 /**
  * getStudentOverallWeakTopics — fetch overall weak topic data for a student.
  */
-export async function getStudentOverallWeakTopics(studentId) {
-  const urlKey = `${BASE}/api/student/overall-weak-topics/${encodeURIComponent(studentId)}`;
-  const originalUrl = `${urlKey}?_t=${Date.now()}`;
+export async function getStudentOverallWeakTopics(studentId, stream = 'JEE') {
+  const urlKey = `${BASE}/api/student/overall-weak-topics/${encodeURIComponent(studentId)}?stream=${stream}`;
+  const originalUrl = `${urlKey}&_t=${Date.now()}`;
   return cachedFetch(urlKey, originalUrl);
 }
 
 /**
  * getCenterOverallWeakTopics — fetch overall weak topic data for a center.
  */
-export async function getCenterOverallWeakTopics(centerId) {
-  const urlKey = `${BASE}/api/center/overall-weak-topics/${encodeURIComponent(centerId)}`;
-  const originalUrl = `${urlKey}?_t=${Date.now()}`;
+export async function getCenterOverallWeakTopics(centerId, stream = 'JEE') {
+  const urlKey = `${BASE}/api/center/overall-weak-topics/${encodeURIComponent(centerId)}?stream=${stream}`;
+  const originalUrl = `${urlKey}&_t=${Date.now()}`;
   return cachedFetch(urlKey, originalUrl);
 }
 

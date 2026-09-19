@@ -13,7 +13,7 @@ export default function CenterOverallWeakTopics({ centerId, stream = 'JEE' }) {
     let cancelled = false;
 
     setLoading(true);
-    getCenterOverallWeakTopics(centerId)
+    getCenterOverallWeakTopics(centerId, stream)
       .then((res) => {
         if (!cancelled && res.success) {
           setData(res.data);
