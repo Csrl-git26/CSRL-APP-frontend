@@ -8,7 +8,7 @@
 //   isCenter       — boolean: center view vs student view
 
 export default function WeakTopicCard({ subject, strongTopics = [], moderateTopics = [], weakTopics = [], isCenter = false }) {
-  const isEmpty = !strongTopics.length && !moderateTopics.length && !weakTopics.length;
+  const isEmpty = !(Array.isArray(strongTopics) && strongTopics.length) && !(Array.isArray(moderateTopics) && moderateTopics.length) && !(Array.isArray(weakTopics) && weakTopics.length);
 
   const subjectColor = () => {
     const map = {
@@ -23,8 +23,9 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
 
   // Build label from topic item (object with {topic,ar,acc} or legacy string)
   const getTopicLabel = (item) => {
+    if (!item) return { key: 'unknown', name: 'Unknown', meta: null };
     if (typeof item === 'string') return { key: item, name: item, meta: null };
-    const name = item.topic || '';
+    const name = item.topic || String(item) || 'Unknown';
     const key  = name;
     // Show AT./AC. if we have them (new format)
     if (item.ar !== undefined && item.acc !== undefined) {
@@ -111,7 +112,7 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {/* Strong */}
-          {strongTopics.length > 0 && (
+          {Array.isArray(strongTopics) && strongTopics.length > 0 && (
             <div>
               <div style={{
                 fontSize:     11,
@@ -124,13 +125,13 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
                 🟢 Strong
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {strongTopics.map((item) => renderPill(item, 'strong'))}
+                {(Array.isArray(strongTopics) ? strongTopics : []).map((item) => renderPill(item, 'strong'))}
               </div>
             </div>
           )}
 
           {/* Moderate */}
-          {moderateTopics.length > 0 && (
+          {Array.isArray(moderateTopics) && moderateTopics.length > 0 && (
             <div>
               <div style={{
                 fontSize:     11,
@@ -143,13 +144,13 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
                 🟡 Moderate
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {moderateTopics.map((item) => renderPill(item, 'moderate'))}
+                {(Array.isArray(moderateTopics) ? moderateTopics : []).map((item) => renderPill(item, 'moderate'))}
               </div>
             </div>
           )}
 
           {/* Weak */}
-          {weakTopics.length > 0 && (
+          {Array.isArray(weakTopics) && weakTopics.length > 0 && (
             <div>
               <div style={{
                 fontSize:     11,
@@ -162,7 +163,7 @@ export default function WeakTopicCard({ subject, strongTopics = [], moderateTopi
                 🔴 Weak
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {weakTopics.map((item) => renderPill(item, 'weak'))}
+                {(Array.isArray(weakTopics) ? weakTopics : []).map((item) => renderPill(item, 'weak'))}
               </div>
             </div>
           )}
