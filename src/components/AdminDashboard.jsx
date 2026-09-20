@@ -435,7 +435,7 @@ export default function AdminDashboard() {
     if (!selectedTrendCentre) return;
     let isMounted = true;
     setTrendChartLoading(true);
-    fetchCentreChart(selectedTrendCentre)
+    fetchCentreChart(selectedTrendCentre, globalStream)
       .then(res => {
         if (isMounted) setTrendChartData(res.chartData || []);
       })
@@ -444,7 +444,7 @@ export default function AdminDashboard() {
         if (isMounted) setTrendChartLoading(false);
       });
     return () => { isMounted = false; };
-  }, [selectedTrendCentre]);
+  }, [selectedTrendCentre, globalStream]);
 
   
   // Trigger to refetch backend analytics
@@ -1331,7 +1331,7 @@ export default function AdminDashboard() {
           {trendChartLoading ? (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
           ) : trendChartData.length > 0 ? (
-            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} height={240} />
+            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} height={240} />
           ) : (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
           )}
@@ -1440,7 +1440,7 @@ export default function AdminDashboard() {
                 <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
               ) : trendChartData.length > 0 ? (
                 <div style={{ height: '100%' }}>
-                  <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} height="100%" />
+                  <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} height="100%" />
                 </div>
               ) : (
                 <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>

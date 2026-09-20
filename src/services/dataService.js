@@ -385,8 +385,9 @@ export async function fetchStudentChart(_token, rollKey, centerCode, stream) {
   return apiFetch(`/api/analytics/student-chart?${params}`);
 }
 
-export async function fetchCentreChart(centerCode) {
+export async function fetchCentreChart(centerCode, stream) {
   const params = new URLSearchParams({ centerCode, t: Date.now() });
+  if (stream && stream !== 'ALL') params.append('stream', stream);
   return apiFetch(`/api/analytics/centre-chart?${params}`);
 }
 
