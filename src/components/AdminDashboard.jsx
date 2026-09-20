@@ -860,6 +860,19 @@ export default function AdminDashboard() {
     XLSX.writeFile(wb, 'CSRL_Marks_Template.xlsx');
   };
 
+  const downloadNeetMarksSampleFormat = () => {
+    const rows = [
+      ['Roll Number', 'name', 'stream', 'centre', 'Physics', 'Chemistry', 'Botany', 'Zoology', 'Total'],
+      ['GAIL-NEET-001', 'John Doe', 'NEET', 'GAIL', 140, 150, 130, 160, 580],
+      ['GAIL-NEET-002', 'Jane Smith', 'NEET', 'GAIL', 150, 160, 140, 170, 620]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{ wch: 15 }, { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'NEET Marks Template');
+    XLSX.writeFile(wb, 'CSRL_NEET_Marks_Template.xlsx');
+  };
+
   const exportStudentsXlsx = () => {
     if (!data?.profiles?.length) { showToast('No students to export.', 'warning'); return; }
     const rows = data.profiles.map(mapProfileToExcelRow);
