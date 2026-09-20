@@ -143,7 +143,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       try {
         const [d, ov] = await Promise.all([
           fetchCenterDataApi(null, selectedCenterCode),
-          fetchOverview(null, selectedCenterCode).catch(() => null),
+          fetchOverview(null, selectedCenterCode, globalStream).catch(() => null),
         ]);
         setData(d);
         setOverview(ov);

@@ -342,8 +342,11 @@ export function deleteTestApi(dummy, testKey) {
 
 // ── Backend Analytics API calls ────────────────────────────────────────────────
 
-export async function fetchOverview(_token, centerCode) {
-  const qs = centerCode ? `?centerCode=${encodeURIComponent(centerCode)}` : '';
+export async function fetchOverview(_token, centerCode, stream) {
+  const params = new URLSearchParams();
+  if (centerCode) params.set('centerCode', centerCode);
+  if (stream && stream !== 'ALL') params.set('stream', stream);
+  const qs = params.toString() ? `?${params.toString()}` : '';
   return apiFetch(`/api/analytics/overview${qs}`);
 }
 

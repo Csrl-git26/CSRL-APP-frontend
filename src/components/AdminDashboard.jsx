@@ -467,8 +467,8 @@ export default function AdminDashboard() {
       .catch((err) => setError('Failed to load dashboard data: ' + err.message))
       .finally(() => setLoading(false));
 
-    fetchOverview(null).then(setOverview).catch(() => null);
-  }, [refreshTrigger]);
+    fetchOverview(null, null, stream).then(setOverview).catch(() => null);
+  }, [refreshTrigger, stream]);
 
   // ── Reload backend analytics when test key changes or data refreshes ──
 
@@ -476,13 +476,13 @@ export default function AdminDashboard() {
     if (!selectedTestKey) return;
     const combinedKey = selectedSubject === 'Total' ? selectedTestKey : `${selectedTestKey}_${selectedSubject}`;
     Promise.all([
-      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc' }).catch(() => ({ ranked: [] })),
-      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc'  }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'desc', stream }).catch(() => ({ ranked: [] })),
+      fetchRankings(null, { testKey: combinedKey, limit: 15, order: 'asc', stream }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom]) => {
       setTopRanked(top.ranked    || []);
       setBottomRanked(bottom.ranked || []);
     });
-  }, [selectedTestKey, selectedSubject, refreshTrigger]);
+  }, [selectedTestKey, selectedSubject, refreshTrigger, stream]);
 
   // Sync selectedTestKey to leaderboard default
   useEffect(() => {
