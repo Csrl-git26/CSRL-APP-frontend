@@ -484,8 +484,18 @@ export default function AdminDashboard() {
     });
   }, [selectedTestKey, selectedSubject, refreshTrigger, globalStream]);
 
+
+  // Sync selectedTestKey to streamTestOptions
+  useEffect(() => {
+    if (streamTestOptions && streamTestOptions.length > 0 && selectedTestKey && !streamTestOptions.includes(selectedTestKey)) {
+      const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+      if (fallback) setSelectedTestKey(fallback);
+    }
+  }, [streamTestOptions, selectedTestKey]);
+
   // Sync selectedTestKey to leaderboard default
   useEffect(() => {
+
     if (selectedTestKey && selectedLeaderboardTestKeys.length === 0) {
       setSelectedLeaderboardTestKeys([selectedTestKey]);
     }
