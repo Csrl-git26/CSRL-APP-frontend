@@ -987,8 +987,10 @@ export default function AdminDashboard() {
           const mapped = mapExcelMarkRow(row, uploadTestKey);
           if (!mapped.roll) return { row: idx + 2, status: 'err', reason: 'Missing roll_number' };
           
-          const resolvedRollKey = rollResolver.get(mapped.roll);
-          if (!resolvedRollKey) return { row: idx + 2, status: 'err', reason: 'Roll not found', roll: mapped.roll };
+          let resolvedRollKey = rollResolver.get(mapped.roll);
+          if (!resolvedRollKey) {
+             resolvedRollKey = mapped.roll; // Allow unknown rolls (backend dummy profile generation handles this)
+          }
           
           mapped.roll = resolvedRollKey;
           
