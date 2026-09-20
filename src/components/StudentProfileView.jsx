@@ -1,3 +1,4 @@
+import { normalizeStudentChartRows } from '../services/studentChart';
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Download, Loader2 } from 'lucide-react';
@@ -89,6 +90,8 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
     XLSX.writeFile(wb, `${profile.ROLL_KEY || 'Student'}_Profile.xlsx`);
   };
 
+  const stream = String(profile?.stream || profile?.STREAM || profile?.Stream || 'JEE').trim().toUpperCase();
+
   React.useEffect(() => {
     if (!profile?.ROLL_KEY) return;
     if (prefetchedChart && prefetchedWeakTopics) {
@@ -98,21 +101,21 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
     }
     
     let cancelled = false;
-    getStudentOverallWeakTopics(profile.ROLL_KEY, profile?.stream || "JEE").then((res) => {
+    getStudentOverallWeakTopics(profile.ROLL_KEY, stream).then((res) => {
       if (!cancelled && res.success && res.data) {
         if (res.data.overallWeakSubjects) setOverallWeakSubjects(res.data.overallWeakSubjects);
         setOverallWeakTopicsData(res.data);
       }
     });
     
-    fetchStudentChart(null, profile.ROLL_KEY, null).then((res) => {
+    fetchStudentChart(null, profile.ROLL_KEY, profile.centerCode, stream).then((res) => {
       if (!cancelled && res) setChart(res);
     }).catch(() => {});
     
     return () => { cancelled = true; };
-  }, [profile?.ROLL_KEY, prefetchedChart, prefetchedWeakTopics]);
+  }, [profile?.ROLL_KEY, profile?.centerCode, stream, prefetchedChart, prefetchedWeakTopics]);
 
-  const stream = profile?.stream || 'JEE';
+
   const school10 = profile?.['10th SCHOOL NAME'] || profile?.['10th SCHOOL'] || profile?.['SCHOOL NAME'] || profile?.SCHOOL || '';
   const school12 = profile?.['12th SCHOOL NAME'] || profile?.['12th SCHOOL'] || school10 || '';
 
@@ -122,62 +125,10 @@ const actualChart = prefetchedChart || chart;
   const actualWeakTopics = prefetchedWeakTopics || overallWeakTopicsData;
   
   const chartData = useMemo(() => {
-    const rawRows = actualChart?.chartData ? sortTestRowsChronologically([...actualChart.chartData]) : buildStudentChartData(studentTests, testColumns);
-    console.log('chartData rawRows:', rawRows);
+    const rawRows = actualChart?.chartData ? sortTestRowsChronologically([...actualChart.chartData]) : buildStudentChartData(studentTests, testColumns, stream);
 
-    const toNum = (v) => {
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    };
 
-    return (rawRows || []).map((row) => {
-      const normalized = { ...row };
-
-      if (stream === 'NEET') {
-        const physics = toNum(normalized.Physics);
-        const chemistry = toNum(normalized.Chemistry);
-        const biology = toNum(normalized.Biology);
-        const botany = toNum(normalized.Botany);
-        const zoology = toNum(normalized.Zoology);
-        delete normalized.Botany;
-        delete normalized.Zoology;
-
-        const parts = [physics, chemistry, botany, zoology, biology].filter((v) => v !== null);
-        const computedTotal = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) : null;
-        
-        // Handle Absent explicitly
-        const isAbsent = ['a', 'A', 'absent', 'Absent'].includes(String(row.Total).trim()) ||
-          (['a', 'A', 'absent', 'Absent'].includes(String(row.Physics).trim()) &&
-           ['a', 'A', 'absent', 'Absent'].includes(String(row.Chemistry).trim()) &&
-           (['a', 'A', 'absent', 'Absent'].includes(String(row.Botany).trim()) || ['a', 'A', 'absent', 'Absent'].includes(String(row.Zoology).trim())));
-        
-        if (isAbsent) {
-          normalized.Total = 'Absent';
-        } else {
-          normalized.Total = computedTotal !== null ? computedTotal : (row.Total ?? null);
-        }
-      } else {
-        const physics = toNum(normalized.Physics);
-        const chemistry = toNum(normalized.Chemistry);
-        const math = toNum(normalized.Math);
-        const parts = [physics, chemistry, math].filter((v) => v !== null);
-        const computedTotal = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) : null;
-        
-        // Handle Absent explicitly
-        const isAbsent = ['a', 'A', 'absent', 'Absent'].includes(String(row.Total).trim()) ||
-          (['a', 'A', 'absent', 'Absent'].includes(String(row.Physics).trim()) &&
-           ['a', 'A', 'absent', 'Absent'].includes(String(row.Chemistry).trim()) &&
-           ['a', 'A', 'absent', 'Absent'].includes(String(row.Math).trim()));
-        
-        if (isAbsent) {
-          normalized.Total = 'Absent';
-        } else {
-          normalized.Total = computedTotal !== null ? computedTotal : (row.Total ?? null);
-        }
-      }
-
-      return normalized;
-    });
+    return normalizeStudentChartRows(rawRows, stream);
   }, [chart, prefetchedChart, studentTests, testColumns, stream]);
 
   const subjects = useMemo(() => streamCfg.subjects.filter((sub) => chartData.some((row) => 
