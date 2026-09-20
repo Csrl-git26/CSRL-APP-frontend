@@ -375,8 +375,9 @@ export async function fetchTestInsights(_token, testKey, rollKey, stream) {
   return apiFetch(`/api/analytics/test-insights?${params}`);
 }
 
-export async function fetchStudentChart(_token, rollKey, centerCode) {
+export async function fetchStudentChart(_token, rollKey, centerCode, stream) {
   const params = new URLSearchParams({ rollKey, t: Date.now() });
+  if (stream) params.set('stream', stream);
   if (centerCode) params.set('centerCode', centerCode);
   return apiFetch(`/api/analytics/student-chart?${params}`);
 }
@@ -426,16 +427,16 @@ export function getExamResult(profile) {
 // ── Local helpers (fallbacks when backend API is unavailable) ─────────────────
 
 /** Build chart data for a single student's flat test record. */
-export function buildStudentChartData(studentTests, testColumns) {
+export function buildStudentChartData(studentTests, testColumns, stream) {
   const testsMap = {};
 
   // Filter out cross-stream tests (e.g. NEET tests for JEE students)
-  const studentStream = ((studentTests && studentTests.stream) || 'JEE').toUpperCase();
+  const studentStream = String(stream || (studentTests && studentTests.stream) || 'JEE').trim().toUpperCase();
   const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
   const relevantColumns = (testColumns || []).filter((col) => {
     const { testName } = parseTestColumn(col);
     const isNeetTest = NEET_TEST_PREFIX.test(testName);
-    if (studentStream === 'NEET') return true;
+    if (studentStream === 'NEET') return isNeetTest;
     return !isNeetTest;
   });
 

@@ -1,9 +1,7 @@
 import React from 'react';
 
 export default function TestRecordsTable({ chartData, streamCfg, stream, isCentre, profile }) {
-  const subjects = streamCfg.subjects.filter((sub) => chartData.some((row) => 
-    row[sub] !== undefined && row[sub] !== null
-  ));
+  const subjects = streamCfg.subjects;
 
   return (
     <div className="card">
