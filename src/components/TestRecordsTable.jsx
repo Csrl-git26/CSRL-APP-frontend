@@ -79,16 +79,10 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                     isQualified = true;
                   }
                 } else if (stream === 'NEET') {
-                  // Use MBBS status from uploaded sheet if available
+                  // ONLY use MBBS status from the uploaded sheet — no score-based fallback.
+                  // The status is stored as testKey_MBBS = 'MBBS' in the row data.
                   const testMbbsKey = Object.keys(row).find(k => k.endsWith('_MBBS'));
-                  if (testMbbsKey) {
-                    isQualified = row[testMbbsKey] === 'MBBS';
-                  } else {
-                    // Fallback: score-based NEET threshold
-                    if (tot >= 550 && b >= 126 && p >= 63 && c >= 63) {
-                      isQualified = true;
-                    }
-                  }
+                  isQualified = testMbbsKey ? row[testMbbsKey] === 'MBBS' : false;
                 }
                 
                 if (typeof tot === 'number') {

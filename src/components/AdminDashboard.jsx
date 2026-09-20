@@ -271,7 +271,7 @@ function mapExcelMarkRow(row, testKey) {
   const mbbsStatusKey = Object.keys(row).find(k => k.toLowerCase().includes('mbbs') || k.toLowerCase().includes('status state'));
   if (mbbsStatusKey) {
     const mbbsVal = String(row[mbbsStatusKey] || '').trim().toUpperCase();
-    updateObj[`${rowTestKey}_MBBS`] = mbbsVal === 'MBBS' ? 'MBBS' : '';
+    updateObj[`${rowTestKey}_MBBS`] = mbbsVal === 'MBBS' ? 'MBBS' : 'NO';
   }
 
   // Metadata columns that should not be inserted as test scores
