@@ -522,7 +522,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
   );
 };
 
-export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange }) {
+export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange, stream = 'JEE' }) {
   const currentStream = data?.profiles?.[0]?.stream || 'JEE';
   const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
 
@@ -753,7 +753,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       {/* ── KPI Cards ── */}
       <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
-           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: 'Qualified / Total Student' }}
+           progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: stream === 'NEET' ? 'MBBS / Total Student' : 'Qualified / Total Student' }}
            bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard icon={BarChart3} value={centreBoard.length} label="ACTIVE CENTRE" onClick={onActiveCentresClick}
           progressBar={{ value: centreBoard.length - redFlagCentres.length, max: centreBoard.length, color: '#3b82f6', tooltipText: 'OK Centres / Total Centres' }}
@@ -761,9 +761,9 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <KpiCard 
           icon={Award}    
           value={qualRate !== null ? `${qualRate}%` : '—'} 
-          label="CSRL QUALIFICATION"
+          label={stream === 'NEET' ? "CSRL MBBS" : "CSRL QUALIFICATION"}
           labelFontSize={12}
-          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltipText: 'Qualified / Appeared' }}
+          progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltipText: stream === 'NEET' ? 'MBBS / Appeared' : 'Qualified / Appeared' }}
           bg="#f0f5ff" 
           color="#1a4fa0"
         />
@@ -1063,7 +1063,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">CENTRE - QUALIFICATION</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? 'CENTRE - MBBS' : 'CENTRE - QUALIFICATION'}</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
@@ -1316,7 +1316,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '2px solid rgba(59, 130, 246, 0.15)', paddingBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
                   <PieChartIcon size={20} />
-                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Rankings Qualification % — {selectedTestKey || 'Latest'}</span>
+                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Rankings {stream === 'NEET' ? 'MBBS %' : 'Qualification %'} — {selectedTestKey || 'Latest'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                    <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>

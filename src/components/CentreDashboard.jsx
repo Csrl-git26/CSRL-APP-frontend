@@ -513,22 +513,22 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
             <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{selectedSubject === 'Qualification' ? 'Sorted descending by qualification rate' : 'Sorted descending by average score'}</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{selectedSubject === 'Qualification' ? (globalStream === 'NEET' ? 'Sorted descending by MBBS rate' : 'Sorted descending by qualification rate') : 'Sorted descending by average score'}</span>
             
             {totalAppeared > 0 && (
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
-                <span style={{ fontSize: 14, color: 'var(--gray-600)', fontWeight: 700 }}>Overall CSRL Qualification:</span>
+                <span style={{ fontSize: 14, color: 'var(--gray-600)', fontWeight: 700 }}>{globalStream === 'NEET' ? 'Overall CSRL MBBS:' : 'Overall CSRL Qualification:'}</span>
                 <span style={{ fontSize: 16, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 20, color: 'var(--gray-700)', fontWeight: 700 }}>
                   <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
                 </span>
                 {qualPct < 80 ? (
                   <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Flag size={14} color="#cc0000" fill="#cc0000" style={{ flexShrink: 0 }} /> ATTENTION - 
-                    <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                    <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({qualPct}%)
                   </span>
                 ) : (
                   <span style={{ fontSize: 16, background: '#fae8ff', color: '#86198f', padding: '4px 12px', borderRadius: 20, fontWeight: 800 }}>
-                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> Qualified ({qualPct}%)
+                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({qualPct}%)
                   </span>
                 )}
               </div>
@@ -551,7 +551,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
               <option value="Math">Math</option>
-              <option value="Qualification">Qualification Rate</option>
+              <option value="Qualification">{globalStream === 'NEET' ? 'MBBS Rate' : 'Qualification Rate'}</option>
             </select>
           </div>
         </div>
@@ -563,7 +563,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         onCentreClick={(code) => {
           setSelectedCenterCode(code);
           setActivePage('overview');
-        }} 
+        }}
+        stream={globalStream}
       />
       
       <div className="card" style={{ marginTop: 0 }}>

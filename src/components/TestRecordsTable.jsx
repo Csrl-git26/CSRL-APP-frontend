@@ -26,7 +26,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 </div>
               </th>
               <th>
-                <div>Qualification</div>
+                <div>{stream === 'NEET' ? 'MBBS Status' : 'Qualification'}</div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>Status</div>
               </th>
             </tr>
@@ -48,12 +48,13 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
 
               let isQualified = false;
               let qualText = "—";
+              const isNeet = stream === 'NEET';
 
               if (isCentre) {
                 if (row.qualRate != null) {
                   qualText = (
                     <span className="badge badge-success" style={{ background: '#f3e8ff', color: '#6b21a8', border: '1px solid #d8b4fe' }}>
-                      {row.qualRate}% Qualified
+                      {row.qualRate}% {isNeet ? 'MBBS' : 'Qualified'}
                     </span>
                   );
                 }
@@ -78,15 +79,22 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                     isQualified = true;
                   }
                 } else if (stream === 'NEET') {
-                  if (tot >= 550 && b >= 126 && p >= 63 && c >= 63) {
-                    isQualified = true;
+                  // Use MBBS status from uploaded sheet if available
+                  const testMbbsKey = Object.keys(row).find(k => k.endsWith('_MBBS'));
+                  if (testMbbsKey) {
+                    isQualified = row[testMbbsKey] === 'MBBS';
+                  } else {
+                    // Fallback: score-based NEET threshold
+                    if (tot >= 550 && b >= 126 && p >= 63 && c >= 63) {
+                      isQualified = true;
+                    }
                   }
                 }
                 
                 if (typeof tot === 'number') {
                   qualText = isQualified 
-                    ? <span className="badge badge-success" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0' }}>Qualified</span> 
-                    : <span className="badge badge-danger" style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>Not Qualified</span>;
+                    ? <span className="badge badge-success" style={{ background: isNeet ? '#e0f2fe' : '#dcfce7', color: isNeet ? '#0369a1' : '#166534', border: isNeet ? '1px solid #bae6fd' : '1px solid #bbf7d0' }}>{isNeet ? 'MBBS' : 'Qualified'}</span>
+                    : <span className="badge badge-danger" style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>{isNeet ? 'Not MBBS' : 'Not Qualified'}</span>;
                 }
               }
                 

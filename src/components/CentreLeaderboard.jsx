@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Highest Individual Score: {data.top}</p>
         {data.bottom !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Lowest Individual Score: {data.bottom}</p>}
         
-        {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>Qual. Rate: {Math.round(data.qualRate)}%</p>}
+        {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>{stream === 'NEET' ? 'MBBS' : 'Qual. Rate'}: {Math.round(data.qualRate)}%</p>}
         {(!selectedSubject || selectedSubject === 'Total') && <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>}
         
         {(() => {
@@ -69,7 +69,7 @@ const CustomTooltip = ({ active, payload, selectedSubject }) => {
   return null;
 };
 
-export default function CentreLeaderboard({ centreStats = [], selTest, selectedSubject, onCentreClick, height = 320 }) {
+export default function CentreLeaderboard({ centreStats = [], selTest, selectedSubject, onCentreClick, height = 320, stream = 'JEE' }) {
   if (!selTest) return <Empty message="Select a test to view rankings" />;
   if (!centreStats.length) return <Empty message={`No test data for ${selTest}`} />;
 
@@ -80,7 +80,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
     return a.rank - b.rank;
   });
   const currentDataKey = isQualSort ? "qualRate" : "avg";
-  const currentYLabel = isQualSort ? "Qualification %" : "Average Score";
+  const currentYLabel = isQualSort ? (stream === 'NEET' ? "MBBS %" : "Qualification %") : "Average Score";
 
     const renderCustomBarLabel = (props) => {
     const { x, y, width, height, value, index } = props;

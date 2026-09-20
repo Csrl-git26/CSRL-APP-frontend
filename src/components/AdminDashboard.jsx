@@ -250,37 +250,60 @@ function mapExcelStudentToProfile(row) {
 }
 
 function mapExcelMarkRow(row, testKey) {
-  const roll = normalizeRollKey(getRowField(row, ['roll_number', 'ROLL_NUMBER', 'Roll Number', 'roll', 'ROLL_KEY', 'ROLL NO.', 'ROLL NO', 'ROO NUMBER']));
-  
+  const roll = normalizeRollKey(getRowField(row, ['roll_number', 'ROLL_NUMBER', 'Roll Number', 'Roll num', 'roll', 'ROLL_KEY', 'ROLL NO.', 'ROLL NO', 'ROO NUMBER']));
+
   const updateObj = {};
-  
+
   // Extract test key from row if available, otherwise fallback to dropdown selection
   const rowTestKey = getRowField(row, ['test_key', 'test key', 'Test Key']) || testKey;
 
+  // NEET sheet: map subject score columns to proper subject names under the test key
+  const neetSubjectMap = {
+    'physics score': 'Physics',
+    'chemistry score': 'Chemistry',
+    'botany score': 'Botany',
+    'zoology score': 'Zoology',
+    'biology score': 'Biology',
+  };
+  const totalColNames = ['marks scored', 'marks', 'score', 'total marks', 'total_marks', 'total'];
+
+  // MBBS status column (STATUS STATE='MBBS' or similar)
+  const mbbsStatusKey = Object.keys(row).find(k => k.toLowerCase().includes('mbbs') || k.toLowerCase().includes('status state'));
+  if (mbbsStatusKey) {
+    const mbbsVal = String(row[mbbsStatusKey] || '').trim().toUpperCase();
+    updateObj[`${rowTestKey}_MBBS`] = mbbsVal === 'MBBS' ? 'MBBS' : '';
+  }
+
   // Metadata columns that should not be inserted as test scores
   const ignoreCols = [
-    'roll_number', 'roll number', 'roll', 'roll_key',
+    'roll_number', 'roll number', 'roll num', 'roll', 'roll_key',
     'name', 'student name', 'student_name', 'student',
-    'stream', 'centre', 'center', 'test_key', 'test key',
-    'rank', 's.no.', 'sno', 'sl no', 's.no'
+    'stream', 'centre', 'center', 'centres', 'test_key', 'test key',
+    'rank', 's.no.', 'sno', 'sl no', 's.no', 'gender', 'category',
   ];
+  if (mbbsStatusKey) ignoreCols.push(mbbsStatusKey.trim().toLowerCase());
 
   for (const [key, val] of Object.entries(row)) {
     const lowerKey = key.trim().toLowerCase();
     if (!lowerKey || ignoreCols.includes(lowerKey)) continue;
-    
-    // Map generic marks columns to the specific test key
-    if (['marks', 'score', 'total marks', 'total_marks', 'total'].includes(lowerKey)) {
+
+    // NEET subject score columns → e.g. MMT01_Physics
+    if (neetSubjectMap[lowerKey]) {
+      updateObj[`${rowTestKey}_${neetSubjectMap[lowerKey]}`] = normalizeCellValue(val);
+      continue;
+    }
+
+    // Map generic total marks columns to the specific test key
+    if (totalColNames.includes(lowerKey)) {
       updateObj[rowTestKey] = normalizeCellValue(val);
+      continue;
+    }
+
+    const originalKey = key.trim();
+    if (rowTestKey && !originalKey.toLowerCase().startsWith(rowTestKey.toLowerCase() + '_')) {
+      updateObj[`${rowTestKey}_${originalKey}`] = normalizeCellValue(val);
     } else {
-      const originalKey = key.trim();
-      if (rowTestKey && !originalKey.toLowerCase().startsWith(rowTestKey.toLowerCase() + '_')) {
-        // If it doesn't already have the test key prefix, prepend it.
-        // This ensures columns like 'Physics_Accuracy' become 'FMT08_Physics_Accuracy'
-        updateObj[`${rowTestKey}_${originalKey}`] = normalizeCellValue(val);
-      } else {
-        updateObj[originalKey] = normalizeCellValue(val);
-      }
+      updateObj[originalKey] = normalizeCellValue(val);
     }
   }
 
@@ -291,12 +314,11 @@ function mapExcelMarkRow(row, testKey) {
     }
   }
 
-
   return {
     roll,
     test: testKey,
     updateObj,
-    centre: getRowField(row, ['centre', 'center', 'centerCode']),
+    centre: getRowField(row, ['centre', 'center', 'centres', 'centerCode']),
     stream: getRowField(row, ['stream', 'Stream', 'STREAM']),
     name: getRowField(row, ['name', 'Name', "STUDENT'S NAME"])
   };
@@ -1335,7 +1357,7 @@ export default function AdminDashboard() {
               Top Centres — {selectedTestKey}
             </div>
             <div style={{ flex: 1 }}>
-              <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} height={240} />
+              <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} height={240} stream={globalStream} />
             </div>
           </div>
           
@@ -1408,7 +1430,7 @@ export default function AdminDashboard() {
               <div>Upload {globalStream} student profiles and test scores to see analytics for this stream.</div>
             </div>
           ) : (
-          <InsightsDashboard key={activeLeaderboardKeys.join(',') + globalStream} testInsights={testInsights} data={{ ...data, profiles: (data?.profiles || []).filter(p => (p.stream || 'JEE') === globalStream) }} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={activeLeaderboardKeys.length > 1 ? 'Multiple Tests' : (activeLeaderboardKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} onStudentRankingClick={(type) => setShowStudentRankingModal(type)} testOptions={streamTestOptions} onTestKeyChange={(val) => { setSelectedTestKey(val); setSelectedLeaderboardTestKeys([val]); }} />
+          <InsightsDashboard key={activeLeaderboardKeys.join(',') + globalStream} testInsights={testInsights} data={{ ...data, profiles: (data?.profiles || []).filter(p => (p.stream || 'JEE') === globalStream) }} overview={overview} topRanked={leaderboardTopRanked} bottomRanked={leaderboardBottomRanked} centreBoard={centreBoard} selectedTestKey={activeLeaderboardKeys.length > 1 ? 'Multiple Tests' : (activeLeaderboardKeys[0] || selectedTestKey)} onViewStudent={setViewingStudentId} onViewCentre={(code) => { setPreviousPage(activePage); setFilterCenter(code); setActivePage('centre-overview'); }} onActiveCentresClick={() => setShowGraphsModal(true)} onTotalStudentsClick={() => { setPreviousPage(activePage); setActivePage('ranking'); }} onStudentRankingClick={(type) => setShowStudentRankingModal(type)} testOptions={streamTestOptions} onTestKeyChange={(val) => { setSelectedTestKey(val); setSelectedLeaderboardTestKeys([val]); }} stream={globalStream} />
           )}
         </div>
         {showGraphsModal && (
@@ -1441,7 +1463,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div style={{ flex: 1, height: '100%' }}>
-              <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} height="100%" />
+              <CentreLeaderboard centreStats={centreBoard} selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} onCentreClick={handleLeaderboardCentreClick} selectedSubject={selectedSubject} height="100%" stream={globalStream} />
             </div>
           </div>
           
