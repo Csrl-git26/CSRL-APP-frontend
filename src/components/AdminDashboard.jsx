@@ -485,14 +485,6 @@ export default function AdminDashboard() {
   }, [selectedTestKey, selectedSubject, refreshTrigger, globalStream]);
 
 
-  // Sync selectedTestKey to streamTestOptions
-  useEffect(() => {
-    if (streamTestOptions && streamTestOptions.length > 0 && selectedTestKey && !streamTestOptions.includes(selectedTestKey)) {
-      const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
-      if (fallback) setSelectedTestKey(fallback);
-    }
-  }, [streamTestOptions, selectedTestKey]);
-
   // Sync selectedTestKey to leaderboard default
   useEffect(() => {
 
@@ -593,6 +585,15 @@ export default function AdminDashboard() {
     const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
     return ['ALL_FMT', ...sorted];
   }, [allTestOptions, globalStream, data]);
+
+
+  // Sync selectedTestKey to streamTestOptions
+  useEffect(() => {
+    if (streamTestOptions && streamTestOptions.length > 0 && selectedTestKey && !streamTestOptions.includes(selectedTestKey)) {
+      const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+      if (fallback) setSelectedTestKey(fallback);
+    }
+  }, [streamTestOptions, selectedTestKey]);
 
   const activeLeaderboardKeys = useMemo(() => {
     const valid = selectedLeaderboardTestKeys.filter(k => streamTestOptions.includes(k));
