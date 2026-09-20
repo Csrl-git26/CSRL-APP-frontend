@@ -1935,7 +1935,8 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button type="button" className="btn btn-teal" onClick={() => openImportModal('marks')}><Upload size={13} /> Upload Marks</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={handleAddNewTestOption}><Plus size={13} /> New Test</button>
-          <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> Download sample format</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={downloadMarksSampleFormat}><Download size={13} /> JEE sample format</button>
+          <button type="button" className="btn btn-outline btn-sm" onClick={downloadNeetMarksSampleFormat}><Download size={13} /> NEET sample format</button>
           <button type="button" className="btn btn-outline btn-sm" onClick={exportMarksXlsx}><Download size={13} /> Export selected test</button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={exportCombinedWorkbook}><Package size={13} /> Full workbook</button>
           <button type="button" className="btn btn-outline btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red-bg)' }} onClick={handleFormatTestData}><Trash2 size={13} /> Format selected test</button>
