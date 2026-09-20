@@ -1067,7 +1067,17 @@ export default function AdminDashboard() {
           const rowRoll = normalizeRollKey(row.payload.roll);
           const profile = data.profiles.find((p) => normalizeRollKey(p.ROLL_KEY) === rowRoll);
           const fallbackCenter = normalizeCenterCode(row.payload.centre);
-          const centerCodeToUse = profile?.centerCode || fallbackCenter;
+          // If no profile and no centre column, try to extract centre from roll number itself
+          // e.g. 2724034JRS → JRS, 2724001TEZ → TEZ
+          let derivedCenter = fallbackCenter;
+          if (!derivedCenter && !profile) {
+            const rollStr = rowRoll.toUpperCase();
+            const knownCentres = ['JRS', 'TEZ', 'PUN', 'GVM', 'JRT', 'GLT', 'JAM', 'MUM', 'JKEM', 'JKM', 'JMM', 'RCH', 'SKM', 'BOT', 'ZOO'];
+            for (const c of knownCentres) {
+              if (rollStr.includes(c)) { derivedCenter = c; break; }
+            }
+          }
+          const centerCodeToUse = profile?.centerCode || derivedCenter;
 
           return {
             rollKey: rowRoll,
