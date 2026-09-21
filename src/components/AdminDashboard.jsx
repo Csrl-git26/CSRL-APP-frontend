@@ -1962,7 +1962,7 @@ export default function AdminDashboard() {
           <div style={{ marginTop: 4, fontSize: 12, color: 'var(--gray-400)' }}>One column at a time (selected test).</div>
           <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {allTestOptions.map((t) => (
-              <button key={t} type="button" className={} onClick={() => { setSelectedTestKey(t); setUploadTestKey(t); }}>{t}</button>
+              <button key={t} type="button" className={selectedTestKey === t ? 'btn btn-sm btn-primary' : 'btn btn-ghost btn-sm'} onClick={() => { setSelectedTestKey(t); setUploadTestKey(t); }}>{t}</button>
             ))}
           </div>
         </div>
