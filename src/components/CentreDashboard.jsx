@@ -277,9 +277,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     ]).then(([top, bottom, all]) => {
       const validRolls = new Set((data?.profiles || []).map(p => p.ROLL_KEY));
       const filterRanked = (list) => (list || []).filter(s => validRolls.has(s.roll));
-      setTopRanked(filterRanked(top.ranked));
-      setBottomRanked(filterRanked(bottom.ranked));
-      setAllRanked(filterRanked(all.ranked));
+      setTopRanked(filterRanked(top?.ranked || []));
+      setBottomRanked(filterRanked(bottom?.ranked || []));
+      setAllRanked(filterRanked(all?.ranked || []));
+    }).catch(() => {
+      setTopRanked([]);
+      setBottomRanked([]);
     });
   }, [selectedTestKey, selectedCenterCode, globalStream, data?.profiles]);
 
@@ -357,11 +360,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   }, [allTestOptions, globalStream, data]);
 
   const activeLeaderboardKeys = useMemo(() => {
-    const valid = selectedLeaderboardTestKeys.filter(k => streamTestOptions.includes(k));
+    const opts = streamTestOptions.length > 0 ? streamTestOptions : allTestOptions;
+    const valid = selectedLeaderboardTestKeys.filter(k => opts.includes(k));
     if (valid.length > 0) return valid;
-    const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
+    const fallback = opts.filter(o => o !== 'ALL_FMT')[0] || opts[0];
     return fallback ? [fallback] : [];
-  }, [selectedLeaderboardTestKeys, streamTestOptions]);
+  }, [selectedLeaderboardTestKeys, streamTestOptions, allTestOptions]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -375,7 +379,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       const matchGender  = filterGender   === 'ALL' || p.GENDER === filterGender;
       const matchState   = filterState    === 'ALL' || p.STATE === filterState;
       return matchSearch && matchCat && matchStream && matchSponsor && matchGender && matchState;
-    }).sort((a, b) => a.ROLL_KEY.localeCompare(b.ROLL_KEY, undefined, { numeric: true }));
+    }).sort((a, b) => (a.ROLL_KEY || '').localeCompare((b.ROLL_KEY || ''), undefined, { numeric: true }));
   }, [data, searchTerm, filterCategory, filterStream, filterSponsor, filterGender, filterState]);
 
   const filteredRanked = useMemo(() => {
