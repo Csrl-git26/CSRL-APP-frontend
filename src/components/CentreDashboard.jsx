@@ -409,9 +409,14 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     
     const streamCfg = getStreamConfig(globalStream);
     
-    // Average Marks
-    const minAvg = Math.min(...subjectAvgs.map((s) => s.avg));
-    const tiedAvg = subjectAvgs.filter((s) => s.avg === minAvg);
+    // Average Marks — filter out non-numeric avgs to prevent NaN crash
+    const validAvgs = subjectAvgs.filter((s) => typeof s.avg === 'number' && Number.isFinite(s.avg));
+    if (!validAvgs.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
+    
+    const minAvg = Math.min(...validAvgs.map((s) => s.avg));
+    const tiedAvg = validAvgs.filter((s) => s.avg === minAvg);
+    if (!tiedAvg.length) return { minSubjectAvg: null, weakSubjectFromPerformance: null };
+    
     const labelAvg = tiedAvg.length === 1
       ? `${tiedAvg[0].subject} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`
       : `${tiedAvg.map((t) => t.subject).join(', ')} (${minAvg}/${streamCfg.maxBySubject?.[tiedAvg[0].subject] || 100})`;
