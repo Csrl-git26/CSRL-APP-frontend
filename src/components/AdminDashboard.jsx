@@ -1961,8 +1961,8 @@ export default function AdminDashboard() {
           <div style={{ color: 'var(--gray-600)', fontFamily: 'monospace', fontSize: 11 }}>Roll Number · marks/score</div>
           <div style={{ marginTop: 4, fontSize: 12, color: 'var(--gray-400)' }}>One column at a time (selected test).</div>
           <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {allTestOptions.slice(0, 8).map((t) => (
-              <button key={t} type="button" className="btn btn-ghost btn-sm" onClick={() => { setSelectedTestKey(t); setUploadTestKey(t); }}>{t}</button>
+            {allTestOptions.map((t) => (
+              <button key={t} type="button" className={} onClick={() => { setSelectedTestKey(t); setUploadTestKey(t); }}>{t}</button>
             ))}
           </div>
         </div>
