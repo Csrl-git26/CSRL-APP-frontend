@@ -94,6 +94,25 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       }
     }
   }, [selectedTestKey]);
+
+  // When stream changes manually, auto-select the first test for that stream.
+  // This prevents crashes where selectedTestKey is a JEE test but globalStream is NEET.
+  useEffect(() => {
+    if (!allTestOptions || allTestOptions.length === 0) return;
+    const NEET_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+    const isNeetTest = (k) => NEET_PREFIX.test(k);
+    const testsForStream = allTestOptions.filter(k => {
+      return globalStream === 'NEET' ? isNeetTest(k) : !isNeetTest(k);
+    });
+    if (testsForStream.length === 0) return; // No tests for this stream yet — don't reset
+    const currentIsWrongStream = globalStream === 'NEET'
+      ? !isNeetTest(selectedTestKey || '')
+      : isNeetTest(selectedTestKey || '');
+    if (currentIsWrongStream) {
+      setSelectedTestKey(testsForStream[0]);
+      setSelectedLeaderboardTestKeys([testsForStream[0]]);
+    }
+  }, [globalStream]);
   const [searchTerm,       setSearchTerm]       = useState('');
   const [prefetchedData, setPrefetchedData] = useState({});
   const [filterCategory,   setFilterCategory]   = useState('ALL');
@@ -157,7 +176,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         const candidate   = rankingCols.length ? rankingCols[0] : d.testColumns?.[0];
         if (candidate) setSelectedTestKey(prev => prev || candidate);
 
-        fetchCentreChart(selectedCenterCode)
+        fetchCentreChart(selectedCenterCode, globalStream)
           .then(res => setCentreChartData(res?.chartData || []))
           .catch(e => console.error("Failed to fetch centre chart:", e));
       } catch (err) {
@@ -204,6 +223,14 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       .then(board => setCentreBoard(Array.isArray(board) ? board : []))
       .catch(() => setCentreBoard([]));
   }, [selectedLeaderboardTestKeys, selectedSubject, globalStream]);
+
+  // Re-fetch centre chart data when stream changes
+  useEffect(() => {
+    if (!selectedCenterCode) return;
+    fetchCentreChart(selectedCenterCode, globalStream)
+      .then(res => setCentreChartData(res?.chartData || []))
+      .catch(e => console.error('Failed to re-fetch centre chart on stream change:', e));
+  }, [globalStream, selectedCenterCode]);
 
   useEffect(() => {
     if (!selectedTrendCentre) return;
