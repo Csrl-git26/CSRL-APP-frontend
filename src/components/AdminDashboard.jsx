@@ -268,10 +268,10 @@ function mapExcelMarkRow(row, testKey) {
   const totalColNames = ['marks scored', 'marks', 'score', 'total marks', 'total_marks', 'total'];
 
   // MBBS status column (STATUS STATE='MBBS' or similar)
-  const mbbsStatusKey = Object.keys(row).find(k => k.toLowerCase().includes('mbbs') || k.toLowerCase().includes('status state'));
+  const mbbsStatusKey = Object.keys(row).find(k => k.toLowerCase().includes('status state') || k.toLowerCase() === 'mbbs' || k.toLowerCase() === 'mbbs status' || k.toLowerCase() === "status state='mbbs'");
   if (mbbsStatusKey) {
     const mbbsVal = String(row[mbbsStatusKey] || '').trim().toUpperCase();
-    updateObj[`${rowTestKey}_MBBS`] = mbbsVal === 'MBBS' ? 'MBBS' : 'NO';
+    updateObj[`${rowTestKey}_MBBS`] = (mbbsVal === 'MBBS' || mbbsVal === 'YES' || mbbsVal === 'Y' || mbbsVal === 'TRUE' || mbbsVal === '1') ? 'MBBS' : 'NO';
   }
 
   // Metadata columns that should not be inserted as test scores
