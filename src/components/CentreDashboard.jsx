@@ -72,6 +72,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [error,            setError]            = useState('');
   const [viewingStudentId, setViewingStudentId] = useState(null);
   const [selectedTestKey,  setSelectedTestKey]  = useState(adminTestKey || '');
+  const [globalStream,     setGlobalStream]     = useState(adminStream || 'JEE');
 
   useEffect(() => {
     if (adminTestKey) {
@@ -117,7 +118,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [prefetchedData, setPrefetchedData] = useState({});
   const [filterCategory,   setFilterCategory]   = useState('ALL');
   const [filterStream,     setFilterStream]     = useState('ALL');
-  const [globalStream,     setGlobalStream]     = useState(adminStream || 'JEE');
   const [filterSponsor,    setFilterSponsor]    = useState('ALL');
   const [filterGender,     setFilterGender]     = useState('ALL');
   const [filterState,      setFilterState]      = useState('ALL');
