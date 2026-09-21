@@ -154,8 +154,8 @@ export default function StudentDashboard() {
         const biology = toNum(normalized.Biology);
         const botany = toNum(normalized.Botany);
         const zoology = toNum(normalized.Zoology);
-        delete normalized.Botany;
-        delete normalized.Zoology;
+        
+        
 
         const parts = [physics, chemistry, botany, zoology, biology].filter((v) => v !== null);
         const computedTotal = parts.length > 0 ? parts.reduce((s, v) => s + v, 0) : null;
