@@ -27,7 +27,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
       <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', backfaceVisibility: 'hidden', padding: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <SectionTitle Icon={PieChartIcon} color="#2563eb">
-            {isBottom5 ? 'BOTTOM 5 CENTRE - QUAL' : 'TOP 5 CENTRE - QUAL %'}
+            {isBottom5 ? (stream === 'NEET' ? 'BOTTOM 5 CENTRE - MBBS' : 'BOTTOM 5 CENTRE - QUAL') : (stream === 'NEET' ? 'TOP 5 CENTRE - MBBS %' : 'TOP 5 CENTRE - QUAL %')}
           </SectionTitle>
           <div 
             onClick={(e) => { e.stopPropagation(); setShowBottom5Qual(!showBottom5Qual); }}
@@ -913,7 +913,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }}>
               <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">TOP 5 CENTRE - QUAL %</SectionTitle>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? 'TOP 5 CENTRE - MBBS %' : 'TOP 5 CENTRE - QUAL %'}</SectionTitle>
                   <div style={{ position: 'absolute', top: 8, right: 6, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 10, alignItems: 'flex-end' }}>
                     <div 
                       onClick={(e) => { e.stopPropagation(); setShowQualRankingModal(true); }}
@@ -973,7 +973,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
               <div className="card" onClick={() => setShowQualRankingModal(true)} style={{ padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <SectionTitle Icon={PieChartIcon} color="#2563eb">BOTTOM 5 CENTRE - QUAL</SectionTitle>
+                  <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? 'BOTTOM 5 CENTRE - MBBS %' : 'BOTTOM 5 CENTRE - QUAL %'}</SectionTitle>
                   <div style={{ position: 'absolute', top: 8, right: 6, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 10, alignItems: 'flex-end' }}>
                     <div 
                       onClick={(e) => { e.stopPropagation(); setShowQualRankingModal(true); }}
