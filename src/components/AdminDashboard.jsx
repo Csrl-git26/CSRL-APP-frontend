@@ -571,23 +571,34 @@ export default function AdminDashboard() {
     return ['ALL_FMT', ...sorted];
   }, [manualTestOptions, rankingTestColumns]);
 
-  // Stream-filtered test options: only show tests that have at least 1 student of the selected stream
+  // Stream-filtered test options: use prefix-based detection first (same as backend).
+  // NEET prefixes: NCT, MMT, NMT, NEET  /  JEE: everything else (MT, CMT, FMT, PT, JCT)
+  const NEET_TEST_PREFIX_ADMIN = /^(MMT|NCT|NMT|NEET)/i;
   const streamTestOptions = useMemo(() => {
     if (!globalStream || globalStream === 'ALL') return allTestOptions;
+
+    // Primary: filter by test name prefix
+    const prefixFiltered = allTestOptions.filter(k => {
+      if (k === 'ALL_FMT') return true; // always include aggregator option
+      const isNeetTest = NEET_TEST_PREFIX_ADMIN.test(k);
+      if (globalStream === 'NEET') return isNeetTest;
+      return !isNeetTest;
+    });
+    if (prefixFiltered.filter(k => k !== 'ALL_FMT').length > 0) {
+      const sorted = prefixFiltered.filter(k => k !== 'ALL_FMT').sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
+      return globalStream === 'NEET' ? sorted : ['ALL_FMT', ...sorted];
+    }
+
+    // Fallback: column-based detection (for non-standard test names)
     const profiles = data?.profiles || [];
     const tests = data?.tests || [];
-    const streamProfiles = profiles.filter(p => (p.stream || 'JEE') === globalStream);
-    const streamRollKeys = new Set(streamProfiles.map(p => p.ROLL_KEY));
-    
+    const streamRollKeys = new Set(profiles.filter(p => (p.stream || 'JEE') === globalStream).map(p => p.ROLL_KEY));
     const streamTests = tests.filter(t => streamRollKeys.has(t.ROLL_KEY));
     const baseKeys = new Set();
-    
     for (const t of streamTests) {
       for (const k of Object.keys(t)) {
         if (allTestOptions.includes(k) && !k.includes('_')) {
           const val = Number(t[k]);
-          // Only consider the test if the student has a non-zero, non-empty score. 
-          // (If all students in a stream have 0, they likely didn't take this test)
           if (t[k] != null && t[k] !== '' && val !== 0 && !isNaN(val)) {
             let include = true;
             if (data && data.testColumns) {
@@ -602,10 +613,9 @@ export default function AdminDashboard() {
         }
       }
     }
-    
-    if (baseKeys.size === 0) return []; // No tests for this stream
+    if (baseKeys.size === 0) return [];
     const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
-    return ['ALL_FMT', ...sorted];
+    return globalStream === 'NEET' ? sorted : ['ALL_FMT', ...sorted];
   }, [allTestOptions, globalStream, data]);
 
 

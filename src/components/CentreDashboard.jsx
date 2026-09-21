@@ -336,8 +336,18 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     [data]
   );
 
+  // Prefix-based NEET/JEE test detection — same logic as the backend.
+  // NEET test prefixes: NCT, MMT, NMT, NEET  /  JEE: MT, CMT, FMT, PT, JCT
+  const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
   const streamTestOptions = useMemo(() => {
     if (!globalStream || globalStream === 'ALL') return allTestOptions;
+    const filtered = allTestOptions.filter(k => {
+      const isNeetTest = NEET_TEST_PREFIX.test(k);
+      if (globalStream === 'NEET') return isNeetTest;
+      return !isNeetTest; // JEE: exclude NEET-prefixed tests
+    });
+    // Fallback: if prefix filter gives nothing, use column-based detection
+    if (filtered.length > 0) return filtered;
     const profs = data?.profiles || [];
     const tests = data?.tests || [];
     const rollKeys = new Set(profs.filter(p => (p.stream || 'JEE') === globalStream).map(p => p.ROLL_KEY));
