@@ -7,6 +7,7 @@ import DataAdminLogin from './components/DataAdminLogin';
 import StudentDashboard from './components/StudentDashboard';
 import CentreDashboard from './components/CentreDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -17,9 +18,9 @@ function AppRoutes() {
       <Route path="/data-admin" element={<DataAdminLogin />} />
       <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
         <Route index element={
-          user?.role === 'STUDENT' ? <StudentDashboard /> :
-          user?.role === 'CENTRE' ? <CentreDashboard /> :
-          <AdminDashboard />
+          user?.role === 'STUDENT' ? <ErrorBoundary><StudentDashboard /></ErrorBoundary> :
+          user?.role === 'CENTRE' ? <ErrorBoundary><CentreDashboard /></ErrorBoundary> :
+          <ErrorBoundary><AdminDashboard /></ErrorBoundary>
         } />
       </Route>
     </Routes>

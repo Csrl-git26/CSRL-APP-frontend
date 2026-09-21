@@ -139,6 +139,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   // ── Initial load ─────────────────────────────────────────────────────────────
 
   useEffect(() => {
+    setLoading(true);
+    setError('');
     const load = async () => {
       try {
         const [d, ov] = await Promise.all([
@@ -284,6 +286,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   useEffect(() => {
     if (activePage !== 'topbottom' || !selectedTestKey) return undefined;
     let cancelled = false;
+    setTestInsights(null);
     setTestInsightsLoading(true);
     setTestInsightsError('');
     fetchTestInsights(null, selectedTestKey, null, globalStream)
