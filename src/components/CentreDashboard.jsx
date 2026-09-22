@@ -86,15 +86,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     }
   }, [adminStream]);
 
-  useEffect(() => {
-    if (selectedTestKey) {
-      if (selectedTestKey.toUpperCase().startsWith('NCT') || selectedTestKey.toUpperCase().includes('NEET')) {
-        setGlobalStream('NEET');
-      } else if (selectedTestKey.toUpperCase().startsWith('MT') || selectedTestKey.toUpperCase().startsWith('FMT') || selectedTestKey.toUpperCase().startsWith('CMT')) {
-        setGlobalStream('JEE');
-      }
-    }
-  }, [selectedTestKey]);
+  // NOTE: We intentionally do NOT auto-switch globalStream based on selectedTestKey.
+  // Doing so caused the dashboard to crash on initial load when NCT01 appeared in the global
+  // test list for JEE centres. Stream is only changed by explicit user interaction.
 
   // When stream changes manually, auto-select the first test for that stream.
   // This prevents crashes where selectedTestKey is a JEE test but globalStream is NEET.
@@ -169,11 +163,18 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         setData(d);
         setOverview(ov);
 
-        // Select first total-column from descending-sorted list as default test key
-        const rankingCols = (d.testColumns || [])
+        // Select first total-column for the CURRENT stream as default test key.
+        // Filter by stream prefix so a JEE centre doesn't accidentally default to NCT01 (NEET).
+        const NEET_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+        const currentStream = globalStream || 'JEE';
+        const allRankingCols = (d.testColumns || [])
           .filter((c) => !String(c).includes('_'))
           .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
-        const candidate   = rankingCols.length ? rankingCols[0] : d.testColumns?.[0];
+        // Prefer tests matching the current stream; fall back to all if none match
+        const streamRankingCols = allRankingCols.filter(k =>
+          currentStream === 'NEET' ? NEET_PREFIX.test(k) : !NEET_PREFIX.test(k)
+        );
+        const candidate = (streamRankingCols.length ? streamRankingCols : allRankingCols)[0] || d.testColumns?.[0];
         if (candidate) setSelectedTestKey(prev => prev || candidate);
 
         fetchCentreChart(selectedCenterCode, globalStream)
