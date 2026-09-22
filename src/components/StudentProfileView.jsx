@@ -2,7 +2,7 @@ import { normalizeStudentChartRows } from '../services/studentChart';
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Download, Loader2 } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx/xlsx.mjs';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { getJeePercentile, getNeetScore, parseTestColumn, resolveStudentPhotoUrl, fetchStudentChart, buildStudentChartData, sortTestRowsChronologically, getStreamConfig, computeWeakSubject, getMaxMarksForSubject } from '../services/dataService';

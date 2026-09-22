@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Upload, Download, Trash2, Search, Loader2, Filter, Calendar, Building2, MapPin } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx/xlsx.mjs';
 import {
   uploadPastYearData,
   fetchPastYearData,

@@ -38,7 +38,7 @@ import {
   Lightbulb, Loader2, CheckCircle2,
   Eye, BarChart3, Flag, Archive,
 } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx/xlsx.mjs';
 import MultiSelectDropdown from './MultiSelectDropdown';
 
 import {
