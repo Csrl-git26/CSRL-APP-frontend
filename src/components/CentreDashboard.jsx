@@ -249,7 +249,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     if (!selectedTrendCentre) return;
     let isMounted = true;
     setTrendChartLoading(true);
-    fetchCentreChart(selectedTrendCentre)
+    fetchCentreChart(selectedTrendCentre, globalStream)
       .then(res => {
         if (isMounted) setTrendChartData(res.chartData || []);
       })
@@ -258,7 +258,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         if (isMounted) setTrendChartLoading(false);
       });
     return () => { isMounted = false; };
-  }, [selectedTrendCentre]);
+  }, [selectedTrendCentre, globalStream]);
 
   useEffect(() => {
     if (!selectedCenterCode || !selectedTestKey) return undefined;
@@ -649,7 +649,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         {trendChartLoading ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
         ) : trendChartData.length > 0 ? (
-          <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig('JEE')} noCard={true} />
+          <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} />
         ) : (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
         )}
