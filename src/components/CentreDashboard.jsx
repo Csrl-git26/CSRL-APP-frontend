@@ -347,12 +347,18 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     };
   }, [activePage, selectedTestKey]);
 
-  const rankingTestColumns = useMemo(
-    () => ['ALL_FMT', ...(data?.testColumns || [])
+  const rankingTestColumns = useMemo(() => {
+    const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+    const cols = (data?.testColumns || [])
       .filter((c) => !String(c).includes('_'))
-      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }))],
-    [data]
-  );
+      .filter((c) => {
+        if (!globalStream || globalStream === 'ALL') return true;
+        const isNeetTest = NEET_TEST_PREFIX.test(c);
+        return globalStream === 'NEET' ? isNeetTest : !isNeetTest;
+      })
+      .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
+    return ['ALL_FMT', ...cols];
+  }, [data, globalStream]);
 
   const rankingSubjectCols = useMemo(() => {
     if (!data?.testColumns) return [];
