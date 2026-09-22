@@ -92,6 +92,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
   // When stream changes manually, auto-select the first test for that stream.
   // This prevents crashes where selectedTestKey is a JEE test but globalStream is NEET.
+  // Also clears stale leaderboard data when no tests exist for the new stream.
   useEffect(() => {
     if (!allTestOptions || allTestOptions.length === 0) return;
     const NEET_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
@@ -99,7 +100,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     const testsForStream = allTestOptions.filter(k => {
       return globalStream === 'NEET' ? isNeetTest(k) : !isNeetTest(k);
     });
-    if (testsForStream.length === 0) return; // No tests for this stream yet — don't reset
+    if (testsForStream.length === 0) {
+      // No tests for this stream — clear stale leaderboard data from the other stream
+      setCentreBoard([]);
+      setSelectedLeaderboardTestKeys([]);
+      return;
+    }
     const currentIsWrongStream = globalStream === 'NEET'
       ? !isNeetTest(selectedTestKey || '')
       : isNeetTest(selectedTestKey || '');
@@ -544,6 +550,21 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
     return (
     <div>
+      {/* Empty state when no tests available for this stream */}
+      {streamTestOptions.length === 0 && globalStream !== 'ALL' && (
+        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#f8fafc', borderRadius: 12, border: '2px dashed var(--gray-200)', marginBottom: 24 }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
+          <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--gray-700)', marginBottom: 8 }}>
+            No {globalStream} Test Data Yet
+          </div>
+          <div style={{ color: 'var(--gray-500)', fontSize: 14 }}>
+            {globalStream === 'NEET'
+              ? 'Upload an NCT01 (or MMT01/NMT01) marks sheet from the Admin panel to see NEET centre rankings.'
+              : 'Upload a JEE marks sheet from the Admin panel to see JEE centre rankings.'}
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 800, color: '#2563eb', letterSpacing: '-0.3px', borderBottom: '2px solid #2563eb20', paddingBottom: 4, margin: '0 0 10px 0' }}>
