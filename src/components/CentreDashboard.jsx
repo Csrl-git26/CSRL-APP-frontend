@@ -129,6 +129,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [centreChartData, setCentreChartData] = useState([]);
   const [selectedLeaderboardTestKeys, setSelectedLeaderboardTestKeys] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState('Total');
+
+  // Reset subject filter when stream changes, since JEE and NEET have different subjects
+  // (e.g. "Math" is not valid for NEET, "Botany"/"Zoology" are not valid for JEE).
+  useEffect(() => {
+    setSelectedSubject('Total');
+  }, [globalStream]);
   const [selectedTrendCentre, setSelectedTrendCentre] = useState(() => adminViewCenterCode || auth.centerCode || '');
   const [trendChartData, setTrendChartData] = useState([]);
   const [trendChartLoading, setTrendChartLoading] = useState(false);
@@ -607,9 +613,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
             <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Sort By Subject:</span>
             <select className="input select" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: 140, fontSize: 13 }}>
               <option value="Total">Total Average</option>
-              <option value="Physics">Physics</option>
-              <option value="Chemistry">Chemistry</option>
-              <option value="Math">Math</option>
+              {getStreamConfig(globalStream).subjects.map((subj) => (
+                <option key={subj} value={subj}>{subj}</option>
+              ))}
               <option value="Qualification">{globalStream === 'NEET' ? 'MBBS Rate' : 'Qualification Rate'}</option>
             </select>
           </div>
