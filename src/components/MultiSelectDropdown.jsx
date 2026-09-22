@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function MultiSelectDropdown({ options, selectedOptions, onChange }) {
+export default function MultiSelectDropdown({ options, selectedOptions, onChange, placeholder }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -35,23 +35,26 @@ export default function MultiSelectDropdown({ options, selectedOptions, onChange
     }
   };
 
-  const displayText = selectedOptions.length === 0 ? "Select Tests" : 
-         selectedOptions.length === 1 ? selectedOptions[0] : 
-         `${selectedOptions.length} tests selected`;
+  const displayText = options.length === 0
+    ? (placeholder || 'No tests available')
+    : selectedOptions.length === 0 ? "Select Tests"
+    : selectedOptions.length === 1 ? selectedOptions[0]
+    : `${selectedOptions.length} tests selected`;
 
   return (
     <div ref={dropdownRef} style={{ position: 'relative', display: 'inline-block' }}>
       <button 
         type="button"
         className="input select" 
-        style={{ width: 170, fontSize: 13, textAlign: 'left', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-        onClick={() => setIsOpen(!isOpen)}
+        style={{ width: 200, fontSize: 13, textAlign: 'left', background: options.length === 0 ? '#f3f4f6' : '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: options.length === 0 ? '#9ca3af' : undefined }}
+        onClick={() => options.length > 0 && setIsOpen(!isOpen)}
+        disabled={options.length === 0}
       >
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayText}</span>
-        <span style={{ fontSize: 10 }}>▼</span>
+        {options.length > 0 && <span style={{ fontSize: 10 }}>▼</span>}
       </button>
       
-      {isOpen && (
+      {isOpen && options.length > 0 && (
         <div style={{ position: 'absolute', top: '100%', left: 0, width: 220, background: '#fff', border: '1px solid var(--gray-300)', borderRadius: 6, zIndex: 9999, maxHeight: 300, overflowY: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
           <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--gray-200)', background: 'var(--gray-50)', cursor: 'pointer' }} onClick={handleSelectAllFmt}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', margin: 0 }}>

@@ -369,41 +369,28 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
   const streamTestOptions = useMemo(() => {
     if (!globalStream || globalStream === 'ALL') return allTestOptions;
+    // Filter by prefix — NEET gets NEET-prefixed tests, JEE gets the rest
     const filtered = allTestOptions.filter(k => {
       const isNeetTest = NEET_TEST_PREFIX.test(k);
       if (globalStream === 'NEET') return isNeetTest;
       return !isNeetTest; // JEE: exclude NEET-prefixed tests
     });
-    // Fallback: if prefix filter gives nothing, use column-based detection
-    if (filtered.length > 0) return filtered;
-    const profs = data?.profiles || [];
-    const tests = data?.tests || [];
-    const rollKeys = new Set(profs.filter(p => (p.stream || 'JEE') === globalStream).map(p => p.ROLL_KEY));
-    const keys = new Set(
-      tests.filter(t => rollKeys.has(t.ROLL_KEY))
-        .flatMap(t => Object.keys(t).filter(k => {
-          if (!allTestOptions.includes(k) || k.includes('_') || t[k] == null || t[k] === '') return false;
-          if (data && data.testColumns) {
-            const cols = data.testColumns.filter(c => c.startsWith(k + '_'));
-            const hasMath = cols.some(c => c.toLowerCase().includes('math'));
-            const hasBio = cols.some(c => c.toLowerCase().includes('bio') || c.toLowerCase().includes('bot') || c.toLowerCase().includes('zoo'));
-            if (globalStream === 'NEET' && hasMath && !hasBio) return false;
-            if (globalStream === 'JEE' && hasBio && !hasMath) return false;
-          }
-          return true;
-        }))
-    );
-    if (keys.size === 0) return [];
-    return [...keys].sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
-  }, [allTestOptions, globalStream, data]);
+    // Return the filtered list even if empty — do NOT fall back to the other stream's tests.
+    // An empty array will show 'No tests available' in the dropdown.
+    return filtered;
+  }, [allTestOptions, globalStream]);
 
   const activeLeaderboardKeys = useMemo(() => {
-    const opts = streamTestOptions.length > 0 ? streamTestOptions : allTestOptions;
+    // When a specific stream is selected, only use tests from that stream.
+    // Do NOT fall back to allTestOptions (which may contain the other stream's tests).
+    const opts = (globalStream && globalStream !== 'ALL')
+      ? streamTestOptions
+      : (streamTestOptions.length > 0 ? streamTestOptions : allTestOptions);
     const valid = selectedLeaderboardTestKeys.filter(k => opts.includes(k));
     if (valid.length > 0) return valid;
     const fallback = opts.filter(o => o !== 'ALL_FMT')[0] || opts[0];
     return fallback ? [fallback] : [];
-  }, [selectedLeaderboardTestKeys, streamTestOptions, allTestOptions]);
+  }, [selectedLeaderboardTestKeys, streamTestOptions, allTestOptions, globalStream]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -589,9 +576,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
             <MultiSelectDropdown 
-              options={streamTestOptions.length > 0 ? streamTestOptions : allTestOptions} 
+              options={streamTestOptions} 
               selectedOptions={activeLeaderboardKeys} 
               onChange={setSelectedLeaderboardTestKeys} 
+              placeholder={globalStream === 'NEET' && streamTestOptions.length === 0 ? 'No NEET tests yet' : undefined}
             />
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
