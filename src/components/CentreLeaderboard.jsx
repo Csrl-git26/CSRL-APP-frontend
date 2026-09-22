@@ -10,7 +10,7 @@ const Empty = ({ message }) => (
   </div>
 );
 
-const CustomTooltip = ({ active, payload, selectedSubject }) => {
+const CustomTooltip = ({ active, payload, selectedSubject, stream }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     const centerName = CENTERS[data.code]?.name || data.code;
@@ -200,7 +200,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
           >
             <Label value={currentYLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 16, fontWeight: 'bold', fill: '#64748b' }} />
           </YAxis>
-          <Tooltip content={<CustomTooltip selectedSubject={selectedSubject} />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+          <Tooltip content={<CustomTooltip selectedSubject={selectedSubject} stream={stream} />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
           <Bar isAnimationActive={true} animationDuration={2000} animationEasing="ease-out" 
             dataKey={currentDataKey}
             radius={[4, 4, 0, 0]} 
