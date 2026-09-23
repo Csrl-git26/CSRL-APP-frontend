@@ -741,7 +741,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
-              {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
+              {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             </tr>
           </thead>
           <tbody>
@@ -779,12 +779,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                     );
                   })}
                   <td><strong style={{ color: '#1a4fa0' }}>{s.marks}</strong></td>
-                  {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
+                  {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
                 </tr>
               );
             })}
             {!topRanked.length && (
-              <tr><td colSpan={rankingSubjects.length + 3 + allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
+              <tr><td colSpan={rankingSubjects.length + 3 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data for {selectedTestKey}</td></tr>
             )}
           </tbody>
         </table>
@@ -806,7 +806,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                 return <th key={s} title={s}>{abbr}</th>;
               })}
               <th>Total</th>
-              {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
+              {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <th key={t} style={{fontSize: 10}} title={t + ' Rank'}>{t} Rank</th>)}
             </tr>
           </thead>
           <tbody>
@@ -843,11 +843,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                   );
                 })}
                   <td><strong style={{ color: 'var(--red)' }}>{s.marks}</strong></td>
-                  {allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
+                  {streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).map(t => <td key={t} style={{ color: 'var(--gray-400)', fontSize: 11, textAlign: 'center' }}>{s.fmtRanks?.[t] || 'Absent'}</td>)}
               </tr>
             )})}
             {!bottomRanked.length && (
-              <tr><td colSpan={rankingSubjects.length + 3 + allTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data</td></tr>
+              <tr><td colSpan={rankingSubjects.length + 3 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', color: 'var(--gray-400)', padding: 20 }}>No data</td></tr>
             )}
           </tbody>
         </table>
