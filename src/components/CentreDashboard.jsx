@@ -113,6 +113,15 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       setSelectedTestKey(testsForStream[0]);
       setSelectedLeaderboardTestKeys([testsForStream[0]]);
     }
+
+    // Also reset the selected centre to the first one matching the new stream
+    const streamCentres = centersList.filter(c => !c.streams || c.streams.length === 0 || c.streams.includes(globalStream));
+    if (streamCentres.length > 0) {
+      const currentCentreValid = streamCentres.some(c => c.code === selectedCenterCode);
+      if (!currentCentreValid) {
+        setSelectedCenterCode(streamCentres[0].code);
+      }
+    }
   }, [globalStream]);
   const [searchTerm,       setSearchTerm]       = useState('');
   const [prefetchedData, setPrefetchedData] = useState({});
@@ -1095,7 +1104,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
               onChange={(e) => setSelectedCenterCode(e.target.value)}
               style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.3)', width: 220 }}
             >
-              {centersList.map((c) => {
+              {centersList
+                .filter((c) => !c.streams || c.streams.length === 0 || c.streams.includes(globalStream))
+                .map((c) => {
                 const label = c.name;
                 return (
                   <option key={c.code} value={c.code} style={{ color: '#000' }}>
