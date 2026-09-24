@@ -371,7 +371,7 @@ export default function TestInsightsPanel({
 
           <div className="grid-2">
             <div className="card">
-              <div className="section-title">student no. subjectwise marks &lt;=30 - count by centre</div>
+              <div className="section-title">student no. subjectwise marks &lt;={insights?.overallTopper?.stream === 'NEET' ? '100' : '30'} - count by centre</div>
               
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
                 {subjects.map((sub) => (
