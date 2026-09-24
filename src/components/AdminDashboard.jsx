@@ -417,7 +417,7 @@ export default function AdminDashboard() {
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [filterCenter,   setFilterCenter]   = useScopeViewState('admin.centre', 'ALL');
   const [filterStream,   setFilterStream]   = useState('ALL');
-  const { stream: globalStream, setStream: setGlobalStream, branch } = useExamScope();
+  const { stream: globalStream, setStream: setGlobalStream, branch, setBranch } = useExamScope();
   const [filterSponsor,  setFilterSponsor]  = useState('ALL');
   const [filterGender,   setFilterGender]   = useState('ALL');
   const [filterState,    setFilterState]    = useState('ALL');
@@ -977,7 +977,9 @@ export default function AdminDashboard() {
 
   const openImportModal = (mode) => {
     setImportMode(mode);
-    setUploadTestKey(selectedTestKey || allTestOptions[0] || '');
+    setUploadStream(globalStream);
+    setUploadBranch(branch);
+    setUploadTestKey(streamTestOptions.includes(selectedTestKey) ? selectedTestKey : (streamTestOptions[0] || ''));
     resetImportState();
   };
 
@@ -1969,12 +1971,16 @@ export default function AdminDashboard() {
             <div style={{ fontSize: 13, color: 'var(--gray-600)', marginTop: 4 }}>Upload test-wise marks — select test column, upload, preview and confirm.</div>
           </div>
         </div>
+        <UploadScopeSelectors stream={globalStream} branch={branch} onStreamChange={setGlobalStream} onBranchChange={setBranch} />
+        <div style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 12 }}>
+          Destination: <strong>{globalStream}{globalStream === 'JEE' ? (branch === 'ADVANCED' ? ' / Advanced' : ' / Main') : ''}</strong>. The test name and uploaded data will be assigned here.
+        </div>
         <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px 14px', marginBottom: 14, fontSize: 13 }}>
           <div style={{ fontWeight: 600, marginBottom: 6 }}>Marks import:</div>
           <div style={{ color: 'var(--gray-600)', fontFamily: 'monospace', fontSize: 11 }}>Roll Number · marks/score</div>
           <div style={{ marginTop: 4, fontSize: 12, color: 'var(--gray-400)' }}>One column at a time (selected test).</div>
           <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {allTestOptions.map((t) => (
+            {streamTestOptions.map((t) => (
               <button key={t} type="button" className={selectedTestKey === t ? 'btn btn-sm btn-primary' : 'btn btn-ghost btn-sm'} onClick={() => { setSelectedTestKey(t); setUploadTestKey(t); }}>{t}</button>
             ))}
           </div>
@@ -2023,6 +2029,10 @@ export default function AdminDashboard() {
             <div style={{ fontWeight: 700, fontSize: 16 }}>Import Marks Awarded Sheet</div>
             <div style={{ fontSize: 13, color: 'var(--gray-600)', marginTop: 4 }}>Upload the detailed marks awarded sheet to calculate weak topics and insights.</div>
           </div>
+        </div>
+        <UploadScopeSelectors stream={globalStream} branch={branch} onStreamChange={setGlobalStream} onBranchChange={setBranch} />
+        <div style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 12 }}>
+          Destination: <strong>{globalStream}{globalStream === 'JEE' ? (branch === 'ADVANCED' ? ' / Advanced' : ' / Main') : ''}</strong>. The test name and uploaded data will be assigned here.
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 14 }}>
           <button type="button" className="btn btn-primary" style={{ background: '#db2777', borderColor: '#db2777' }} onClick={() => setShowMarksAwardModal(true)}>
@@ -2100,7 +2110,7 @@ export default function AdminDashboard() {
             <div className="modal-body">
               {importMode === 'marks' && (
                 <div className="form-group">
-                  <UploadScopeSelectors stream={uploadStream} branch={uploadBranch} onStreamChange={setUploadStream} onBranchChange={setUploadBranch} disabled={uploadLoading} />
+                  <UploadScopeSelectors stream={uploadStream} branch={uploadBranch} onStreamChange={(value) => { setUploadStream(value); setUploadTestKey(''); resetImportState(); }} onBranchChange={(value) => { setUploadBranch(value); setUploadTestKey(''); resetImportState(); }} disabled={uploadLoading} />
                   <label className="label" htmlFor="importTestKey">Test Column</label>
                   <input 
                     id="importTestKey" 
@@ -2112,7 +2122,7 @@ export default function AdminDashboard() {
                     placeholder="Enter new or select existing test (e.g. CAT-1(TEST))"
                   />
                   <datalist id="testOptions">
-                    {allTestOptions.map((col) => <option key={col} value={col} />)}
+                    {(uploadStream === globalStream && (uploadStream === 'NEET' || uploadBranch === branch) ? streamTestOptions : []).map((col) => <option key={col} value={col} />)}
                   </datalist>
                 </div>
               )}
