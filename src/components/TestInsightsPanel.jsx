@@ -396,7 +396,7 @@ export default function TestInsightsPanel({
             </div>
 
             <div className="card">
-              <div className="section-title" style={{ fontSize: 14 }}>{insights?.overallTopper?.stream === 'NEET' ? 'Total no. of students with empty marks - centrewise' : 'Not qualified (overall) — count by centre'}</div>
+              <div className="section-title" style={{ fontSize: 14 }}>{insights?.overallTopper?.stream === 'NEET' ? 'Total no. of students with vacant MBBS status - centrewise' : 'Not qualified (overall) — count by centre'}</div>
               <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }}>Total marks criteria: GEN >= 110 | EWS >= 90 | OBC >= 85 | SC >= 65 | ST >= 60 | PWD >= 30</p>
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
                 {Object.entries(insights.notQualifiedOverall || {})
