@@ -371,8 +371,9 @@ export async function fetchSubjectAverages(_token, centerCode, testKey) {
 }
 
 /** CAT-style test analysis (marks-based). Optional rollKey highlights one student in the payload. */
-export async function fetchTestInsights(_token, testKey, rollKey, stream) {
+export async function fetchTestInsights(_token, testKey, rollKey, stream, centerCode) {
   const params = new URLSearchParams({ testKey });
+  if (centerCode && centerCode !== 'ALL') params.set('centerCode', centerCode);
   if (rollKey) params.set('rollKey', rollKey);
   if (stream && stream !== 'ALL') params.set('stream', stream);
   return apiFetch(`/api/analytics/test-insights?${params}`);

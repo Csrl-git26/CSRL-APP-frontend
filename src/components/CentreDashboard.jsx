@@ -341,7 +341,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     setTestInsights(null);
     setTestInsightsLoading(true);
     setTestInsightsError('');
-    fetchTestInsights(null, selectedTestKey, null, globalStream)
+    fetchTestInsights(null, selectedTestKey, null, globalStream, selectedCenterCode)
       .then((d) => {
         if (!cancelled) setTestInsights(d);
       })
@@ -354,7 +354,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     return () => {
       cancelled = true;
     };
-  }, [activePage, selectedTestKey]);
+  }, [activePage, selectedTestKey, selectedCenterCode, globalStream]);
 
   const rankingTestColumns = useMemo(() => {
     const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
