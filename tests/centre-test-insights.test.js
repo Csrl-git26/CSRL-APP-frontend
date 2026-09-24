@@ -7,7 +7,7 @@ const fn = service.slice(start, service.indexOf('\n}', start) + 2).replace('expo
 let requested;
 const scope = { URLSearchParams, apiFetch: async url => { requested = new URL(url, 'https://test.invalid'); return { topStudent: { roll: '1', total: 31 } }; } };
 vm.runInNewContext(fn, scope);
-for (const [centre, stream, test] of [['CHN','JEE','CMT01'], ['KNP','JEE','CMT01'], ['CHN','NEET','MMT01']]) {
+for (const [centre, stream, test] of [['CHN','JEE','CMT01'], ['KNP','JEE','CMT01'], ['CHN','NEET','MMT01'], ['ALL','NEET','NCT01'], ['ALL','JEE','CMT01']]) {
   const result = await scope.fetchTestInsights(null, test, null, stream, centre);
   assert.equal(requested.searchParams.get('centerCode'), centre);
   assert.equal(requested.searchParams.get('stream'), stream);
@@ -27,6 +27,6 @@ const context = { activePage: 'topbottom', selectedTestKey: 'CMT01', selectedCen
 vm.runInNewContext(effect, context);
 assert.deepEqual(Array.from(dependencies), ['topbottom','CMT01','CHN','JEE']);
 run();
-assert.equal(requested.searchParams.get('centerCode'), 'CHN');
+assert.equal(requested.searchParams.get('centerCode'), 'ALL');
 assert.equal(requested.searchParams.has('rollKey'), false);
 console.log('PASS: selected centre/test/stream request, reload dependencies, student lookup compatibility');
