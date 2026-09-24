@@ -1,3 +1,4 @@
+import { withTestBranch } from './examScope';
 // ============================================================
 // weakTopicApi.js — API service for weak topic feature
 //
@@ -45,6 +46,8 @@ const apiCache = new Map();
 const CACHE_TTL = 30000; // 30 seconds
 
 async function cachedFetch(urlKey, originalUrl) {
+  urlKey = withTestBranch(urlKey);
+  originalUrl = withTestBranch(originalUrl);
   const now = Date.now();
   if (apiCache.has(urlKey)) {
     const { data, timestamp } = apiCache.get(urlKey);

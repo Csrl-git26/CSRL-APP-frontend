@@ -1,3 +1,5 @@
+import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
+import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
@@ -70,9 +72,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [bulkExportProgress, setBulkExportProgress] = useState('');
   const [loading,          setLoading]          = useState(true);
   const [error,            setError]            = useState('');
-  const [viewingStudentId, setViewingStudentId] = useState(null);
+  const [viewingStudentId, setViewingStudentId] = useScopeViewState('CentreDashboard.student', null);
   const [selectedTestKey,  setSelectedTestKey]  = useState(adminTestKey || '');
-  const [globalStream,     setGlobalStream]     = useState(adminStream || 'JEE');
+  const { stream: globalStream, setStream: setGlobalStream, branch } = useExamScope();
 
   useEffect(() => {
     if (adminTestKey) {
@@ -195,11 +197,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         const allRankingCols = (d.testColumns || [])
           .filter((c) => !String(c).includes('_'))
           .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
-        // Prefer tests matching the current stream; fall back to all if none match
+        // Only select tests matching the current stream and branch.
         const streamRankingCols = allRankingCols.filter(k =>
           currentStream === 'NEET' ? NEET_PREFIX.test(k) : !NEET_PREFIX.test(k)
         );
-        const candidate = (streamRankingCols.length ? streamRankingCols : allRankingCols)[0] || d.testColumns?.[0];
+        const candidate = streamRankingCols[0];
         if (candidate) setSelectedTestKey(prev => prev || candidate);
 
         fetchCentreChart(selectedCenterCode, globalStream)
@@ -401,6 +403,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     // An empty array will show 'No tests available' in the dropdown.
     return filtered;
   }, [allTestOptions, globalStream]);
+
+  useEffect(() => {
+    if (!streamTestOptions.includes(selectedTestKey)) setSelectedTestKey(streamTestOptions[0] || '');
+  }, [streamTestOptions, selectedTestKey]);
 
   const activeLeaderboardKeys = useMemo(() => {
     // When a specific stream is selected, only use tests from that stream.
@@ -606,7 +612,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         <div style={{ textAlign: 'center', padding: '60px 20px', background: '#f8fafc', borderRadius: 12, border: '2px dashed var(--gray-200)', marginBottom: 24 }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
           <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--gray-700)', marginBottom: 8 }}>
-            No {globalStream} Test Data Yet
+            No {globalStream}{globalStream === 'JEE' ? (branch === 'ADVANCED' ? ' Advanced' : ' Main') : ''} Test Data Yet
           </div>
           <div style={{ color: 'var(--gray-500)', fontSize: 14 }}>
             {globalStream === 'NEET'
@@ -1115,7 +1121,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
             <div>
               <h1>{TABS.find(t => t.key === activePage)?.label || (activePage === 'overview' ? 'Overview' : 'CSRL Dashboard')}</h1>
             </div>
-            {(activePage === 'leaderboard' || activePage === 'overview') && (
+            {(
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
                 <select
@@ -1126,6 +1132,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                   <option value="JEE" style={{ color: '#333', background: '#fff' }}>JEE</option>
                   <option value="NEET" style={{ color: '#333', background: '#fff' }}>NEET</option>
                 </select>
+                <BranchSelector light />
               </div>
             )}
           </div>

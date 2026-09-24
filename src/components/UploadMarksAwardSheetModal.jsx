@@ -1,9 +1,14 @@
+import { useExamScope } from '../context/ExamScopeContext';
+import { UploadScopeSelectors } from './ExamScopeSelectors';
 import { useState } from 'react';
 import { Upload, FileText, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import { uploadTestSheet } from '../services/weakTopicApi';
 
 export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }) {
   const [testId, setTestId] = useState('');
+  const scope = useExamScope();
+  const [stream, setStream] = useState(scope.stream);
+  const [branch, setBranch] = useState(scope.branch);
   
   // Single upload state
   const [file, setFile] = useState(null);
@@ -38,6 +43,8 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
     const formData = new FormData();
     formData.append('testId', testId.trim());
     formData.append('file', file);
+    formData.append('stream', stream);
+    if (stream === 'JEE') formData.append('branch', branch);
 
     try {
       const res = await uploadTestSheet(formData);
@@ -78,6 +85,7 @@ export default function UploadMarksAwardSheetModal({ onClose, testOptions = [] }
             Upload a single unified CSV test sheet (combining headers, topics, answer key, and student marks) to compute center and student weak subjects.
           </div>
 
+          <UploadScopeSelectors stream={stream} branch={branch} onStreamChange={setStream} onBranchChange={setBranch} disabled={status === 'loading'} />
           <div style={{ marginBottom: 20 }}>
             <label className="label" style={{ fontSize: 12, fontWeight: 700 }}>
               Test Name / ID <span style={{ color: '#c0392b' }}>*</span>

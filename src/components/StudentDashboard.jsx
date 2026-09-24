@@ -1,3 +1,4 @@
+import { BranchSelector } from './ExamScopeSelectors';
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -699,6 +700,7 @@ return formatSub + (isMed ? ' (Med)' : '');
         )}
         <div>
           <h1>{profile["STUDENT'S NAME"]}</h1>
+          <BranchSelector stream={profile.stream || 'JEE'} light />
           <p>
             Roll: {profile.ROLL_KEY} · {displayCenter(profile.centerCode) || ''}
             <span style={{ marginLeft: 8, fontSize: 11, padding: '2px 7px', borderRadius: 4, background: 'rgba(255,255,255,.2)', fontWeight: 600 }}>

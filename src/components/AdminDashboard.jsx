@@ -1,3 +1,5 @@
+import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
+import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
 
 import React, { Component } from 'react';
 
@@ -404,7 +406,7 @@ export default function AdminDashboard() {
   const [loading,         setLoading]         = useState(true);
   const [error,           setError]           = useState('');
 
-  const [viewingStudentId, setViewingStudentId] = useState(null);
+  const [viewingStudentId, setViewingStudentId] = useScopeViewState('AdminDashboard.student', null);
   const [previousPage, setPreviousPage] = useState('leaderboard');
   const [selectedTestKey,  setSelectedTestKey]  = useState('');
   const [selectedSubject, setSelectedSubject] = useState('Total');
@@ -413,9 +415,9 @@ export default function AdminDashboard() {
 
   const [searchTerm,     setSearchTerm]     = useState('');
   const [filterCategory, setFilterCategory] = useState('ALL');
-  const [filterCenter,   setFilterCenter]   = useState('ALL');
+  const [filterCenter,   setFilterCenter]   = useScopeViewState('admin.centre', 'ALL');
   const [filterStream,   setFilterStream]   = useState('ALL');
-  const [globalStream,   setGlobalStream]   = useState('JEE');
+  const { stream: globalStream, setStream: setGlobalStream, branch } = useExamScope();
   const [filterSponsor,  setFilterSponsor]  = useState('ALL');
   const [filterGender,   setFilterGender]   = useState('ALL');
   const [filterState,    setFilterState]    = useState('ALL');
@@ -439,6 +441,8 @@ export default function AdminDashboard() {
   const [uploadError,   setUploadError]   = useState('');
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadTestKey, setUploadTestKey] = useState('');
+  const [uploadStream, setUploadStream] = useState(globalStream);
+  const [uploadBranch, setUploadBranch] = useState(branch);
   const fileRef = useRef(null);
 
   const [testInsights, setTestInsights] = useState(null);
@@ -481,9 +485,9 @@ export default function AdminDashboard() {
       .then((d) => {
         setData(d);
         const rankingCols = (d.testColumns || [])
-          .filter((c) => !String(c).includes('_'))
+          .filter((c) => !String(c).includes('_') && (/^(MMT|NCT|NMT|NEET)/i.test(c) === (globalStream === 'NEET')))
           .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
-        const candidate   = rankingCols.length ? rankingCols[0] : d.testColumns?.[0];
+        const candidate = rankingCols[0];
         if (candidate && !selectedTestKey) setSelectedTestKey(candidate);
       })
       .catch((err) => setError('Failed to load dashboard data: ' + err.message))
@@ -619,11 +623,10 @@ export default function AdminDashboard() {
   }, [allTestOptions, globalStream, data]);
 
 
-  // Sync selectedTestKey to streamTestOptions
+  // Never fall back to a test from the other stream/branch, including an empty Advanced branch.
   useEffect(() => {
-    if (streamTestOptions && streamTestOptions.length > 0 && selectedTestKey && !streamTestOptions.includes(selectedTestKey)) {
-      const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
-      if (fallback) setSelectedTestKey(fallback);
+    if (!streamTestOptions.includes(selectedTestKey)) {
+      setSelectedTestKey(streamTestOptions.find(k => k !== 'ALL_FMT') || '');
     }
   }, [streamTestOptions, selectedTestKey]);
 
@@ -1118,7 +1121,7 @@ export default function AdminDashboard() {
           };
         });
 
-        const result = await bulkUpsertTestScoresApi(null, allMarks);
+        const result = await bulkUpsertTestScoresApi(null, allMarks, { stream: uploadStream, ...(uploadStream === 'JEE' ? { branch: uploadBranch } : {}) });
         triggerRefresh();
         showToast(`Marks imported: ${result.upsertedCount || 0} new, ${result.modifiedCount || 0} updated (${result.matchedCount + result.upsertedCount} total).`, 'success');
       } else if (importMode === 'pastyear') {
@@ -2097,6 +2100,7 @@ export default function AdminDashboard() {
             <div className="modal-body">
               {importMode === 'marks' && (
                 <div className="form-group">
+                  <UploadScopeSelectors stream={uploadStream} branch={uploadBranch} onStreamChange={setUploadStream} onBranchChange={setUploadBranch} disabled={uploadLoading} />
                   <label className="label" htmlFor="importTestKey">Test Column</label>
                   <input 
                     id="importTestKey" 
@@ -2180,7 +2184,7 @@ export default function AdminDashboard() {
           {activePage === 'pastyear' && <h1>Past Year Data</h1>}
           {activePage === 'traineefaculty' && <h1>Trainee Faculty</h1>}
           {activePage === 'import' && <h1>Import Excel</h1>}
-          {activePage === 'leaderboard' && (
+          {(
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
               <select
@@ -2191,6 +2195,7 @@ export default function AdminDashboard() {
                 <option value="JEE" style={{ color: '#333', background: '#fff' }}>JEE</option>
                 <option value="NEET" style={{ color: '#333', background: '#fff' }}>NEET</option>
               </select>
+                <BranchSelector light />
             </div>
           )}
         </div>
@@ -2212,6 +2217,9 @@ export default function AdminDashboard() {
       <div className="content dashboard-page-body">
 
         <div className="dashboard-scroll">
+          {globalStream === 'JEE' && branch === 'ADVANCED' && streamTestOptions.length === 0 && (
+            <div className="card" style={{ marginBottom: 16 }}>No Advanced test data yet. Select JEE → Advanced in the admin upload form to add a test such as CAT01.</div>
+          )}
           {activePage === 'leaderboard' && LeaderboardSection()}
           {activePage === 'overview'    && OverviewSection()}
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} adminStream={globalStream} />}
