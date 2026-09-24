@@ -1,3 +1,4 @@
+import { ExamScopeProvider, useExamScope } from './context/ExamScopeContext';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -11,6 +12,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 function AppRoutes() {
   const { user } = useAuth();
+  const { stream, branch } = useExamScope();
+  const scopeKey = `${user?.role}:${user?.centerCode || ""}:${stream}:${branch}`;
 
   return (
     <Routes>
@@ -18,9 +21,9 @@ function AppRoutes() {
       <Route path="/data-admin" element={<DataAdminLogin />} />
       <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
         <Route index element={
-          user?.role === 'STUDENT' ? <ErrorBoundary><StudentDashboard /></ErrorBoundary> :
-          user?.role === 'CENTRE' ? <ErrorBoundary><CentreDashboard /></ErrorBoundary> :
-          <ErrorBoundary><AdminDashboard /></ErrorBoundary>
+          user?.role === 'STUDENT' ? <ErrorBoundary><StudentDashboard key={scopeKey} /></ErrorBoundary> :
+          user?.role === 'CENTRE' ? <ErrorBoundary><CentreDashboard key={scopeKey} /></ErrorBoundary> :
+          <ErrorBoundary><AdminDashboard key={scopeKey} /></ErrorBoundary>
         } />
       </Route>
     </Routes>
@@ -32,7 +35,7 @@ export default function App() {
     <AuthProvider>
       <ToastProvider>
         <BrowserRouter>
-          <AppRoutes />
+          <ExamScopeProvider><AppRoutes /></ExamScopeProvider>
         </BrowserRouter>
       </ToastProvider>
     </AuthProvider>

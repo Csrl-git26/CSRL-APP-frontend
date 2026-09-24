@@ -1,3 +1,4 @@
+import { BranchSelector } from './ExamScopeSelectors';
 import { normalizeStudentChartRows } from '../services/studentChart';
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -168,6 +169,7 @@ const actualChart = prefetchedChart || chart;
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {!isHiddenForBulk && (
       <>
+      <BranchSelector stream={stream} />
       {/* Banner */}
       <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
         {photo

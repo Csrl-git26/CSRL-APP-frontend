@@ -1,3 +1,4 @@
+import { withTestBranch, uploadExamScope } from './examScope';
 // ============================================================
 // CSRL Data Service
 //
@@ -186,6 +187,7 @@ async function apiFetch(path, opts = {}) {
   }
 
   const isGet = method.toUpperCase() === 'GET';
+  if (isGet) url = withTestBranch(url);
   const cacheKey = url;
   
   if (isGet) {
@@ -316,14 +318,14 @@ export async function upsertTestScoresApi(_token, rollKey, scores, centerCode) {
   const qs = centerCode ? `?centerCode=${encodeURIComponent(centerCode)}` : '';
   return apiFetch(`/api/tests/${encodeURIComponent(rollKey)}${qs}`, {
     method: 'POST',
-    body:   { scores },
+    body:   { scores, ...uploadExamScope() },
   });
 }
 
-export async function bulkUpsertTestScoresApi(_token, marks) {
+export async function bulkUpsertTestScoresApi(_token, marks, selection = uploadExamScope()) {
   return apiFetch('/api/tests/bulk-upsert', {
     method: 'POST',
-    body: { marks },
+    body: { marks, ...selection },
   });
 }
 
