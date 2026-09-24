@@ -1,4 +1,4 @@
-import { BranchSelector } from './ExamScopeSelectors';
+import { BranchSelector, ProfileBranchSelector } from './ExamScopeSelectors';
 import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -130,7 +130,7 @@ export default function StudentDashboard() {
   const studentTests = data?.tests?.[0]  || {};
   const testColumns  = data?.testColumns  || [];
 
-  const stream    = profile?.stream || auth.stream || 'JEE';
+  const stream = String(profile?.stream || profile?.STREAM || profile?.Stream || auth.stream || 'JEE').trim().toUpperCase();
   const streamCfg = getStreamConfig(stream);
   const schoolName = profile?.['10th SCHOOL NAME'] || profile?.['12th SCHOOL NAME'] || profile?.['10th SCHOOL'] || profile?.['12th SCHOOL'] || profile?.['SCHOOL NAME'] || profile?.SCHOOL || '';
   const photoUrl = profile?.['STUDENT PHOTO URL'] || '';
@@ -289,6 +289,7 @@ export default function StudentDashboard() {
 
   const ProfileTab = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <ProfileBranchSelector stream={stream} />
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: -4 }}>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
           <button type="button" onClick={exportProfileToPDF} disabled={isExportingPDF} className="btn btn-outline btn-sm">
@@ -700,7 +701,7 @@ return formatSub + (isMed ? ' (Med)' : '');
         )}
         <div>
           <h1>{profile["STUDENT'S NAME"]}</h1>
-          <BranchSelector stream={profile.stream || 'JEE'} light />
+          <BranchSelector stream={stream} light />
           <p>
             Roll: {profile.ROLL_KEY} · {displayCenter(profile.centerCode) || ''}
             <span style={{ marginLeft: 8, fontSize: 11, padding: '2px 7px', borderRadius: 4, background: 'rgba(255,255,255,.2)', fontWeight: 600 }}>
