@@ -15,7 +15,8 @@ await build({ stdin: { contents: `
   import React from 'react';
   import { renderToStaticMarkup } from 'react-dom/server';
   import { ExamScopeProvider } from './src/context/ExamScopeContext';
-  import { BranchSelector, UploadScopeSelectors } from './src/components/ExamScopeSelectors';
+  import { BranchSelector, ProfileBranchSelector, UploadScopeSelectors } from './src/components/ExamScopeSelectors';
+  export const renderProfileBranch = stream => renderToStaticMarkup(<ExamScopeProvider><ProfileBranchSelector stream={stream}/></ExamScopeProvider>);
   export const renderBranch = stream => renderToStaticMarkup(<ExamScopeProvider><BranchSelector stream={stream}/></ExamScopeProvider>);
   export const renderUpload = (stream, branch) => renderToStaticMarkup(<UploadScopeSelectors stream={stream} branch={branch} onStreamChange={()=>{}} onBranchChange={()=>{}}/>);
 `, resolveDir: process.cwd(), loader: 'jsx' }, outfile, banner:{js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);"}, bundle:true, platform:'node', format:'esm', jsx:'automatic', define:{'import.meta.env.PROD':'true','import.meta.env.VITE_API_BASE_URL':'""'} });
@@ -33,6 +34,9 @@ test('JEE shows Main and Advanced; NEET has no branch control', () => {
   assert.match(main,/value="MAIN" selected/);
   assert.match(main,/>Advanced</);
   assert.equal(scope.renderBranch('NEET'),'');
+  assert.equal(scope.renderProfileBranch('NEET'),'');
+  assert.match(scope.renderProfileBranch(' jee '), /JEE Test Performance/);
+  assert.match(scope.renderProfileBranch('JEE'), /value="MAIN" selected/);
   assert.match(scope.renderUpload('JEE','ADVANCED'),/value="ADVANCED" selected/);
   assert.doesNotMatch(scope.renderUpload('NEET','MAIN'),/Upload branch/);
 });
