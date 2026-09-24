@@ -568,7 +568,7 @@ export default function AdminDashboard() {
   const allTestOptions = useMemo(() => {
     const sorted = [...new Set([...manualTestOptions, ...rankingTestColumns])]
       .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
-    return ['ALL_FMT', ...sorted];
+    return sorted;
   }, [manualTestOptions, rankingTestColumns]);
 
   // Stream-filtered test options: use prefix-based detection first (same as backend).
@@ -586,7 +586,7 @@ export default function AdminDashboard() {
     });
     if (prefixFiltered.filter(k => k !== 'ALL_FMT').length > 0) {
       const sorted = prefixFiltered.filter(k => k !== 'ALL_FMT').sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
-      return globalStream === 'NEET' ? sorted : ['ALL_FMT', ...sorted];
+      return sorted;
     }
 
     // Fallback: column-based detection (for non-standard test names)
@@ -615,7 +615,7 @@ export default function AdminDashboard() {
     }
     if (baseKeys.size === 0) return [];
     const sorted = [...baseKeys].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
-    return globalStream === 'NEET' ? sorted : ['ALL_FMT', ...sorted];
+    return sorted;
   }, [allTestOptions, globalStream, data]);
 
 

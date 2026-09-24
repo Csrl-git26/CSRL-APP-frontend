@@ -366,7 +366,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         return globalStream === 'NEET' ? isNeetTest : !isNeetTest;
       })
       .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' }));
-    return ['ALL_FMT', ...cols];
+    return cols;
   }, [data, globalStream]);
 
   const rankingSubjectCols = useMemo(() => {
