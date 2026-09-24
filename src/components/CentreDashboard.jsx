@@ -146,6 +146,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   }, [globalStream]);
   const [selectedTrendCentre, setSelectedTrendCentre] = useState(() => adminViewCenterCode || auth.centerCode || '');
   const [trendChartData, setTrendChartData] = useState([]);
+  
+  useEffect(() => {
+    if (!selectedTrendCentre && centreBoard && centreBoard.length > 0) {
+      setSelectedTrendCentre(centreBoard[0].code);
+    }
+  }, [centreBoard, selectedTrendCentre]);
   const [trendChartLoading, setTrendChartLoading] = useState(false);
 
   useEffect(() => {
