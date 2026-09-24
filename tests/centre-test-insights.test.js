@@ -1,0 +1,32 @@
+import { readFileSync } from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const service = readFileSync(new URL('../src/services/dataService.js', import.meta.url), 'utf8');
+const start = service.indexOf('export async function fetchTestInsights');
+const fn = service.slice(start, service.indexOf('\n}', start) + 2).replace('export ', '');
+let requested;
+const scope = { URLSearchParams, apiFetch: async url => { requested = new URL(url, 'https://test.invalid'); return { topStudent: { roll: '1', total: 31 } }; } };
+vm.runInNewContext(fn, scope);
+for (const [centre, stream, test] of [['CHN','JEE','CMT01'], ['KNP','JEE','CMT01'], ['CHN','NEET','MMT01']]) {
+  const result = await scope.fetchTestInsights(null, test, null, stream, centre);
+  assert.equal(requested.searchParams.get('centerCode'), centre);
+  assert.equal(requested.searchParams.get('stream'), stream);
+  assert.equal(requested.searchParams.get('testKey'), test);
+  assert.equal(requested.searchParams.has('rollKey'), false);
+  assert.equal(result.topStudent.total, 31);
+}
+await scope.fetchTestInsights(null, 'CMT01', '123', 'JEE');
+assert.equal(requested.searchParams.get('rollKey'), '123');
+assert.equal(requested.searchParams.has('centerCode'), false);
+const component = readFileSync(new URL('../src/components/CentreDashboard.jsx', import.meta.url), 'utf8');
+const effectStart = component.lastIndexOf('useEffect(() => {', component.indexOf("if (activePage !== 'topbottom'"));
+const effectEnd = component.indexOf('\n  }, [', effectStart);
+const effect = component.slice(effectStart, component.indexOf(']);', effectEnd) + 3);
+let dependencies, run;
+const context = { activePage: 'topbottom', selectedTestKey: 'CMT01', selectedCenterCode: 'CHN', globalStream: 'JEE', useEffect: (fn, deps) => { run=fn; dependencies=deps; }, setTestInsights(){}, setTestInsightsLoading(){}, setTestInsightsError(){}, fetchTestInsights: scope.fetchTestInsights };
+vm.runInNewContext(effect, context);
+assert.deepEqual(Array.from(dependencies), ['topbottom','CMT01','CHN','JEE']);
+run();
+assert.equal(requested.searchParams.get('centerCode'), 'CHN');
+assert.equal(requested.searchParams.has('rollKey'), false);
+console.log('PASS: selected centre/test/stream request, reload dependencies, student lookup compatibility');
