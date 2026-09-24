@@ -341,7 +341,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     setTestInsights(null);
     setTestInsightsLoading(true);
     setTestInsightsError('');
-    fetchTestInsights(null, selectedTestKey, null, globalStream)
+    fetchTestInsights(null, selectedTestKey, selectedCenterCode, globalStream)
       .then((d) => {
         if (!cancelled) setTestInsights(d);
       })
