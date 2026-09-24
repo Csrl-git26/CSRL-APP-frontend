@@ -134,6 +134,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError]   = useState('');
   const [centreBoard, setCentreBoard] = useState([]);
+  const [centreBoardLoading, setCentreBoardLoading] = useState(false);
+  const [centreBoardError, setCentreBoardError] = useState('');
   const [accuracyWeakSubject, setAccuracyWeakSubject] = useState(null);
   const [centreChartData, setCentreChartData] = useState([]);
   const [selectedLeaderboardTestKeys, setSelectedLeaderboardTestKeys] = useState([]);
@@ -147,11 +149,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [selectedTrendCentre, setSelectedTrendCentre] = useState(() => adminViewCenterCode || auth.centerCode || '');
   const [trendChartData, setTrendChartData] = useState([]);
   
-  useEffect(() => {
-    if (!selectedTrendCentre && centreBoard && centreBoard.length > 0) {
-      setSelectedTrendCentre(centreBoard[0].code);
-    }
-  }, [centreBoard, selectedTrendCentre]);
+
   const [trendChartLoading, setTrendChartLoading] = useState(false);
 
   useEffect(() => {
@@ -240,17 +238,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     }
   }, [selectedTestKey]);
 
-  useEffect(() => {
-    if (activeLeaderboardKeys.length === 0) return;
-    const baseKeys = activeLeaderboardKeys.join(',');
-    const combinedKey = (selectedSubject === 'Total' || selectedSubject === 'Qualification')
-       ? baseKeys 
-       : activeLeaderboardKeys.map(k => `${k}_${selectedSubject}`).join(',');
 
-    fetchCentreLeaderboard(null, combinedKey, globalStream)
-      .then(board => setCentreBoard(Array.isArray(board) ? board : []))
-      .catch(() => setCentreBoard([]));
-  }, [selectedLeaderboardTestKeys, selectedSubject, globalStream]);
 
   // Re-fetch centre chart data when stream changes
   useEffect(() => {
@@ -261,7 +249,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   }, [globalStream, selectedCenterCode]);
 
   useEffect(() => {
-    if (!selectedTrendCentre) return;
+    setTrendChartData([]);
+    if (!selectedTrendCentre) { setTrendChartLoading(false); return; }
     let isMounted = true;
     setTrendChartLoading(true);
     fetchCentreChart(selectedTrendCentre, globalStream)
@@ -424,6 +413,41 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     const fallback = opts.filter(o => o !== 'ALL_FMT')[0] || opts[0];
     return fallback ? [fallback] : [];
   }, [selectedLeaderboardTestKeys, streamTestOptions, allTestOptions, globalStream]);
+
+  // Fetch again when asynchronously loaded test options change the effective selection.
+  const leaderboardRequestKey = activeLeaderboardKeys.map(k =>
+    selectedSubject === 'Total' || selectedSubject === 'Qualification' ? k : `${k}_${selectedSubject}`
+  ).join(',');
+  useEffect(() => {
+    let cancelled = false;
+    setCentreBoard([]);
+    setCentreBoardError('');
+    setCentreBoardLoading(Boolean(leaderboardRequestKey));
+    if (!leaderboardRequestKey) return undefined;
+    fetchCentreLeaderboard(null, leaderboardRequestKey, globalStream)
+      .then(board => {
+        if (!cancelled) setCentreBoard(Array.isArray(board) ? board : []);
+      })
+      .catch(err => {
+        if (!cancelled) setCentreBoardError(err.message || 'Unable to load centre rankings.');
+      })
+      .finally(() => {
+        if (!cancelled) setCentreBoardLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [leaderboardRequestKey, globalStream]);
+
+  const trendCentres = useMemo(() => {
+    const available = centersList.filter(c => !c.streams?.length || c.streams.includes(globalStream));
+    const byCode = new Map(available.map(c => [c.code, c]));
+    centreBoard.forEach(c => byCode.set(c.code, byCode.get(c.code) || c));
+    return [...byCode.values()];
+  }, [centersList, centreBoard, globalStream]);
+  useEffect(() => {
+    if (!trendCentres.some(c => c.code === selectedTrendCentre)) {
+      setSelectedTrendCentre(trendCentres[0]?.code || '');
+    }
+  }, [trendCentres, selectedTrendCentre]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
@@ -642,6 +666,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
           </div>
         </div>
       </div>
+      {centreBoardLoading ? <p role="status">Loading centre rankings…</p> : centreBoardError ? <p role="alert">{centreBoardError}</p> : (
       <CentreLeaderboard 
         centreStats={centreBoard} 
         selectedSubject={selectedSubject}
@@ -652,6 +677,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         }}
         stream={globalStream}
       />
+      )}
       
       <div className="card" style={{ marginTop: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
@@ -662,7 +688,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
             onChange={(e) => setSelectedTrendCentre(e.target.value)}
             style={{ width: 200, fontSize: 13 }}
           >
-            {centreBoard.map(c => (
+            {trendCentres.map(c => (
               <option key={c.code} value={c.code}>{c.code}</option>
             ))}
           </select>
