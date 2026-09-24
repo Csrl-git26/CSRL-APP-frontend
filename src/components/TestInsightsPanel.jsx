@@ -147,7 +147,7 @@ export default function TestInsightsPanel({
             <Users size={16} aria-hidden="true" />
             Your result — {insights.testKey}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, fontSize: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: subjects.length === 4 ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, fontSize: 14 }}>
             <div>
               <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Rank (by total)</div>
               <div style={{ fontWeight: 800, fontSize: 20, color: 'var(--csrl-blue)' }}>
@@ -373,7 +373,7 @@ export default function TestInsightsPanel({
             <div className="card">
               <div className="section-title">student no. subjectwise marks &lt;={insights?.overallTopper?.stream === 'NEET' ? '100' : '30'} - count by centre</div>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: subjects.length === 4 ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
                 {subjects.map((sub) => (
                   <div key={sub} style={{ background: 'var(--gray-50)', borderRadius: 8, padding: 12 }}>
                     <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--csrl-blue)' }}>{sub}</div>
