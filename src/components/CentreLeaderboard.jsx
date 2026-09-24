@@ -45,8 +45,8 @@ const CustomTooltip = ({ active, payload, selectedSubject, stream }) => {
           if (entries.length === 0) return null;
           
           const title = (!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification')
-            ? streamFilter === "NEET" ? "No. of student subjectwise marks <=100" : "No. of student subjectwise marks <=20"
-            : `No. of student marks in ${selectedSubject} <=${streamFilter === "NEET" ? 100 : 20}`;
+            ? stream === "NEET" ? "No. of student subjectwise marks <=100" : "No. of student subjectwise marks <=20"
+            : `No. of student marks in ${selectedSubject} <=${stream === "NEET" ? 100 : 20}`;
             
           return (
             <div style={{ marginTop: 8, padding: '6px 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 4 }}>
