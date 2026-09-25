@@ -554,7 +554,7 @@ return formatSub + (isMed ? ' (Med)' : '');
         {chartData.length > 0 ? (
           <>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-              {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
+              {['MARKS', 'ACCURACY', 'ATTEMPTED', 'RANK'].map((m) => (
                 <button
                   key={m}
                   onClick={() => setChartMetric(m)}
