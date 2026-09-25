@@ -17,7 +17,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
       {!noCard && <div className="section-title">📈 Performance Trend</div>}
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
         <div style={{ display: 'flex', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-          {['MARKS', 'ACCURACY', 'ATTEMPTED', 'CORRECT', 'RANK'].map((m) => (
+          {['MARKS', 'ACCURACY', 'ATTEMPTED', 'RANK'].map((m) => (
             <button
               key={m}
               onClick={() => setChartMetric(m)}
