@@ -33,7 +33,7 @@ function InfoRow({ label, value }) {
   );
 }
 
-export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false, prefetchedChart = null, prefetchedWeakTopics = null, hidePersonalDetails = false }) {
+export default function StudentProfileView({ profile, studentTests, testColumns, isHiddenForBulk = false, prefetchedChart = null, prefetchedWeakTopics = null, hidePersonalDetails = false, parentStream }) {
   const [overallWeakSubjects, setOverallWeakSubjects] = React.useState(null);
   const [overallWeakTopicsData, setOverallWeakTopicsData] = React.useState(prefetchedWeakTopics);
   const [isExportingPDF, setIsExportingPDF] = React.useState(false);
@@ -91,7 +91,7 @@ export default function StudentProfileView({ profile, studentTests, testColumns,
     XLSX.writeFile(wb, `${profile.ROLL_KEY || 'Student'}_Profile.xlsx`);
   };
 
-  const stream = String(profile?.stream || profile?.STREAM || profile?.Stream || 'JEE').trim().toUpperCase();
+  const stream = String(parentStream || profile?.stream || profile?.STREAM || profile?.Stream || 'JEE').trim().toUpperCase();
 
   React.useEffect(() => {
     if (!profile?.ROLL_KEY) return;

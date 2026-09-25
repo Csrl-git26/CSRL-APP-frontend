@@ -584,7 +584,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         </div>
         <div className="content dashboard-page-body">
           <div className="dashboard-scroll">
-            <StudentProfileView profile={profile} studentTests={studentTests} testColumns={data.testColumns} />
+            <StudentProfileView profile={profile} studentTests={studentTests} testColumns={data.testColumns} parentStream={globalStream} />
           </div>
         </div>
       </div>
