@@ -1293,31 +1293,36 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '2px solid rgba(59, 130, 246, 0.15)', paddingBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
                   <PieChartIcon size={20} />
-                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Rankings {stream === 'NEET' ? 'MBBS %' : 'Qualification %'} — {selectedTestKey || 'Latest'}</span>
+                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Rankings {stream === 'NEET' ? 'MBBS %' : 'Qualification %'} — {modalTestKey || 'Latest'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                    <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>
-                   {testOptions && testOptions.length > 0 && typeof onTestKeyChange === 'function' ? (
+                   {testOptions && testOptions.length > 0 ? (
                      <select 
-                       value={selectedTestKey || ''} 
-                       onChange={e => onTestKeyChange(e.target.value)}
+                       value={modalTestKey || ''} 
+                       onChange={e => setModalTestKey(e.target.value)}
                        style={{ fontWeight: 800, color: '#1e293b', fontSize: 13, background: 'transparent', border: 'none', outline: 'none', appearance: 'none', cursor: 'pointer', paddingRight: 4 }}
                      >
-                       <option value="" disabled style={{display:'none'}}>{selectedTestKey === 'Multiple Tests' ? 'Multiple Tests' : 'Latest'}</option>
+                       <option value="" disabled style={{display:'none'}}>{modalTestKey || 'Latest'}</option>
                        {testOptions.filter(t => t !== 'ALL_FMT').map(t => (
                          <option key={t} value={t}>{t}</option>
                        ))}
                      </select>
                    ) : (
-                     <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{selectedTestKey || 'Latest'}</span>
+                     <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{modalTestKey || 'Latest'}</span>
                    )}
                    <span style={{ fontSize: 10, color: '#94a3b8' }}>▼</span>
                 </div>
               </div>
               
-              <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
+              <div style={{ flex: 1, minHeight: 0, width: '100%', position: 'relative' }}>
+                {modalLoading && (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: 'rgba(255,255,255,0.6)', borderRadius: 8 }}>
+                    <div style={{ color: '#2563eb', fontWeight: 700, fontSize: 14 }}>Loading...</div>
+                  </div>
+                )}
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={[...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
+                  <BarChart data={[...(modalCentreBoard || centreBoard)].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
                     <XAxis dataKey="code" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#1e293b', angle: -90, textAnchor: 'end' }} interval={0} dx={-4} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }} domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} label={{ value: 'Qual %', angle: -90, position: 'insideLeft', style: { fontWeight: 900, fill: '#475569', fontSize: 14 } }} />
@@ -1332,10 +1337,19 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       }
                       return null;
                     }} />
-                    <Bar dataKey="qualRate" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22}>
+                    <Bar dataKey="qualRate" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22} cursor="pointer"
+                      onClick={(barData) => {
+                        const code = barData && barData.code;
+                        if (code && onViewCentre) {
+                          setShowQualRankingModal(false);
+                          onViewCentre(code);
+                        }
+                      }}
+                    >
                       <LabelList dataKey="qualRate" content={(props) => {
                         const { x, y, width, value, index } = props;
-                        const c = [...centreBoard].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))[index];
+                        const c = [...(modalCentreBoard || centreBoard)].sort((a,b) => (b.qualRate||0)-(a.qualRate||0))[index];
+                        if (!c) return null;
                         const isAlert = (c.qualRate??0) <= 80;
                         return (
                           <g>
