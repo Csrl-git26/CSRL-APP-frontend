@@ -807,7 +807,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         <div style={{ marginBottom: '24px' }}>
           <div style={{ fontWeight: 700, marginBottom: 10 }}>Test Performance — {selectedTestKey || 'Select a test'}</div>
           <PerformanceChart chartData={selectedChartData} streamCfg={getStreamConfig(globalStream)} />
-          <TestRecordsTable chartData={selectedChartData} streamCfg={getStreamConfig(globalStream)} stream={globalStream} isCentre={true} />
+          <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} stream={globalStream} isCentre={true} />
         </div>
 
         <div style={{ marginTop: '24px' }}>
