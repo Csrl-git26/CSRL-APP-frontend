@@ -1094,7 +1094,18 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               
               <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={[...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
+                  <BarChart data={[...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}
+                    onClick={(data) => {
+                      if (data && data.activePayload && data.activePayload[0]) {
+                        const code = data.activePayload[0].payload.code;
+                        if (code && onViewCentre) {
+                          setShowRankingModal(false);
+                          onViewCentre(code);
+                        }
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
                     <XAxis dataKey="code" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#1e293b', angle: -90, textAnchor: 'end' }} interval={0} dx={-4} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }} domain={[0, 180]} ticks={[0, 45, 90, 135, 180]} label={{ value: 'Average Score', angle: -90, position: 'insideLeft', style: { fontWeight: 900, fill: '#475569', fontSize: 14 } }} />
@@ -1109,7 +1120,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       }
                       return null;
                     }} />
-                    <Bar dataKey="avg" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22}>
+                    <Bar dataKey="avg" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={22} cursor="pointer">
                       <LabelList dataKey="avg" content={(props) => {
                         const { x, y, width, value, index } = props;
                         const c = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))[index];
