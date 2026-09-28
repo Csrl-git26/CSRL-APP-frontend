@@ -51,7 +51,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const activePage = adminViewCenterCode ? localActivePage : outletContext?.activePage;
   const setActivePage = adminViewCenterCode ? setLocalActivePage : outletContext?.setActivePage;
 
-  const { user: auth } = useAuth();
+  const { user: auth, logout } = useAuth();
   const [centersList, setCentersList] = useState([]);
 
   const [selectedCenterCode, setSelectedCenterCode] = useState(() => adminViewCenterCode || auth.centerCode || 'GAIL');
@@ -1184,8 +1184,22 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
       <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
         {!adminViewCenterCode && (
-          <div style={{ marginBottom: 14, flexShrink: 0 }}>
-            <div className="tab-bar">
+          <div style={{ marginBottom: 14, flexShrink: 0, display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto' }}>
+            <button
+              type="button"
+              onClick={() => logout()}
+              title="Go Back / Logout"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '8px 14px', borderRadius: 8,
+                background: 'var(--gray-100)', color: 'var(--gray-700)',
+                border: 'none', fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                flexShrink: 0
+              }}
+            >
+              <ArrowLeft size={16} /> Back
+            </button>
+            <div className="tab-bar" style={{ flex: 1 }}>
               {TABS.map(({ key, Icon, label }) => (
                 <button
                   key={key}
