@@ -768,9 +768,6 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   };
 
   const OverviewSection = () => {
-    const selectedChartData = centreChartData.filter(row =>
-      selectedTestKey === 'ALL_FMT' ? /^FMT/i.test(row.name) : row.name === selectedTestKey
-    );
     const totalStudents = overview?.totalStudents ?? data.profiles.length;
     const weakSubject   = weakSubjectFromPerformance ?? 'N/A';
     const validScores   = allRanked.filter(r => typeof r.marks === 'number');
@@ -805,8 +802,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         
 
         <div style={{ marginBottom: '24px' }}>
-          <div style={{ fontWeight: 700, marginBottom: 10 }}>Test Performance — {selectedTestKey || 'Select a test'}</div>
-          <PerformanceChart chartData={selectedChartData} streamCfg={getStreamConfig(globalStream)} />
+          <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} />
           <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} stream={globalStream} isCentre={true} />
         </div>
 
