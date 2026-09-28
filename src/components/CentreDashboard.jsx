@@ -72,7 +72,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       previousPageRef.current = prev;
       setActivePage(prev);
     } else {
-      setActivePage('overview');
+      setActivePage('leaderboard');
     }
   };
 
@@ -699,7 +699,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} 
         onCentreClick={(code) => {
           setSelectedCenterCode(code);
-          setActivePage('overview');
+          setActivePage('leaderboard');
         }}
         stream={globalStream}
       />
@@ -1205,9 +1205,10 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       <div className={adminViewCenterCode ? "" : "content dashboard-page-body"}>
         {!adminViewCenterCode && (
           <div style={{ marginBottom: 14, flexShrink: 0, display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto' }}>
-            <button
-              type="button"
-              onClick={handleBack}
+            {activePage !== 'leaderboard' && (
+              <button
+                type="button"
+                onClick={handleBack}
               title="Go to previous tab"
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
@@ -1218,7 +1219,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
               }}
             >
               <ArrowLeft size={16} /> Back
-            </button>
+              </button>
+            )}
             <div className="tab-bar" style={{ flex: 1 }}>
               {TABS.map(({ key, Icon, label }) => (
                 <button
