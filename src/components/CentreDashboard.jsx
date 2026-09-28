@@ -19,7 +19,7 @@ import {
   getStreamConfig,
 } from '../services/dataService';
 import { getStudentOverallWeakTopics } from '../services/weakTopicApi';
-import { fetchStudentChart } from '../services/dataService';
+import { fetchStudentChart, fetchStudentProfile } from '../services/dataService';
 import { useAuth } from '../context/AuthContext';
 import StudentProfileView from './StudentProfileView';
 import CentreLeaderboard from './CentreLeaderboard';
@@ -93,6 +93,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [loading,          setLoading]          = useState(true);
   const [error,            setError]            = useState('');
   const [viewingStudentId, setViewingStudentId] = useScopeViewState('CentreDashboard.student', null);
+  const [globalProfileCache, setGlobalProfileCache] = useState({});
   const [selectedTestKey,  setSelectedTestKey]  = useState(adminTestKey || '');
   const { stream: globalStream, setStream: setGlobalStream, branch } = useExamScope();
 
@@ -410,6 +411,27 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     return map;
   }, [data]);
 
+  // When a student is selected, if their profile is not in the center data, fetch it globally.
+  useEffect(() => {
+    if (!viewingStudentId) return;
+    const target = String(viewingStudentId).trim().toLowerCase();
+    const alreadyHave = (data?.profiles || []).some((p) => {
+      const rk = p.ROLL_KEY != null ? String(p.ROLL_KEY).trim().toLowerCase() : '';
+      const rno = p['ROLL NO.'] != null ? String(p['ROLL NO.']).trim().toLowerCase() : '';
+      return rk === target || rno === target;
+    });
+    if (alreadyHave) return;
+    if (globalProfileCache[viewingStudentId]) return;
+    // Profile not in center data - fetch it from global API
+    fetchStudentProfile(viewingStudentId)
+      .then((prof) => {
+        if (prof && prof.ROLL_KEY != null) {
+          setGlobalProfileCache((prev) => ({ ...prev, [viewingStudentId]: prof }));
+        }
+      })
+      .catch(() => {/* ignore - will show placeholder */});
+  }, [viewingStudentId, data]);
+
   const allTestOptions = useMemo(
     () => [...new Set((data?.testColumns || []).filter(c => !String(c).includes('_')))]
       .sort((a, b) => String(b).localeCompare(String(a), undefined, { numeric: true, sensitivity: 'base' })),
@@ -581,10 +603,15 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       foundProfile = profileByRoll.get(viewingStudentId) || profileByRoll.get(Number(viewingStudentId)) || profileByRoll.get(String(viewingStudentId));
     }
 
+    // Also check the global profile cache (fetched separately when not in center data)
+    if (!foundProfile && globalProfileCache) {
+      foundProfile = globalProfileCache[viewingStudentId] || globalProfileCache[String(viewingStudentId)];
+    }
+
     // Fallback if backend hasn't supplied the profile yet
     const profile = foundProfile || {
       ROLL_KEY: viewingStudentId,
-      "STUDENT'S NAME": "Student",
+      "STUDENT'S NAME": "...",
       "ROLL NO.": viewingStudentId,
       "centerCode": selectedCenterCode
     };

@@ -388,6 +388,12 @@ export async function fetchStudentChart(_token, rollKey, centerCode, stream) {
   return apiFetch(`/api/analytics/student-chart?${params}`);
 }
 
+/** Fetch a single student's full profile from global data (used as fallback when center data doesn't include the profile). */
+export async function fetchStudentProfile(rollKey) {
+  const params = new URLSearchParams({ rollKey });
+  return apiFetch(`/api/analytics/student-profile?${params}`);
+}
+
 export async function fetchCentreChart(centerCode, stream) {
   const params = new URLSearchParams({ centerCode, t: Date.now() });
   if (stream && stream !== 'ALL') params.append('stream', stream);
