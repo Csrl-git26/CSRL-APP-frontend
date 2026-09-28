@@ -94,14 +94,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [error,            setError]            = useState('');
   const [viewingStudentId, setViewingStudentId] = useScopeViewState('CentreDashboard.student', null);
   const [globalProfileCache, setGlobalProfileCache] = useState({});
-  const [selectedTestKey,  setSelectedTestKey]  = useState(adminTestKey || '');
+  const [localTestKey, setSelectedTestKey] = useState('');
+  const selectedTestKey = adminViewCenterCode ? (adminTestKey || '') : localTestKey;
   const { stream: globalStream, setStream: setGlobalStream, branch } = useExamScope();
 
-  useEffect(() => {
-    if (adminTestKey) {
-      setSelectedTestKey(adminTestKey);
-    }
-  }, [adminTestKey]);
+
 
   useEffect(() => {
     if (adminStream) {
@@ -244,6 +241,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     let cancelled = false;
     
 
+    setSubjectAvgs([]);
     fetchSubjectAverages(null, selectedCenterCode, selectedTestKey)
       .then((avgs) => {
         if (!cancelled) setSubjectAvgs(Array.isArray(avgs) ? avgs : []);
@@ -340,6 +338,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   // ── Reload rankings when selectedTestKey changes ──────────────────────────────
 
   useEffect(() => {
+    setTopRanked([]);
+    setBottomRanked([]);
+    setAllRanked([]);
     if (!selectedTestKey) return;
     let cancelled = false;
     Promise.all([
@@ -455,8 +456,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   }, [allTestOptions, globalStream]);
 
   useEffect(() => {
-    if (!streamTestOptions.includes(selectedTestKey)) setSelectedTestKey(streamTestOptions[0] || '');
-  }, [streamTestOptions, selectedTestKey]);
+    if (!adminViewCenterCode && data && !streamTestOptions.includes(selectedTestKey)) setSelectedTestKey(streamTestOptions[0] || '');
+  }, [streamTestOptions, selectedTestKey, adminViewCenterCode, data]);
 
   const activeLeaderboardKeys = useMemo(() => {
     // When a specific stream is selected, only use tests from that stream.
@@ -768,7 +769,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
   const OverviewSection = () => {
     const totalStudents = overview?.totalStudents ?? data.profiles.length;
-    const weakSubject   = weakSubjectFromPerformance ?? overview?.weakSubject ?? 'N/A';
+    const weakSubject   = weakSubjectFromPerformance ?? 'N/A';
     const validScores   = allRanked.filter(r => typeof r.marks === 'number');
     const avgScore      = validScores.length
       ? Math.round(validScores.reduce((s, r) => s + r.marks, 0) / validScores.length)
