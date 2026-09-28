@@ -707,7 +707,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         selTest={selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : selectedLeaderboardTestKeys[0]} 
         onCentreClick={(code) => {
           setSelectedCenterCode(code);
-          setActivePage('leaderboard');
+          setActivePage('overview');
         }}
         stream={globalStream}
       />
