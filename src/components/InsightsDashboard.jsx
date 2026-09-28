@@ -1,5 +1,6 @@
 /* eslint-disable */
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import { fetchCentreLeaderboard } from '../services/dataService';
 import SubjectTopStudents from './SubjectTopStudents';
 import SubjectTopCentres from './SubjectTopCentres';
 
@@ -455,6 +456,40 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
 
     const [showRankingModal, setShowRankingModal] = useState(false);
+  const [modalTestKey, setModalTestKey] = useState(selectedTestKey || '');
+  const [modalCentreBoard, setModalCentreBoard] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
+
+  // Sync modalTestKey when modal opens or selectedTestKey changes from parent
+  useEffect(() => {
+    setModalTestKey(selectedTestKey || '');
+    setModalCentreBoard(null); // reset so it re-fetches with new data from parent
+  }, [selectedTestKey]);
+
+  // Fetch leaderboard for the modal's local test key (only changes the chart inside the modal)
+  useEffect(() => {
+    if (!showRankingModal || !modalTestKey || modalTestKey === 'Multiple Tests') {
+      if (!showRankingModal) setModalCentreBoard(null);
+      return;
+    }
+    let cancelled = false;
+    setModalLoading(true);
+    fetchCentreLeaderboard(null, modalTestKey, stream)
+      .then((res) => {
+        if (!cancelled) {
+          // API returns array directly
+          setModalCentreBoard(Array.isArray(res) ? res : (res?.centreRankings || centreBoard || []));
+          setModalLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setModalCentreBoard(centreBoard); // fallback to parent data
+          setModalLoading(false);
+        }
+      });
+    return () => { cancelled = true; };
+  }, [showRankingModal, modalTestKey, stream]);
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
   const [showSubjectRankingModal, setShowSubjectRankingModal] = useState(false);
   const [selectedModalSubject, setSelectedModalSubject] = useState('');
@@ -1070,23 +1105,23 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '2px solid rgba(59, 130, 246, 0.15)', paddingBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#2563eb' }}>
                   <Trophy size={20} />
-                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Ranking Average Score — {selectedTestKey || 'Latest'}</span>
+                  <span style={{ fontSize: 17, fontWeight: 800 }}>Centre Ranking Average Score — {modalTestKey || 'Latest'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
                    <span style={{ fontWeight: 700, color: '#64748b', fontSize: 13 }}>Test:</span>
-                   {testOptions && testOptions.length > 0 && typeof onTestKeyChange === 'function' ? (
+                   {testOptions && testOptions.length > 0 ? (
                      <select 
-                       value={selectedTestKey || ''} 
-                       onChange={e => onTestKeyChange(e.target.value)}
+                       value={modalTestKey || ''} 
+                       onChange={e => setModalTestKey(e.target.value)}
                        style={{ fontWeight: 800, color: '#1e293b', fontSize: 13, background: 'transparent', border: 'none', outline: 'none', appearance: 'none', cursor: 'pointer', paddingRight: 4 }}
                      >
-                       <option value="" disabled style={{display:'none'}}>{selectedTestKey === 'Multiple Tests' ? 'Multiple Tests' : 'Latest'}</option>
+                       <option value="" disabled style={{display:'none'}}>{modalTestKey || 'Latest'}</option>
                        {testOptions.filter(t => t !== 'ALL_FMT').map(t => (
                          <option key={t} value={t}>{t}</option>
                        ))}
                      </select>
                    ) : (
-                     <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{selectedTestKey || 'Latest'}</span>
+                     <span style={{ fontWeight: 800, color: '#1e293b', fontSize: 13 }}>{modalTestKey || 'Latest'}</span>
                    )}
                    <span style={{ fontSize: 10, color: '#94a3b8' }}>▼</span>
                 </div>
@@ -1094,7 +1129,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               
               <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={[...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
+                  <BarChart data={[...(modalCentreBoard || centreBoard)].sort((a,b) => (b.avg||0)-(a.avg||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
                     <XAxis dataKey="code" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#1e293b', angle: -90, textAnchor: 'end' }} interval={0} dx={-4} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }} domain={[0, 180]} ticks={[0, 45, 90, 135, 180]} label={{ value: 'Average Score', angle: -90, position: 'insideLeft', style: { fontWeight: 900, fill: '#475569', fontSize: 14 } }} />
@@ -1120,7 +1155,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     >
                       <LabelList dataKey="avg" content={(props) => {
                         const { x, y, width, value, index } = props;
-                        const c = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))[index];
+                        const c = [...(modalCentreBoard || centreBoard)].sort((a,b) => (b.avg||0)-(a.avg||0))[index];
                         const isAlert = c.avg < 100 || (c.qualRate??0) <= 80;
                         return (
                           <g>
