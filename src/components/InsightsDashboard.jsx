@@ -463,7 +463,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   // Sync modalTestKey when modal opens or selectedTestKey changes from parent
   useEffect(() => {
     setModalTestKey(selectedTestKey || '');
-    setModalCentreBoard(null); // reset so it re-fetches with new data from parent
+    // Don't null out modalCentreBoard here - let it keep showing old data until new fetch completes
   }, [selectedTestKey]);
 
   // Fetch leaderboard for the modal's local test key (only changes the chart inside the modal)
@@ -1127,7 +1127,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                 </div>
               </div>
               
-              <div style={{ flex: 1, minHeight: 0, width: '100%' }}>
+              <div style={{ flex: 1, minHeight: 0, width: '100%', position: 'relative' }}>
+                {modalLoading && (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: 'rgba(255,255,255,0.6)', borderRadius: 8 }}>
+                    <div style={{ color: '#2563eb', fontWeight: 700, fontSize: 14 }}>Loading...</div>
+                  </div>
+                )}
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={[...(modalCentreBoard || centreBoard)].sort((a,b) => (b.avg||0)-(a.avg||0))} margin={{ top: 30, right: 10, left: 45, bottom: 40 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
@@ -1156,7 +1161,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       <LabelList dataKey="avg" content={(props) => {
                         const { x, y, width, value, index } = props;
                         const c = [...(modalCentreBoard || centreBoard)].sort((a,b) => (b.avg||0)-(a.avg||0))[index];
-                        const isAlert = c.avg < 100 || (c.qualRate??0) <= 80;
+                        if (!c) return null;
+                        const isAlert = (c.avg || 0) < 100 || (c.qualRate??0) <= 80;
                         return (
                           <g>
                             <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
