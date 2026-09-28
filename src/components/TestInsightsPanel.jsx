@@ -47,6 +47,10 @@ export default function TestInsightsPanel({
     );
   }
 
+  return <TestInsightsContent key={insights.testKey} {...{ insights, highlightCenter, testKey, testOptions, onTestKeyChange, showStudentCard, hideSubjectAverages, onViewStudent }} />;
+}
+
+function TestInsightsContent({ insights, highlightCenter, testKey, testOptions, onTestKeyChange, showStudentCard, hideSubjectAverages, onViewStudent }) {
   const subjects = insights.subjects || [];
   const cut = insights.cutoffs;
   // Fix: if backend returned 'Absent' but rawScores have subject marks, compute total from subjects
@@ -60,10 +64,7 @@ export default function TestInsightsPanel({
     SUBJECT_KEYS.forEach(sub => {
       const k1 = `${testKey}_${sub}`;
       let val = r.rawScores[k1] ?? r.rawScores[sub];
-      if (val === undefined) {
-        const fk = Object.keys(r.rawScores).find(k => k.toLowerCase().endsWith(`_${sub.toLowerCase()}`));
-        if (fk) val = r.rawScores[fk];
-      }
+
       const n = parseFloat(val);
       if (!isNaN(n)) { total += n; found++; }
     });
@@ -398,7 +399,7 @@ export default function TestInsightsPanel({
             <div className="card">
               <div className="section-title" style={{ fontSize: 14 }}>{insights?.overallTopper?.stream === 'NEET' ? 'Total no. of students with vacant MBBS status - centrewise' : 'Not qualified (overall) — count by centre'}</div>
               {insights?.overallTopper?.stream !== 'NEET' && (
-                <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }}>Total marks criteria: GEN >= 110 | EWS >= 90 | OBC >= 85 | SC >= 65 | ST >= 60 | PWD >= 30</p>
+                <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }}>Total marks criteria: GEN ≥ 110 | EWS ≥ 90 | OBC ≥ 85 | SC ≥ 65 | ST ≥ 60 | PWD ≥ 30</p>
               )}
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
                 {Object.entries(insights.notQualifiedOverall || {})

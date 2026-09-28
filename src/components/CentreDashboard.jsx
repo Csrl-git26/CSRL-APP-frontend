@@ -199,6 +199,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   // ── Initial load ─────────────────────────────────────────────────────────────
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     setError('');
     const load = async () => {
@@ -207,6 +208,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
           fetchCenterDataApi(null, selectedCenterCode),
           fetchOverview(null, selectedCenterCode, globalStream).catch(() => null),
         ]);
+        if (cancelled) return;
         setData(d);
         setOverview(ov);
 
@@ -224,17 +226,16 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         const candidate = streamRankingCols[0];
         if (candidate) setSelectedTestKey(prev => prev || candidate);
 
-        fetchCentreChart(selectedCenterCode, globalStream)
-          .then(res => setCentreChartData(res?.chartData || []))
-          .catch(e => console.error("Failed to fetch centre chart:", e));
+
       } catch (err) {
-        setError('Failed to load: ' + err.message);
+        if (!cancelled) setError('Failed to load: ' + err.message);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     load();
-  }, [selectedCenterCode]);
+    return () => { cancelled = true; };
+  }, [selectedCenterCode, globalStream]);
 
   // Subject performance + weak subject for the selected test only
   useEffect(() => {
@@ -265,9 +266,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   // Re-fetch centre chart data when stream changes
   useEffect(() => {
     if (!selectedCenterCode) return;
+    let cancelled = false;
+    setCentreChartData([]);
     fetchCentreChart(selectedCenterCode, globalStream)
-      .then(res => setCentreChartData(res?.chartData || []))
-      .catch(e => console.error('Failed to re-fetch centre chart on stream change:', e));
+      .then(res => { if (!cancelled) setCentreChartData(res?.chartData || []); })
+      .catch(e => { if (!cancelled) console.error('Failed to load centre chart:', e); });
+    return () => { cancelled = true; };
   }, [globalStream, selectedCenterCode]);
 
   useEffect(() => {
@@ -336,20 +340,24 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
   useEffect(() => {
     if (!selectedTestKey) return;
+    let cancelled = false;
     Promise.all([
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, stream: globalStream, limit: 10, order: 'desc' }).catch(() => ({ ranked: [] })),
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, stream: globalStream, limit: 10, order: 'asc'  }).catch(() => ({ ranked: [] })),
       fetchRankings(null, { testKey: selectedTestKey, centerCode: selectedCenterCode, stream: globalStream, limit: Math.max(1000, data?.profiles?.length || 0), order: 'desc' }).catch(() => ({ ranked: [] })),
     ]).then(([top, bottom, all]) => {
+      if (cancelled) return;
       const validRolls = new Set((data?.profiles || []).map(p => p.ROLL_KEY));
       const filterRanked = (list) => (list || []).filter(s => validRolls.has(s.roll));
       setTopRanked(filterRanked(top?.ranked || []));
       setBottomRanked(filterRanked(bottom?.ranked || []));
       setAllRanked(filterRanked(all?.ranked || []));
     }).catch(() => {
+      if (cancelled) return;
       setTopRanked([]);
       setBottomRanked([]);
     });
+    return () => { cancelled = true; };
   }, [selectedTestKey, selectedCenterCode, globalStream, data?.profiles]);
 
   useEffect(() => {
