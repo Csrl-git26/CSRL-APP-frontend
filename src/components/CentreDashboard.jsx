@@ -1,6 +1,6 @@
 import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
 import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -55,6 +55,26 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   const [centersList, setCentersList] = useState([]);
 
   const [selectedCenterCode, setSelectedCenterCode] = useState(() => adminViewCenterCode || auth.centerCode || 'GAIL');
+
+  const tabHistory = useRef([]);
+  const previousPageRef = useRef(activePage);
+
+  useEffect(() => {
+    if (activePage !== previousPageRef.current) {
+      tabHistory.current.push(previousPageRef.current);
+      previousPageRef.current = activePage;
+    }
+  }, [activePage]);
+
+  const handleBack = () => {
+    if (tabHistory.current.length > 0) {
+      const prev = tabHistory.current.pop();
+      previousPageRef.current = prev;
+      setActivePage(prev);
+    } else {
+      setActivePage('overview');
+    }
+  };
 
   useEffect(() => {
     if (adminViewCenterCode) {
@@ -1187,8 +1207,8 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
           <div style={{ marginBottom: 14, flexShrink: 0, display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto' }}>
             <button
               type="button"
-              onClick={() => logout()}
-              title="Go Back / Logout"
+              onClick={handleBack}
+              title="Go to previous tab"
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 padding: '8px 14px', borderRadius: 8,
