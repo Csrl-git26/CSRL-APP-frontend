@@ -26,7 +26,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 </div>
               </th>
               <th>
-                <div>{stream === 'NEET' ? 'MBBS Status' : 'Qualification'}</div>
+                <div>{stream === 'NEET' ? 'MBBS expected Admission' : 'Qualification'}</div>
                 <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 'normal', marginTop: 2 }}>Status</div>
               </th>
             </tr>
