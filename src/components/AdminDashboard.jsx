@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 30830)
-Total output lines: 2272
-
 import FacultyTestDashboard from './FacultyTestDashboard';
 import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
 import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
@@ -1205,7 +1202,78 @@ export default function AdminDashboard() {
     return (
       <div className="fade-in dashboard-page">
         <div className="page-header">
-          <button type="button" onClick={() => setViewingStudentId(null)} className="btn btn-sm" style…830 tokens truncated…ers = [...new Set(data.profiles.filter(p => String(p.CATEGORY).toUpperCase() === 'PWD').map(p => p.centerCode))];
+          <button type="button" onClick={() => setViewingStudentId(null)} className="btn btn-sm" style={{ background: 'rgba(255,255,255,.15)', color: '#fff', border: 'none', marginRight: 8, gap: 5 }}>
+            <ArrowLeft size={14} /> Back
+          </button>
+          <div>
+            <h1>Student Profile</h1>
+            <p>{profile?.["STUDENT'S NAME"]} · {viewingStudentId}</p>
+          </div>
+        </div>
+        <div className="content dashboard-page-body">
+          <div className="dashboard-scroll">
+            <ErrorBoundary><StudentProfileView profile={finalProfile} studentTests={studentTests} testColumns={data.testColumns} hidePersonalDetails={true} /></ErrorBoundary>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLeaderboardCentreClick = (code) => {
+    setPreviousPage(activePage);
+    setFilterCenter(code);
+    setActivePage('centre-overview');
+  };
+
+  // ── Section components ─────────────────────────────────────────────────────
+
+  const OverallMatrixCard = ({ title = "Overall CSRL Matrix" }) => {
+    const totalStudents  = data.profiles.length;
+    const jeeCount       = data.profiles.filter((p) => (p.stream || 'JEE') === 'JEE').length;
+    const neetCount      = data.profiles.filter((p) => p.stream === 'NEET').length;
+
+    const filteredProfiles = matrixStreamFilter === 'ALL'
+      ? data.profiles
+      : data.profiles.filter(p => matrixStreamFilter === 'JEE' ? (p.stream || 'JEE') === 'JEE' : p.stream === 'NEET');
+
+    // Dynamically count categories
+    const categoryCounts = {};
+    filteredProfiles.forEach(p => {
+      let c = (p.CATEGORY || '').toUpperCase().trim();
+      // Group synonyms
+      if (['GENERAL', 'GEN', 'UR', 'UNRESERVED'].includes(c)) c = 'General';
+      else if (c === 'OBC') c = 'OBC';
+      else if (c === 'SC') c = 'SC';
+      else if (c === 'ST') c = 'ST';
+      else if (c === '') c = 'NA';
+      else c = c.charAt(0).toUpperCase() + c.slice(1).toLowerCase(); // capitalize correctly for others
+      categoryCounts[c] = (categoryCounts[c] || 0) + 1;
+    });
+
+    // Sort descending by count
+    const sortedCategories = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
+
+    return (
+      <div className="card" style={{ padding: '12px 16px' }}>
+        <div className="section-title" style={{ marginBottom: 6 }}>
+          {title} {matrixStreamFilter !== 'ALL' && <span style={{fontSize: 14, color: 'var(--gray-500)', fontWeight: 'normal'}}>({matrixStreamFilter} only)</span>}
+        </div>
+        {sortedCategories.map(([catLabel, count]) => {
+          let badgeClass = 'badge-general'; // default
+          let badgeColor = undefined;
+          let progressBg = '#1a4fa0';
+          let displayName = catLabel;
+
+          if (catLabel === 'OBC') badgeClass = 'badge-obc';
+          else if (catLabel === 'SC') badgeClass = 'badge-sc';
+          else if (catLabel === 'ST') badgeClass = 'badge-st';
+          else if (catLabel === 'NA') {
+            const centers = [...new Set(data.profiles.filter(p => !p.CATEGORY || String(p.CATEGORY).trim() === '').map(p => p.centerCode))];
+            displayName = `Other / NA (${centers.join(', ')})`;
+            badgeColor = '#6b7280';
+            progressBg = '#9ca3af';
+          } else if (catLabel.toUpperCase() === 'PWD') {
+            const centers = [...new Set(data.profiles.filter(p => String(p.CATEGORY).toUpperCase() === 'PWD').map(p => p.centerCode))];
             displayName = `Pwd (${centers.join(', ')})`;
             badgeColor = '#0f766e';
             progressBg = '#0d9488';
@@ -2201,4 +2269,3 @@ export default function AdminDashboard() {
     </ErrorBoundary>
   );
 }
-
