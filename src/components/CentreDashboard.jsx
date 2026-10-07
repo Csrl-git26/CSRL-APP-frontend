@@ -32,6 +32,7 @@ import { getCenterWeakTopics } from '../services/weakTopicApi';
 import PastYearDataTab from './PastYearDataTab';
 import PerformanceChart from './PerformanceChart';
 import TestRecordsTable from './TestRecordsTable';
+import LowScoreCard from './LowScoreCard';
 
 const TABS = [
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
@@ -763,6 +764,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
         )}
       </div>
+      <LowScoreCard testKey={activeLeaderboardKeys.join(',')} stream={globalStream} branch={branch} onViewStudent={setViewingStudentId} />
     </div>
     );
   };
