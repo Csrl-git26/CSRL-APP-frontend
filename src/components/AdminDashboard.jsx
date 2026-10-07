@@ -445,7 +445,7 @@ export default function AdminDashboard() {
   const [uploadBranch, setUploadBranch] = useState(branch);
   const fileRef = useRef(null);
 
-  const [testInsights, setTestInsights] = useState(null);
+  const [testInsightsSnapshot, setTestInsightsSnapshot] = useState(null);
   const [testInsightsLoading, setTestInsightsLoading] = useState(false);
   const [testInsightsError, setTestInsightsError] = useState('');
 
@@ -540,25 +540,7 @@ export default function AdminDashboard() {
     });
   }, [selectedLeaderboardTestKeys, selectedSubject, refreshTrigger, globalStream]);
 
-  useEffect(() => {
-    if (!selectedTestKey) return undefined;
-    let cancelled = false;
-    setTestInsightsLoading(true);
-    setTestInsightsError('');
-    fetchTestInsights(null, selectedTestKey, null, globalStream)
-      .then((d) => {
-        if (!cancelled) setTestInsights(d);
-      })
-      .catch((err) => {
-        if (!cancelled) setTestInsightsError(err.message || 'Failed to load test analysis');
-      })
-      .finally(() => {
-        if (!cancelled) setTestInsightsLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [activePage, selectedTestKey, refreshTrigger, globalStream]);
+
 
   // ── Derived data ───────────────────────────────────────────────────────────
 
@@ -636,6 +618,33 @@ export default function AdminDashboard() {
     const fallback = streamTestOptions.filter(o => o !== 'ALL_FMT')[0] || streamTestOptions[0];
     return fallback ? [fallback] : [];
   }, [selectedLeaderboardTestKeys, streamTestOptions]);
+
+  // Dashboard analytics must use the same test selection as its leaderboard.
+  const insightsTestKey = activePage === 'leaderboard' ? activeLeaderboardKeys.join(',') : selectedTestKey;
+  const insightsScope = JSON.stringify([globalStream, branch, insightsTestKey]);
+  const testInsights = testInsightsSnapshot?.scope === insightsScope ? testInsightsSnapshot.data : null;
+
+  useEffect(() => {
+    setTestInsightsSnapshot(null);
+    setTestInsightsError('');
+    if (!insightsTestKey) { setTestInsightsLoading(false); return undefined; }
+    let cancelled = false;
+    setTestInsightsLoading(true);
+    setTestInsightsError('');
+    fetchTestInsights(null, insightsTestKey, null, globalStream)
+      .then((d) => {
+        if (!cancelled) setTestInsightsSnapshot({ scope: insightsScope, data: d });
+      })
+      .catch((err) => {
+        if (!cancelled) setTestInsightsError(err.message || 'Failed to load test analysis');
+      })
+      .finally(() => {
+        if (!cancelled) setTestInsightsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [insightsTestKey, insightsScope, refreshTrigger, globalStream, branch]);
 
   const filteredStudents = useMemo(() => {
     if (!data) return [];
