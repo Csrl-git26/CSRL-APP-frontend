@@ -2245,10 +2245,10 @@ export default function AdminDashboard() {
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} adminStream={globalStream} />}
           {activePage === 'students'    && StudentsSection()}
           {activePage === 'marks'       && <MarksSection />}
-          {activePage === 'import'      && <ImportExportSection />}
+          {activePage === 'import' && <><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
           {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
-          {activePage === 'traineefaculty' && <FacultyTestDashboard isAdmin={true} />}
+          {activePage === 'traineefaculty' && <FacultyTestDashboard isAdmin={false} />}
         </div>
       </div>
 
