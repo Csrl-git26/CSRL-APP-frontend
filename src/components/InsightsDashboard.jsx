@@ -456,6 +456,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
 
     const [showRankingModal, setShowRankingModal] = useState(false);
+  const [showQualRankingModal, setShowQualRankingModal] = useState(false);
+  const [modalError, setModalError] = useState('');
   const [modalTestKey, setModalTestKey] = useState(selectedTestKey || '');
   const [modalCentreBoard, setModalCentreBoard] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
@@ -468,29 +470,33 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
   // Fetch leaderboard for the modal's local test key (only changes the chart inside the modal)
   useEffect(() => {
-    if (!showRankingModal || !modalTestKey || modalTestKey === 'Multiple Tests') {
-      if (!showRankingModal) setModalCentreBoard(null);
+    if (!(showRankingModal || showQualRankingModal) || !modalTestKey || modalTestKey === 'Multiple Tests') {
+      setModalCentreBoard(null);
+      setModalLoading(false);
+      setModalError('');
       return;
     }
     let cancelled = false;
     setModalLoading(true);
+    setModalError('');
+    setModalCentreBoard([]);
     fetchCentreLeaderboard(null, modalTestKey, stream)
       .then((res) => {
         if (!cancelled) {
           // API returns array directly
-          setModalCentreBoard(Array.isArray(res) ? res : (res?.centreRankings || centreBoard || []));
+          setModalCentreBoard(Array.isArray(res) ? res : (res?.centreRankings || []));
           setModalLoading(false);
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setModalCentreBoard(centreBoard); // fallback to parent data
+          setModalCentreBoard([]);
+          setModalError('Unable to load this test. Please select it again or reopen the chart.');
           setModalLoading(false);
         }
       });
     return () => { cancelled = true; };
-  }, [showRankingModal, modalTestKey, stream]);
-  const [showQualRankingModal, setShowQualRankingModal] = useState(false);
+  }, [showRankingModal, showQualRankingModal, modalTestKey, stream, branch]);
   const [showSubjectRankingModal, setShowSubjectRankingModal] = useState(false);
   const [selectedModalSubject, setSelectedModalSubject] = useState('');
   const dashSubjects = testInsights?.subjects || ['Physics', 'Chemistry', 'Math'];
@@ -1128,6 +1134,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               </div>
               
               <div style={{ flex: 1, minHeight: 0, width: '100%', position: 'relative' }}>
+                {modalError && <div role="alert" style={{ color: '#b91c1c', padding: 12 }}>{modalError}</div>}
                 {modalLoading && (
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: 'rgba(255,255,255,0.6)', borderRadius: 8 }}>
                     <div style={{ color: '#2563eb', fontWeight: 700, fontSize: 14 }}>Loading...</div>
@@ -1316,6 +1323,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               </div>
               
               <div style={{ flex: 1, minHeight: 0, width: '100%', position: 'relative' }}>
+                {modalError && <div role="alert" style={{ color: '#b91c1c', padding: 12 }}>{modalError}</div>}
                 {modalLoading && (
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: 'rgba(255,255,255,0.6)', borderRadius: 8 }}>
                     <div style={{ color: '#2563eb', fontWeight: 700, fontSize: 14 }}>Loading...</div>
