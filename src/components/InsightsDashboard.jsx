@@ -506,6 +506,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const [showBottom5Qual, setShowBottom5Qual] = useState(false);
   const [showBottom5Student, setShowBottom5Student] = useState(false);
   useEffect(() => { setShouldAnimate(true); const t = setTimeout(() => setShouldAnimate(false), 2500); return () => clearTimeout(t); }, [showBottom5Qual, selectedTestKey]);
+  const [lowScoreSelection, setLowScoreSelection] = useState(null);
+  useEffect(() => { setLowScoreSelection(null); }, [selectedTestKey, stream, branch]);
   const profiles = data?.profiles || [];
   const tests    = data?.tests    || [];
 
@@ -532,7 +534,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                       onMouseLeave={(e) => e.target.style.textDecoration = 'underline transparent'}
                     >
                       <span style={{ color: '#1e293b' }}>{code}</span>
-                      <span style={{ color: '#f97316', fontWeight: 700 }}>{n}</span>
+                      <button type="button" aria-label={`View ${n} students in ${code} for ${sub}`} onClick={(e) => { e.stopPropagation(); setLowScoreSelection({ code, subject: sub }); }} style={{ color: '#f97316', fontWeight: 700, border: 0, background: 'transparent', padding: 0, font: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}>{n}</button>
                     </li>
                   ))}
                 {!Object.values((insights.notQualifiedBySubject || {})[sub] || {}).some((n) => n > 0) && (
@@ -1383,6 +1385,24 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {lowScoreSelection && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setLowScoreSelection(null)}>
+          <div role="dialog" aria-modal="true" aria-labelledby="low-score-title" onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 16, padding: 24, width: 'min(760px, 95vw)', maxHeight: '85vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 16 }}>
+              <h3 id="low-score-title" style={{ margin: 0 }}>{lowScoreSelection.code} — {lowScoreSelection.subject} — {selectedTestKey}</h3>
+              <button type="button" onClick={() => setLowScoreSelection(null)} aria-label="Close student list">Close</button>
+            </div>
+            {(() => {
+              const rows = testInsights?.lowScoringStudentsBySubject?.[lowScoreSelection.subject]?.[lowScoreSelection.code];
+              if (!rows) return <p>Student details are unavailable. Please refresh and try again.</p>;
+              return <><p>{rows.length} students in this low-score count</p><table className="table"><thead><tr><th>Student name</th><th>Roll number</th><th>Marks</th></tr></thead><tbody>
+                {rows.map(row => <tr key={row.roll}><td>{onViewStudent ? <button type="button" style={{ border: 0, background: 'transparent', color: '#1a4fa0', cursor: 'pointer', textAlign: 'left' }} onClick={() => { setLowScoreSelection(null); onViewStudent(row.roll); }}>{row.name || 'Name unavailable'}</button> : row.name || 'Name unavailable'}</td><td>{row.roll}</td><td>{row.marks}</td></tr>)}
+              </tbody></table></>;
+            })()}
           </div>
         </div>
       )}
