@@ -12,6 +12,20 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   const [rows,setRows] = useState([]), [loading,setLoading] = useState(true), [error,setError] = useState('');
   const [year,setYear] = useState('ALL'), [test,setTest] = useState('ALL'), [subject,setSubject] = useState('ALL'), [centre,setCentre] = useState('ALL'), [faculty,setFaculty] = useState('');
   const [importYear,setImportYear] = useState('2026-27'), [preview,setPreview] = useState(null), [busy,setBusy] = useState(false), [notice,setNotice] = useState('');
+  const [deleteYear,setDeleteYear] = useState(''), [deleteTest,setDeleteTest] = useState(''), [deleteConfirmation,setDeleteConfirmation] = useState('');
+  const deleteRows = rows.filter(r => r.year === deleteYear && r.test === deleteTest);
+  const deleteTests = [...new Set(rows.filter(r => r.year === deleteYear).map(r => r.test))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  const removeTest = async () => {
+    if (!isAdmin || !uploadOnly || busy || loading || !deleteRows.length || deleteConfirmation !== 'DELETE') return;
+    if (!window.confirm(`Permanently delete ${deleteRows.length} trainee faculty records for ${deleteTest}, academic year ${deleteYear}?`)) return;
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const result = await request('/delete',{year:deleteYear,test:deleteTest,ids:deleteRows.map(r=>r._id),confirmation:deleteConfirmation});
+      setNotice(`${result.deletedCount} trainee faculty records deleted.`);
+      setDeleteTest(''); setDeleteConfirmation(''); setPreview(null); setRows([]);
+      await load();
+    } catch(e) { setError(e.message); } finally { setBusy(false); }
+  };
   const load = async () => { setLoading(true); setError(''); try { setRows((await request()).rows || []); } catch(e) { setError(e.message); } finally { setLoading(false); } };
   useEffect(() => { let live = true; request().then(d => { if(live) setRows(d.rows || []); }).catch(e => { if(live) setError(e.message); }).finally(() => { if(live) setLoading(false); }); return () => { live = false; }; }, []);
   const options = key => [...new Set(rows.flatMap(r => key === 'centres' ? r.centres : [r[key]]).filter(Boolean))].sort((a,b) => a.localeCompare(b,undefined,{numeric:true}));
@@ -54,6 +68,25 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
       {notice && <p role="status">{notice}</p>}{error && <p role="alert" style={{color:'#b91c1c'}}>{error} <button className="btn btn-ghost" onClick={load}>Retry loading</button></p>}
       {preview && <div><h3>Import preview — {preview.rows.length} results</h3><p>Confirming replaces matching year/email/test/subject results. Other tests remain unchanged. Blank future-test groups are skipped.</p>{preview.warnings.map((w,i)=><p key={i} style={{color:'#92400e'}}>{w}</p>)}<div style={{overflowX:'auto',maxHeight:300}}><table className="table"><thead><tr>{['Name','Email (required)','Test','Subject','Attempted','Correct','Marks','Status'].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{preview.rows.map((r,i)=><tr key={i}><td>{r.name}</td><td><input aria-label={`Email for ${r.name}`} value={r.email} onChange={e=>{const email=e.target.value;setPreview(p=>({...p,rows:p.rows.map(x=>x.name===r.name?{...x,email}:x)}));}} /></td><td>{r.test}</td><td>{r.subject}</td><td>{show(r.attempted)}</td><td>{show(r.correct)}</td><td>{show(r.marks)}</td><td>{r.status}</td></tr>)}</tbody></table></div><button className="btn btn-primary" disabled={busy || preview.rows.some(r=>!r.email.includes('@'))} onClick={confirm}>{busy?'Saving…':'Confirm import'}</button> <button className="btn btn-ghost" disabled={busy} onClick={()=>setPreview(null)}>Cancel</button></div>}
     </section>
+    {isAdmin && uploadOnly && <section className="card">
+      <h3>Delete trainee faculty test data</h3>
+      <p>Select the academic year and test to remove. This permanently deletes the selected faculty results across all centres. Student data and other tests are unchanged.</p>
+      <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'end'}}>
+        <label>Academic year<select className="input select" value={deleteYear} disabled={busy || loading} onChange={e=>{setDeleteYear(e.target.value);setDeleteTest('');setDeleteConfirmation('');}}>
+          <option value="">Select year</option>{options('year').map(v=><option key={v} value={v}>{v}</option>)}
+        </select></label>
+        <label>Test<select className="input select" value={deleteTest} disabled={busy || loading || !deleteYear} onChange={e=>{setDeleteTest(e.target.value);setDeleteConfirmation('');}}>
+          <option value="">Select test</option>{deleteTests.map(v=><option key={v} value={v}>{v}</option>)}
+        </select></label>
+      </div>
+      {loading ? <p role="status">Loading saved tests…</p> : !rows.length ? <p>No saved trainee faculty results.</p> : null}
+      {deleteRows.length > 0 && <div>
+        <p><strong>{deleteRows.length} records</strong> will be deleted for {deleteTest} ({deleteYear}).</p>
+        <div style={{maxHeight:220,overflow:'auto'}}><table className="table"><thead><tr><th>Faculty</th><th>Centre</th><th>Subject</th><th>Marks</th></tr></thead><tbody>{deleteRows.map(r=><tr key={r._id}><td>{r.name}</td><td>{r.centres.join(', ')}</td><td>{r.subject}</td><td>{show(r.marks)}</td></tr>)}</tbody></table></div>
+        <label>Type DELETE to confirm <input className="input" value={deleteConfirmation} disabled={busy} onChange={e=>setDeleteConfirmation(e.target.value)} /></label>
+        <button className="btn" style={{background:'#b91c1c',color:'white',marginLeft:12}} disabled={busy || loading || deleteConfirmation !== 'DELETE'} onClick={removeTest}>{busy?'Please wait…':'Delete selected test data'}</button>
+      </div>}
+    </section>}
     {!uploadOnly && (loading ? <p role="status">Loading faculty results…</p> : !rows.length ? <section className="card">No faculty test results uploaded yet.{isAdmin?' Upload the consolidated workbook above.':''}</section> : <>
       <section className="card" style={{display:'flex',gap:12,flexWrap:'wrap'}}>{[['Year',year,setYear,options('year')],['Test',test,setTest,options('test')],['Subject',subject,setSubject,options('subject')],['Centre/project',centre,setCentre,options('centres')]].map(([label,value,set,opts])=><label key={label}>{label}<select className="input select" value={value} onChange={e=>set(e.target.value)}><option value="ALL">All</option>{opts.map(v=><option key={v}>{v}</option>)}</select></label>)}</section>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:12}}>{[['Appeared results',appeared.length],['Absent / on leave',filtered.filter(r=>['ABSENT','LEAVE','MEDICAL LEAVE'].includes(r.status)).length],['Average marks',canRank?show(mean('marks')):'Select year/test/subject'],['Average accuracy',mean('accuracy') === null?'—':`${show(mean('accuracy'))}%`],['Qualified results',filtered.filter(r=>r.qualification==='QUALIFIED').length]].map(([label,value])=><div className="card" key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
