@@ -323,7 +323,8 @@ export async function upsertTestScoresApi(_token, rollKey, scores, centerCode) {
 }
 
 export async function bulkUpsertTestScoresApi(_token, marks, selection = uploadExamScope()) {
-  return apiFetch('/api/tests/bulk-upsert', {
+  // A distinct endpoint prevents an older backend silently merging a replacement.
+  return apiFetch(selection.importMode === 'replace' ? '/api/tests/import/replace-complete' : '/api/tests/bulk-upsert', {
     method: 'POST',
     body: { marks, ...selection },
   });

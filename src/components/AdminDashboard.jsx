@@ -442,6 +442,7 @@ export default function AdminDashboard() {
   const [uploadError,   setUploadError]   = useState('');
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadTestKey, setUploadTestKey] = useState('');
+  const [marksImportMode, setMarksImportMode] = useState('merge');
   const [uploadStream, setUploadStream] = useState(globalStream);
   const [uploadBranch, setUploadBranch] = useState(branch);
   const fileRef = useRef(null);
@@ -987,6 +988,7 @@ export default function AdminDashboard() {
 
   const openImportModal = (mode) => {
     setImportMode(mode);
+    setMarksImportMode('merge');
     setUploadStream(globalStream);
     setUploadBranch(branch);
     setUploadTestKey(streamTestOptions.includes(selectedTestKey) ? selectedTestKey : (streamTestOptions[0] || ''));
@@ -1100,6 +1102,9 @@ export default function AdminDashboard() {
   const confirmImport = async () => {
     const valid = uploadPreview.filter((p) => p.status === 'new' || p.status === 'update');
     if (!valid.length) { showToast('No valid rows to import.', 'warning'); return; }
+    if (importMode === 'marks' && marksImportMode === 'replace' && uploadPreview.some(p => p.status === 'err')) {
+      showToast('Fix every invalid row before replacing a complete test.', 'warning'); return;
+    }
     setUploadLoading(true);
     try {
       if (importMode === 'students') {
@@ -1124,7 +1129,8 @@ export default function AdminDashboard() {
               if (rollStr.includes(c)) { derivedCenter = c; break; }
             }
           }
-          const centerCodeToUse = profile?.centerCode || derivedCenter;
+          // Complete files must match their explicit centre, not silently relocate a row.
+          const centerCodeToUse = marksImportMode === 'replace' ? (fallbackCenter || profile?.centerCode) : (profile?.centerCode || derivedCenter);
 
           return {
             rollKey: rowRoll,
@@ -1133,9 +1139,11 @@ export default function AdminDashboard() {
           };
         });
 
-        const result = await bulkUpsertTestScoresApi(null, allMarks, { stream: uploadStream, ...(uploadStream === 'JEE' ? { branch: uploadBranch } : {}) });
+        const result = await bulkUpsertTestScoresApi(null, allMarks, { stream: uploadStream, ...(uploadStream === 'JEE' ? { branch: uploadBranch } : {}), importMode: marksImportMode, testKey: uploadTestKey });
         triggerRefresh();
-        showToast(`Marks imported: ${result.upsertedCount || 0} new, ${result.modifiedCount || 0} updated (${result.matchedCount + result.upsertedCount} total).`, 'success');
+        showToast(result.mode === 'replace'
+          ? `${uploadTestKey} replaced with ${result.importedCount} students. Previous results backed up.`
+          : `Marks imported: ${result.upsertedCount || 0} new, ${result.modifiedCount || 0} updated (${result.matchedCount + result.upsertedCount} total).`, 'success');
       } else if (importMode === 'pastyear') {
         const allData = valid.map((row) => row.payload);
         const CHUNK_SIZE = 500;
@@ -2128,12 +2136,23 @@ export default function AdminDashboard() {
                     list="testOptions"
                     className="input" 
                     value={uploadTestKey} 
-                    onChange={(e) => setUploadTestKey(e.target.value)}
+                    onChange={(e) => { setUploadTestKey(e.target.value); resetImportState(); }}
+                    disabled={uploadLoading}
                     placeholder="Enter new or select existing test (e.g. CAT-1(TEST))"
                   />
                   <datalist id="testOptions">
                     {(uploadStream === globalStream && (uploadStream === 'NEET' || uploadBranch === branch) ? streamTestOptions : []).map((col) => <option key={col} value={col} />)}
                   </datalist>
+                  <label className="label" htmlFor="marksImportMode">How should this file be applied?</label>
+                  <select id="marksImportMode" className="input" value={marksImportMode} disabled={uploadLoading} onChange={e => setMarksImportMode(e.target.value)}>
+                    <option value="merge">Update listed students (partial upload)</option>
+                    <option value="replace">Replace complete test (all centres)</option>
+                  </select>
+                  <p style={{ fontSize: 13, marginTop: 8 }}>
+                    {marksImportMode === 'replace'
+                      ? `This file becomes the complete result set for ${uploadTestKey || 'the selected test'} in ${uploadStream}. Existing scores for students absent from the file will be removed from this test, with a backup. Other tests and student profiles are kept. Include total marks for every student.`
+                      : 'Only listed students are updated. Existing test scores for other students stay in the averages. Use Replace complete test when uploading a full corrected result file.'}
+                  </p>
                 </div>
               )}
               <div className="upload-zone" role="button" tabIndex={0} onClick={() => fileRef.current?.click()} onKeyDown={(e) => e.key === 'Enter' && fileRef.current?.click()}>
@@ -2180,7 +2199,7 @@ export default function AdminDashboard() {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-ghost" onClick={closeImportModal}>Cancel</button>
-              <button type="button" className="btn btn-primary" disabled={uploadLoading || !uploadPreview.length} onClick={confirmImport} style={{ gap: 6 }}>
+              <button type="button" className="btn btn-primary" disabled={uploadLoading || !uploadPreview.length || (importMode === 'marks' && marksImportMode === 'replace' && uploadPreview.some(p => p.status === 'err'))} onClick={confirmImport} style={{ gap: 6 }}>
                 <CheckCircle2 size={14} /> Confirm Import
               </button>
             </div>
