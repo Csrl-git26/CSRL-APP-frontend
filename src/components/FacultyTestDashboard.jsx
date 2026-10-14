@@ -22,6 +22,18 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   const [year,setYear] = useState('ALL'), [test,setTest] = useState('ALL'), [centre,setCentre] = useState('ALL'), [faculty,setFaculty] = useState('');
   const [importYear,setImportYear] = useState('2026-27'), [preview,setPreview] = useState(null), [busy,setBusy] = useState(false), [notice,setNotice] = useState('');
   const [deleteYear,setDeleteYear] = useState(''), [deleteTest,setDeleteTest] = useState(''), [deleteConfirmation,setDeleteConfirmation] = useState('');
+  const [deleteAllConfirmation,setDeleteAllConfirmation] = useState('');
+  const removeAll = async () => {
+    if (!isAdmin || !uploadOnly || busy || loading || error || !rows.length || deleteAllConfirmation !== 'DELETE ALL') return;
+    if (!window.confirm(`Permanently delete all ${rows.length} loaded trainee faculty records across every year, test and centre?`)) return;
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const result = await request('/delete-all', {ids: rows.map(r=>r._id), confirmation: deleteAllConfirmation});
+      setNotice(`${result.deletedCount} trainee faculty records deleted. You can now upload the updated workbook.`);
+      setDeleteAllConfirmation(''); setDeleteTest(''); setDeleteConfirmation(''); setPreview(null); setRows([]);
+      await load();
+    } catch(e) { setError(e.message); } finally { setBusy(false); }
+  };
   const deleteRows = rows.filter(r => r.year === deleteYear && r.test === deleteTest);
   const deleteTests = [...new Set(rows.filter(r => r.year === deleteYear).map(r => r.test))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
   const removeTest = async () => {
@@ -82,6 +94,13 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
     </section>
     {isAdmin && uploadOnly && <section className="card">
       <h3>Delete trainee faculty test data</h3>
+      <div style={{border:'1px solid #fecaca',background:'#fff7f7',borderRadius:12,padding:16,margin:'16px 0'}}>
+        <h4>Delete all trainee faculty data</h4>
+        <p>Permanently removes all loaded trainee faculty results and their associated details across every academic year, test and centre. Student records are not affected.</p>
+        <p><strong>{rows.length} results</strong> for <strong>{new Set(rows.map(r=>r.email)).size} trainee faculty</strong> are currently loaded.</p>
+        <label>Type DELETE ALL to confirm<input className="input" value={deleteAllConfirmation} disabled={busy || loading} onChange={e=>setDeleteAllConfirmation(e.target.value)} /></label>
+        <button className="btn" style={{background:'#b91c1c',color:'white',marginTop:12}} disabled={busy || loading || !!error || !rows.length || deleteAllConfirmation !== 'DELETE ALL'} onClick={removeAll}>{busy?'Please wait…':'Delete all trainee faculty data'}</button>
+      </div>
       <p>Select the academic year and test to remove. This permanently deletes the selected faculty results across all centres. Student data and other tests are unchanged.</p>
       <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'end'}}>
         <label>Academic year<select className="input select" value={deleteYear} disabled={busy || loading} onChange={e=>{setDeleteYear(e.target.value);setDeleteTest('');setDeleteConfirmation('');}}>
