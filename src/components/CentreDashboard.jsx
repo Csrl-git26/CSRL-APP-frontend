@@ -1180,7 +1180,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
             <div>
               <h1>{TABS.find(t => t.key === activePage)?.label || (activePage === 'overview' ? 'Overview' : 'CSRL Dashboard')}</h1>
             </div>
-            {(
+            {activePage !== 'traineefaculty' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
                 <select
