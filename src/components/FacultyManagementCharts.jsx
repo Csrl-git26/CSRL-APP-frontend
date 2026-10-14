@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Users, Target, Award, BarChart3 } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, PieChart, Pie, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, PieChart, Pie } from 'recharts';
 
 const blue = '#2563eb', orange = '#f97316';
 const fmt = value => value == null ? '—' : Number(value.toFixed(2));
@@ -59,22 +59,6 @@ function ComparisonPie({board,metric,cutoff,onSelect,title}) {
   </Card>;
 }
 
-function Qualification({board,onSelect}) {
-  const [bottom,setBottom] = useState(false);
-  const sorted = board.filter(p=>p.qualRate!=null).sort((a,b)=>b.qualRate-a.qualRate);
-  const values = (bottom ? sorted.slice(-5).reverse() : sorted.slice(0,5)).map((p,i)=>({...p,fill:[blue,'#0891b2','#7c3aed','#16a34a',orange][i]}));
-  return <Card title={bottom?'BOTTOM 5 FACULTY — QUALIFICATION':'TOP 5 FACULTY — QUALIFICATION'}>
-    <button className="btn btn-ghost" onClick={()=>setBottom(!bottom)}>Show {bottom?'top':'bottom'} 5</button>
-    {values.length ? <><ResponsiveContainer width="100%" height={220}><RadialBarChart data={values} innerRadius="25%" outerRadius="95%" startAngle={90} endAngle={-270}>
-      <PolarAngleAxis type="number" domain={[0,100]} tick={false}/>
-      <RadialBar dataKey="qualRate" background cornerRadius={8} onClick={p=>onSelect(p.id)} style={{cursor:'pointer'}}/>
-      <Tooltip formatter={(v,_,item)=>[fmt(v)+'%',item.payload.name]}/>
-    </RadialBarChart></ResponsiveContainer>
-    {values.map(p=><button key={p.id} className="btn btn-ghost" onClick={()=>onSelect(p.id)} style={{display:'flex',justifyContent:'space-between',width:'100%',color:p.fill,textAlign:'left'}}><span>{p.name}</span><strong>{fmt(p.qualRate)}%</strong></button>)}</>:<p>No qualification outcomes recorded.</p>}
-    <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Qualified ÷ results with a recorded qualification outcome. Missing outcomes are excluded.</p>
-  </Card>;
-}
-
 export default function FacultyManagementCharts({rows,canRank,onSelect}) {
   const board = facultyBoard(rows);
   const ranked = board.filter(p=>p.avg!=null);
@@ -94,7 +78,6 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
     {!canRank ? <Card title="FACULTY COMPARISON"><p>Select a year and test to compare all trainee faculty together.</p></Card> : <>
       <div style={grid}>
         <Ranking board={ranked} onSelect={onSelect}/>
-        <Qualification board={board} onSelect={onSelect}/>
         <ComparisonPie board={ranked} metric="avg" cutoff={average} onSelect={onSelect} title="FACULTY — TOTAL AVG SCORE"/>
         <ComparisonPie board={board} metric="qualRate" cutoff={80} onSelect={onSelect} title="FACULTY — QUALIFICATION"/>
       </div>
