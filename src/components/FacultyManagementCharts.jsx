@@ -91,7 +91,7 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
         <div style={{height:4,background:'#dbeafe',borderRadius:8,marginTop:14}}/>
       </div>)}
     </div>
-    {!canRank ? <Card title="FACULTY COMPARISON"><p>Select a year, test and subject to compare faculty on the same assessment.</p></Card> : <>
+    {!canRank ? <Card title="FACULTY COMPARISON"><p>Select a year and test to compare all trainee faculty together.</p></Card> : <>
       <div style={grid}>
         <Ranking board={ranked} onSelect={onSelect}/>
         <Qualification board={board} onSelect={onSelect}/>
