@@ -104,7 +104,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
       <FacultyManagementCharts rows={filtered} canRank={canRank} onSelect={setFaculty}/>
       <section className="card" style={{padding:24,border:'1px solid #dbeafe',overflow:'hidden'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,flexWrap:'wrap',marginBottom:20}}>
-          <div><h3 style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Faculty progress across tests</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
+          <div><h3 style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Trainee Faculty Details</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
           <label style={{minWidth:220,flex:'0 1 340px',fontSize:12,fontWeight:700,color:'#475569'}}>SELECT FACULTY
             <select className="input select" value={chosen} onChange={e=>setFaculty(e.target.value)} style={{marginTop:6}}>{people.map(([email,name])=><option key={email} value={email}>{name}</option>)}</select>
           </label>
