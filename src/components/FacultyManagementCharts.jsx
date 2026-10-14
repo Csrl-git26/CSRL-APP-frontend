@@ -99,11 +99,11 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
         <ComparisonPie board={board} metric="qualRate" cutoff={80} onSelect={onSelect} title="FACULTY — QUALIFICATION"/>
       </div>
       <div style={grid}>{[['avg','FACULTY RANKING — AVERAGE SCORE'],['accuracy','FACULTY — ACCURACY %']].map(([metric,title])=><Card key={metric} title={title}>
-        <div style={{overflowX:'auto'}}><div style={{minWidth:Math.max(400,ranked.length*95)}}>
-          <ResponsiveContainer width="100%" height={340}><BarChart data={ranked} margin={{top:20,right:20,bottom:70,left:5}}>
+        <div style={{width:'100%',minWidth:0}}><div style={{width:'100%',minWidth:0}}>
+          <ResponsiveContainer width="100%" height={340}><BarChart data={ranked} barCategoryGap="25%" maxBarSize={26} margin={{top:20,right:12,bottom:12,left:0}}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0"/>
-            <XAxis dataKey="name" interval={0} angle={-35} textAnchor="end" height={90} tick={{fontSize:11}}/>
-            <YAxis domain={metric==='accuracy'?[0,100]:['auto','auto']} tick={{fontSize:11}}/>
+            <XAxis dataKey="name" interval={0} angle={-65} textAnchor="end" height={125} tickMargin={8} tick={{fontSize:10}} tickFormatter={name=>name.length>18?name.slice(0,16)+'…':name}/>
+            <YAxis width={38} domain={metric==='accuracy'?[0,100]:['auto','auto']} tick={{fontSize:11}}/>
             <Tooltip formatter={v=>fmt(v)+(metric==='accuracy'?'%':'')}/>
             <Bar dataKey={metric} name={metric==='avg'?'Average marks':'Accuracy %'} radius={[6,6,0,0]} onClick={p=>onSelect(p.id)} style={{cursor:'pointer'}}>
               {ranked.map(p=><Cell key={p.id} fill={metric==='avg'&&p.avg<average?orange:blue}/>)}
