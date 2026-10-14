@@ -33,7 +33,7 @@ function Card({title,children}) {
 function Ranking({board,onSelect}) {
   const [bottom,setBottom] = useState(false);
   const values = bottom ? board.slice(-5).reverse() : board.slice(0,5);
-  return <Card title={bottom?'BOTTOM 5 FACULTY — AVG SCORE':'TOP 5 FACULTY — AVG SCORE'}>
+  return <Card title={bottom?'BOTTOM 5 TRAINEE FACULTY — AVG SCORE':'TOP 5 TRAINEE FACULTY — AVG SCORE'}>
     <button className="btn btn-ghost" onClick={()=>setBottom(!bottom)} style={{marginBottom:12}}>Show {bottom?'top':'bottom'} 5</button>
     {values.map(p=><button key={p.id} onClick={()=>onSelect(p.id)} style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,width:'100%',padding:'12px 10px',marginBottom:8,border:'1px solid #dbeafe',borderRadius:12,background:bottom?'#fff7ed':'#eff6ff',color:'#1e3a8a',textAlign:'left',cursor:'pointer'}}>
       <span><strong style={{marginRight:10}}>#{1+board.filter(x=>x.avg>p.avg).length}</strong>{p.name}</span><strong style={{color:bottom?orange:blue,fontSize:20}}>{fmt(p.avg)}</strong>
@@ -55,7 +55,7 @@ function ComparisonPie({board,metric,cutoff,onSelect,title}) {
       <span style={{color:blue}}>● At / above average</span>
       <span style={{color:orange}}>● Below average</span>
     </div>
-    <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Each segment represents one faculty member. Select a segment to view their progress.</p>
+    <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Each segment represents one trainee faculty member. Select a segment to view their progress.</p>
   </Card>;
 }
 
@@ -64,7 +64,7 @@ function QualificationPie({rows,onSelect}) {
   const values = rows.filter(r=>r.status==='APPEARED' && ['QUALIFIED','NOT QUALIFIED'].includes(r.qualification))
     .map(r=>({...r,equalSlice:1}));
   const qualified = values.filter(r=>r.qualification==='QUALIFIED').length;
-  return <Card title="FACULTY — QUALIFICATION">
+  return <Card title="TRAINEE FACULTY — QUALIFICATION">
     {values.length ? <ResponsiveContainer width="100%" height={260}><PieChart>
       <Pie data={values} dataKey="equalSlice" nameKey="name" innerRadius={55} outerRadius={95} paddingAngle={2} onClick={r=>onSelect(r.email)} style={{cursor:'pointer'}}>
         {values.map((r,i)=><Cell key={r._id || i} fill={r.qualification==='QUALIFIED'?blue:orange}/>)}
@@ -75,7 +75,7 @@ function QualificationPie({rows,onSelect}) {
       <span style={{color:blue}}>● Qualified ({qualified})</span>
       <span style={{color:orange}}>● Not Qualified ({values.length-qualified})</span>
     </div>
-    <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Each segment shows a recorded faculty test result. Missing outcomes and absences are excluded. Select a segment to view faculty details.</p>
+    <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Each segment shows a recorded trainee faculty test result. Missing outcomes and absences are excluded. Select a segment to view trainee faculty details.</p>
   </Card>;
 }
 
@@ -86,7 +86,7 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
   const average = appeared.length ? appeared.reduce((sum,r)=>sum+r.marks,0)/appeared.length : null;
   const outcomes = appeared.filter(r=>['QUALIFIED','NOT QUALIFIED'].includes(r.qualification));
   const qual = outcomes.length ? 100*outcomes.filter(r=>r.qualification==='QUALIFIED').length/outcomes.length : null;
-  const cards = [[Users,board.length,'TOTAL FACULTY'],[BarChart3,appeared.length,'APPEARED RESULTS'],[Award,qual==null?'—':fmt(qual)+'%','FACULTY QUALIFICATION'],[Target,canRank?fmt(average):'—','AVERAGE SCORE']];
+  const cards = [[Users,board.length,'TOTAL TRAINEE FACULTY'],[BarChart3,appeared.length,'APPEARED RESULTS'],[Award,qual==null?'—':fmt(qual)+'%','TRAINEE FACULTY QUALIFICATION'],[Target,canRank?fmt(average):'—','AVERAGE SCORE']];
   return <div style={{display:'grid',gap:20}}>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:14}}>
       {cards.map(([Icon,value,label])=><div className="card" key={label} style={{padding:20,background:'linear-gradient(135deg,#f0f5ff,#ffffff)',border:'1px solid #dbeafe'}}>
@@ -95,13 +95,13 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
         <div style={{height:4,background:'#dbeafe',borderRadius:8,marginTop:14}}/>
       </div>)}
     </div>
-    {!canRank ? <Card title="FACULTY COMPARISON"><p>Select a year and test to compare all trainee faculty together.</p></Card> : <>
+    {!canRank ? <Card title="TRAINEE FACULTY COMPARISON"><p>Select a year and test to compare all trainee faculty together.</p></Card> : <>
       <div style={grid}>
         <Ranking board={ranked} onSelect={onSelect}/>
-        <ComparisonPie board={ranked} metric="avg" cutoff={average} onSelect={onSelect} title="FACULTY — TOTAL AVG SCORE"/>
+        <ComparisonPie board={ranked} metric="avg" cutoff={average} onSelect={onSelect} title="TRAINEE FACULTY — TOTAL AVG SCORE"/>
         <QualificationPie rows={rows} onSelect={onSelect}/>
       </div>
-      <div style={grid}>{[['avg','FACULTY RANKING — AVERAGE SCORE'],['accuracy','FACULTY — ACCURACY %']].map(([metric,title])=><Card key={metric} title={title}>
+      <div style={grid}>{[['avg','TRAINEE FACULTY RANKING — AVERAGE SCORE'],['accuracy','TRAINEE FACULTY — ACCURACY %']].map(([metric,title])=><Card key={metric} title={title}>
         <div style={{width:'100%',minWidth:0}}><div style={{width:'100%',minWidth:0}}>
           <ResponsiveContainer width="100%" height={340}><BarChart data={ranked} barCategoryGap="25%" maxBarSize={26} margin={{top:20,right:12,bottom:12,left:0}}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0"/>
