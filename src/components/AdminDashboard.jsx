@@ -2223,7 +2223,7 @@ export default function AdminDashboard() {
           {activePage === 'pastyear' && <h1>Past Year Data</h1>}
           {activePage === 'traineefaculty' && <h1>Trainee Faculty</h1>}
           {activePage === 'import' && <h1>Import Excel</h1>}
-          {(
+          {activePage !== 'traineefaculty' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
               <select
