@@ -6,7 +6,7 @@ import { parseFacultyRows } from '../services/facultyImport';
 const API = 'https://csrl-app-backed-1.onrender.com/api/faculty-tests';
 async function request(path = '', body) {
   const response = await fetch(API + path, { method: body ? 'POST' : 'GET', headers: { 'Content-Type':'application/json', Authorization: `Bearer ${localStorage.getItem('csrl_token') || ''}` }, ...(body ? { body: JSON.stringify(body) } : {}) });
-  const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Faculty request failed.'); return data;
+  const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Trainee Faculty request failed.'); return data;
 }
 const show = v => v === null || v === undefined ? '—' : Number.isFinite(v) ? Math.round(v * 100) / 100 : v;
 
@@ -75,7 +75,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
     XLSX.writeFile(wb,'Faculty-All-Tests-Upload-Template.xlsx');
   };
   return <div style={{display:'grid',gap:20}}>
-    <section className="card"><h2>{uploadOnly ? 'Import Trainee Faculty Test Data' : 'Faculty Test Analysis'}</h2><p>Faculty results are separate from student tests. Compare all trainee faculty together by year and test.</p>
+    <section className="card"><h2>{uploadOnly ? 'Import Trainee Faculty Test Data' : 'Trainee Faculty Test Analysis'}</h2><p>Trainee Faculty results are separate from student tests. Compare all trainee faculty together by year and test.</p>
       {isAdmin && <div style={{display:'flex',gap:12,alignItems:'center',flexWrap:'wrap'}}><label>Import academic year <input className="input" value={importYear} onChange={e=>{setImportYear(e.target.value);setPreview(null);}} disabled={busy}/></label><label className="btn btn-primary">Upload Excel<input type="file" accept=".xlsx,.xls,.csv" onChange={upload} disabled={busy || !importYear.trim()} style={{display:'none'}}/></label><button className="btn btn-ghost" onClick={template}>Download template</button></div>}
       {notice && <p role="status">{notice}</p>}{error && <p role="alert" style={{color:'#b91c1c'}}>{error} <button className="btn btn-ghost" onClick={load}>Retry loading</button></p>}
       {preview && <div><h3>Import preview — {preview.rows.length} results</h3><p>Confirming replaces matching year/email/test/subject results. Other tests remain unchanged. Blank future-test groups are skipped.</p>{preview.warnings.map((w,i)=><p key={i} style={{color:'#92400e'}}>{w}</p>)}<div style={{overflowX:'auto',maxHeight:300}}><table className="table"><thead><tr>{['Name','Email (required)','Test','Subject','Attempted','Correct','Marks','Status'].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{preview.rows.map((r,i)=><tr key={i}><td>{r.name}</td><td><input aria-label={`Email for ${r.name}`} value={r.email} onChange={e=>{const email=e.target.value;setPreview(p=>({...p,rows:p.rows.map(x=>x.name===r.name?{...x,email}:x)}));}} /></td><td>{r.test}</td><td>{r.subject}</td><td>{show(r.attempted)}</td><td>{show(r.correct)}</td><td>{show(r.marks)}</td><td>{r.status}</td></tr>)}</tbody></table></div><button className="btn btn-primary" disabled={busy || preview.rows.some(r=>!r.email.includes('@'))} onClick={confirm}>{busy?'Saving…':'Confirm import'}</button> <button className="btn btn-ghost" disabled={busy} onClick={()=>setPreview(null)}>Cancel</button></div>}
@@ -99,19 +99,19 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
         <button className="btn" style={{background:'#b91c1c',color:'white',marginLeft:12}} disabled={busy || loading || deleteConfirmation !== 'DELETE'} onClick={removeTest}>{busy?'Please wait…':'Delete selected test data'}</button>
       </div>}
     </section>}
-    {!uploadOnly && (loading ? <p role="status">Loading faculty results…</p> : !rows.length ? <section className="card">No faculty test results uploaded yet.{isAdmin?' Upload the consolidated workbook above.':''}</section> : <>
+    {!uploadOnly && (loading ? <p role="status">Loading trainee faculty results…</p> : !rows.length ? <section className="card">No trainee faculty test results uploaded yet.{isAdmin?' Upload the consolidated workbook above.':''}</section> : <>
       <section className="card" style={{display:'flex',gap:12,flexWrap:'wrap'}}>{[['Year',year,setYear,options('year')],['Test',test,setTest,options('test')],['Centre/project',centre,setCentre,options('centres')]].map(([label,value,set,opts])=><label key={label}>{label}<select className="input select" value={value} onChange={e=>set(e.target.value)}><option value="ALL">All</option>{opts.map(v=><option key={v}>{v}</option>)}</select></label>)}</section>
       <FacultyManagementCharts rows={filtered} canRank={canRank} onSelect={setFaculty}/>
       <section className="card" style={{padding:24,border:'1px solid #dbeafe',overflow:'hidden'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,flexWrap:'wrap',marginBottom:20}}>
           <div><h3 style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Trainee Faculty Details</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
-          <label style={{minWidth:220,flex:'0 1 340px',fontSize:12,fontWeight:700,color:'#475569'}}>SELECT FACULTY
+          <label style={{minWidth:220,flex:'0 1 340px',fontSize:12,fontWeight:700,color:'#475569'}}>SELECT TRAINEE FACULTY
             <select className="input select" value={chosen} onChange={e=>setFaculty(e.target.value)} style={{marginTop:6}}>{people.map(([email,name])=><option key={email} value={email}>{name}</option>)}</select>
           </label>
         </div>
         {history.length > 0 ? <>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,210px),1fr))',gap:12,padding:16,background:'#f8faff',borderRadius:14,border:'1px solid #e2e8f0',marginBottom:20}}>
-            {[['Centre',facultyCentres],...[['Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key])=>[label,history[history.length-1][key]])].map(([label,value])=><div key={label} style={{minWidth:0}}><div style={{fontSize:11,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:0.5,marginBottom:5}}>{label}</div><div style={{fontSize:14,fontWeight:600,color:'#1e293b',overflowWrap:'anywhere'}}>{value || '—'}</div></div>)}
+            {[['Centre',facultyCentres],...[['Trainee Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key])=>[label,history[history.length-1][key]])].map(([label,value])=><div key={label} style={{minWidth:0}}><div style={{fontSize:11,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:0.5,marginBottom:5}}>{label}</div><div style={{fontSize:14,fontWeight:600,color:'#1e293b',overflowWrap:'anywhere'}}>{value || '—'}</div></div>)}
           </div>
           <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:18}}>
             {[['Tests recorded',history.length],['Best marks',history.some(r=>Number.isFinite(r.marks))?show(Math.max(...history.filter(r=>Number.isFinite(r.marks)).map(r=>r.marks))):'—'],['Latest marks',show(history[history.length-1].marks)]].map(([label,value])=><div key={label} style={{flex:'1 1 150px',padding:'12px 16px',borderRadius:12,background:'#eff6ff'}}><span style={{fontSize:12,color:'#64748b'}}>{label}</span><strong style={{display:'block',fontSize:24,color:'#1d4ed8',marginTop:4}}>{value}</strong></div>)}
@@ -133,7 +133,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
               </ResponsiveContainer>
             </div>
           </div>
-          <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Tests follow the faculty test sequence, starting with CMT01. Marks use the left axis; percentages use the right. Accuracy = correct ÷ attempted. Marks % is shown when maximum marks are available.</p>
+          <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Tests follow the trainee faculty test sequence, starting with CMT01. Marks use the left axis; percentages use the right. Accuracy = correct ÷ attempted. Marks % is shown when maximum marks are available.</p>
         </> : <p style={{padding:24,color:'#64748b'}}>No test history available for this selection.</p>}
       </section>
     </>)}
