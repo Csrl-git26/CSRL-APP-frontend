@@ -109,7 +109,7 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
             <YAxis width={38} domain={metric==='accuracy'?[0,100]:['auto','auto']} tick={{fontSize:11}}/>
             <Tooltip formatter={v=>fmt(v)+(metric==='accuracy'?'%':'')}/>
             <Bar dataKey={metric} name={metric==='avg'?'Average marks':'Accuracy %'} radius={[6,6,0,0]} onClick={p=>onSelect(p.id)} style={{cursor:'pointer'}}>
-              {ranked.map(p=><Cell key={p.id} fill={metric==='avg'&&p.avg<average?orange:blue}/>)}
+              {ranked.map(p=><Cell key={p.id} fill={(metric==='accuracy' ? numeric(p.accuracy) && p.accuracy<85 : p.avg<average)?orange:blue}/>)}
             </Bar>
           </BarChart></ResponsiveContainer>
         </div></div>
