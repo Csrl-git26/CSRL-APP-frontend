@@ -49,13 +49,33 @@ function ComparisonPie({board,metric,cutoff,onSelect,title}) {
       <Pie data={values} dataKey="equalSlice" nameKey="name" innerRadius={55} outerRadius={95} paddingAngle={2} onClick={p=>onSelect(p.id)} style={{cursor:'pointer'}}>
         {values.map(p=><Cell key={p.id} fill={p[metric]>=cutoff?blue:orange}/>)}
       </Pie>
-      <Tooltip formatter={(_,__,item)=>[fmt(item.payload[metric])+(metric==='qualRate'?'%':''),item.payload.name]}/>
+      <Tooltip formatter={(_,__,item)=>[fmt(item.payload[metric]),item.payload.name]}/>
     </PieChart></ResponsiveContainer>:<p>No recorded values for this comparison.</p>}
     <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap',fontSize:12,color:'#475569'}}>
-      <span style={{color:blue}}>● {metric==='avg'?'At / above average':'≥ 80% qualified'}</span>
-      <span style={{color:orange}}>● {metric==='avg'?'Below average':'< 80% qualified'}</span>
+      <span style={{color:blue}}>● At / above average</span>
+      <span style={{color:orange}}>● Below average</span>
     </div>
     <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Each segment represents one faculty member. Select a segment to view their progress.</p>
+  </Card>;
+}
+
+
+function QualificationPie({rows,onSelect}) {
+  const values = rows.filter(r=>r.status==='APPEARED' && ['QUALIFIED','NOT QUALIFIED'].includes(r.qualification))
+    .map(r=>({...r,equalSlice:1}));
+  const qualified = values.filter(r=>r.qualification==='QUALIFIED').length;
+  return <Card title="FACULTY — QUALIFICATION">
+    {values.length ? <ResponsiveContainer width="100%" height={260}><PieChart>
+      <Pie data={values} dataKey="equalSlice" nameKey="name" innerRadius={55} outerRadius={95} paddingAngle={2} onClick={r=>onSelect(r.email)} style={{cursor:'pointer'}}>
+        {values.map((r,i)=><Cell key={r._id || i} fill={r.qualification==='QUALIFIED'?blue:orange}/>)}
+      </Pie>
+      <Tooltip formatter={(_,__,item)=>[item.payload.qualification==='QUALIFIED'?'Qualified':'Not Qualified',item.payload.name]}/>
+    </PieChart></ResponsiveContainer>:<p>No qualification outcomes recorded for this test.</p>}
+    <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap',fontSize:13,fontWeight:600}}>
+      <span style={{color:blue}}>● Qualified ({qualified})</span>
+      <span style={{color:orange}}>● Not Qualified ({values.length-qualified})</span>
+    </div>
+    <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Each segment shows a recorded faculty test result. Missing outcomes and absences are excluded. Select a segment to view faculty details.</p>
   </Card>;
 }
 
@@ -79,7 +99,7 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
       <div style={grid}>
         <Ranking board={ranked} onSelect={onSelect}/>
         <ComparisonPie board={ranked} metric="avg" cutoff={average} onSelect={onSelect} title="FACULTY — TOTAL AVG SCORE"/>
-        <ComparisonPie board={board} metric="qualRate" cutoff={80} onSelect={onSelect} title="FACULTY — QUALIFICATION"/>
+        <QualificationPie rows={rows} onSelect={onSelect}/>
       </div>
       <div style={grid}>{[['avg','FACULTY RANKING — AVERAGE SCORE'],['accuracy','FACULTY — ACCURACY %']].map(([metric,title])=><Card key={metric} title={title}>
         <div style={{width:'100%',minWidth:0}}><div style={{width:'100%',minWidth:0}}>
