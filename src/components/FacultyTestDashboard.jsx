@@ -9,6 +9,14 @@ async function request(path = '', body) {
   const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Faculty request failed.'); return data;
 }
 const show = v => v === null || v === undefined ? '—' : Number.isFinite(v) ? Math.round(v * 100) / 100 : v;
+
+const facultyTestOrder = ['CMT01','CAT01','CMT02','RMT01','CAT02','CMT03','RMT02','CAT03','CMT04','FMT01','FMT02','FMT03','FMT04','CMT05','CAT04','CMT06','FMT05','FMT06','FMT07','FMT08','PAT01','PAT02','FAT01','FAT02','FAT03','FAT04'];
+const testOrder = value => {
+  const index = facultyTestOrder.indexOf(String(value).toUpperCase().replace(/[^A-Z0-9]/g,''));
+  return index < 0 ? facultyTestOrder.length : index;
+};
+const compareFacultyTests = (a,b) => a.year.localeCompare(b.year,undefined,{numeric:true}) || testOrder(a.test)-testOrder(b.test) || (a.date && b.date ? a.date.localeCompare(b.date) : 0) || a.test.localeCompare(b.test,undefined,{numeric:true});
+
 export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = false }) {
   const [rows,setRows] = useState([]), [loading,setLoading] = useState(true), [error,setError] = useState('');
   const [year,setYear] = useState('ALL'), [test,setTest] = useState('ALL'), [centre,setCentre] = useState('ALL'), [faculty,setFaculty] = useState('');
@@ -38,7 +46,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   const filtered = useMemo(() => rows.filter(r => (year === 'ALL' || r.year === year) && (test === 'ALL' || r.test === test) && (centre === 'ALL' || r.centres.includes(centre))), [rows,year,test,centre]);
   const people = [...new Map(filtered.map(r => [r.email,r.name])).entries()];
   const chosen = people.some(([email]) => email === faculty) ? faculty : (people[0]?.[0] || '');
-  const history = rows.filter(r => r.email === chosen && (year === 'ALL' || r.year === year)).sort((a,b) => (a.date && b.date ? a.date.localeCompare(b.date) : a.test.localeCompare(b.test,undefined,{numeric:true}))).map(r => ({...r,label:`${r.test} (${r.subject})`,percent:r.maxMarks && r.marks !== null ? r.marks/r.maxMarks*100 : null}));
+  const history = rows.filter(r => r.email === chosen && (year === 'ALL' || r.year === year)).sort(compareFacultyTests).map(r => ({...r,label:year === 'ALL' ? `${r.test} · ${r.year}` : r.test,marks:r.status === 'APPEARED' ? r.marks : null,accuracy:r.status === 'APPEARED' ? r.accuracy : null,percent:r.status === 'APPEARED' && r.maxMarks > 0 && r.marks !== null ? r.marks/r.maxMarks*100 : null}));
   const facultyCentres = [...new Set(history.flatMap(r => r.centres || []).filter(Boolean))].sort().join(', ');
   const canRank = test !== 'ALL' && year !== 'ALL';
   const upload = async event => { const file = event.target.files?.[0]; event.target.value = ''; if(!file) return; setError('');setPreview(null);setBusy(true);try { const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});setPreview(parseFacultyRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:null}),importYear)); } catch(e){setError(e.message);}finally{setBusy(false);} };
@@ -94,7 +102,40 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
     {!uploadOnly && (loading ? <p role="status">Loading faculty results…</p> : !rows.length ? <section className="card">No faculty test results uploaded yet.{isAdmin?' Upload the consolidated workbook above.':''}</section> : <>
       <section className="card" style={{display:'flex',gap:12,flexWrap:'wrap'}}>{[['Year',year,setYear,options('year')],['Test',test,setTest,options('test')],['Centre/project',centre,setCentre,options('centres')]].map(([label,value,set,opts])=><label key={label}>{label}<select className="input select" value={value} onChange={e=>set(e.target.value)}><option value="ALL">All</option>{opts.map(v=><option key={v}>{v}</option>)}</select></label>)}</section>
       <FacultyManagementCharts rows={filtered} canRank={canRank} onSelect={setFaculty}/>
-      <section className="card"><h3>Faculty progress across tests</h3><select className="input select" value={chosen} onChange={e=>setFaculty(e.target.value)}>{people.map(([email,name])=><option key={email} value={email}>{name}</option>)}</select>{history.length > 0 && <div style={{display:'flex',gap:16,flexWrap:'wrap',marginTop:12}}><span><strong>Centre:</strong> {facultyCentres || '—'}</span>{[['Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key]) => <span key={key}><strong>{label}:</strong> {history[history.length-1][key] || '—'}</span>)}</div>}<p>Accuracy is correct ÷ attempted. Marks percentage appears only when maximum marks are supplied. Without test dates, tests are ordered by name.</p><div style={{overflowX:'auto'}}><div style={{minWidth:Math.max(420,history.length*100)}}><ResponsiveContainer width="100%" height={360}><LineChart data={history} margin={{top:12,right:24,bottom:12,left:24}}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="label" interval={0} tickFormatter={value=>value.replace(/\s*\([^)]*\)$/, '')} padding={{left:40,right:40}} angle={-30} textAnchor="end" height={65} tickMargin={10}/><YAxis yAxisId="marks"/><YAxis yAxisId="pct" orientation="right" domain={[0,100]}/><Tooltip/><Legend/><Line yAxisId="marks" dataKey="marks" name="Marks" stroke="#2563eb" connectNulls={false}/><Line yAxisId="pct" dataKey="accuracy" name="Accuracy %" stroke="#16a34a" connectNulls={false}/><Line yAxisId="pct" dataKey="percent" name="Marks %" stroke="#9333ea" connectNulls={false}/></LineChart></ResponsiveContainer></div></div></section>
+      <section className="card" style={{padding:24,border:'1px solid #dbeafe',overflow:'hidden'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,flexWrap:'wrap',marginBottom:20}}>
+          <div><h3 style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Faculty progress across tests</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
+          <label style={{minWidth:220,flex:'0 1 340px',fontSize:12,fontWeight:700,color:'#475569'}}>SELECT FACULTY
+            <select className="input select" value={chosen} onChange={e=>setFaculty(e.target.value)} style={{marginTop:6}}>{people.map(([email,name])=><option key={email} value={email}>{name}</option>)}</select>
+          </label>
+        </div>
+        {history.length > 0 ? <>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,210px),1fr))',gap:12,padding:16,background:'#f8faff',borderRadius:14,border:'1px solid #e2e8f0',marginBottom:20}}>
+            {[['Centre',facultyCentres],...[['Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key])=>[label,history[history.length-1][key]])].map(([label,value])=><div key={label} style={{minWidth:0}}><div style={{fontSize:11,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:0.5,marginBottom:5}}>{label}</div><div style={{fontSize:14,fontWeight:600,color:'#1e293b',overflowWrap:'anywhere'}}>{value || '—'}</div></div>)}
+          </div>
+          <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:18}}>
+            {[['Tests recorded',history.length],['Best marks',history.some(r=>Number.isFinite(r.marks))?show(Math.max(...history.filter(r=>Number.isFinite(r.marks)).map(r=>r.marks))):'—'],['Latest marks',show(history[history.length-1].marks)]].map(([label,value])=><div key={label} style={{flex:'1 1 150px',padding:'12px 16px',borderRadius:12,background:'#eff6ff'}}><span style={{fontSize:12,color:'#64748b'}}>{label}</span><strong style={{display:'block',fontSize:24,color:'#1d4ed8',marginTop:4}}>{value}</strong></div>)}
+          </div>
+          <div style={{overflowX:'auto',background:'linear-gradient(180deg,#f8fbff,#ffffff)',borderRadius:14,border:'1px solid #e2e8f0',paddingTop:16}}>
+            <div style={{minWidth:Math.max(480,history.length*110)}}>
+              <ResponsiveContainer width="100%" height={380}>
+                <LineChart data={history} margin={{top:20,right:28,bottom:16,left:18}}>
+                  <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#dbe4f0"/>
+                  <XAxis dataKey="label" interval={0} padding={{left:45,right:45}} tick={{fontSize:12,fill:'#475569'}} angle={history.length>5?-30:0} textAnchor={history.length>5?'end':'middle'} height={65} tickMargin={14} axisLine={false} tickLine={false}/>
+                  <YAxis yAxisId="marks" tick={{fontSize:12,fill:'#2563eb'}} axisLine={false} tickLine={false} label={{value:'Marks',angle:-90,position:'insideLeft',fill:'#2563eb',fontSize:12}}/>
+                  <YAxis yAxisId="pct" orientation="right" domain={[0,100]} tick={{fontSize:12,fill:'#64748b'}} axisLine={false} tickLine={false} tickFormatter={v=>v+'%'}/>
+                  <Tooltip contentStyle={{borderRadius:12,border:'1px solid #dbeafe',boxShadow:'0 8px 24px rgba(30,58,138,.12)',fontSize:13}} formatter={(v,name)=>[show(v)+(name.includes('%')?'%':''),name]} labelStyle={{fontWeight:800,color:'#1e3a8a',marginBottom:8}}/>
+                  <Legend iconType="circle" wrapperStyle={{fontSize:13,paddingTop:12}}/>
+                  <Line yAxisId="marks" dataKey="marks" name="Marks" stroke="#2563eb" strokeWidth={3} dot={{r:5,fill:'#2563eb',stroke:'#fff',strokeWidth:2}} activeDot={{r:8}} connectNulls={false}/>
+                  <Line yAxisId="pct" dataKey="accuracy" name="Accuracy %" stroke="#10b981" strokeWidth={3} dot={{r:4,fill:'#10b981',stroke:'#fff',strokeWidth:2}} activeDot={{r:7}} connectNulls={false}/>
+                  {history.some(r=>r.percent!==null)&&<Line yAxisId="pct" dataKey="percent" name="Marks %" stroke="#8b5cf6" strokeWidth={2} strokeDasharray="5 4" dot={{r:4}} connectNulls={false}/>}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Tests follow the faculty test sequence, starting with CMT01. Marks use the left axis; percentages use the right. Accuracy = correct ÷ attempted. Marks % is shown when maximum marks are available.</p>
+        </> : <p style={{padding:24,color:'#64748b'}}>No test history available for this selection.</p>}
+      </section>
     </>)}
   </div>;
 }
