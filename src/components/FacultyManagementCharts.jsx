@@ -98,7 +98,6 @@ export default function FacultyManagementCharts({rows,canRank,onSelect}) {
     {!canRank ? <Card title="TRAINEE FACULTY COMPARISON"><p>Select a year and test to compare all trainee faculty together.</p></Card> : <>
       <div style={grid}>
         <Ranking board={ranked} onSelect={onSelect}/>
-        <ComparisonPie board={ranked} metric="avg" cutoff={average} onSelect={onSelect} title="TRAINEE FACULTY — TOTAL AVG SCORE"/>
         <QualificationPie rows={rows} onSelect={onSelect}/>
       </div>
       <div style={grid}>{[['avg','TRAINEE FACULTY RANKING — AVERAGE SCORE'],['accuracy','TRAINEE FACULTY — ACCURACY %']].map(([metric,title])=><Card key={metric} title={title}>
