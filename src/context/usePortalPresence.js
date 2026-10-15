@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export function usePortalPresence(user, apiBase) {
   useEffect(() => {
-    if (user?.role !== 'CENTRE' || !user.portalSessionId) return;
+    if (!['CENTRE', 'ADMIN'].includes(user?.role) || !user?.portalSessionId) return;
     let lastActivity = Date.now();
     let stopped = false;
     let pending = false;

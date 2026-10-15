@@ -40,7 +40,7 @@ export default function PortalLoginTracking() {
   return <section aria-label="Portal Login Tracking" style={{ display: 'grid', gap: 20, paddingBottom: 24 }}>
     <div className="card" style={{ padding: 24, borderTop: '4px solid #2563eb' }}>
       <h2 style={{ margin: '0 0 8px', color: '#173e73' }}>Portal Login Tracking</h2>
-      <p style={{ color: '#64748b', margin: 0 }}>Centre user login history · All timestamps in IST · Updates every 30 seconds</p>
+      <p style={{ color: '#64748b', margin: 0 }}>Centre and CSRL Management login history · All timestamps in IST · Updates every 30 seconds</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'end', marginTop: 20 }}>
         <label style={{ flex: '1 1 250px' }}>Search user or centre<input className="input" value={search} onChange={changeFilter(setSearch)} placeholder="Email, name or centre" style={{ display: 'block', width: '100%', marginTop: 6 }} /></label>
         <label>From date (IST)<input type="date" className="input" value={from} onChange={changeFilter(setFrom)} style={{ display: 'block', marginTop: 6 }} /></label>
@@ -55,14 +55,15 @@ export default function PortalLoginTracking() {
     <div className="card" style={{ overflow: 'hidden' }}>
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead style={{ background: '#eff6ff', color: '#173e73' }}><tr>{['User ID / Name', 'Centre', 'Login time (IST)', 'Last seen (IST)', 'Logout / Estimated end (IST)', 'Session time', 'Active time', 'Status'].map(title => <th key={title} scope="col" style={cell}>{title}</th>)}</tr></thead>
+          <thead style={{ background: '#eff6ff', color: '#173e73' }}><tr>{['User ID / Name', 'Login type', 'Centre / Office', 'Login time (IST)', 'Last seen (IST)', 'Logout / Estimated end (IST)', 'Session time', 'Active time', 'Status'].map(title => <th key={title} scope="col" style={cell}>{title}</th>)}</tr></thead>
           <tbody>{data?.rows.map(row => <tr key={row._id}>
             <td style={cell}><strong>{row.userId}</strong><div style={{ color: '#64748b', marginTop: 4 }}>{row.name}</div></td>
+            <td style={cell}>{row.role === 'admin' ? 'CSRL Management' : 'Centre'}</td>
             <td style={cell}>{row.centres.join(', ')}</td><td style={cell}>{timestamp(row.loginAt)}</td><td style={cell}>{timestamp(row.lastSeenAt)}</td>
             <td style={cell}>{timestamp(row.endTime)}{row.endIsEstimated && <small style={{ display: 'block', color: '#64748b' }}>Estimated — last seen</small>}</td>
             <td style={cell}>{duration(row.sessionMs)}</td><td style={cell}>{duration(row.activeMs)}</td>
             <td style={cell}><span style={{ borderRadius: 20, padding: '5px 10px', background: row.status === 'Online' ? '#dcfce7' : '#f1f5f9', color: row.status === 'Online' ? '#166534' : '#475569' }}>{row.status}</span></td>
-          </tr>)}{!data?.rows.length && <tr><td colSpan={8} style={{ padding: 36, textAlign: 'center', color: '#64748b' }}>{loading ? 'Loading login history…' : error ? 'Login history is unavailable.' : 'No recorded logins for these filters. History starts with new centre user logins after this feature is enabled.'}</td></tr>}</tbody>
+          </tr>)}{!data?.rows.length && <tr><td colSpan={9} style={{ padding: 36, textAlign: 'center', color: '#64748b' }}>{loading ? 'Loading login history…' : error ? 'Login history is unavailable.' : 'No recorded logins for these filters. History starts with new centre and management user logins after this feature is enabled.'}</td></tr>}</tbody>
         </table>
       </div>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center', justifyContent: 'space-between', padding: 16 }}>
