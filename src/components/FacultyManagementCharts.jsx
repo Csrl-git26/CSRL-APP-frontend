@@ -61,12 +61,51 @@ function ComparisonPie({board,metric,cutoff,onSelect,title}) {
 
 
 function QualificationPie({rows,onSelect}) {
+  const [chartWidth,setChartWidth] = useState(500);
   const values = rows.filter(r=>r.status==='APPEARED' && ['QUALIFIED','NOT QUALIFIED'].includes(r.qualification))
-    .map(r=>({...r,equalSlice:1}));
+    .map(r=>({...r,equalSlice:1}))
+    .sort((a,b)=>(a.qualification==='QUALIFIED'?0:1)-(b.qualification==='QUALIFIED'?0:1)
+      || String(a.name).localeCompare(String(b.name)) || String(a.email).localeCompare(String(b.email)));
   const qualified = values.filter(r=>r.qualification==='QUALIFIED').length;
+  const height = Math.max(360,Math.ceil(values.length/2)*58+48);
+  const radius = Math.max(48,Math.min(95,chartWidth*0.2));
+  const positions = values.map((_,index)=>{
+    const angle = (90-360*(index+0.5)/values.length)*Math.PI/180;
+    return {index,side:Math.cos(angle)>=0?1:-1,y:-Math.sin(angle)};
+  });
+  const label = ({cx,cy,midAngle,outerRadius,index}) => {
+    const position = positions[index];
+    if (!position) return null;
+    const side = position.side;
+    const sidePositions = positions.filter(p=>p.side===side).sort((a,b)=>a.y-b.y);
+    const rank = sidePositions.findIndex(p=>p.index===index);
+    const y = 28+(height-56)*(rank+0.5)/sidePositions.length;
+    const x = cx+side*(outerRadius+16);
+    const angle = midAngle*Math.PI/180;
+    const edgeX = cx+outerRadius*Math.cos(angle);
+    const edgeY = cy-outerRadius*Math.sin(angle);
+    const available = Math.max(40,chartWidth/2-outerRadius-24);
+    const maxChars = Math.max(6,Math.floor(available/6.5));
+    const words = String(values[index].name || values[index].email).split(/\s+/);
+    const lines = [];
+    let line = '';
+    for (let word of words) {
+      if (line && (line+' '+word).length>maxChars) {lines.push(line);line='';}
+      while (word.length>maxChars) {lines.push(word.slice(0,maxChars));word=word.slice(maxChars);}
+      if (word) line = line ? line+' '+word : word;
+    }
+    if (line) lines.push(line);
+    const color = values[index].qualification==='QUALIFIED' ? '#1d4ed8' : '#c2410c';
+    return <g onClick={()=>onSelect(values[index].email)} style={{cursor:'pointer'}}>
+      <polyline points={`${edgeX},${edgeY} ${cx+side*(outerRadius+8)},${y} ${x},${y}`} fill="none" stroke={color} strokeWidth={1}/>
+      <text x={x+side*3} y={y-(lines.length-1)*7} textAnchor={side>0?'start':'end'} dominantBaseline="middle" fill={color} fontSize={11} fontWeight={600}>
+        {lines.map((text,i)=><tspan key={i} x={x+side*3} dy={i===0?0:14}>{text}</tspan>)}
+      </text>
+    </g>;
+  };
   return <Card title="TRAINEE FACULTY — QUALIFICATION">
-    {values.length ? <ResponsiveContainer width="100%" height={260}><PieChart>
-      <Pie data={values} dataKey="equalSlice" nameKey="name" innerRadius={55} outerRadius={95} paddingAngle={2} onClick={r=>onSelect(r.email)} style={{cursor:'pointer'}}>
+    {values.length ? <ResponsiveContainer width="100%" height={height} onResize={width=>setChartWidth(width)}><PieChart>
+      <Pie data={values} dataKey="equalSlice" nameKey="name" innerRadius={radius*0.58} outerRadius={radius} startAngle={90} endAngle={-270} paddingAngle={2} label={label} labelLine={false} isAnimationActive={false} onClick={r=>onSelect(r.email)} style={{cursor:'pointer'}}>
         {values.map((r,i)=><Cell key={r._id || i} fill={r.qualification==='QUALIFIED'?blue:orange}/>)}
       </Pie>
       <Tooltip formatter={(_,__,item)=>[item.payload.qualification==='QUALIFIED'?'Qualified':'Not Qualified',item.payload.name]}/>
