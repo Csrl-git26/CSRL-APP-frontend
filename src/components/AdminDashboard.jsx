@@ -1,3 +1,4 @@
+import PortalUserManagement from './PortalUserManagement';
 import PortalLoginTracking from './PortalLoginTracking';
 import FacultyTestDashboard from './FacultyTestDashboard';
 import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
@@ -2267,7 +2268,7 @@ export default function AdminDashboard() {
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} adminStream={globalStream} />}
           {activePage === 'students'    && StudentsSection()}
           {activePage === 'marks'       && <MarksSection />}
-          {activePage === 'import' && <><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
+          {activePage === 'import' && <><PortalUserManagement /><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
           {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'traineefaculty' && <FacultyTestDashboard isAdmin={false} />}
