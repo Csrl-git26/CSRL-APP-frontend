@@ -56,9 +56,26 @@ export default function PortalLoginTracking() {
     const dialog = detailsRef.current;
     if (!selected || !dialog) return;
     const previousOverflow = document.body.style.overflow;
+    const positionDialog = () => {
+      const area = document.querySelector('.dashboard-page-body');
+      const bounds = area?.getBoundingClientRect();
+      const left = Math.max(0, bounds?.left || 0);
+      const top = Math.max(0, bounds?.top || 0);
+      const right = Math.min(window.innerWidth, bounds?.right || window.innerWidth);
+      const bottom = Math.min(window.innerHeight, bounds?.bottom || window.innerHeight);
+      const width = Math.max(0, right - left);
+      const height = Math.max(0, bottom - top);
+      dialog.style.left = `${left + width / 2}px`;
+      dialog.style.top = `${top + height / 2}px`;
+      dialog.style.width = `${Math.min(1100, Math.max(0, width - 32))}px`;
+      dialog.style.maxHeight = `${Math.max(0, height - 32)}px`;
+    };
+    positionDialog();
     dialog.showModal();
+    window.addEventListener('resize', positionDialog);
     document.body.style.overflow = 'hidden';
     return () => {
+      window.removeEventListener('resize', positionDialog);
       dialog.close();
       document.body.style.overflow = previousOverflow;
     };
@@ -108,7 +125,7 @@ export default function PortalLoginTracking() {
           const rect = e.currentTarget.getBoundingClientRect();
           if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) setSelected(null);
         }}
-        style={{ padding: 24, border: 0, borderTop: '4px solid #2563eb', borderRadius: 16, width: 'min(1100px, calc(100vw - 32px))', maxHeight: '85dvh', overflowY: 'auto', boxSizing: 'border-box', background: '#fff', color: '#0f172a', boxShadow: '0 24px 80px rgba(0,0,0,.3)' }}>
+        style={{ position: 'fixed', margin: 0, right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)', padding: 24, border: 0, borderTop: '4px solid #2563eb', borderRadius: 16, width: 'min(1100px, calc(100vw - 32px))', maxHeight: '85dvh', overflowY: 'auto', boxSizing: 'border-box', background: '#fff', color: '#0f172a', boxShadow: '0 24px 80px rgba(0,0,0,.3)' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'space-between', alignItems: 'start' }}>
         <div><h3 id="portal-login-details-title" style={{ margin: '0 0 6px', color: '#173e73' }}>{selected.name} — Login Details</h3><div style={{ color: '#64748b' }}>{selected.userId} · {(selected.centres || []).join(', ')}</div></div>
         <button className="btn" onClick={() => setSelected(null)}>Close details</button>
