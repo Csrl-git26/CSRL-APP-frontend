@@ -125,7 +125,7 @@ export default function PortalLoginTracking() {
           const rect = e.currentTarget.getBoundingClientRect();
           if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) setSelected(null);
         }}
-        style={{ position: 'fixed', margin: 0, right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)', padding: 24, border: 0, borderTop: '4px solid #2563eb', borderRadius: 16, width: 'min(1100px, calc(100vw - 32px))', maxHeight: '85dvh', overflowY: 'auto', boxSizing: 'border-box', background: '#fff', color: '#0f172a', boxShadow: '0 24px 80px rgba(0,0,0,.3)' }}>
+        style={{ position: 'fixed', margin: 0, right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)', padding: 24, border: 0, borderTop: '4px solid #2563eb', borderRadius: 16, width: 'min(1100px, calc(100vw - 32px))', maxHeight: '85dvh', overflowY: 'auto', boxSizing: 'border-box', background: 'rgba(255, 255, 255, 0.90)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', color: '#0f172a', boxShadow: '0 24px 80px rgba(0,0,0,.3)' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'space-between', alignItems: 'start' }}>
         <div><h3 id="portal-login-details-title" style={{ margin: '0 0 6px', color: '#173e73' }}>{selected.name} — Login Details</h3><div style={{ color: '#64748b' }}>{selected.userId} · {(selected.centres || []).join(', ')}</div></div>
         <button className="btn" onClick={() => setSelected(null)}>Close details</button>
