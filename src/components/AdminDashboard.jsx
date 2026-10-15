@@ -1965,13 +1965,6 @@ export default function AdminDashboard() {
             <div style={{ fontSize: 13, color: 'var(--gray-600)', marginTop: 4 }}>Bulk-add or update student profiles from Excel. Supports JEE and NEET streams.</div>
           </div>
         </div>
-        <div style={{ background: 'var(--gray-50)', borderRadius: 8, padding: '12px 14px', marginBottom: 14, fontSize: 13 }}>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Required columns:</div>
-          <div style={{ color: 'var(--gray-600)', fontFamily: 'monospace', fontSize: 11, lineHeight: 1.8 }}>
-            {STUDENT_TEMPLATE_COLUMNS.slice(0, 8).join(' · ')}<br />
-            {STUDENT_TEMPLATE_COLUMNS.slice(8).join(' · ')}
-          </div>
-        </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'space-between', width: '100%' }}>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <button type="button" className="btn btn-outline btn-sm" onClick={downloadStudentTemplate}><Download size={13} /> Download Template</button>
