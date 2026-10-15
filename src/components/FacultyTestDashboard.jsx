@@ -143,7 +143,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
       <section className="card" style={{display:'flex',gap:12,flexWrap:'wrap'}}>{[['Year',year,setYear,options('year')],['Test',test,setTest,options('test')],['Centre/project',centre,setCentre,options('centres')]].map(([label,value,set,opts])=><label key={label}>{label}<select className="input select" value={value} onChange={e=>set(e.target.value)}><option value="ALL">All</option>{opts.map(v=><option key={v}>{v}</option>)}</select></label>)}</section>
       <FacultyManagementCharts rows={filtered} canRank={canRank} onSelect={openFacultyDetails}/>
       {detailsOpen && createPortal(<>
-        <style>{'.trainee-faculty-details-dialog::backdrop { background: rgba(15,23,42,.35); }'}</style>
+        <style>{'.trainee-faculty-details-dialog::backdrop { background: rgba(15,23,42,.25); }'}</style>
         <dialog ref={detailsRef} className="trainee-faculty-details-dialog" aria-labelledby="trainee-faculty-details-title"
           onCancel={e=>{e.preventDefault();setDetailsOpen(false);}}
           onClick={e=>{
@@ -151,7 +151,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
             const rect=e.currentTarget.getBoundingClientRect();
             if(e.clientX<rect.left || e.clientX>rect.right || e.clientY<rect.top || e.clientY>rect.bottom) setDetailsOpen(false);
           }}
-          style={{position:'fixed',margin:0,right:'auto',bottom:'auto',transform:'translate(-50%,-50%)',padding:24,border:'1px solid #dbeafe',borderRadius:16,overflowY:'auto',boxSizing:'border-box',background:'#fff',color:'#0f172a',boxShadow:'0 24px 80px rgba(0,0,0,.3)'}}>
+          style={{position:'fixed',margin:0,right:'auto',bottom:'auto',transform:'translate(-50%,-50%)',padding:24,border:'1px solid #dbeafe',borderRadius:16,overflowY:'auto',boxSizing:'border-box',background:'rgba(255,255,255,.65)',backdropFilter:'blur(2px)',WebkitBackdropFilter:'blur(2px)',color:'#0f172a',boxShadow:'0 24px 80px rgba(0,0,0,.3)'}}>
         <div style={{display:'flex',justifyContent:'flex-end',marginBottom:12}}><button className="btn btn-ghost" onClick={()=>setDetailsOpen(false)}>Close details</button></div>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,flexWrap:'wrap',marginBottom:20}}>
           <div><h3 id="trainee-faculty-details-title" style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Trainee Faculty Details</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
