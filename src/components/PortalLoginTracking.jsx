@@ -1,3 +1,4 @@
+import { collectTrackingUsers, saveTrackingExport } from '../utils/portalTrackingExport';
 import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -51,6 +52,8 @@ export default function PortalLoginTracking() {
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [selected, setSelected] = useState(null);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
   const detailsRef = useRef(null);
   useEffect(() => {
     const dialog = detailsRef.current;
@@ -88,14 +91,31 @@ export default function PortalLoginTracking() {
   const changeFilter = setter => e => { setter(e.target.value); setPage(1); setSelected(null); };
   const openUser = row => { setSelected(row); setDetailPage(1); setAllHistory(false); };
   const currentData = invalid ? null : data;
+  const exportExcel = async () => {
+    if (invalid || exporting) return;
+    setExporting(true); setExportError('');
+    try {
+      const rows = await collectTrackingUsers(async exportPage => {
+        const params = new URLSearchParams({ view: 'users', from, to, page: String(exportPage) });
+        const res = await fetch(`${API_BASE}/portal-login-tracking?${params}`, { headers: { Authorization: `Bearer ${user.token}` } });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.message || 'Unable to export login tracking.');
+        return result;
+      });
+      saveTrackingExport(rows, from, to);
+    } catch (e) { setExportError(e.message || 'Export failed. Please retry.'); }
+    finally { setExporting(false); }
+  };
   return <section aria-label="Portal Login Tracking" style={{ display: 'grid', gap: 20, paddingBottom: 24 }}>
     <div className="card" style={{ padding: 24, borderTop: '4px solid #2563eb' }}>
       <h2 style={{ margin: '0 0 8px', color: '#173e73' }}>Portal Login Tracking</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'end', marginTop: 20 }}>
-        <label>From date and time (IST)<input type="datetime-local" className="input" value={from} onChange={changeFilter(setFrom)} style={{ display: 'block', marginTop: 6 }} /></label>
-        <label>To date and time (IST)<input type="datetime-local" className="input" value={to} onChange={changeFilter(setTo)} style={{ display: 'block', marginTop: 6 }} /></label>
+        <label>From date and time (IST)<input type="datetime-local" disabled={exporting} className="input" value={from} onChange={changeFilter(setFrom)} style={{ display: 'block', marginTop: 6 }} /></label>
+        <label>To date and time (IST)<input type="datetime-local" disabled={exporting} className="input" value={to} onChange={changeFilter(setTo)} style={{ display: 'block', marginTop: 6 }} /></label>
         <button className="btn btn-primary" disabled={invalid || loading} onClick={() => setRefresh(v => v + 1)}>Refresh</button>
+        <button className="btn btn-success" disabled={invalid || exporting} onClick={exportExcel}>{exporting ? 'Exporting…' : 'Export Excel'}</button>
       </div>
+      {exportError && <p role="alert" style={{ color: '#b91c1c' }}>{exportError}</p>}
       {invalid && <p role="alert" style={{ color: '#b91c1c' }}>Select a valid start and end time. The end must not be before the start.</p>}
     </div>
     {!invalid && error && <div className="card" role="alert" style={{ padding: 20, color: '#b91c1c' }}>{error} <button className="btn" onClick={() => setRefresh(v => v + 1)}>Retry</button></div>}
