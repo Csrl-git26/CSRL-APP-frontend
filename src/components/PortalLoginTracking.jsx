@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 const API_BASE = import.meta.env.PROD || window.location.hostname !== 'localhost'
@@ -51,7 +52,17 @@ export default function PortalLoginTracking() {
   const [refresh, setRefresh] = useState(0);
   const [selected, setSelected] = useState(null);
   const detailsRef = useRef(null);
-  useEffect(() => { if (selected) detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, [selected]);
+  useEffect(() => {
+    const dialog = detailsRef.current;
+    if (!selected || !dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    dialog.showModal();
+    document.body.style.overflow = 'hidden';
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selected]);
   const [allHistory, setAllHistory] = useState(false);
   const [detailPage, setDetailPage] = useState(1);
   const invalid = !from || !to || from > to;
@@ -88,9 +99,18 @@ export default function PortalLoginTracking() {
       </div>
       <Pages data={currentData} page={page} setPage={setPage} loading={loading || invalid} />
     </div>
-    {selected && !invalid && <div ref={detailsRef} className="card" style={{ padding: 24, borderTop: '4px solid #2563eb' }} aria-label="User login details">
+    {selected && !invalid && createPortal(<>
+      <style>{'.portal-login-details-dialog::backdrop { background: rgba(15, 23, 42, .6); }'}</style>
+      <dialog ref={detailsRef} className="portal-login-details-dialog" aria-labelledby="portal-login-details-title"
+        onCancel={e => { e.preventDefault(); setSelected(null); }}
+        onClick={e => {
+          if (e.target !== e.currentTarget) return;
+          const rect = e.currentTarget.getBoundingClientRect();
+          if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) setSelected(null);
+        }}
+        style={{ padding: 24, border: 0, borderTop: '4px solid #2563eb', borderRadius: 16, width: 'min(1100px, calc(100vw - 32px))', maxHeight: '85dvh', overflowY: 'auto', boxSizing: 'border-box', background: '#fff', color: '#0f172a', boxShadow: '0 24px 80px rgba(0,0,0,.3)' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'space-between', alignItems: 'start' }}>
-        <div><h3 style={{ margin: '0 0 6px', color: '#173e73' }}>{selected.name} — Login Details</h3><div style={{ color: '#64748b' }}>{selected.userId} · {(selected.centres || []).join(', ')}</div></div>
+        <div><h3 id="portal-login-details-title" style={{ margin: '0 0 6px', color: '#173e73' }}>{selected.name} — Login Details</h3><div style={{ color: '#64748b' }}>{selected.userId} · {(selected.centres || []).join(', ')}</div></div>
         <button className="btn" onClick={() => setSelected(null)}>Close details</button>
       </div>
       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', margin: '20px 0' }}>
@@ -106,7 +126,7 @@ export default function PortalLoginTracking() {
         </tr>)}{!details.data?.rows.length && <tr><td colSpan={5} style={{ padding: 24, textAlign: 'center' }}>{details.loading ? 'Loading login details…' : details.error ? 'Unable to load details.' : 'No logins in this period.'}</td></tr>}</tbody>
       </table></div>
       <Pages data={details.data} page={detailPage} setPage={setDetailPage} loading={details.loading} />
-    </div>}
+    </dialog></>, document.body)}
     <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>All times are IST. Totals show recorded active time for logins that started in the selected period, including activity after the end of that period. Active time pauses when the portal is hidden or after 5 minutes without interaction and updates approximately every 30 seconds. A blank logout time means no explicit logout was recorded.</p>
   </section>;
 }
