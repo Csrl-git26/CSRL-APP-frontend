@@ -114,7 +114,6 @@ function QualificationPie({rows,onSelect}) {
       <span style={{color:blue}}>● Qualified ({qualified})</span>
       <span style={{color:orange}}>● Not Qualified ({values.length-qualified})</span>
     </div>
-    <p style={{fontSize:11,color:'#64748b',marginTop:5}}>Select a slice or name to view trainee faculty details.</p>
   </Card>;
 }
 
