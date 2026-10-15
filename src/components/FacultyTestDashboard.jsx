@@ -1,5 +1,6 @@
+import { createPortal } from 'react-dom';
 import FacultyManagementCharts from './FacultyManagementCharts';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line, Legend } from 'recharts';
 import { parseFacultyRows } from '../services/facultyImport';
@@ -23,6 +24,26 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   const [importYear,setImportYear] = useState('2026-27'), [preview,setPreview] = useState(null), [busy,setBusy] = useState(false), [notice,setNotice] = useState('');
   const [deleteYear,setDeleteYear] = useState(''), [deleteTest,setDeleteTest] = useState(''), [deleteConfirmation,setDeleteConfirmation] = useState('');
   const [deleteAllConfirmation,setDeleteAllConfirmation] = useState('');
+  const [detailsOpen,setDetailsOpen] = useState(false);
+  const detailsRef = useRef(null);
+  const openFacultyDetails = email => { setFaculty(email); setDetailsOpen(true); };
+  useEffect(() => {
+    const dialog = detailsRef.current;
+    if (!detailsOpen || !dialog || uploadOnly) return;
+    const previousOverflow = document.body.style.overflow;
+    const position = () => {
+      const bounds = document.querySelector('.dashboard-page-body')?.getBoundingClientRect();
+      const left = Math.max(0,bounds?.left || 0), top = Math.max(0,bounds?.top || 0);
+      const width = Math.max(0,Math.min(window.innerWidth,bounds?.right || window.innerWidth)-left);
+      const height = Math.max(0,Math.min(window.innerHeight,bounds?.bottom || window.innerHeight)-top);
+      dialog.style.left = `${left+width/2}px`; dialog.style.top = `${top+height/2}px`;
+      dialog.style.width = `${Math.min(1150,Math.max(0,width-32))}px`;
+      dialog.style.maxHeight = `${Math.max(0,height-32)}px`;
+    };
+    position(); dialog.showModal(); document.body.style.overflow = 'hidden';
+    window.addEventListener('resize',position);
+    return () => { window.removeEventListener('resize',position); dialog.close(); document.body.style.overflow = previousOverflow; };
+  }, [detailsOpen,uploadOnly]);
   const removeAll = async () => {
     if (!isAdmin || !uploadOnly || busy || loading || error || !rows.length || deleteAllConfirmation !== 'DELETE ALL') return;
     if (!window.confirm(`Permanently delete all ${rows.length} loaded trainee faculty records across every year, test and centre?`)) return;
@@ -120,10 +141,20 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
     </section>}
     {!uploadOnly && (loading ? <p role="status">Loading trainee faculty results…</p> : !rows.length ? <section className="card">No trainee faculty test results uploaded yet.{isAdmin?' Upload the consolidated workbook above.':''}</section> : <>
       <section className="card" style={{display:'flex',gap:12,flexWrap:'wrap'}}>{[['Year',year,setYear,options('year')],['Test',test,setTest,options('test')],['Centre/project',centre,setCentre,options('centres')]].map(([label,value,set,opts])=><label key={label}>{label}<select className="input select" value={value} onChange={e=>set(e.target.value)}><option value="ALL">All</option>{opts.map(v=><option key={v}>{v}</option>)}</select></label>)}</section>
-      <FacultyManagementCharts rows={filtered} canRank={canRank} onSelect={setFaculty}/>
-      <section className="card" style={{padding:24,border:'1px solid #dbeafe',overflow:'hidden'}}>
+      <FacultyManagementCharts rows={filtered} canRank={canRank} onSelect={openFacultyDetails}/>
+      {detailsOpen && createPortal(<>
+        <style>{'.trainee-faculty-details-dialog::backdrop { background: rgba(15,23,42,.35); }'}</style>
+        <dialog ref={detailsRef} className="trainee-faculty-details-dialog" aria-labelledby="trainee-faculty-details-title"
+          onCancel={e=>{e.preventDefault();setDetailsOpen(false);}}
+          onClick={e=>{
+            if(e.target!==e.currentTarget) return;
+            const rect=e.currentTarget.getBoundingClientRect();
+            if(e.clientX<rect.left || e.clientX>rect.right || e.clientY<rect.top || e.clientY>rect.bottom) setDetailsOpen(false);
+          }}
+          style={{position:'fixed',margin:0,right:'auto',bottom:'auto',transform:'translate(-50%,-50%)',padding:24,border:'1px solid #dbeafe',borderRadius:16,overflowY:'auto',boxSizing:'border-box',background:'#fff',color:'#0f172a',boxShadow:'0 24px 80px rgba(0,0,0,.3)'}}>
+        <div style={{display:'flex',justifyContent:'flex-end',marginBottom:12}}><button className="btn btn-ghost" onClick={()=>setDetailsOpen(false)}>Close details</button></div>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,flexWrap:'wrap',marginBottom:20}}>
-          <div><h3 style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Trainee Faculty Details</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
+          <div><h3 id="trainee-faculty-details-title" style={{color:'#1e3a8a',fontSize:22,marginBottom:6}}>Trainee Faculty Details</h3><p style={{color:'#64748b',fontSize:13}}>Follow performance from CMT01 onwards.</p></div>
           <label style={{minWidth:220,flex:'0 1 340px',fontSize:12,fontWeight:700,color:'#475569'}}>SELECT TRAINEE FACULTY
             <select className="input select" value={chosen} onChange={e=>setFaculty(e.target.value)} style={{marginTop:6}}>{people.map(([email,name])=><option key={email} value={email}>{name}</option>)}</select>
           </label>
@@ -154,7 +185,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
           </div>
           <p style={{fontSize:12,color:'#64748b',marginTop:12}}>Tests follow the trainee faculty test sequence, starting with CMT01. Marks use the left axis; percentages use the right. Accuracy = correct ÷ attempted. Marks % is shown when maximum marks are available.</p>
         </> : <p style={{padding:24,color:'#64748b'}}>No test history available for this selection.</p>}
-      </section>
+      </dialog></>, document.body)}
     </>)}
   </div>;
 }
