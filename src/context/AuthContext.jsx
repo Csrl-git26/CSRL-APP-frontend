@@ -1,3 +1,4 @@
+import { usePortalPresence } from './usePortalPresence';
 // ============================================================
 // AuthContext — Backend JWT version
 //
@@ -37,6 +38,7 @@ const API_BASE = resolveApiBase();
 export const AuthProvider = ({ children }) => {
   // undefined = still reading localStorage (show nothing / spinner)
   const [user, setUser] = useState(undefined);
+  usePortalPresence(user, API_BASE);
 
   // Restore session synchronously from localStorage on first render
   useEffect(() => {
@@ -65,6 +67,8 @@ export const AuthProvider = ({ children }) => {
 
     const userState = {
       token:      data.token,
+      portalSessionId: data.portalSessionId || null,
+      loginUserId: data.loginUserId || null,
       role:       (data.role || 'student').toUpperCase(),
       name:       data.name       || id,
       id:         data.id         || id,
@@ -79,6 +83,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    if (user?.portalSessionId) {
+      fetch(`${API_BASE}/portal-login-tracking/logout`, {
+        method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}` },
+        body: JSON.stringify({ active: false }),
+      }).catch(() => {});
+    }
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     setUser(null);

@@ -1,3 +1,4 @@
+import PortalLoginTracking from './PortalLoginTracking';
 import FacultyTestDashboard from './FacultyTestDashboard';
 import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
 import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
@@ -118,6 +119,7 @@ const ALL_TABS = [
   { key: 'ranking',     Icon: TrendingUp,      label: 'Rankings'           },
   { key: 'pastyear',    Icon: Package,         label: 'Past Year Data'     },
   { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty'    },
+  { key: 'logintracking', Icon: Users, label: 'Portal Login Tracking' },
   { key: 'import',      Icon: Upload,          label: 'Import / Export'    },
 ];
 const isDataAdmin = typeof window !== 'undefined' && localStorage.getItem('subRole') === 'DATA_ADMIN';
@@ -2222,8 +2224,9 @@ export default function AdminDashboard() {
           {activePage === 'leaderboard' && <h1>CSRL Dashboard</h1>}
           {activePage === 'pastyear' && <h1>Past Year Data</h1>}
           {activePage === 'traineefaculty' && <h1>Trainee Faculty</h1>}
+          {activePage === 'logintracking' && <h1>Portal Login Tracking</h1>}
           {activePage === 'import' && <h1>Import Excel</h1>}
-          {activePage !== 'traineefaculty' && (
+          {activePage !== 'traineefaculty' && activePage !== 'logintracking' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 600, whiteSpace: 'nowrap' }}>Stream:</span>
               <select
@@ -2256,7 +2259,7 @@ export default function AdminDashboard() {
       <div className="content dashboard-page-body">
 
         <div className="dashboard-scroll">
-          {globalStream === 'JEE' && branch === 'ADVANCED' && streamTestOptions.length === 0 && (
+          {activePage !== 'logintracking' && globalStream === 'JEE' && branch === 'ADVANCED' && streamTestOptions.length === 0 && (
             <div className="card" style={{ marginBottom: 16 }}>No Advanced test data yet. Select JEE → Advanced in the admin upload form to add a test such as CAT01.</div>
           )}
           {activePage === 'leaderboard' && LeaderboardSection()}
@@ -2268,6 +2271,7 @@ export default function AdminDashboard() {
           {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'traineefaculty' && <FacultyTestDashboard isAdmin={false} />}
+          {activePage === 'logintracking' && <PortalLoginTracking />}
         </div>
       </div>
 
