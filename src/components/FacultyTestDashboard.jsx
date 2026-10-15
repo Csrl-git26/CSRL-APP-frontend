@@ -160,13 +160,13 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
           </label>
         </div>
         {history.length > 0 ? <>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,210px),1fr))',gap:12,padding:16,background:'#f8faff',borderRadius:14,border:'1px solid #e2e8f0',marginBottom:20}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,210px),1fr))',gap:12,padding:16,background:'rgba(248,250,255,.5)',borderRadius:14,border:'1px solid #e2e8f0',marginBottom:20}}>
             {[['Centre',facultyCentres],...[['Trainee Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key])=>[label,history[history.length-1][key]])].map(([label,value])=><div key={label} style={{minWidth:0}}><div style={{fontSize:11,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:0.5,marginBottom:5}}>{label}</div><div style={{fontSize:14,fontWeight:600,color:'#1e293b',overflowWrap:'anywhere'}}>{value || '—'}</div></div>)}
           </div>
           <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:18}}>
-            {[['Tests recorded',history.length],['Best marks',history.some(r=>Number.isFinite(r.marks))?show(Math.max(...history.filter(r=>Number.isFinite(r.marks)).map(r=>r.marks))):'—'],['Latest marks',show(history[history.length-1].marks)]].map(([label,value])=><div key={label} style={{flex:'1 1 150px',padding:'12px 16px',borderRadius:12,background:'#eff6ff'}}><span style={{fontSize:12,color:'#64748b'}}>{label}</span><strong style={{display:'block',fontSize:24,color:'#1d4ed8',marginTop:4}}>{value}</strong></div>)}
+            {[['Tests recorded',history.length],['Best marks',history.some(r=>Number.isFinite(r.marks))?show(Math.max(...history.filter(r=>Number.isFinite(r.marks)).map(r=>r.marks))):'—'],['Latest marks',show(history[history.length-1].marks)]].map(([label,value])=><div key={label} style={{flex:'1 1 150px',padding:'12px 16px',borderRadius:12,background:'rgba(239,246,255,.55)'}}><span style={{fontSize:12,color:'#64748b'}}>{label}</span><strong style={{display:'block',fontSize:24,color:'#1d4ed8',marginTop:4}}>{value}</strong></div>)}
           </div>
-          <div style={{overflowX:'auto',background:'linear-gradient(180deg,#f8fbff,#ffffff)',borderRadius:14,border:'1px solid #e2e8f0',paddingTop:16}}>
+          <div style={{overflowX:'auto',background:'linear-gradient(180deg,rgba(248,251,255,.45),rgba(255,255,255,.3))',borderRadius:14,border:'1px solid #e2e8f0',paddingTop:16}}>
             <div style={{minWidth:Math.max(480,history.length*110)}}>
               <ResponsiveContainer width="100%" height={380}>
                 <LineChart data={history} margin={{top:20,right:28,bottom:16,left:18}}>
