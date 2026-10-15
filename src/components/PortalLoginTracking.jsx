@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 const API_BASE = import.meta.env.PROD || window.location.hostname !== 'localhost'
   ? 'https://csrl-app-backed-1.onrender.com/api'
@@ -50,6 +50,8 @@ export default function PortalLoginTracking() {
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [selected, setSelected] = useState(null);
+  const detailsRef = useRef(null);
+  useEffect(() => { if (selected) detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, [selected]);
   const [allHistory, setAllHistory] = useState(false);
   const [detailPage, setDetailPage] = useState(1);
   const invalid = !from || !to || from > to;
@@ -86,7 +88,7 @@ export default function PortalLoginTracking() {
       </div>
       <Pages data={currentData} page={page} setPage={setPage} loading={loading || invalid} />
     </div>
-    {selected && !invalid && <div className="card" style={{ padding: 24, borderTop: '4px solid #2563eb' }} aria-label="User login details">
+    {selected && !invalid && <div ref={detailsRef} className="card" style={{ padding: 24, borderTop: '4px solid #2563eb' }} aria-label="User login details">
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'space-between', alignItems: 'start' }}>
         <div><h3 style={{ margin: '0 0 6px', color: '#173e73' }}>{selected.name} — Login Details</h3><div style={{ color: '#64748b' }}>{selected.userId} · {(selected.centres || []).join(', ')}</div></div>
         <button className="btn" onClick={() => setSelected(null)}>Close details</button>
