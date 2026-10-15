@@ -23,6 +23,7 @@ const ADMIN_NAV = [
   { section: 'Data Management' },
   { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
   { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty'    },
+  { key: 'logintracking', Icon: Users, label: 'Portal Login Tracking' },
 ];
 
 const CENTRE_NAV = [
