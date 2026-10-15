@@ -91,7 +91,6 @@ export default function PortalLoginTracking() {
   return <section aria-label="Portal Login Tracking" style={{ display: 'grid', gap: 20, paddingBottom: 24 }}>
     <div className="card" style={{ padding: 24, borderTop: '4px solid #2563eb' }}>
       <h2 style={{ margin: '0 0 8px', color: '#173e73' }}>Portal Login Tracking</h2>
-      <p style={{ color: '#64748b', margin: 0 }}>Choose a login period to view users and their active time. Click a user to see each login.</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'end', marginTop: 20 }}>
         <label>From date and time (IST)<input type="datetime-local" className="input" value={from} onChange={changeFilter(setFrom)} style={{ display: 'block', marginTop: 6 }} /></label>
         <label>To date and time (IST)<input type="datetime-local" className="input" value={to} onChange={changeFilter(setTo)} style={{ display: 'block', marginTop: 6 }} /></label>
@@ -144,6 +143,5 @@ export default function PortalLoginTracking() {
       </table></div>
       <Pages data={details.data} page={detailPage} setPage={setDetailPage} loading={details.loading} />
     </dialog></>, document.body)}
-    <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>All times are IST. Totals show recorded active time for logins that started in the selected period, including activity after the end of that period. Active time pauses when the portal is hidden or after 5 minutes without interaction and updates approximately every 30 seconds. A blank logout time means no explicit logout was recorded.</p>
   </section>;
 }
