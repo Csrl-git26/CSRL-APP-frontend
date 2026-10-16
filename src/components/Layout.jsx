@@ -21,7 +21,6 @@ const ADMIN_NAV = [
   { section: 'Overview' },
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
   { section: 'Data Management' },
-  { key: 'pastyear',    Icon: Archive,         label: 'Past Year Data'     },
   { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty'    },
   { key: 'logintracking', Icon: Users, label: 'Portal Login Tracking' },
 ];
@@ -29,7 +28,6 @@ const ADMIN_NAV = [
 const CENTRE_NAV = [
   { key: 'leaderboard', Icon: Trophy,         label: 'CSRL Dashboard' },
   { key: 'topbottom',  Icon: Trophy,          label: 'Student Ranking'  },
-  { key: 'pastyear',   Icon: Archive,         label: 'Past Year Data' },
   { key: 'traineefaculty', Icon: Users,         label: 'Trainee Faculty' },
 ];
 
