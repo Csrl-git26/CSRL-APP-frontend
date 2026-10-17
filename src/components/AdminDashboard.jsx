@@ -1,3 +1,4 @@
+import MobileChartPopup from './MobileChartPopup';
 import PortalUserManagement from './PortalUserManagement';
 import PortalLoginTracking from './PortalLoginTracking';
 import FacultyTestDashboard from './FacultyTestDashboard';
@@ -1470,14 +1471,14 @@ export default function AdminDashboard() {
           )}
         </div>
         {showGraphsModal && (
-        <div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
+        <MobileChartPopup><div className="modal-overlay" onClick={() => setShowGraphsModal(false)}>
           <div className="modal" style={{ maxWidth: 1200, width: '95%', height: '80vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header" style={{ padding: '10px 18px' }}>
               <div></div>
               <button type="button" className="modal-close" onClick={() => setShowGraphsModal(false)} aria-label="Close">×</button>
             </div>
             <div className="modal-body" style={{ background: '#f8fafc', padding: 20, flex: 1, overflowY: 'auto' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '15px', height: '100%' }}>
+              <div className="mobile-popup-chart-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '15px', height: '100%' }}>
           {/* Left Side: Centre Rankings (Bar Chart) */}
           <div className="card" style={{ display: 'flex', flexDirection: 'column', minWidth: 0, marginTop: 0, height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
@@ -1533,7 +1534,7 @@ export default function AdminDashboard() {
         </div>
               </div>
             </div>
-          </div>
+          </div></MobileChartPopup>
         )}
 
 
