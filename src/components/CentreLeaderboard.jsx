@@ -26,7 +26,14 @@ const CustomTooltip = ({ active, payload, selectedSubject, stream }) => {
 
 
     return (
-      <div style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
+      <>
+      <div className="centre-tooltip-mobile" style={{ background: '#fff', border: isRedFlag ? '1px solid #fca5a5' : '1px solid #cbd5e1', borderRadius: 6, padding: 8, width: 150, maxWidth: '45vw', boxShadow: '0 2px 6px rgba(0,0,0,.12)', fontSize: 10, lineHeight: 1.4, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
+        <div style={{ fontWeight: 800, color: isRedFlag ? '#dc2626' : '#1a4fa0' }}>{isRedFlag ? '⚠ ' : ''}{data.rank}. {data.code}</div>
+        <div>Avg: <strong>{data.avg}</strong>{data.qualRate !== undefined && <> · {stream === 'NEET' ? 'MBBS' : 'Qual.'}: <strong>{Math.round(data.qualRate)}%</strong></>}</div>
+        {(!selectedSubject || selectedSubject === 'Total') && data.weakSubject && <div>Weakest: {data.weakSubject}</div>}
+        <div style={{ color: '#64748b', fontSize: 9 }}>Tap bar for full overview</div>
+      </div>
+      <div className="centre-tooltip-desktop" style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
         {isRedFlag && (<div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}><Flag size={14} color="#cc0000" fill="#cc0000" style={{ flexShrink: 0 }} /><span style={{ color: '#ef4444', fontWeight: 800, letterSpacing: 0.5 }}>⚠ ATTENTION</span></div>)}
         <p style={{ margin: '0 0 8px 0', fontWeight: 800, fontSize: 15 }}>{data.rank} {centerName === data.code ? centerName : `${centerName} (${data.code})`}</p>
         <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
@@ -64,6 +71,7 @@ const CustomTooltip = ({ active, payload, selectedSubject, stream }) => {
           🖱️ Click column for full overview
         </div>
       </div>
+      </>
     );
   }
   return null;
@@ -151,6 +159,12 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
   return (
     <div style={{ width: '100%', height, marginTop: 0 }}>
       <style>{`
+        .centre-tooltip-mobile { display: none; }
+        @media (max-width: 900px) {
+          .centre-tooltip-mobile { display: block; -webkit-text-size-adjust: none; text-size-adjust: none; }
+          .centre-tooltip-desktop { display: none; }
+        }
+
         @keyframes csrlPulse {
           0%   { box-shadow: 0 0 0 0 rgba(220,0,0,1); background: #cc0000; }
           40%  { box-shadow: 0 0 0 10px rgba(220,0,0,0.3); background: #ff0000; }
