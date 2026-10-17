@@ -743,6 +743,29 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             width: 1200px;
             zoom: var(--dashboard-fit, 0.25);
           }
+          /* iOS must scale text with the cards instead of enlarging it again. */
+          .pragati-insights > .insights-kpis,
+          .pragati-insights > .insights-kpis *,
+          .pragati-insights > .insights-grid,
+          .pragati-insights > .insights-grid * {
+            -webkit-text-size-adjust: none;
+            text-size-adjust: none;
+          }
+          .pragati-insights > .insights-kpis .card,
+          .pragati-insights > .insights-grid .card {
+            position: relative;
+            padding-top: 40px !important;
+            min-width: 0;
+          }
+          .pragati-insights .insights-section-title > div:first-child,
+          .pragati-insights > .insights-grid > .card > div:first-child > div {
+            white-space: normal !important;
+            overflow-wrap: anywhere;
+          }
+          /* Subject chart actions sit above their heading, not on the plot. */
+          .pragati-insights > .insights-grid > .card > div:first-child > div:has(> .flip-button-3d) {
+            top: -32px !important;
+          }
           .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) {
             flex-wrap: wrap;
             min-width: 0;
