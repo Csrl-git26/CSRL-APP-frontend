@@ -1,3 +1,4 @@
+import PragatiChat from './PragatiChat';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
@@ -167,6 +168,8 @@ export default function Layout() {
         </div>
       </aside>
 
+      <PragatiChat key={auth?.token} />
+
       {/* Main content */}
       <div className="main">
         {/* Mobile top bar */}
@@ -216,3 +219,4 @@ export default function Layout() {
     </div>
   );
 }
+
