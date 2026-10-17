@@ -478,7 +478,7 @@ function FittedDashboardRow({ children, className, style }) {
       media.removeEventListener('change', measure);
     };
   }, []);
-  const scale = Math.min(1, Math.max(1, metrics.width) / 1440);
+  const scale = Math.min(1, Math.max(1, metrics.width) / 720);
   return (
     <div ref={viewportRef} className="insights-fit-viewport" style={{
       width: '100%', minWidth: 0, position: 'relative',
@@ -487,7 +487,7 @@ function FittedDashboardRow({ children, className, style }) {
       <div ref={rowRef} className={className} style={{
         ...style,
         ...(metrics.mobile ? {
-          width: 1440, position: 'absolute', left: 0, top: 0,
+          width: 720, position: 'absolute', left: 0, top: 0,
           transform: `scale(${scale})`, transformOrigin: 'top left',
           WebkitTextSizeAdjust: 'none', textSizeAdjust: 'none'
         } : {})
@@ -768,6 +768,14 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       <style>{`
         @media (max-width: 900px) {
           .pragati-insights { min-width: 0; width: 100%; }
+          /* Two full-size cards per row, uniformly fitted to the phone width. */
+          .pragati-insights .insights-kpis,
+          .pragati-insights .insights-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+          .pragati-insights .insights-grid > * { min-width: 0; }
+
           /* iOS must scale text with the cards instead of enlarging it again. */
           .pragati-insights .insights-kpis,
           .pragati-insights .insights-kpis *,
