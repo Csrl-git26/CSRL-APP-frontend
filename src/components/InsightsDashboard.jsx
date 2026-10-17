@@ -452,6 +452,19 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
 };
 
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange, stream = 'JEE', branch = 'MAIN' }) {
+  const [dashboardElement, setDashboardElement] = useState(null);
+  useEffect(() => {
+    if (!dashboardElement) return;
+    const fitDashboard = () => {
+      const width = dashboardElement.clientWidth;
+      if (width > 0) dashboardElement.style.setProperty('--dashboard-fit', String(Math.min(1, width / 1200)));
+    };
+    fitDashboard();
+    const observer = new ResizeObserver(fitDashboard);
+    observer.observe(dashboardElement);
+    return () => observer.disconnect();
+  }, [dashboardElement]);
+
   const currentStream = data?.profiles?.[0]?.stream || 'JEE';
   const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
 
@@ -719,44 +732,16 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div ref={setDashboardElement} className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
       <style>{`
         @media (max-width: 900px) {
           .pragati-insights { min-width: 0; width: 100%; }
-          .pragati-insights .insights-grid {
-            grid-template-columns: minmax(0, 1fr) !important;
-          }
-          .pragati-insights .insights-grid > * { min-width: 0; }
-          .pragati-insights .insights-kpis {
-            display: grid !important;
-            grid-template-columns: minmax(0, 1fr);
-          }
-          .pragati-insights .card {
-            min-width: 0;
-            max-width: 100%;
-            padding-top: 40px !important;
-          }
-          .pragati-insights .insights-section-title > div:first-child {
-            white-space: normal !important;
-            overflow-wrap: anywhere;
-          }
-          .pragati-insights .insights-kpis .card > div:last-child > div {
-            flex-wrap: wrap;
-          }
-          .pragati-insights .insights-kpis .card > div:last-child > div,
-          .pragati-insights .insights-kpis .card > div:last-child > div > div {
-            white-space: normal !important;
-            overflow-wrap: anywhere;
-          }
-          /* Both flip faces contribute height while sharing the same grid cell. */
-          .pragati-insights .insights-flip,
-          .pragati-insights .insights-flip > div { height: auto !important; }
-          .pragati-insights .insights-flip > div { display: grid; }
-          .pragati-insights .insights-flip > div > div {
-            position: relative !important;
-            grid-area: 1 / 1;
-            min-width: 0;
-            min-height: 300px;
+          /* Preserve desktop rows and fit each to the available phone width.
+             Keep dialogs outside the zoomed rows so their controls remain usable. */
+          .pragati-insights > .insights-kpis,
+          .pragati-insights > .insights-grid {
+            width: 1200px;
+            zoom: var(--dashboard-fit, 0.25);
           }
           .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) {
             flex-wrap: wrap;
@@ -770,12 +755,6 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) > div {
             flex-wrap: wrap;
             max-width: 100%;
-          }
-        }
-        @media (max-width: 480px) {
-          .pragati-insights .insights-centre-badges {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            row-gap: 12px !important;
           }
         }
       `}</style>
