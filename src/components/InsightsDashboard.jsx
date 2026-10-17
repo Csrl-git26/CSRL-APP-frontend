@@ -26,7 +26,7 @@ function SectionTitle({ Icon, children, color = '#3b82f6' }) {
 
   return (
 
-    <div style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
+    <div className="insights-section-title" style={{ position: 'relative', paddingBottom: 8, marginBottom: 14 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, whiteSpace:'nowrap' }}>
         
         <span style={{
@@ -719,10 +719,70 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
+      <style>{`
+        @media (max-width: 900px) {
+          .pragati-insights { min-width: 0; width: 100%; }
+          .pragati-insights .insights-grid {
+            grid-template-columns: minmax(0, 1fr) !important;
+          }
+          .pragati-insights .insights-grid > * { min-width: 0; }
+          .pragati-insights .insights-kpis {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr);
+          }
+          .pragati-insights .card {
+            min-width: 0;
+            max-width: 100%;
+            padding-top: 40px !important;
+          }
+          .pragati-insights .insights-section-title > div:first-child {
+            white-space: normal !important;
+            overflow-wrap: anywhere;
+          }
+          .pragati-insights .insights-kpis .card > div:last-child > div {
+            flex-wrap: wrap;
+          }
+          .pragati-insights .insights-kpis .card > div:last-child > div,
+          .pragati-insights .insights-kpis .card > div:last-child > div > div {
+            white-space: normal !important;
+            overflow-wrap: anywhere;
+          }
+          /* Both flip faces contribute height while sharing the same grid cell. */
+          .pragati-insights .insights-flip,
+          .pragati-insights .insights-flip > div { height: auto !important; }
+          .pragati-insights .insights-flip > div { display: grid; }
+          .pragati-insights .insights-flip > div > div {
+            position: relative !important;
+            grid-area: 1 / 1;
+            min-width: 0;
+            min-height: 300px;
+          }
+          .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) {
+            flex-wrap: wrap;
+            min-width: 0;
+            width: 100%;
+          }
+          .dashboard-page:has(.pragati-insights) > .page-header h1 {
+            flex-basis: 100%;
+            word-break: normal;
+          }
+          .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) > div {
+            flex-wrap: wrap;
+            max-width: 100%;
+          }
+        }
+        @media (max-width: 480px) {
+          .pragati-insights .insights-centre-badges {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            row-gap: 12px !important;
+          }
+        }
+      `}</style>
+
 
       {/* ── KPI Cards ── */}
-      <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
+      <div className="insights-kpis" style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
            progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: stream === 'NEET' ? 'MBBS / Total Student' : 'Qualified / Total Student' }}
            bg="#f0f5ff" color="#1a4fa0"/>
@@ -745,7 +805,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div>
 
       {/* ── Main Dashboard Layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
+      <div className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
@@ -850,14 +910,14 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         </div>
                       </div>
                     </div>
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 32 : 0 }}>
+                    <div className="insights-centre-badges" style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2, marginBottom: bottomCentres.length > 0 ? 32 : 0 }}>
                       {topCentres.map(c => renderCard(c, false))}
                     </div>
                     
                     {bottomCentres.length > 0 && (
                       <div style={{ marginTop: 8 }}>
                         <SectionTitle Icon={Star} color="#2563eb">BOTTOM 5 CENTRE - AVG SCORE</SectionTitle>
-                        <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
+                        <div className="insights-centre-badges" style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:2 }}>
                           {bottomCentres.map(c => renderCard(c, true))}
                         </div>
                       </div>
@@ -873,7 +933,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         </div> {/* Close Stacked Left Column */}
             
         {/* Middle Column: Radial Progress Chart (3D Flip Card) */}
-        <div style={{ perspective: 1000, height: '100%' }}>
+        <div className="insights-flip" style={{ perspective: 1000, height: '100%' }}>
           <div style={{
             position: 'relative', width: '100%', height: '100%',
             transition: 'transform 1.2s ease-in-out',
@@ -1063,7 +1123,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </div> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
+      <div className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres 
           key={selectedTestKey} 
           centreBoard={centreBoard} 
@@ -1076,7 +1136,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         <SubjectTopStudents key={selectedTestKey} subjectTopStudents={testInsights?.subjectTopStudents} onViewStudent={onViewStudent} />
         
         {/* STUDENT FLIP CARD */}
-        <div style={{ perspective: '1000px', height: '100%' }}>
+        <div className="insights-flip" style={{ perspective: '1000px', height: '100%' }}>
           <div style={{
             position: 'relative', width: '100%', height: '100%',
             transition: 'transform 1.2s ease-in-out',
