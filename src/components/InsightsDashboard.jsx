@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { fetchCentreLeaderboard } from '../services/dataService';
 import SubjectTopStudents from './SubjectTopStudents';
 import SubjectTopCentres from './SubjectTopCentres';
@@ -451,20 +451,52 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
   );
 };
 
-export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange, stream = 'JEE', branch = 'MAIN' }) {
-  const [dashboardElement, setDashboardElement] = useState(null);
-  useEffect(() => {
-    if (!dashboardElement) return;
-    const fitDashboard = () => {
-      const width = dashboardElement.clientWidth;
-      if (width > 0) dashboardElement.style.setProperty('--dashboard-fit', String(Math.min(1, width / 1200)));
-    };
-    fitDashboard();
-    const observer = new ResizeObserver(fitDashboard);
-    observer.observe(dashboardElement);
-    return () => observer.disconnect();
-  }, [dashboardElement]);
 
+/** Fit the complete desktop row, including text, without CSS zoom on iOS. */
+function FittedDashboardRow({ children, className, style }) {
+  const viewportRef = useRef(null);
+  const rowRef = useRef(null);
+  const [metrics, setMetrics] = useState({ mobile: false, width: 1440, height: 0 });
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const row = rowRef.current;
+    if (!viewport || !row) return;
+    const media = window.matchMedia('(max-width: 900px)');
+    const measure = () => {
+      const rowStyle = window.getComputedStyle(row);
+      const rowHeight = row.offsetHeight + (parseFloat(rowStyle.marginTop) || 0) + (parseFloat(rowStyle.marginBottom) || 0);
+      const next = { mobile: media.matches, width: viewport.clientWidth, height: rowHeight };
+      setMetrics(previous => previous.mobile === next.mobile && previous.width === next.width && previous.height === next.height ? previous : next);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    observer.observe(row);
+    media.addEventListener('change', measure);
+    measure();
+    return () => {
+      observer.disconnect();
+      media.removeEventListener('change', measure);
+    };
+  }, []);
+  const scale = Math.min(1, Math.max(1, metrics.width) / 1440);
+  return (
+    <div ref={viewportRef} className="insights-fit-viewport" style={{
+      width: '100%', minWidth: 0, position: 'relative',
+      ...(metrics.mobile ? { height: metrics.height * scale, overflow: 'hidden' } : {})
+    }}>
+      <div ref={rowRef} className={className} style={{
+        ...style,
+        ...(metrics.mobile ? {
+          width: 1440, position: 'absolute', left: 0, top: 0,
+          transform: `scale(${scale})`, transformOrigin: 'top left',
+          WebkitTextSizeAdjust: 'none', textSizeAdjust: 'none'
+        } : {})
+      }}>{children}</div>
+    </div>
+  );
+}
+
+export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange, stream = 'JEE', branch = 'MAIN' }) {
   const currentStream = data?.profiles?.[0]?.stream || 'JEE';
   const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
 
@@ -732,38 +764,31 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div ref={setDashboardElement} className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
       <style>{`
         @media (max-width: 900px) {
           .pragati-insights { min-width: 0; width: 100%; }
-          /* Preserve desktop rows and fit each to the available phone width.
-             Keep dialogs outside the zoomed rows so their controls remain usable. */
-          .pragati-insights > .insights-kpis,
-          .pragati-insights > .insights-grid {
-            width: 1200px;
-            zoom: var(--dashboard-fit, 0.25);
-          }
           /* iOS must scale text with the cards instead of enlarging it again. */
-          .pragati-insights > .insights-kpis,
-          .pragati-insights > .insights-kpis *,
-          .pragati-insights > .insights-grid,
-          .pragati-insights > .insights-grid * {
+          .pragati-insights .insights-kpis,
+          .pragati-insights .insights-kpis *,
+          .pragati-insights .insights-grid,
+          .pragati-insights .insights-grid * {
             -webkit-text-size-adjust: none;
             text-size-adjust: none;
           }
-          .pragati-insights > .insights-kpis .card,
-          .pragati-insights > .insights-grid .card {
+          .pragati-insights .insights-kpis .card,
+          .pragati-insights .insights-grid .card {
             position: relative;
             padding-top: 40px !important;
             min-width: 0;
           }
           .pragati-insights .insights-section-title > div:first-child,
-          .pragati-insights > .insights-grid > .card > div:first-child > div {
+          .pragati-insights .insights-grid > .card > div:first-child > div {
             white-space: normal !important;
             overflow-wrap: anywhere;
           }
           /* Subject chart actions sit above their heading, not on the plot. */
-          .pragati-insights > .insights-grid > .card > div:first-child > div:has(> .flip-button-3d) {
+          .pragati-insights .insights-grid > .card > div:first-child > div:has(> .flip-button-3d) {
             top: -32px !important;
           }
           .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) {
@@ -784,7 +809,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
 
       {/* ── KPI Cards ── */}
-      <div className="insights-kpis" style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
+      <FittedDashboardRow className="insights-kpis" style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
         <KpiCard icon={Users}    value={totalStudents} label="TOTAL STUDENT" onClick={onTotalStudentsClick}
            progressBar={{ value: totalQualified, max: totalStudents, color: '#3b82f6', tooltipText: stream === 'NEET' ? 'MBBS / Total Student' : 'Qualified / Total Student' }}
            bg="#f0f5ff" color="#1a4fa0"/>
@@ -804,10 +829,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           label={`Avg Score (${selectedTestKey||'Latest'})`}
           progressBar={branch === 'ADVANCED' ? undefined : { value: avgScore || 0, max: dynamicMaxScore, color: '#3b82f6', tooltipText: `Avg / Max(${dynamicMaxScore})` }}
           sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
-      </div>
+      </FittedDashboardRow>
 
       {/* ── Main Dashboard Layout ── */}
-      <div className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
+      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
@@ -1122,10 +1147,10 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
 
 
 
-      </div> {/* End Main Dashboard Layout */}
+      </FittedDashboardRow> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <div className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
+      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
         <SubjectTopCentres 
           key={selectedTestKey} 
           centreBoard={centreBoard} 
@@ -1157,7 +1182,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         </div>
 
         {renderLowScorersCount(testInsights)}
-      </div>
+      </FittedDashboardRow>
 
 
 
