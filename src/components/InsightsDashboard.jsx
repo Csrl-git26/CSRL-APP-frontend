@@ -479,16 +479,19 @@ function FittedDashboardRow({ children, className, style }) {
       media.removeEventListener('change', measure);
     };
   }, []);
-  const scale = Math.min(1, Math.max(1, metrics.width) / 720);
+  // Fit four desktop cards to the actual content area, including sidebar space.
+  const layoutWidth = metrics.mobile ? 720 : 1440;
+  const fitted = metrics.mobile || metrics.width < layoutWidth;
+  const scale = Math.min(1, Math.max(1, metrics.width) / layoutWidth);
   return (
     <div ref={viewportRef} className="insights-fit-viewport" style={{
       width: '100%', minWidth: 0, position: 'relative',
-      ...(metrics.mobile ? { height: metrics.height * scale, overflow: 'hidden' } : {})
+      ...(fitted ? { height: metrics.height * scale, overflow: 'hidden' } : {})
     }}>
       <div ref={rowRef} className={className} style={{
         ...style,
-        ...(metrics.mobile ? {
-          width: 720, position: 'absolute', left: 0, top: 0,
+        ...(fitted ? {
+          width: layoutWidth, position: 'absolute', left: 0, top: 0,
           transform: `scale(${scale})`, transformOrigin: 'top left',
           WebkitTextSizeAdjust: 'none', textSizeAdjust: 'none'
         } : {})
@@ -767,6 +770,17 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   return (
     <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
       <style>{`
+        @media (min-width: 901px) {
+          .pragati-insights { width: 100%; min-width: 0; }
+          .pragati-insights .insights-grid > * { min-width: 0; }
+          .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1),
+          .dashboard-page:has(.pragati-insights) > .page-header > div:has(h1) > div {
+            flex-wrap: wrap; min-width: 0; max-width: 100%;
+          }
+          .pragati-insights .insights-section-title > div:first-child {
+            white-space: normal !important;
+          }
+        }
         @media (max-width: 900px) {
           .pragati-insights { min-width: 0; width: 100%; }
           /* Two full-size cards per row, uniformly fitted to the phone width. */
