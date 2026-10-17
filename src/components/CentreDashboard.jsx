@@ -664,7 +664,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
 
     return (
-    <div>
+    <div className="centre-rankings-mobile-fit">
       {/* Empty state when no tests available for this stream */}
       {streamTestOptions.length === 0 && globalStream !== 'ALL' && (
         <div style={{ textAlign: 'center', padding: '60px 20px', background: '#f8fafc', borderRadius: 12, border: '2px dashed var(--gray-200)', marginBottom: 24 }}>
@@ -685,11 +685,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 800, color: '#2563eb', letterSpacing: '-0.3px', borderBottom: '2px solid #2563eb20', paddingBottom: 4, margin: '0 0 10px 0' }}>
             <Trophy size={18} aria-hidden="true" />Centre Rankings — {selectedLeaderboardTestKeys.length > 1 ? 'Multiple Tests' : (selectedLeaderboardTestKeys[0] || selectedTestKey)}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
+          <div className="centre-qualification-summary" style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
             <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{selectedSubject === 'Qualification' ? (globalStream === 'NEET' ? 'Sorted descending by MBBS rate' : 'Sorted descending by qualification rate') : 'Sorted descending by average score'}</span>
             
             {totalAppeared > 0 && (
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
+              <div className="centre-qualification-totals" style={{ display: 'flex', gap: 10, alignItems: 'center', marginLeft: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--gray-600)', fontWeight: 700 }}>{globalStream === 'NEET' ? 'Overall CSRL MBBS:' : 'Overall CSRL Qualification:'}</span>
                 <span style={{ fontSize: 16, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 20, color: 'var(--gray-700)', fontWeight: 700 }}>
                   <strong style={{ color: 'var(--gray-900)' }}>{totalAppeared}</strong> Appeared
@@ -708,7 +708,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
             )}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        <div className="centre-ranking-filters" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <span style={{ fontSize: 14, color: 'var(--gray-800)', fontWeight: 700 }}>Test:</span>
             <MultiSelectDropdown 
@@ -1167,6 +1167,39 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
   return (
     <div className={adminViewCenterCode ? "" : "fade-in dashboard-page"}>
+      <style>{`
+        @media (max-width: 900px) {
+          .centre-rankings-mobile-fit { min-width: 0; width: 100%; }
+          .centre-qualification-summary {
+            flex-direction: column; align-items: flex-start !important;
+          }
+          .centre-qualification-totals {
+            flex-wrap: wrap; margin-left: 0 !important; max-width: 100%;
+          }
+          .centre-qualification-totals > span:first-child { flex-basis: 100%; }
+          .centre-qualification-totals > span {
+            max-width: 100%; white-space: normal; overflow-wrap: anywhere;
+          }
+          .centre-qualification-totals > span[style] { flex-wrap: wrap; }
+          .centre-ranking-filters {
+            flex-direction: column; align-items: stretch !important; width: 100%;
+          }
+          .centre-ranking-filters > div {
+            flex-wrap: wrap; min-width: 0; max-width: 100%;
+          }
+          .centre-ranking-filters select { max-width: 100%; }
+          .dashboard-page:has(.centre-rankings-mobile-fit) > .page-header > div:has(h1) {
+            width: 100%; min-width: 0; flex-wrap: wrap;
+          }
+          .dashboard-page:has(.centre-rankings-mobile-fit) > .page-header > div:has(h1) > div:first-child {
+            flex-basis: 100%;
+          }
+          .dashboard-page:has(.centre-rankings-mobile-fit) > .page-header h1 { word-break: normal; }
+          .dashboard-page:has(.centre-rankings-mobile-fit) > .page-header > div:has(h1) > div {
+            flex-wrap: wrap; max-width: 100%;
+          }
+        }
+      `}</style>
       {!adminViewCenterCode && (
         <div className="page-header">
           <div style={{ padding: 8, borderRadius: 10, background: 'rgba(255,255,255,.9)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44 }}>
