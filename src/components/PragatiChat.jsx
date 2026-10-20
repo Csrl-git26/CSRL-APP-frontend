@@ -67,7 +67,7 @@ export default function PragatiChat() {
         </div>
         <div className="pc-messages" role="log" aria-live="polite" aria-relevant="additions">
           {messages.map((m,i) => <article key={i} className={`pc-message pc-${m.role}${m.error ? ' pc-error' : ''}`}>
-            <div className="pc-author">{m.role === 'user' ? 'You' : 'प्रगति'}{m.mode && <small>{m.mode === 'ai' ? 'AI-assisted' : 'Calculated database answer'}</small>}</div>
+            <div className="pc-author">{m.role === 'user' ? 'You' : 'प्रगति'}{m.mode && m.mode !== 'conversation' && <small>{m.mode === 'ai' ? 'AI-assisted' : 'Calculated database answer'}</small>}</div>
             <p>{m.answer}</p>
             {m.context && <div className="pc-filters">Using: {m.context.centers?.join(', ') || 'Permitted centres'} · {m.context.subject} · {m.context.testIds?.join(', ') || `${m.context.series || 'available series'}, last ${m.context.count} tests`}</div>}
             {!!m.rows?.length && <div className="pc-table-scroll" tabIndex={0} role="region" aria-label="Calculated result table"><table><thead><tr>{m.columns.map((c,j) => <th key={j}>{c}</th>)}</tr></thead><tbody>{m.rows.map((r,j) => <tr key={j}>{r.map((cell,k) => <td key={k} data-label={m.columns[k]}>{cell ?? '—'}</td>)}</tr>)}</tbody></table></div>}
