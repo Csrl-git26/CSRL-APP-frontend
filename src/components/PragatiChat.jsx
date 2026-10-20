@@ -96,7 +96,7 @@ export default function PragatiChat() {
         <form className="pc-form" onSubmit={e => { e.preventDefault();send(); }}>
           <label htmlFor="pc-question">Your question</label>
           <div><textarea id="pc-question" ref={input} value={question} maxLength={800} rows={2} placeholder="Ask about a centre, subject or student…" onChange={e => setQuestion(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) {e.preventDefault();send();} }}/><button type="submit" disabled={busy || !question.trim()}>Send</button></div>
-          <small>When AI is connected, your question and limited analysis context are processed by Cloudflare. Do not enter passwords or contact details.</small>
+          
         </form>
       </section>
     </div>}
