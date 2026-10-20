@@ -1,4 +1,3 @@
-import { Bot } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
@@ -57,7 +56,7 @@ export default function PragatiChat() {
   if (!user || !['ADMIN','CENTRE','STUDENT'].includes(user.role)) return null;
   const suggestions = user.role === 'STUDENT' ? ['Show my student progress in Physics in the last 3 CMT tests'] : ['Which centres improved in the last 2 CMT tests?', 'KNP centre students needing attention in Physics in the last 3 CMT tests'];
   return createPortal(<div className="pragati-chat-root">
-    {!open && <button ref={launcher} type="button" className="pc-launch" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label="Open chatbot" title="Open chatbot"><Bot size={28} strokeWidth={2} aria-hidden="true" /></button>}
+    {!open && <button ref={launcher} type="button" className="pc-launch" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label="Open chatbot" title="Open chatbot"><span className="pc-launch-art" aria-hidden="true"><svg viewBox="0 0 64 64" width="42" height="42" fill="none"><path d="M32 12V7" stroke="white" strokeWidth="3" strokeLinecap="round"/><circle cx="32" cy="6" r="3" fill="#a5f3fc"/><rect x="10" y="16" width="44" height="34" rx="13" fill="white"/><rect x="16" y="22" width="32" height="18" rx="8" fill="#123c78"/><circle cx="24" cy="30" r="3" fill="#67e8f9"/><circle cx="40" cy="30" r="3" fill="#67e8f9"/><path d="M27 44h10M6 27v11M58 27v11" stroke="white" strokeWidth="4" strokeLinecap="round"/><path d="m40 49 6 7v-9" fill="white"/></svg><span className="pc-launch-spark">✦</span></span><span className="pc-launch-label">Chatbot</span></button>}
     {open && <div className="pc-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false); }}>
       <section ref={panel} className="pc-panel" role="dialog" aria-modal="true" aria-labelledby="pc-title">
         <header className="pc-header"><div><strong id="pc-title">Ask प्रगति</strong><span>{status?.aiEnabled ? 'AI connected · Answers from portal records' : 'Database answers · AI connection pending'}</span></div><button type="button" aria-label="Close chat" onClick={() => { setOpen(false); launcher.current?.focus(); }}>×</button></header>
