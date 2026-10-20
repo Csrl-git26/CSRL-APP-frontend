@@ -1,3 +1,4 @@
+import { Bot } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
@@ -56,7 +57,7 @@ export default function PragatiChat() {
   if (!user || !['ADMIN','CENTRE','STUDENT'].includes(user.role)) return null;
   const suggestions = user.role === 'STUDENT' ? ['Show my student progress in Physics in the last 3 CMT tests'] : ['Which centres improved in the last 2 CMT tests?', 'KNP centre students needing attention in Physics in the last 3 CMT tests'];
   return createPortal(<div className="pragati-chat-root">
-    {!open && <button ref={launcher} type="button" className="pc-launch" onClick={() => setOpen(true)} aria-haspopup="dialog">✦ Ask प्रगति</button>}
+    {!open && <button ref={launcher} type="button" className="pc-launch" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label="Open chatbot" title="Open chatbot"><Bot size={28} strokeWidth={2} aria-hidden="true" /></button>}
     {open && <div className="pc-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setOpen(false); }}>
       <section ref={panel} className="pc-panel" role="dialog" aria-modal="true" aria-labelledby="pc-title">
         <header className="pc-header"><div><strong id="pc-title">Ask प्रगति</strong><span>{status?.aiEnabled ? 'AI connected · Answers from portal records' : 'Database answers · AI connection pending'}</span></div><button type="button" aria-label="Close chat" onClick={() => { setOpen(false); launcher.current?.focus(); }}>×</button></header>
