@@ -1,3 +1,4 @@
+import { resolveChatScope } from '../utils/chatScope';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
@@ -6,11 +7,12 @@ import './PragatiChat.css';
 const API = import.meta.env.PROD || (typeof window !== 'undefined' && window.location.hostname !== 'localhost')
   ? 'https://csrl-app-backed-1.onrender.com/api'
   : (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
-const welcome = { answer: 'Ask about centre trends, student marks, or students needing attention. Choose the stream and test series. Answers use the records your login can access.' };
+const welcome = { answer: 'Ask about centre trends, student marks, or students needing attention. Mention JEE Main, JEE Advanced or NEET in your question when relevant. Answers use the records your login can access.' };
 export default function PragatiChat() {
   const { user } = useAuth();
   const [open,setOpen] = useState(false), [question,setQuestion] = useState('');
-  const [stream,setStream] = useState(user?.stream || 'JEE'), [branch,setBranch] = useState('MAIN');
+  const [scope,setScope] = useState(null);
+  const [pendingQuestion,setPendingQuestion] = useState('');
   const [messages,setMessages] = useState([{ role: 'assistant', ...welcome }]);
   const [context,setContext] = useState(null), [busy,setBusy] = useState(false), [status,setStatus] = useState(null);
   const panel = useRef(null), input = useRef(null), launcher = useRef(null), end = useRef(null), abort = useRef(null), active = useRef(false);
@@ -34,16 +36,29 @@ export default function PragatiChat() {
     return () => { controller.abort(); document.removeEventListener('keydown',onKey); };
   },[open,user?.token]);
   useEffect(() => { if (open) end.current?.scrollIntoView({ block:'nearest' }); },[messages,busy,open]);
-  const reset = () => { setMessages([{ role:'assistant',...welcome }]); setContext(null); setQuestion(''); };
+  const reset = () => { setMessages([{ role:'assistant',...welcome }]); setContext(null); setScope(null); setPendingQuestion(''); setQuestion(''); };
   async function send(text = question) {
     const q = text.trim();
     if (!q || active.current || q.length > 800) return;
+    const resolved = resolveChatScope(q, scope);
+    const greeting = /^(hi+|hlo|hello+|hey|thanks|thank you|help|नमस्ते)[!. ]*$/i.test(q);
+    if (!resolved.scope && !greeting) {
+      setQuestion(''); setPendingQuestion(q);
+      setMessages(m => [...m, { role:'user', answer:q }, { role:'assistant', answer:resolved.message }]);
+      return;
+    }
+    const nextScope = resolved.scope || { stream:'JEE', branch:'MAIN' };
+    const scopeOnly = /^(?:for\s+)?(?:(?:jee\s*)?(?:mains?|advanced|adv)|neet)[.! ]*$/i.test(q);
+    const fullQuestion = pendingQuestion && scopeOnly ? `${pendingQuestion} (${q})` : q;
+    const changedScope = scope && (scope.stream !== nextScope.stream || scope.branch !== nextScope.branch);
+    if (!greeting) setScope(nextScope);
+    setPendingQuestion('');
     active.current = true; setBusy(true); setQuestion('');
     setMessages(m => [...m,{ role:'user',answer:q }]);
     const controller = new AbortController(); abort.current = controller;
     const timeout = setTimeout(() => controller.abort(),60000);
     try {
-      const response = await fetch(`${API}/chat`, { method:'POST', headers:headers(), signal:controller.signal, body:JSON.stringify({ question:q,stream,branch,context }) });
+      const response = await fetch(`${API}/chat`, { method:'POST', headers:headers(), signal:controller.signal, body:JSON.stringify({ question:fullQuestion,stream:nextScope.stream,branch:nextScope.branch,context:changedScope ? null : context }) });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.message || (response.status === 401 ? 'Please sign in again.' : 'Chat is unavailable. Please try again shortly.'));
       setMessages(m => [...m,{ role:'assistant',...data }]);
@@ -61,8 +76,6 @@ export default function PragatiChat() {
       <section ref={panel} className="pc-panel" role="dialog" aria-modal="true" aria-labelledby="pc-title">
         <header className="pc-header"><div><strong id="pc-title">Chatbot</strong><span>{status?.aiEnabled ? 'AI connected · Answers from portal records' : 'Database answers · AI connection pending'}</span></div><button type="button" aria-label="Close chat" onClick={() => { setOpen(false); launcher.current?.focus(); }}>×</button></header>
         <div className="pc-controls">
-          <label>Stream<select value={stream} disabled={busy} onChange={e => { setStream(e.target.value);reset(); }}><option>JEE</option><option>NEET</option></select></label>
-          {stream === 'JEE' && <label>Branch<select value={branch} disabled={busy} onChange={e => {setBranch(e.target.value);reset();}}><option value="MAIN">Main</option><option value="ADVANCED">Advanced</option></select></label>}
           <button type="button" disabled={busy} onClick={reset}>New chat</button>
         </div>
         <div className="pc-messages" role="log" aria-live="polite" aria-relevant="additions">
