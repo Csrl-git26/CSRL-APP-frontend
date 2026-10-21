@@ -47,7 +47,6 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
               const totalRank = row.Total_Rank;
 
               let isQualified = false;
-              let hasMbbsStatus = false;
               let qualText = "—";
               const isNeet = stream === 'NEET';
 
@@ -84,12 +83,11 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   // The status is stored as testKey_MBBS = 'MBBS' in the row data.
                   const testMbbsKey = Object.keys(row).find(k => k.toUpperCase() === `${row.name}_MBBS`.toUpperCase());
                   const status = String(testMbbsKey ? row[testMbbsKey] ?? '' : '').trim().toUpperCase();
-                  hasMbbsStatus = ['MBBS', 'YES', 'Y', 'TRUE', '1', 'NO', 'N', 'FALSE', '0', 'NOT MBBS'].includes(status);
                   isQualified = ['MBBS', 'YES', 'Y', 'TRUE', '1'].includes(status);
                 }
 
                 if (typeof tot === 'number') {
-                  qualText = isNeet && !hasMbbsStatus ? <span className="badge">Not recorded</span> : isQualified
+                  qualText = isQualified
                     ? <span className="badge badge-success" style={{ background: isNeet ? '#e0f2fe' : '#dcfce7', color: isNeet ? '#0369a1' : '#166534', border: isNeet ? '1px solid #bae6fd' : '1px solid #bbf7d0' }}>{isNeet ? 'MBBS' : 'Qualified'}</span>
                     : <span className="badge badge-danger" style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>{isNeet ? 'Not MBBS' : 'Not Qualified'}</span>;
                 }
