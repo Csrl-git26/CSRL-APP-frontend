@@ -1768,6 +1768,8 @@ export default function AdminDashboard() {
     </div>
   );
 
+  const rankingSubjects = allSubjects.filter(subject => !/^(MBBS|STATUS)$/i.test(String(subject).trim()));
+
   const Top30Section = () => (
     <div className="card">
       <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -1778,7 +1780,7 @@ export default function AdminDashboard() {
         <thead>
           <tr>
             <th>#</th><th>Student</th><th>Centre</th><th>Sponsor</th><th>Cat.</th>
-            {allSubjects.map((s) => {
+            {rankingSubjects.map((s) => {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Botany' ? 'Bot' : s === 'Zoology' ? 'Zoo' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
             })}
@@ -1817,7 +1819,7 @@ export default function AdminDashboard() {
                 <td>
                   <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
                 </td>
-                {allSubjects.map((sub) => {
+                {rankingSubjects.map((sub) => {
                   let val = flatM.subjects[sub];
                   if (val === undefined && m.rawScores) {
                     val = m.rawScores[`${selectedTestKey}_${sub}`];
@@ -1837,7 +1839,7 @@ export default function AdminDashboard() {
             );
           })}
           {!topRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={rankingSubjects.length + 5 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
@@ -1855,7 +1857,7 @@ export default function AdminDashboard() {
         <thead>
           <tr>
             <th>Rank</th><th>Student</th><th>Centre</th><th>Sponsor</th><th>Cat.</th>
-            {allSubjects.map((s) => {
+            {rankingSubjects.map((s) => {
               const abbr = s === 'Physics' ? 'P' : s === 'Chemistry' ? 'C' : (s === 'Math' || s === 'Mathematics') ? 'M' : s === 'Botany' ? 'Bot' : s === 'Zoology' ? 'Zoo' : s === 'Biology' ? 'B' : s.substring(0, 3);
               return <th key={s} title={s}>{abbr}</th>;
             })}
@@ -1893,7 +1895,7 @@ export default function AdminDashboard() {
               <td>
                 <span style={{ fontSize: 10, padding: '2px 5px', borderRadius: 4, background: '#f5f5f5', color: '#666', fontWeight: 600 }}>{profile?.CATEGORY || '—'}</span>
               </td>
-              {allSubjects.map((sub) => {
+              {rankingSubjects.map((sub) => {
                 let val = flatM.subjects[sub];
                 if (val === undefined && m.rawScores) {
                   val = m.rawScores[`${selectedTestKey}_${sub}`];
@@ -1912,7 +1914,7 @@ export default function AdminDashboard() {
             </tr>
           )})}
           {!bottomRanked.length && (
-            <tr><td colSpan={allSubjects.length + 5 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
+            <tr><td colSpan={rankingSubjects.length + 5 + streamTestOptions.filter(o => String(o) !== 'ALL_FMT' && String(o) !== selectedTestKey).length} style={{ textAlign: 'center', padding: 24, color: 'var(--gray-400)' }}>No data for {selectedTestKey}.</td></tr>
           )}
         </tbody>
       </table>
