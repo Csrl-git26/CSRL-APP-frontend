@@ -47,6 +47,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
               const totalRank = row.Total_Rank;
 
               let isQualified = false;
+              let hasMbbsStatus = false;
               let qualText = "—";
               const isNeet = stream === 'NEET';
 
@@ -74,24 +75,26 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   else if (cat.includes('SC')) overallMin = 65;
                   else if (cat.includes('OBC')) overallMin = 85;
                   else if (cat.includes('EWS')) overallMin = 90;
-                  
+
                   if (tot >= overallMin) {
                     isQualified = true;
                   }
                 } else if (stream === 'NEET') {
                   // ONLY use MBBS status from the uploaded sheet — no score-based fallback.
                   // The status is stored as testKey_MBBS = 'MBBS' in the row data.
-                  const testMbbsKey = Object.keys(row).find(k => k.endsWith('_MBBS'));
-                  isQualified = testMbbsKey ? row[testMbbsKey] === 'MBBS' : false;
+                  const testMbbsKey = Object.keys(row).find(k => k.toUpperCase() === `${row.name}_MBBS`.toUpperCase());
+                  const status = String(testMbbsKey ? row[testMbbsKey] ?? '' : '').trim().toUpperCase();
+                  hasMbbsStatus = ['MBBS', 'YES', 'Y', 'TRUE', '1', 'NO', 'N', 'FALSE', '0', 'NOT MBBS'].includes(status);
+                  isQualified = ['MBBS', 'YES', 'Y', 'TRUE', '1'].includes(status);
                 }
-                
+
                 if (typeof tot === 'number') {
-                  qualText = isQualified 
+                  qualText = isNeet && !hasMbbsStatus ? <span className="badge">Not recorded</span> : isQualified
                     ? <span className="badge badge-success" style={{ background: isNeet ? '#e0f2fe' : '#dcfce7', color: isNeet ? '#0369a1' : '#166534', border: isNeet ? '1px solid #bae6fd' : '1px solid #bbf7d0' }}>{isNeet ? 'MBBS' : 'Qualified'}</span>
                     : <span className="badge badge-danger" style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>{isNeet ? 'Not MBBS' : 'Not Qualified'}</span>;
                 }
               }
-                
+
               const renderCell = (v) => {
                 const isAbsent = v.mark === 'A' || v.mark === 'a' || v.mark === 'Absent';
                 if (isAbsent) return <strong style={{ fontSize: '1.1em', color: 'var(--red)' }}>Absent</strong>;
@@ -159,7 +162,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 let sum = 0;
                 let count = 0;
                 let fails = 0;
-                
+
                 let threshold = 35;
                 if (stream === 'NEET') {
                   threshold = 63;
@@ -188,7 +191,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 let count = 0;
                 let fails = 0;
                 let threshold = stream === 'NEET' ? 550 : 120;
-                
+
                 chartData.forEach(row => {
                   const val = row.Total;
                   if (val !== undefined && val !== null && val !== 'Absent' && val !== 'a' && val !== 'A' && val !== '—') {
@@ -200,7 +203,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                     }
                   }
                 });
-                
+
                 return {
                   avg: count > 0 ? Math.round(sum / count) : '—',
                   fails
