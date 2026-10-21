@@ -1,3 +1,4 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList, Label } from 'recharts';
 import { BarChart2, Flag } from 'lucide-react';
@@ -29,18 +30,18 @@ const CustomTooltip = ({ active, payload, selectedSubject, stream }) => {
       <>
       <div className="centre-tooltip-mobile" style={{ background: '#fff', border: isRedFlag ? '1px solid #fca5a5' : '1px solid #cbd5e1', borderRadius: 6, padding: 8, width: 150, maxWidth: '45vw', boxShadow: '0 2px 6px rgba(0,0,0,.12)', fontSize: 10, lineHeight: 1.4, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
         <div style={{ fontWeight: 800, color: isRedFlag ? '#dc2626' : '#1a4fa0' }}>{isRedFlag ? '⚠ ' : ''}{data.rank}. {data.code}</div>
-        <div>Avg: <strong>{data.avg}</strong>{data.qualRate !== undefined && <> · {stream === 'NEET' ? 'MBBS' : 'Qual.'}: <strong>{Math.round(data.qualRate)}%</strong></>}</div>
+        <div>Avg: <strong>{formatOneDecimal(data.avg)}</strong>{data.qualRate !== undefined && <> · {stream === 'NEET' ? 'MBBS' : 'Qual.'}: <strong>{formatOneDecimal(data.qualRate)}%</strong></>}</div>
         {(!selectedSubject || selectedSubject === 'Total') && data.weakSubject && <div>Weakest: {data.weakSubject}</div>}
         <div style={{ color: '#64748b', fontSize: 9 }}>Tap bar for full overview</div>
       </div>
       <div className="centre-tooltip-desktop" style={{ background: '#fff', border: isRedFlag ? '2px solid #fca5a5' : '1px solid #ccc', padding: '12px', borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 13, zIndex: 100 }}>
         {isRedFlag && (<div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}><Flag size={14} color="#cc0000" fill="#cc0000" style={{ flexShrink: 0 }} /><span style={{ color: '#ef4444', fontWeight: 800, letterSpacing: 0.5 }}>⚠ ATTENTION</span></div>)}
         <p style={{ margin: '0 0 8px 0', fontWeight: 800, fontSize: 15 }}>{data.rank} {centerName === data.code ? centerName : `${centerName} (${data.code})`}</p>
-        <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {data.avg}</p>
+        <p style={{ margin: '2px 0', color: 'var(--csrl-blue)', fontWeight: 700 }}>Avg Score: {formatOneDecimal(data.avg)}</p>
         <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Highest Individual Score: {data.top}</p>
         {data.bottom !== undefined && <p style={{ margin: '2px 0', color: 'var(--gray-700)', fontWeight: 600 }}>Lowest Individual Score: {data.bottom}</p>}
         
-        {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>{stream === 'NEET' ? 'MBBS' : 'Qual. Rate'}: {Math.round(data.qualRate)}%</p>}
+        {(!selectedSubject || selectedSubject === 'Total' || selectedSubject === 'Qualification') && data.qualRate !== undefined && <p style={{ margin: '2px 0', color: data.qualRate < 80 ? '#ef4444' : 'var(--gray-700)', fontWeight: data.qualRate < 80 ? 700 : 600 }}>{stream === 'NEET' ? 'MBBS' : 'Qual. Rate'}: {formatOneDecimal(data.qualRate)}%</p>}
         {(!selectedSubject || selectedSubject === 'Total') && <p style={{ margin: '8px 0 0 0', color: '#ef4444', fontWeight: 700 }}>Weakest: {data.weakSubject}</p>}
         
         {(() => {
@@ -150,7 +151,7 @@ export default function CentreLeaderboard({ centreStats = [], selTest, selectedS
           </g>
         )}
         <text x={centerX} y={textY} fill={textColor} textAnchor="middle" fontSize={10} fontWeight={500} letterSpacing={0}>
-          {typeof value === 'number' ? Math.round(value) : value}{isQualSort ? '%' : ''}
+          {typeof value === 'number' ? formatOneDecimal(value) : value}{isQualSort ? '%' : ''}
         </text>
       </g>
     );

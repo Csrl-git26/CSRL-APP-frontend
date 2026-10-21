@@ -1,3 +1,4 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import React from 'react';
 
 export default function TestRecordsTable({ chartData, streamCfg, stream, isCentre, profile }) {
@@ -54,7 +55,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 if (row.qualRate != null) {
                   qualText = (
                     <span className="badge badge-success" style={{ background: '#f3e8ff', color: '#6b21a8', border: '1px solid #d8b4fe' }}>
-                      {row.qualRate}% {isNeet ? 'MBBS' : 'Qualified'}
+                      {formatOneDecimal(row.qualRate)}% {isNeet ? 'MBBS' : 'Qualified'}
                     </span>
                   );
                 }
@@ -112,7 +113,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   }
                   return <strong style={{ fontSize: '1.1em', color: 'var(--gray-400)' }}>—</strong>;
                 }
-                const m = Math.round(v.mark);
+                const m = isCentre ? formatOneDecimal(v.mark) : Math.round(v.mark);
                 const at = v.attempted != null ? v.attempted : '—';
                 const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
                 const rnk = v.rank != null ? v.rank : '—';
@@ -179,7 +180,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 });
 
                 return {
-                  avg: count > 0 ? Math.round(sum / count) : '—',
+                  avg: count > 0 ? formatOneDecimal(sum / count) : '—',
                   fails
                 };
               };
@@ -203,7 +204,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                 });
 
                 return {
-                  avg: count > 0 ? Math.round(sum / count) : '—',
+                  avg: count > 0 ? formatOneDecimal(sum / count) : '—',
                   fails
                 };
               })();

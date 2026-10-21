@@ -1,3 +1,4 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import MobileChartPopup from './MobileChartPopup';
 /* eslint-disable */
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
@@ -11,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Rectangle, Sector, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList, LineChart, Line } from 'recharts';
 
-function pct(n, d) { return !d ? 0 : Math.round((n / d) * 100); }
+function pct(n, d) { return !d ? 0 : ((n / d) * 100); }
 
 function getInitials(name = '') {
   return name.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || '?';
@@ -354,7 +355,7 @@ const InteractivePieChart = ({ sorted, cutoff, compareKey, onViewCentre }) => {
               {isActive && (
                 <g transform={`rotate(${textRotation}, ${mx}, ${my})`}>
                   <text x={mx} y={my} fill={lFill} textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={900} letterSpacing="0.5px">
-                    {Math.round(val)}{compareKey === 'qualRate' ? '%' : ''}
+                    {formatOneDecimal(val)}{compareKey === 'qualRate' ? '%' : ''}
                   </text>
                 </g>
               )}
@@ -446,7 +447,7 @@ const renderRadialBarShape = (props, activeRadialIndex, onViewCentre, setActiveR
         letterSpacing="-0.5px"
         style={{ filter: 'drop-shadow(0px 1px 1.5px rgba(255,255,255,1))', pointerEvents: 'none' }}
       >
-        {payload.value}%
+        {formatOneDecimal(payload.value)}%
       </text>
     </g>
   );
@@ -760,7 +761,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const totalAppeared  = centreBoard.reduce((s,c) => s+(c.tested||0), 0);
   const totalQualified = centreBoard.reduce((s,c) => s+(c.qualifiedCount||0), 0);
   const qualRate       = totalAppeared ? pct(totalQualified,totalAppeared) : null;
-  const avgScore       = centreBoard.length ? Math.round(centreBoard.reduce((s,c) => s+(c.avg||0),0)/centreBoard.length) : null;
+  const avgScore       = centreBoard.length ? (centreBoard.reduce((s,c) => s+(c.avg||0),0)/centreBoard.length) : null;
   const topCentre      = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))[0];
 
   if (!data || totalStudents === 0) return (
@@ -841,17 +842,17 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           bg="#f0f5ff" color="#1a4fa0"/>
         <KpiCard 
           icon={Award}    
-          value={qualRate !== null ? `${qualRate}%` : '—'} 
+          value={qualRate !== null ? `${formatOneDecimal(qualRate)}%` : '—'} 
           label={stream === 'NEET' ? "CSRL MBBS" : "CSRL QUALIFICATION"}
           labelFontSize={12}
           progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltipText: stream === 'NEET' ? 'MBBS / Appeared' : 'Qualified / Appeared' }}
           bg="#f0f5ff" 
           color="#1a4fa0"
         />
-        <KpiCard icon={Target}   value={avgScore !== null ? avgScore : '—'}
+        <KpiCard icon={Target}   value={avgScore !== null ? formatOneDecimal(avgScore) : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
           progressBar={branch === 'ADVANCED' ? undefined : { value: avgScore || 0, max: dynamicMaxScore, color: '#3b82f6', tooltipText: `Avg / Max(${dynamicMaxScore})` }}
-          sub={topCentre ? `Best: ${topCentre.code} (${Math.round(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
+          sub={topCentre ? `Best: ${topCentre.code} (${formatOneDecimal(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
       </FittedDashboardRow>
 
       {/* ── Main Dashboard Layout ── */}
@@ -875,7 +876,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                   const rankDisplay = medals[c.rank] || `${c.rank}`;
                   
                   // Gauge chart calculations
-                  const score = Math.round(c.avg);
+                  const score = formatOneDecimal(c.avg);
                   const maxScore = dynamicMaxScore || 720;
                   const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
                   const strokeWidth = 10;
@@ -1018,7 +1019,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
                     const top5Qual = sortedByQual.slice(0, 5);
                     const colors = ['#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'];
-                    const radialData = top5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
+                    const radialData = top5Qual.map((c, i) => ({ name: c.code, value: (c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
                     const legendPayload = top5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
                       <ResponsiveContainer width="100%" height={180} key={`front-${showBottom5Qual}`}>
@@ -1037,7 +1038,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                               {legendPayload.map((entry, index) => (
                                 <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
                                   <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
-                                  {entry.value}
+                                  {typeof entry.value === 'number' ? formatOneDecimal(entry.value) : entry.value}
                                 </li>
                               ))}
                             </ul>
@@ -1078,7 +1079,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                     const sortedByQual = [...centreBoard].sort((a,b) => (b.qualRate||0) - (a.qualRate||0));
                     const bottom5Qual = sortedByQual.slice(-5);
                     const colors = ["#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74"];
-                    const radialData = bottom5Qual.map((c, i) => ({ name: c.code, value: Math.round(c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
+                    const radialData = bottom5Qual.map((c, i) => ({ name: c.code, value: (c.qualRate || 0), fill: colors[i % colors.length], rank: sortedByQual.findIndex(x => x.code === c.code) + 1 })).reverse();
                     const legendPayload = bottom5Qual.map((c, i) => ({ value: `${sortedByQual.findIndex(x => x.code === c.code) + 1}. ${c.code}`, type: 'square', color: colors[i % colors.length] }));
                     return (
                       <ResponsiveContainer width="100%" height={180} key={`back-${showBottom5Qual}`}>
@@ -1097,7 +1098,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                               {legendPayload.map((entry, index) => (
                                 <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, fontSize: 11, color: '#1e3a8a', fontWeight: 900, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 1px 3px rgba(30,58,138,0.2)' }}>
                                   <span style={{ width: 8, height: 8, backgroundColor: entry.color, marginRight: 6, display: 'inline-block' }}></span>
-                                  {entry.value}
+                                  {typeof entry.value === 'number' ? formatOneDecimal(entry.value) : entry.value}
                                 </li>
                               ))}
                             </ul>
@@ -1262,7 +1263,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         return (
                           <div style={{ background: '#1e293b', color: 'white', padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600 }}>
                             <div style={{ marginBottom: 4, color: '#93c5fd' }}>{payload[0].payload.code}</div>
-                            <div>Avg: {Math.round(payload[0].payload.avg)}</div>
+                            <div>Avg: {formatOneDecimal(payload[0].payload.avg)}</div>
                           </div>
                         );
                       }
@@ -1285,7 +1286,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         return (
                           <g>
                             <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
-                              {Math.round(value)}
+                              {formatOneDecimal(value)}
                             </text>
                             {isAlert && (
                               <g>
@@ -1371,7 +1372,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         return (
                           <div style={{ background: '#1e293b', color: 'white', padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600 }}>
                             <div style={{ marginBottom: 4, color: '#93c5fd' }}>{payload[0].payload.code}</div>
-                            <div>{selectedModalSubject}: {Math.round(payload[0].payload[selectedModalSubject] || 0)}</div>
+                            <div>{selectedModalSubject}: {formatOneDecimal(payload[0].payload[selectedModalSubject] || 0)}</div>
                           </div>
                         );
                       }
@@ -1383,7 +1384,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         return (
                           <g>
                             <text x={x + width / 2} y={y - 10} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
-                              {Math.round(value || 0)}
+                              {formatOneDecimal(value || 0)}
                             </text>
                           </g>
                         );
@@ -1451,7 +1452,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         return (
                           <div style={{ background: '#1e293b', color: 'white', padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600 }}>
                             <div style={{ marginBottom: 4, color: '#93c5fd' }}>{payload[0].payload.code}</div>
-                            <div>Qual: {Math.round(payload[0].payload.qualRate)}%</div>
+                            <div>Qual: {formatOneDecimal(payload[0].payload.qualRate)}%</div>
                           </div>
                         );
                       }
@@ -1474,7 +1475,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
                         return (
                           <g>
                             <text x={x + width / 2} y={y - 20} fill="#1e293b" fontSize={11} fontWeight={900} textAnchor="middle">
-                              {Math.round(value)}%
+                              {formatOneDecimal(value)}%
                             </text>
                             {isAlert && (
                               <g>

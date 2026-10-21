@@ -1,3 +1,4 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import MobileChartPopup from './MobileChartPopup';
 import PortalUserManagement from './PortalUserManagement';
 import PortalLoginTracking from './PortalLoginTracking';
@@ -1415,7 +1416,7 @@ export default function AdminDashboard() {
           {trendChartLoading ? (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
           ) : trendChartData.length > 0 ? (
-            <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} height={240} />
+            <PerformanceChart isCentre={true} chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} height={240} />
           ) : (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
           )}
@@ -1441,7 +1442,7 @@ export default function AdminDashboard() {
     const totalAppearedRaw = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
     const totalAppeared = Math.round(totalAppearedRaw / numTests);
     const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
-    const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
+    const qualPct = totalAppeared > 0 ? ((totalQualified / totalAppeared) * 100) : 0;
 
     return (
       <div>
@@ -1524,7 +1525,7 @@ export default function AdminDashboard() {
                 <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
               ) : trendChartData.length > 0 ? (
                 <div style={{ height: '100%' }}>
-                  <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} height="100%" />
+                  <PerformanceChart isCentre={true} chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} height="100%" />
                 </div>
               ) : (
                 <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>

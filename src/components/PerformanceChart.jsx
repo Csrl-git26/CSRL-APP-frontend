@@ -1,10 +1,11 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getMaxMarksForSubject } from '../services/dataService';
 
 const SUBJECT_COLORS = ['#6366f1', '#f97316', '#10b981', '#f43f5e'];
 
-export default function PerformanceChart({ chartData, streamCfg, noCard, height = 350 }) {
+export default function PerformanceChart({ chartData, streamCfg, noCard, height = 350, isCentre = false }) {
   const [chartMetric, setChartMetric] = useState('MARKS');
   const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Botany', 'Zoology', 'Total']);
 
@@ -61,7 +62,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
               formatter={(value, name) => {
                 const isTotal = name.startsWith('Total');
                 const subName = isTotal ? 'Total' : name.split('_')[0];
-                if (chartMetric === 'MARKS') return [value ?? '—', isTotal ? `Total / ${streamCfg.maxTotal}` : `${subName} / ${getMaxMarksForSubject(streamCfg, subName)}`];
+                if (chartMetric === 'MARKS') return [isCentre ? formatOneDecimal(value) : value ?? '—', isTotal ? `Total / ${streamCfg.maxTotal}` : `${subName} / ${getMaxMarksForSubject(streamCfg, subName)}`];
                 if (chartMetric === 'ACCURACY') return [value !== undefined && value !== null ? `${value}%` : '—', `${subName} Accuracy`];
                 if (chartMetric === 'ATTEMPTED') return [value ?? '—', `${subName} Attempted`];
                 if (chartMetric === 'CORRECT') return [value ?? '—', `${subName} Correct`];
@@ -93,7 +94,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                   isAnimationActive={true}
                   animationDuration={800}
                   animationEasing="ease-in-out"
-                  label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : val }}
+                  label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : isCentre && chartMetric === 'MARKS' ? formatOneDecimal(val) : val }}
                 />
               );
             })}
@@ -110,7 +111,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                 isAnimationActive={true}
                 animationDuration={1000}
                 animationEasing="ease-in-out"
-                label={{ position: 'top', fill: '#8b5cf6', fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : val }}
+                label={{ position: 'top', fill: '#8b5cf6', fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : isCentre && chartMetric === 'MARKS' ? formatOneDecimal(val) : val }}
               />
             )}
           </LineChart>

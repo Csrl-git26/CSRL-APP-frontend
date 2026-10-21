@@ -1,3 +1,4 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import React, { useMemo, useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, CartesianGrid } from 'recharts';
 import { Activity } from 'lucide-react';
@@ -16,7 +17,7 @@ const renderCustomLabel = (props) => {
       textAnchor="start" 
       style={{ textShadow: '0px 1px 2px rgba(0,0,0,0.4)' }}
     >
-      {value}
+      {formatOneDecimal(value)}
     </text>
   );
 };
@@ -75,9 +76,9 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre, onViewAll
       if (topCentres.length > 0 && topCentres[0][sub] > 0) {
         data.push({
           subject: subjectDisplayNames[sub],
-          top1Code: topCentres[0]?.code || '', top1Val: Math.round(topCentres[0]?.[sub] || 0),
-          top2Code: topCentres[1]?.code || '', top2Val: Math.round(topCentres[1]?.[sub] || 0),
-          top3Code: topCentres[2]?.code || '', top3Val: Math.round(topCentres[2]?.[sub] || 0),
+          top1Code: topCentres[0]?.code || '', top1Val: (topCentres[0]?.[sub] || 0),
+          top2Code: topCentres[1]?.code || '', top2Val: (topCentres[1]?.[sub] || 0),
+          top3Code: topCentres[2]?.code || '', top3Val: (topCentres[2]?.[sub] || 0),
         });
       }
     });
@@ -120,15 +121,15 @@ export default function SubjectTopCentres({ centreBoard, onViewCentre, onViewAll
             <YAxis type="category" dataKey="subject" tick={{ fontSize: 10, fill: '#1e293b', fontWeight: 800 }} axisLine={false} tickLine={false} width={55} />
             <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top1Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top1Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top1Val" fill="#3b82f6" radius={[0, 4, 4, 0]} name="Rank 1" onClick={(data) => onViewCentre && data.top1Code && onViewCentre(data.top1Code)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top1Code" content={renderCustomLabel} />
-              <LabelList dataKey="top1Val" position="insideLeft" fill="#1e293b" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
+              <LabelList dataKey="top1Val" position="insideLeft" fill="#1e293b" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? formatOneDecimal(v) : ''} />
             </Bar>
             <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top2Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top2Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top2Val" fill="#8b5cf6" radius={[0, 4, 4, 0]} name="Rank 2" onClick={(data) => onViewCentre && data.top2Code && onViewCentre(data.top2Code)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top2Code" content={renderCustomLabel} />
-              <LabelList dataKey="top2Val" position="insideLeft" fill="#1e293b" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
+              <LabelList dataKey="top2Val" position="insideLeft" fill="#1e293b" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? formatOneDecimal(v) : ''} />
             </Bar>
             <Bar  barSize={22} isAnimationActive={shouldAnimate} animationDuration={2000} animationEasing="ease-out" shape={(props) => renderBarShape(props, "top3Val", activeItem)} onMouseEnter={(_, index) => setActiveItem({index, dataKey: "top3Val"})} onMouseLeave={() => setActiveItem(null)} dataKey="top3Val" fill="#0ea5e9" radius={[0, 4, 4, 0]} name="Rank 3" onClick={(data) => onViewCentre && data.top3Code && onViewCentre(data.top3Code)} style={{ cursor: 'pointer' }}>
               <LabelList dataKey="top3Code" content={renderCustomLabel} />
-              <LabelList dataKey="top3Val" position="insideLeft" fill="#1e293b" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? v : ''} />
+              <LabelList dataKey="top3Val" position="insideLeft" fill="#1e293b" fontSize={10} fontWeight={800} formatter={(v) => v > 0 ? formatOneDecimal(v) : ''} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>

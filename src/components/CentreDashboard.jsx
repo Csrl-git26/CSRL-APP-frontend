@@ -1,3 +1,4 @@
+import { formatOneDecimal } from '../utils/formatOneDecimal';
 import FacultyTestDashboard from './FacultyTestDashboard';
 import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
 import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
@@ -661,7 +662,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     const totalAppearedRaw = centreBoard.reduce((sum, c) => sum + (c.tested || 0), 0);
     const totalAppeared = Math.round(totalAppearedRaw / numTests);
     const totalQualified = centreBoard.reduce((sum, c) => sum + (c.qualifiedCount || 0), 0);
-    const qualPct = totalAppeared > 0 ? Math.round((totalQualified / totalAppeared) * 100) : 0;
+    const qualPct = totalAppeared > 0 ? ((totalQualified / totalAppeared) * 100) : 0;
 
     return (
     <div className="centre-rankings-mobile-fit">
@@ -697,11 +698,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                 {qualPct < 80 ? (
                   <span style={{ fontSize: 16, background: '#fee2e2', color: '#991b1b', padding: '4px 12px', borderRadius: 20, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Flag size={14} color="#cc0000" fill="#cc0000" style={{ flexShrink: 0 }} /> ATTENTION - 
-                    <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({qualPct}%)
+                    <strong style={{ color: '#7f1d1d' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({formatOneDecimal(qualPct)}%)
                   </span>
                 ) : (
                   <span style={{ fontSize: 16, background: '#fae8ff', color: '#86198f', padding: '4px 12px', borderRadius: 20, fontWeight: 800 }}>
-                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({qualPct}%)
+                    <strong style={{ color: '#701a75' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({formatOneDecimal(qualPct)}%)
                   </span>
                 )}
               </div>
@@ -760,7 +761,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         {trendChartLoading ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>Loading trend data...</div>
         ) : trendChartData.length > 0 ? (
-          <PerformanceChart chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} />
+          <PerformanceChart isCentre={true} chartData={trendChartData} streamCfg={getStreamConfig(globalStream)} noCard={true} />
         ) : (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>No trend data available for this centre.</div>
         )}
@@ -775,14 +776,14 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     const weakSubject   = weakSubjectFromPerformance ?? 'N/A';
     const validScores   = allRanked.filter(r => typeof r.marks === 'number');
     const avgScore      = validScores.length
-      ? Math.round(validScores.reduce((s, r) => s + r.marks, 0) / validScores.length)
+      ? (validScores.reduce((s, r) => s + r.marks, 0) / validScores.length)
       : 0;
     const topScore = topRanked.length && typeof topRanked[0]?.marks === 'number' ? topRanked[0].marks : 0;
 
     const statCards = [
       { Icon: Users,         value: totalStudents, label: 'Students',     bg: '#f0f5ff', color: '#1a4fa0' },
       { Icon: AlertTriangle, value: weakSubject,   label: 'Weak Sub (Avg)', bg: '#f0f5ff', color: '#1a4fa0' },
-      { Icon: BarChart2,     value: avgScore,      label: 'Avg Score',    bg: '#f0f5ff', color: '#1a4fa0' },
+      { Icon: BarChart2,     value: formatOneDecimal(avgScore),      label: 'Avg Score',    bg: '#f0f5ff', color: '#1a4fa0' },
       { Icon: TrendingUp,    value: topScore,      label: 'Top Score',    bg: '#f0f5ff', color: '#1a4fa0' },
     ];
 
@@ -805,7 +806,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
         
 
         <div style={{ marginBottom: '24px' }}>
-          <PerformanceChart chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} />
+          <PerformanceChart isCentre={true} chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} />
           <TestRecordsTable chartData={centreChartData} streamCfg={getStreamConfig(globalStream)} stream={globalStream} isCentre={true} />
         </div>
 
