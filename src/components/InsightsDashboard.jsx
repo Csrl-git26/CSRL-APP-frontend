@@ -1145,19 +1145,19 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? 'CENTRE - MBBS' : 'CENTRE - QUALIFICATION'}</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? <span style={{ fontSize: 12, whiteSpace: 'normal' }}>CENTRE - EXPECTED MBBS ADM.</span> : 'CENTRE - QUALIFICATION'}</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
-                  <InteractivePieChart sorted={sorted} cutoff={80} compareKey="qualRate" onViewCentre={onViewCentre} />
+                  <InteractivePieChart sorted={sorted} cutoff={stream === 'NEET' ? 50 : 80} compareKey="qualRate" onViewCentre={onViewCentre} />
                 </ResponsiveContainer>
                 <div style={{ display: 'flex', gap: 16, marginTop: 15, fontSize: 13, color: '#475569', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#3b82f6', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&ge; 80% Qual</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&ge; {stream === 'NEET' ? 50 : 80}% Qual</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                     <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#f97316', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&lt; 80% Qual</span>
+                    <span style={{ fontWeight: 600, textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>&lt; {stream === 'NEET' ? 50 : 80}% Qual</span>
                   </div>
                 </div>
               </div>
