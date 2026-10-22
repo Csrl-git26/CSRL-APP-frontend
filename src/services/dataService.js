@@ -573,3 +573,11 @@ export function sortTestRowsChronologically(rows) {
     return a.name.localeCompare(b.name, undefined, { numeric: true });
   });
 }
+
+/** Delete only the selected profile, preserving all test records. */
+export async function deleteSingleProfileApi(rollKey, centerCode) {
+  return apiFetch('/api/student-profiles/delete-one', {
+    method: 'POST',
+    body: { rollKey, centerCode },
+  });
+}
