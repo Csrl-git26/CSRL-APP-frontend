@@ -1,3 +1,4 @@
+import * as XLSX from 'xlsx';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
 import MobileChartPopup from './MobileChartPopup';
 /* eslint-disable */
@@ -1509,9 +1510,29 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
               <button type="button" onClick={() => setLowScoreSelection(null)} aria-label="Close student list">Close</button>
             </div>
             {(() => {
-              const rows = testInsights?.lowScoringStudentsBySubject?.[lowScoreSelection.subject]?.[lowScoreSelection.code];
-              if (!rows) return <p>Student details are unavailable. Please refresh and try again.</p>;
-              return <><p>{rows.length} students in this low-score count</p><table className="table"><thead><tr><th>Student name</th><th>Roll number</th><th>Marks</th></tr></thead><tbody>
+              const sourceRows = testInsights?.lowScoringStudentsBySubject?.[lowScoreSelection.subject]?.[lowScoreSelection.code];
+              if (!sourceRows) return <p>Student details are unavailable. Please refresh and try again.</p>;
+              const rows = [...sourceRows].sort((a, b) => Number(b.marks) - Number(a.marks) || String(a.roll).localeCompare(String(b.roll)));
+              const exportRows = () => {
+                const sheet = XLSX.utils.json_to_sheet(rows.map(row => ({
+                  'Student name': row.name || 'Name unavailable',
+                  'Roll number': String(row.roll),
+                  'Marks': Number(row.marks),
+                  'Centre': lowScoreSelection.code,
+                  'Subject': lowScoreSelection.subject,
+                  'Test': selectedTestKey,
+                })), { header: ['Student name', 'Roll number', 'Marks', 'Centre', 'Subject', 'Test'] });
+                sheet['!cols'] = [{ wch: 32 }, { wch: 18 }, { wch: 10 }, { wch: 12 }, { wch: 16 }, { wch: 20 }];
+                if (sheet['!ref']) sheet['!autofilter'] = { ref: sheet['!ref'] };
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, sheet, 'Student Marks');
+                const fileName = [lowScoreSelection.code, lowScoreSelection.subject, selectedTestKey, 'Student_Marks'].join('_').replace(/[^a-zA-Z0-9_-]/g, '_');
+                XLSX.writeFile(workbook, fileName + '.xlsx');
+              };
+              return <><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+                <p style={{ margin: 0 }}>{rows.length} students in this low-score count</p>
+                <button type="button" className="btn btn-success btn-sm" onClick={exportRows} disabled={!rows.length}>Export Excel</button>
+              </div><table className="table"><thead><tr><th>Student name</th><th>Roll number</th><th>Marks</th></tr></thead><tbody>
                 {rows.map(row => <tr key={row.roll}><td>{onViewStudent ? <button type="button" style={{ border: 0, background: 'transparent', color: '#1a4fa0', cursor: 'pointer', textAlign: 'left' }} onClick={() => { setLowScoreSelection(null); onViewStudent(row.roll); }}>{row.name || 'Name unavailable'}</button> : row.name || 'Name unavailable'}</td><td>{row.roll}</td><td>{row.marks}</td></tr>)}
               </tbody></table></>;
             })()}
