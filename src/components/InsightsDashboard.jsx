@@ -773,6 +773,11 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   return (
     <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:32 }}>
       <style>{`
+        /* Keep the spaces between dashboard cards clear of overlapping shadows. */
+        .pragati-insights .insights-fit-viewport .card,
+        .pragati-insights .insights-fit-viewport .card:hover {
+          box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12) !important;
+        }
         @media (min-width: 901px) {
           .pragati-insights { width: 100%; min-width: 0; }
           .pragati-insights .insights-grid > * { min-width: 0; }
