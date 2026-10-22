@@ -88,7 +88,7 @@ function KpiCard({ icon: Icon, value, label, sub, bg, color, onClick, labelFontS
           <div style={{ fontSize:labelFontSize, fontWeight:800, color:'#334155', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{label}</div>
         </div>
         {sub && <div style={{ fontSize:13, fontWeight:600, color: subColor || '#64748b', marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textShadow: '0px 1px 1px rgba(255,255,255,0.9), 0px 2px 5px rgba(37,99,235,0.4)' }}>{sub}</div>}
-        {progressBar && <div style={{ fontSize:11, fontWeight:700, color: '#64748b', marginTop:4 }}><span style={{ color: progressBar.color || color }}>{progressBar.value}</span> / {progressBar.max} <span style={{ fontWeight: 600 }}>{progressBar.tooltipText}</span></div>}
+        {progressBar && <div style={{ fontSize:11, fontWeight:700, color: '#64748b', marginTop:4 }}><span style={{ color: progressBar.color || color }}>{progressBar.displayValue ?? progressBar.value}</span> / {progressBar.max} <span style={{ fontWeight: 600 }}>{progressBar.tooltipText}</span></div>}
       </div>
     </div>
   );
@@ -761,7 +761,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   const totalAppeared  = centreBoard.reduce((s,c) => s+(c.tested||0), 0);
   const totalQualified = centreBoard.reduce((s,c) => s+(c.qualifiedCount||0), 0);
   const qualRate       = totalAppeared ? pct(totalQualified,totalAppeared) : null;
-  const avgScore       = centreBoard.length ? (centreBoard.reduce((s,c) => s+(c.avg||0),0)/centreBoard.length) : null;
+  // Weight each centre average by its number of recorded test scores.
+  const avgScore       = totalAppeared ? centreBoard.reduce((sum, c) => sum + (c.avg || 0) * (c.tested || 0), 0) / totalAppeared : null;
   const topCentre      = [...centreBoard].sort((a,b) => (b.avg||0)-(a.avg||0))[0];
 
   if (!data || totalStudents === 0) return (
@@ -851,7 +852,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
         />
         <KpiCard icon={Target}   value={avgScore !== null ? formatOneDecimal(avgScore) : '—'}
           label={`Avg Score (${selectedTestKey||'Latest'})`}
-          progressBar={branch === 'ADVANCED' ? undefined : { value: avgScore || 0, max: dynamicMaxScore, color: '#3b82f6', tooltipText: `Avg / Max(${dynamicMaxScore})` }}
+          progressBar={branch === 'ADVANCED' ? undefined : { value: avgScore || 0, displayValue: avgScore !== null ? formatOneDecimal(avgScore) : '—', max: dynamicMaxScore, color: '#3b82f6', tooltipText: `Avg / Max(${dynamicMaxScore})` }}
           sub={topCentre ? `Best: ${topCentre.code} (${formatOneDecimal(topCentre.avg)})` : ''} bg="#f0f5ff" color="#1a4fa0"/>
       </FittedDashboardRow>
 
@@ -1145,7 +1146,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
             const overallAvg = sorted.reduce((sum, c) => sum + (c.qualRate||0), 0) / (sorted.length || 1);
             return (
             <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-              <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? <span style={{ fontSize: 12, whiteSpace: 'normal' }}>CENTRE - EXPECTED MBBS ADM.</span> : 'CENTRE - QUALIFICATION'}</SectionTitle>
+              <SectionTitle Icon={PieChartIcon} color="#2563eb">{stream === 'NEET' ? <span style={{ fontSize: 12, whiteSpace: 'normal' }}>CENTRE - EXPECTED MBBS ADMISSION</span> : 'CENTRE - QUALIFICATION'}</SectionTitle>
               <div style={{ flex: 1, minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                 <ResponsiveContainer key={selectedTestKey} width="100%" height={180}>
                   <InteractivePieChart sorted={sorted} cutoff={stream === 'NEET' ? 50 : 80} compareKey="qualRate" onViewCentre={onViewCentre} />
