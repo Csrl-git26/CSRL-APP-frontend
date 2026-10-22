@@ -58,6 +58,7 @@ import {
   bulkUpsertStudentsApi,
   updateStudentApi,
   deleteStudentApi,
+  deleteSingleProfileApi,
   bulkDeleteStudentsApi,
   upsertTestScoresApi,
   bulkUpsertTestScoresApi,
@@ -393,6 +394,57 @@ function pctBar(numerator, denominator) {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
+
+
+function SingleProfileDelete({ profiles, onDeleted }) {
+  const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
+  const keyFor = p => JSON.stringify([p.ROLL_KEY, p.centerCode]);
+  const matches = profiles.filter(p => {
+    const q = query.trim().toLowerCase();
+    return q && [p.ROLL_KEY, p["STUDENT'S NAME"], p.centerCode].some(v => String(v || '').toLowerCase().includes(q));
+  });
+  const profile = matches.find(p => keyFor(p) === selected);
+  const remove = async () => {
+    if (!profile || busy) return;
+    const name = profile["STUDENT'S NAME"] || 'Unnamed student';
+    if (!window.confirm(`Permanently delete only this student profile?\n\n${name}\nRoll: ${profile.ROLL_KEY}\nCentre: ${profile.centerCode}\n\nTest records and profiles at other centres will be kept.`)) return;
+    setBusy(true);
+    setMessage('');
+    try {
+      await deleteSingleProfileApi(profile.ROLL_KEY, profile.centerCode);
+      setSelected('');
+      setMessage(`Deleted profile ${profile.ROLL_KEY} / ${profile.centerCode}. Test records retained.`);
+      onDeleted(profile);
+    } catch (e) {
+      setMessage(e.message || 'Unable to delete profile.');
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div style={{ borderTop: '1px solid #e2e8f0', marginTop: 16, paddingTop: 14 }}>
+      <h3 style={{ fontSize: 14, margin: '0 0 10px' }}>Delete a single student profile</h3>
+      <label style={{ display: 'block', marginBottom: 8 }}>
+        Search by roll number, name or centre
+        <input className="input" value={query} disabled={busy} onChange={e => { setQuery(e.target.value); setSelected(''); setMessage(''); }} placeholder="e.g. 2728026" style={{ width: '100%', marginTop: 5 }} />
+      </label>
+      {query.trim() && <label style={{ display: 'block', marginBottom: 10 }}>
+        Select the exact profile
+        <select className="input select" value={selected} disabled={busy} onChange={e => setSelected(e.target.value)} style={{ width: '100%', marginTop: 5 }}>
+          <option value="">Select a profile ({matches.length} found)</option>
+          {matches.map(p => <option key={keyFor(p)} value={keyFor(p)}>{p["STUDENT'S NAME"] || 'Unnamed student'} — {p.ROLL_KEY} — Centre: {p.centerCode} — {p.stream || 'JEE'}</option>)}
+        </select>
+      </label>}
+      {profile && <p style={{ fontSize: 13 }}>Selected: <strong>{profile["STUDENT'S NAME"]} · {profile.ROLL_KEY} · {profile.centerCode}</strong></p>}
+      <button type="button" className="btn btn-sm" disabled={!profile || busy} onClick={remove} style={{ background: '#dc2626', color: '#fff' }}>{busy ? 'Deleting…' : 'Delete selected profile'}</button>
+      <p style={{ fontSize: 12, color: '#64748b', marginTop: 8 }}>Deletes only the selected profile. Test records are retained.</p>
+      {message && <p role="status" style={{ fontSize: 13 }}>{message}</p>}
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
   const [recomputingTopics, setRecomputingTopics] = useState(false);
@@ -1977,6 +2029,10 @@ export default function AdminDashboard() {
           </div>
           <button type="button" className="btn btn-sm" onClick={clearAllData} style={{ background: '#ef4444', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', gap: 6, padding: '0 12px', borderRadius: 6, fontWeight: 600 }}><Trash2 size={13} /> Delete All Data</button>
         </div>
+        <SingleProfileDelete profiles={data?.profiles || []} onDeleted={deleted => {
+          setData(current => ({ ...current, profiles: current.profiles.filter(p => !(p.ROLL_KEY === deleted.ROLL_KEY && p.centerCode === deleted.centerCode)) }));
+          showToast('Selected student profile deleted. Test records retained.', 'success');
+        }} />
       </div>
 
       <div className="card" style={{ border: '2px solid #0f766e' }}>
