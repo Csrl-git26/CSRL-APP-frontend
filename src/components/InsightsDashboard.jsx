@@ -488,7 +488,7 @@ function FittedDashboardRow({ children, className, style }) {
   return (
     <div ref={viewportRef} className="insights-fit-viewport" style={{
       width: '100%', minWidth: 0, position: 'relative',
-      ...(fitted ? { height: metrics.height * scale, overflow: 'hidden' } : {})
+      ...(fitted ? { height: metrics.height * scale, overflow: 'visible' } : {})
     }}>
       <div ref={rowRef} className={className} style={{
         ...style,
@@ -771,12 +771,12 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:32 }}>
+    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
       <style>{`
-        /* Keep the spaces between dashboard cards clear of overlapping shadows. */
+        /* Compact 3D shadows fade into the row gaps without clipped edges. */
         .pragati-insights .insights-fit-viewport .card,
         .pragati-insights .insights-fit-viewport .card:hover {
-          box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12) !important;
+          box-shadow: 0 7px 12px -5px rgba(15, 23, 42, 0.24), 0 2px 4px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
         }
         @media (min-width: 901px) {
           .pragati-insights { width: 100%; min-width: 0; }
@@ -863,7 +863,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </FittedDashboardRow>
 
       {/* ── Main Dashboard Layout ── */}
-      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', columnGap: 20, rowGap: 32 }}>
+      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', columnGap: 20, rowGap: 20 }}>
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
@@ -1181,7 +1181,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </FittedDashboardRow> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', columnGap: 20, rowGap: 32, marginTop: 10 }}>
+      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', columnGap: 20, rowGap: 20, marginTop: 0 }}>
         <SubjectTopCentres 
           key={selectedTestKey} 
           centreBoard={centreBoard} 
