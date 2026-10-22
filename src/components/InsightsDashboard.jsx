@@ -771,7 +771,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
   );
 
   return (
-    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div className="pragati-insights" style={{ display:'flex', flexDirection:'column', gap:32 }}>
       <style>{`
         @media (min-width: 901px) {
           .pragati-insights { width: 100%; min-width: 0; }
@@ -858,7 +858,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </FittedDashboardRow>
 
       {/* ── Main Dashboard Layout ── */}
-      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 20 }}>
+      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: centreBoard.length > 0 ? 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)' : '1fr', columnGap: 20, rowGap: 32 }}>
         {/* Left Column: Stacked Students & Centres */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         
@@ -1176,7 +1176,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </FittedDashboardRow> {/* End Main Dashboard Layout */}
 
       {/* ── Second Row: Subject & Student Charts ── */}
-      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 20, marginTop: 10 }}>
+      <FittedDashboardRow className="insights-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', columnGap: 20, rowGap: 32, marginTop: 10 }}>
         <SubjectTopCentres 
           key={selectedTestKey} 
           centreBoard={centreBoard} 
