@@ -581,3 +581,8 @@ export async function deleteSingleProfileApi(rollKey, centerCode) {
     body: { rollKey, centerCode },
   });
 }
+
+export async function fetchQualificationMetrics(testKey, stream) {
+  const params = new URLSearchParams({ testKey, stream });
+  return apiFetch(`/api/analytics/qualification-metrics?${params}`);
+}
