@@ -3,7 +3,8 @@ import { formatOneDecimal } from '../utils/formatOneDecimal';
 import MobileChartPopup from './MobileChartPopup';
 /* eslint-disable */
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
-import { fetchCentreLeaderboard } from '../services/dataService';
+import { createPortal } from 'react-dom';
+import { parseTestColumn, fetchCentreLeaderboard } from '../services/dataService';
 import SubjectTopStudents from './SubjectTopStudents';
 import SubjectTopCentres from './SubjectTopCentres';
 
@@ -503,12 +504,133 @@ function FittedDashboardRow({ children, className, style }) {
   );
 }
 
+
+function buildQualificationSummary(data, centreBoard, testKey, stream) {
+  const subjects = stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Math'];
+  const keys = testKey === 'ALL_FMT' ? [...new Set((data?.testColumns || []).filter(k => k.startsWith('FMT')).map(k => k.split('_')[0]))] : String(testKey || '').split(',').map(k => k.trim()).filter(Boolean);
+  const numeric = value => value !== null && value !== undefined && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
+  const mean = values => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+  const profileMap = new Map((data?.profiles || []).map(p => [String(p.ROLL_KEY), p]));
+  const buckets = new Map(centreBoard.map(c => [c.code, []]));
+  const seen = new Set();
+  for (const doc of data?.tests || []) {
+    const profile = profileMap.get(String(doc.ROLL_KEY));
+    if (!profile || !buckets.has(profile.centerCode) || seen.has(String(doc.ROLL_KEY))) continue;
+    seen.add(String(doc.ROLL_KEY));
+    const values = {};
+    for (const subject of [...subjects, 'Total']) {
+      for (const suffix of ['', '_Attempted', '_Accuracy']) {
+        const samples = keys.map(key => {
+          const column = Object.keys(doc).find(col => {
+            const meta = parseTestColumn(col);
+            const normalized = meta.subject.replace(/^Mathematics|^Maths/, 'Math');
+            return meta.testName === key && normalized === subject + suffix;
+          });
+          return column ? numeric(doc[column]) : null;
+        }).filter(v => v !== null);
+        values[subject + suffix] = mean(samples);
+      }
+    }
+    // Derive only totals supported by complete subject records.
+    if (values.Total === null && subjects.every(sub => values[sub] !== null)) values.Total = subjects.reduce((sum, sub) => sum + values[sub], 0);
+    if (values.Total === null) continue;
+    if (values.Total_Attempted === null && subjects.every(sub => values[sub + '_Attempted'] !== null)) {
+      values.Total_Attempted = subjects.reduce((sum, sub) => sum + values[sub + '_Attempted'], 0);
+    }
+    if (values.Total_Accuracy === null && values.Total_Attempted > 0 && subjects.every(sub => values[sub + '_Attempted'] !== null && values[sub + '_Accuracy'] !== null)) {
+      values.Total_Accuracy = subjects.reduce((sum, sub) => sum + values[sub + '_Attempted'] * values[sub + '_Accuracy'], 0) / values.Total_Attempted;
+    }
+    buckets.get(profile.centerCode).push(values);
+  }
+  const aggregate = students => Object.fromEntries([...subjects, 'Total'].flatMap(sub => ['', '_Attempted', '_Accuracy'].map(suffix => {
+    const key = sub + suffix;
+    return [key, mean(students.map(s => s[key]).filter(v => v !== null))];
+  })));
+  const rows = [...centreBoard].sort((a, b) => b.avg - a.avg || a.code.localeCompare(b.code)).map((centre, index) => ({
+    rank: index + 1, code: centre.code, appeared: centre.tested || 0, qualified: centre.qualifiedCount || 0,
+    ...aggregate(buckets.get(centre.code)), Total: centre.avg,
+  }));
+  for (const subject of subjects) {
+    const sorted = rows.filter(row => row[subject] !== null).sort((a, b) => b[subject] - a[subject] || a.code.localeCompare(b.code));
+    sorted.forEach((row, index) => { row[subject + '_Rank'] = index + 1; });
+  }
+  const appeared = rows.reduce((sum, row) => sum + row.appeared, 0);
+  const overall = { code: 'OVERALL', appeared, qualified: rows.reduce((sum, row) => sum + row.qualified, 0),
+    ...aggregate([...buckets.values()].flat()),
+    Total: appeared ? rows.reduce((sum, row) => sum + row.Total * row.appeared, 0) / appeared : null };
+  return { subjects, rows, overall };
+}
+
+function QualificationSummaryPopup({ data, centreBoard, testKey, stream, onClose }) {
+  const { subjects, rows, overall } = useMemo(() => buildQualificationSummary(data, centreBoard, testKey, stream), [data, centreBoard, testKey, stream]);
+  useEffect(() => {
+    const onKey = event => { if (event.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  const groups = [...subjects, 'Total'];
+  const metrics = sub => sub === 'Total' ? ['_Attempted', '_Accuracy', ''] : ['_Attempted', '_Accuracy', '', '_Rank'];
+  const metricTitle = suffix => suffix === '_Attempted' ? 'Attempt' : suffix === '_Accuracy' ? 'Accu %' : suffix === '_Rank' ? 'Rank' : 'Avg';
+  const displaySubject = sub => sub === 'Math' ? 'Mathematics' : sub;
+  const exportSummary = () => {
+    const top = ['Rank', 'Centres', 'Appeared', stream === 'NEET' ? 'MBBS' : 'Qualified'];
+    const bottom = ['', '', '', ''];
+    const merges = [0, 1, 2, 3].map(c => ({ s: { r: 0, c }, e: { r: 1, c } }));
+    for (const sub of groups) {
+      const start = top.length;
+      metrics(sub).forEach((suffix, i) => { top.push(i === 0 ? displaySubject(sub) : ''); bottom.push(metricTitle(suffix)); });
+      merges.push({ s: { r: 0, c: start }, e: { r: 0, c: top.length - 1 } });
+    }
+    const sheet = XLSX.utils.aoa_to_sheet([top, bottom, ...[...rows, overall].map(row => [
+      row.rank ?? '', row.code, row.appeared, row.qualified,
+      ...groups.flatMap(sub => metrics(sub).map(suffix => row[sub + suffix] ?? null)),
+    ])]);
+    sheet['!merges'] = merges;
+    sheet['!cols'] = top.map((_, index) => ({ wch: index === 1 ? 14 : 11 }));
+    for (const [address, cell] of Object.entries(sheet)) {
+      if (address.startsWith('!') || cell.t !== 'n') continue;
+      const pos = XLSX.utils.decode_cell(address);
+      if (pos.r >= 2 && pos.c >= 4 && bottom[pos.c] !== 'Rank') cell.z = '0.0';
+    }
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Centre Summary');
+    XLSX.writeFile(workbook, ('Qualification_' + testKey).replace(/[^a-zA-Z0-9_-]/g, '_') + '.xlsx');
+  };
+  const cellStyle = { border: '1px solid rgba(148,163,184,0.45)', padding: '7px 10px', textAlign: 'center', whiteSpace: 'nowrap' };
+  return createPortal(
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1200, padding: 'max(80px, 8vh) 20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.22)' }} onClick={onClose}>
+      <section role="dialog" aria-modal="true" aria-labelledby="qualification-summary-title" onClick={event => event.stopPropagation()} style={{ width: '96vw', maxWidth: 1600, maxHeight: 'calc(100dvh - 120px)', display: 'flex', flexDirection: 'column', padding: 20, borderRadius: 20, background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: '0 20px 60px rgba(15,23,42,0.25)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
+          <h2 id="qualification-summary-title" style={{ margin: 0, color: '#1a4fa0', fontSize: 20 }}>Centre Qualification Summary — {testKey}</h2>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="button" className="btn btn-primary" disabled={!rows.length} onClick={exportSummary}>Export Excel</button>
+            <button type="button" className="btn btn-ghost" onClick={onClose}>Close</button>
+          </div>
+        </div>
+        <div style={{ overflow: 'auto', minHeight: 0 }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 12 }}>
+            <thead style={{ background: 'rgba(26,79,160,0.95)', color: '#fff' }}>
+              <tr>{['Rank', 'Centres', 'Appeared', stream === 'NEET' ? 'MBBS' : 'Qualified'].map(title => <th key={title} rowSpan={2} style={cellStyle}>{title}</th>)}{groups.map(sub => <th key={sub} colSpan={metrics(sub).length} style={cellStyle}>{displaySubject(sub)}</th>)}</tr>
+              <tr>{groups.flatMap(sub => metrics(sub).map(suffix => <th key={sub + suffix} style={cellStyle}>{metricTitle(suffix)}</th>))}</tr>
+            </thead>
+            <tbody>{[...rows, overall].map(row => <tr key={row.code} style={{ background: row.code === 'OVERALL' ? 'rgba(26,79,160,0.9)' : 'rgba(255,255,255,0.3)', color: row.code === 'OVERALL' ? '#fff' : '#1e293b', fontWeight: row.code === 'OVERALL' ? 800 : 500 }}>
+              <td style={cellStyle}>{row.rank ?? ''}</td><td style={cellStyle}>{row.code}</td><td style={cellStyle}>{row.appeared}</td><td style={cellStyle}>{row.qualified}</td>
+              {groups.flatMap(sub => metrics(sub).map(suffix => <td key={sub + suffix} style={cellStyle}>{suffix === '_Rank' ? row[sub + suffix] ?? '—' : formatOneDecimal(row[sub + suffix])}</td>))}
+            </tr>)}</tbody>
+          </table>
+        </div>
+      </section>
+    </div>, document.body
+  );
+}
+
 export default function InsightsDashboard({ testInsights, data, overview, topRanked, bottomRanked, centreBoard, selectedTestKey, onViewStudent, onViewCentre, onActiveCentresClick, onTotalStudentsClick, onStudentRankingClick, testOptions, onTestKeyChange, stream = 'JEE', branch = 'MAIN' }) {
   const currentStream = data?.profiles?.[0]?.stream || 'JEE';
   const dynamicMaxScore = testInsights?.cutoffs?.[currentStream]?.maxTotal || (currentStream === 'NEET' ? 720 : 360);
 
     const [showRankingModal, setShowRankingModal] = useState(false);
   const [showQualRankingModal, setShowQualRankingModal] = useState(false);
+  const [showQualificationSummary, setShowQualificationSummary] = useState(false);
   const [modalError, setModalError] = useState('');
   const [modalTestKey, setModalTestKey] = useState(selectedTestKey || '');
   const [modalCentreBoard, setModalCentreBoard] = useState(null);
@@ -853,6 +975,7 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
           value={qualRate !== null ? `${formatOneDecimal(qualRate)}%` : '—'} 
           label={stream === 'NEET' ? "CSRL MBBS" : "CSRL QUALIFICATION"}
           labelFontSize={12}
+          onClick={() => setShowQualificationSummary(true)}
           progressBar={{ value: totalQualified, max: totalAppeared, color: '#3b82f6', tooltipText: stream === 'NEET' ? 'MBBS / Appeared' : 'Qualified / Appeared' }}
           bg="#f0f5ff" 
           color="#1a4fa0"
@@ -1217,6 +1340,8 @@ export default function InsightsDashboard({ testInsights, data, overview, topRan
       </FittedDashboardRow>
 
 
+
+      {showQualificationSummary && <QualificationSummaryPopup data={data} centreBoard={centreBoard} testKey={testInsights?.testKey || selectedTestKey} stream={stream} onClose={() => setShowQualificationSummary(false)} />}
 
       {showRankingModal && (
         <MobileChartPopup><div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingLeft: 80, padding: 20 }} onClick={() => setShowRankingModal(false)}>
