@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { fetchTestInsights } from '../services/dataService';
 
 export default function LowScoreCard({ testKey, stream, branch, onViewStudent }) {
@@ -19,7 +20,8 @@ export default function LowScoreCard({ testKey, stream, branch, onViewStudent })
   const insights = current?.data;
   const subjects = Object.keys(insights?.notQualifiedBySubject || {});
   const activeSelection = selection?.scope === scope ? selection : null;
-  const rows = activeSelection ? insights?.lowScoringStudentsBySubject?.[activeSelection.subject]?.[activeSelection.centre] : null;
+  const sourceRows = activeSelection ? insights?.lowScoringStudentsBySubject?.[activeSelection.subject]?.[activeSelection.centre] : null;
+  const rows = sourceRows ? [...sourceRows].sort((a, b) => Number(b.marks) - Number(a.marks) || String(a.roll).localeCompare(String(b.roll))) : null;
   return (
     <section className="card" style={{ marginTop: 16 }}>
       <h2 style={{ color: '#2563eb', fontSize: 16 }}>STUDENT NO. SUBJECTWISE MARKS &lt;={stream === 'NEET' ? 100 : 30}</h2>
@@ -43,9 +45,9 @@ export default function LowScoreCard({ testKey, stream, branch, onViewStudent })
           {!subjects.length && <p>No marks data for the selected test.</p>}
         </div>
       )}
-      {activeSelection && (
-        <div className="modal-overlay" style={{ zIndex: 1100 }} onClick={() => setSelection(null)}>
-          <div className="card" role="dialog" aria-modal="true" aria-labelledby="centre-low-score-title" onClick={event => event.stopPropagation()} style={{ width: 'min(720px, 95vw)', maxHeight: '80vh', overflowY: 'auto' }}>
+      {activeSelection && createPortal(
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setSelection(null)}>
+          <div className="card" role="dialog" aria-modal="true" aria-labelledby="centre-low-score-title" onClick={event => event.stopPropagation()} style={{ width: 'min(720px, 95vw)', maxHeight: '80vh', overflowY: 'auto', margin: 0, transform: 'none' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
               <h3 id="centre-low-score-title">{activeSelection.centre} — {activeSelection.subject} — {testKey}</h3>
               <button type="button" className="btn btn-ghost" onClick={() => setSelection(null)}>Close</button>
@@ -56,7 +58,8 @@ export default function LowScoreCard({ testKey, stream, branch, onViewStudent })
               </table>
             ) : <p>Student details are unavailable. Please refresh and try again.</p>}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
