@@ -4,7 +4,7 @@ import MobileChartPopup from './MobileChartPopup';
 /* eslint-disable */
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { parseTestColumn, fetchCentreLeaderboard } from '../services/dataService';
+import { fetchQualificationMetrics, parseTestColumn, fetchCentreLeaderboard } from '../services/dataService';
 import SubjectTopStudents from './SubjectTopStudents';
 import SubjectTopCentres from './SubjectTopCentres';
 
@@ -562,7 +562,37 @@ function buildQualificationSummary(data, centreBoard, testKey, stream) {
 }
 
 function QualificationSummaryPopup({ data, centreBoard, testKey, stream, onClose }) {
-  const { subjects, rows, overall } = useMemo(() => buildQualificationSummary(data, centreBoard, testKey, stream), [data, centreBoard, testKey, stream]);
+  const base = useMemo(() => buildQualificationSummary(data, centreBoard, testKey, stream), [data, centreBoard, testKey, stream]);
+  const [rawMetrics, setRawMetrics] = useState(null);
+  const [metricsError, setMetricsError] = useState('');
+  const [contentBounds, setContentBounds] = useState({ left: 0, top: 80 });
+  useEffect(() => {
+    let cancelled = false;
+    setRawMetrics(null); setMetricsError('');
+    fetchQualificationMetrics(testKey, stream)
+      .then(result => { if (!cancelled) setRawMetrics(result); })
+      .catch(error => { if (!cancelled) setMetricsError(error.message || 'Unable to load attempt and accuracy data.'); });
+    return () => { cancelled = true; };
+  }, [testKey, stream]);
+  useEffect(() => {
+    const updateBounds = () => {
+      const sidebar = document.querySelector('.sidebar')?.getBoundingClientRect();
+      const header = document.querySelector('.dashboard-page > .page-header')?.getBoundingClientRect();
+      const left = sidebar && sidebar.width > 0 && sidebar.right > 0 && sidebar.left < window.innerWidth ? Math.max(0, sidebar.right) : 0;
+      setContentBounds({ left, top: Math.max(0, Math.min(header?.bottom || 80, window.innerHeight / 3)) });
+    };
+    updateBounds();
+    window.addEventListener('resize', updateBounds);
+    const observer = new ResizeObserver(updateBounds);
+    for (const selector of ['.sidebar', '.dashboard-page > .page-header']) {
+      const element = document.querySelector(selector);
+      if (element) observer.observe(element);
+    }
+    return () => { window.removeEventListener('resize', updateBounds); observer.disconnect(); };
+  }, []);
+  const subjects = base.subjects;
+  const rows = base.rows.map(row => ({ ...row, ...(rawMetrics?.centres?.[row.code] || {}) }));
+  const overall = { ...base.overall, ...(rawMetrics?.overall || {}) };
   useEffect(() => {
     const onKey = event => { if (event.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
@@ -598,15 +628,17 @@ function QualificationSummaryPopup({ data, centreBoard, testKey, stream, onClose
   };
   const cellStyle = { border: '1px solid rgba(148,163,184,0.45)', padding: '7px 10px', textAlign: 'center', whiteSpace: 'nowrap' };
   return createPortal(
-    <div style={{ position: 'fixed', inset: 0, zIndex: 1200, padding: 'max(80px, 8vh) 20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.22)' }} onClick={onClose}>
-      <section role="dialog" aria-modal="true" aria-labelledby="qualification-summary-title" onClick={event => event.stopPropagation()} style={{ width: '96vw', maxWidth: 1600, maxHeight: 'calc(100dvh - 120px)', display: 'flex', flexDirection: 'column', padding: 20, borderRadius: 20, background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: '0 20px 60px rgba(15,23,42,0.25)' }}>
+    <div style={{ position: 'fixed', left: contentBounds.left, top: contentBounds.top, right: 0, bottom: 0, zIndex: 1200, padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.22)' }} onClick={onClose}>
+      <section role="dialog" aria-modal="true" aria-labelledby="qualification-summary-title" onClick={event => event.stopPropagation()} style={{ width: '100%', minWidth: 0, maxWidth: 1600, maxHeight: '100%', display: 'flex', flexDirection: 'column', padding: 20, borderRadius: 20, background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.8)', boxShadow: '0 20px 60px rgba(15,23,42,0.25)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
           <h2 id="qualification-summary-title" style={{ margin: 0, color: '#1a4fa0', fontSize: 20 }}>Centre Qualification Summary — {testKey}</h2>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className="btn btn-primary" disabled={!rows.length} onClick={exportSummary}>Export Excel</button>
+            <button type="button" className="btn btn-primary" disabled={!rows.length || !rawMetrics || !!metricsError} onClick={exportSummary}>Export Excel</button>
             <button type="button" className="btn btn-ghost" onClick={onClose}>Close</button>
           </div>
         </div>
+        {!rawMetrics && !metricsError && <p role="status">Loading attempt and accuracy…</p>}
+        {metricsError && <p role="alert" style={{ color: '#b91c1c' }}>{metricsError}</p>}
         <div style={{ overflow: 'auto', minHeight: 0 }}>
           <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 12 }}>
             <thead style={{ background: 'rgba(26,79,160,0.95)', color: '#fff' }}>
