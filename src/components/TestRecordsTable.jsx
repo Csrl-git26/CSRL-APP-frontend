@@ -103,9 +103,9 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <strong style={{ fontSize: '1.1em', color: 'var(--gray-500)' }}>—</strong>
                         <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
-                        <span style={{ color: 'var(--gray-600)' }}>{v.attempted}</span>
+                        <span style={{ color: 'var(--gray-600)' }}>{formatOneDecimal(v.attempted)}</span>
                         <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
-                        <span style={{ color: 'var(--gray-600)' }}>{v.accuracy != null ? v.accuracy + '%' : '—'}</span>
+                        <span style={{ color: 'var(--gray-600)' }}>{v.accuracy != null ? formatOneDecimal(v.accuracy) + '%' : '—'}</span>
                         <span style={{ color: 'var(--gray-300)', padding: '0 2px' }}>|</span>
                         <span style={{ color: 'var(--gray-600)' }}>—</span>
                       </span>
@@ -114,8 +114,8 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   return <strong style={{ fontSize: '1.1em', color: 'var(--gray-400)' }}>—</strong>;
                 }
                 const m = isCentre ? formatOneDecimal(v.mark) : Math.round(v.mark);
-                const at = v.attempted != null ? v.attempted : '—';
-                const ac = v.accuracy != null ? `${v.accuracy}%` : '—';
+                const at = formatOneDecimal(v.attempted);
+                const ac = v.accuracy != null ? `${formatOneDecimal(v.accuracy)}%` : '—';
                 const rnk = v.rank != null ? v.rank : '—';
                 return (
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
