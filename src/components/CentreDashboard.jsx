@@ -5,6 +5,7 @@ import { BranchSelector, UploadScopeSelectors } from './ExamScopeSelectors';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
+import * as XLSX from 'xlsx/xlsx.mjs';
 import html2canvas from 'html2canvas';
 import { LayoutDashboard, Trophy, Users, AlertTriangle, BarChart2, BarChart3, TrendingUp, Building2, ArrowLeft, Loader2, Download, Search, Eye, Brain, Package, Flag } from 'lucide-react';
 import {
@@ -47,6 +48,98 @@ function getInitials(name = '') {
   return name.trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
+
+function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, testColumns, onBack }) {
+  const scope = JSON.stringify([centre, testKey, stream, branch]);
+  const [result, setResult] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    setResult(null);
+    if (!testKey) return;
+    fetchRankings(null, { testKey, centerCode: centre, stream, limit: Math.max(1000, profiles.length), order: 'desc' })
+      .then(data => { if (!cancelled) setResult({ scope, rows: data.ranked || [] }); })
+      .catch(error => { if (!cancelled) setResult({ scope, error: error.message || 'Unable to load student details.' }); });
+    return () => { cancelled = true; };
+  }, [scope, centre, testKey, stream, branch, profiles.length]);
+  const current = result?.scope === scope ? result : null;
+  const keys = testKey === 'ALL_FMT'
+    ? [...new Set(testColumns.filter(key => key.startsWith('FMT')).map(key => key.split('_')[0]))]
+    : String(testKey || '').split(',').map(key => key.trim()).filter(Boolean);
+  const subjects = stream === 'NEET' ? ['Physics', 'Chemistry', 'Botany', 'Zoology'] : ['Physics', 'Chemistry', 'Maths'];
+  const numeric = value => value !== null && value !== undefined && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
+  const readSubject = (raw, subject) => {
+    const aliases = subject === 'Maths' ? ['math', 'maths', 'mathematics'] : [subject.toLowerCase()];
+    const values = keys.map(key => {
+      const column = Object.keys(raw).find(col => {
+        const meta = parseTestColumn(col);
+        return meta.testName === key && aliases.includes(String(meta.subject).toLowerCase());
+      });
+      return column ? numeric(raw[column]) : null;
+    }).filter(value => value !== null);
+    return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+  };
+  const records = (current?.rows || []).map(student => {
+    const raw = student.rawScores || {};
+    const total = numeric(student.marks);
+    const category = String(student.category || '').trim().toUpperCase();
+    const cutoff = category.includes('PWD') ? 30 : category.includes('ST') ? 60 : category.includes('SC') ? 65 : category.includes('OBC') ? 85 : category.includes('EWS') ? 90 : 110;
+    let status = total === null ? 'Absent' : total >= cutoff ? 'Qualified' : 'Not Qualified';
+    if (stream === 'NEET' && total !== null) {
+      let flag;
+      for (const key of keys) {
+        const value = raw[key + '_MBBS'] ?? raw[key + '_Mbbs'] ?? raw[key + '_mbbs'] ?? raw[key + '_STATUS'] ?? raw[key + '_Status'] ?? raw[key + '_status'];
+        if (value !== undefined && value !== null && String(value).trim() !== '') { flag = value; break; }
+      }
+      status = String(flag || '').trim().toUpperCase() === 'MBBS' ? 'MBBS' : 'Not MBBS';
+    }
+    return {
+      Rank: student.rank,
+      'Roll num': String(student.roll),
+      LOCATION: student.center,
+      Sponsor: student.sponsor || '',
+      Name: student.name || 'Name unavailable',
+      Category: student.category || '',
+      Gender: student.gender || '',
+      ...Object.fromEntries(subjects.map(subject => [subject, readSubject(raw, subject)])),
+      Total: total,
+      STATUS: status,
+    };
+  }).sort((a, b) => (b.Total ?? -Infinity) - (a.Total ?? -Infinity) || a['Roll num'].localeCompare(b['Roll num']));
+  const headers = ['Rank', 'Roll num', 'LOCATION', 'Sponsor', 'Name', 'Category', 'Gender', ...subjects, 'Total', 'STATUS'];
+  const exportDetails = () => {
+    if (!records.length) return;
+    const sheet = XLSX.utils.json_to_sheet(records, { header: headers });
+    sheet['!cols'] = headers.map(header => ({ wch: header === 'Name' ? 32 : header === 'Sponsor' ? 24 : 16 }));
+    if (sheet['!ref']) sheet['!autofilter'] = { ref: sheet['!ref'] };
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Student Details');
+    XLSX.writeFile(workbook, [centre, testKey, 'Student_Details'].join('_').replace(/[^a-zA-Z0-9_-]/g, '_') + '.xlsx');
+  };
+  return (
+    <section className="card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
+        <div>
+          <h2 style={{ color: '#1a4fa0', margin: 0 }}>Student Details — {centre}</h2>
+          <p style={{ margin: '6px 0 0', color: '#64748b' }}>Test: {testKey || 'None selected'} · {records.length} students</p>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button type="button" className="btn btn-ghost" onClick={onBack}><ArrowLeft size={16} /> Back</button>
+          <button type="button" className="btn btn-primary" disabled={!records.length} onClick={exportDetails}><Download size={16} /> Export Excel</button>
+        </div>
+      </div>
+      {!testKey ? <p>Select a test to view student details.</p> : !current ? <p role="status">Loading student details…</p> : current.error ? <p role="alert">{current.error}</p> : (
+        <div className="table-wrap" style={{ overflowX: 'auto' }}>
+          <table className="table table-compact">
+            <thead><tr>{headers.map(header => <th key={header} style={{ whiteSpace: 'nowrap' }}>{header}</th>)}</tr></thead>
+            <tbody>{records.map(row => <tr key={row['Roll num']}>{headers.map(header => <td key={header} style={{ whiteSpace: 'nowrap', fontWeight: header === 'STATUS' || header === 'Total' ? 700 : undefined }}>{row[header] === null ? '—' : row[header]}</td>)}</tr>)}</tbody>
+          </table>
+          {!records.length && <p>No students found for the selected centre and test.</p>}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adminStream }) {
   const outletContext = useOutletContext();
   const [localActivePage, setLocalActivePage] = useState('overview');
@@ -84,6 +177,9 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       setSelectedCenterCode(adminViewCenterCode);
     }
   }, [adminViewCenterCode]);
+
+  const [showTestStudents, setShowTestStudents] = useState(false);
+  useEffect(() => { setShowTestStudents(false); }, [activePage, selectedCenterCode]);
 
   const [data,             setData]             = useState(null);
   const [overview,         setOverview]         = useState(null);
@@ -791,7 +887,13 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div className="grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
           {statCards.map(({ Icon, value, label, bg, color }) => (
-            <div className="stat-card" key={label}>
+            <div className="stat-card" key={label}
+              role={label === 'Students' ? 'button' : undefined}
+              tabIndex={label === 'Students' ? 0 : undefined}
+              aria-label={label === 'Students' ? 'View student details for the selected centre and test' : undefined}
+              onClick={label === 'Students' ? () => setShowTestStudents(true) : undefined}
+              onKeyDown={label === 'Students' ? event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setShowTestStudents(true); } } : undefined}
+              style={label === 'Students' ? { cursor: 'pointer' } : undefined}>
               <div className="stat-icon" style={{ background: bg }}>
                 <Icon size={20} color={color} aria-hidden="true" />
               </div>
@@ -1312,7 +1414,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
         <div className={adminViewCenterCode ? "" : "dashboard-scroll"}>
           {activePage === 'leaderboard' && LeaderboardSection()}
-          {activePage === 'overview'   && OverviewSection()}
+          {activePage === 'overview' && (showTestStudents ? <CentreTestStudentDetails centre={selectedCenterCode} testKey={selectedTestKey} stream={globalStream} branch={branch} profiles={data?.profiles || []} testColumns={data?.testColumns || []} onBack={() => setShowTestStudents(false)} /> : OverviewSection())}
           {activePage === 'topbottom'  && <RankingsPair />}
           {activePage === 'students'   && StudentsSection()}
           {activePage === 'pastyear'   && <PastYearDataTab isAdmin={false} />}
