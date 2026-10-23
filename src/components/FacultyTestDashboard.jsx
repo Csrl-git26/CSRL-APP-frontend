@@ -24,6 +24,10 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   const [importYear,setImportYear] = useState('2026-27'), [preview,setPreview] = useState(null), [busy,setBusy] = useState(false), [notice,setNotice] = useState('');
   const [deleteYear,setDeleteYear] = useState(''), [deleteTest,setDeleteTest] = useState(''), [deleteConfirmation,setDeleteConfirmation] = useState('');
   const [deleteAllConfirmation,setDeleteAllConfirmation] = useState('');
+  const [uploadMode,setUploadMode] = useState('workbook');
+  const [newTestName,setNewTestName] = useState('');
+  const normalizeTestName = value => String(value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const newTestExists = rows.some(row => row.year === importYear.trim() && normalizeTestName(row.test) === normalizeTestName(newTestName));
   const [detailsOpen,setDetailsOpen] = useState(false);
   const detailsRef = useRef(null);
   const openFacultyDetails = email => { setFaculty(email); setDetailsOpen(true); };
@@ -82,7 +86,61 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   const history = rows.filter(r => r.email === chosen && (year === 'ALL' || r.year === year)).sort(compareFacultyTests).map(r => ({...r,label:year === 'ALL' ? `${r.test} · ${r.year}` : r.test,marks:r.status === 'APPEARED' ? r.marks : null,accuracy:r.status === 'APPEARED' ? r.accuracy : null,percent:r.status === 'APPEARED' && r.maxMarks > 0 && r.marks !== null ? r.marks/r.maxMarks*100 : null}));
   const facultyCentres = [...new Set(history.flatMap(r => r.centres || []).filter(Boolean))].sort().join(', ');
   const canRank = test !== 'ALL' && year !== 'ALL';
-  const upload = async event => { const file = event.target.files?.[0]; event.target.value = ''; if(!file) return; setError('');setPreview(null);setBusy(true);try { const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});setPreview(parseFacultyRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:null}),importYear)); } catch(e){setError(e.message);}finally{setBusy(false);} };
+  const upload = async event => {
+    const file = event.target.files?.[0]; event.target.value = '';
+    if (!file) return;
+    setError(''); setPreview(null); setNotice(''); setBusy(true);
+    try {
+      if (uploadMode === 'new' && (!normalizeTestName(newTestName) || newTestExists)) throw new Error('Enter a new test name for this academic year.');
+      const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+      let grid = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: null });
+      if (uploadMode === 'new') {
+        const norm = value => String(value || '').trim().toUpperCase();
+        const hi = grid.findIndex(row => row.some(value => ['TRAINEE NAME', 'FACULTY NAME'].includes(norm(value))));
+        if (hi < 0) throw new Error('Trainee name header not found. Use the new test template.');
+        const headers = grid[hi].map(norm);
+        const grouped = (grid[hi - 1] || []).some(value => /[0-9]/.test(String(value || '')));
+        if (!headers.includes('TEST NAME') && !grouped) {
+          const column = headers.length;
+          grid = grid.map((row, index) => {
+            if (index < hi) return row;
+            const copy = [...row]; copy[column] = index === hi ? 'TEST NAME' : newTestName.trim();
+            return copy;
+          });
+        } else if (headers.includes('TEST NAME')) {
+          const column = headers.indexOf('TEST NAME');
+          grid = grid.map((row, index) => {
+            if (index <= hi || String(row[column] || '').trim()) return row;
+            const copy = [...row]; copy[column] = newTestName.trim(); return copy;
+          });
+        }
+      }
+      const parsed = parseFacultyRows(grid, importYear.trim());
+      if (uploadMode === 'new') {
+        if (parsed.rows.some(row => normalizeTestName(row.test) !== normalizeTestName(newTestName))) throw new Error('The sheet contains a different test. Upload only the new test selected above.');
+        parsed.rows = parsed.rows.map(row => ({ ...row, test: newTestName.trim().toUpperCase() }));
+      }
+      setPreview(parsed);
+    } catch (e) { setError(e.message); } finally { setBusy(false); }
+  };
+  const newTestTemplate = () => {
+    const headers = ['TRAINEE NAME','EMAIL ID','SUBJECT','PROJECT','TEST NAME','ATTEMPT','CORRECT','ACCURACY','TOTAL MARKS','QUALIFICATION','STATUS','TEST DATE','MAX MARKS','TOTAL QUESTIONS'];
+    const wb = XLSX.utils.book_new();
+    const sheet = XLSX.utils.aoa_to_sheet([headers]);
+    sheet['!cols'] = headers.map(header => ({ wch: header === 'EMAIL ID' ? 32 : 22 }));
+    XLSX.utils.book_append_sheet(wb, sheet, 'New Test');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
+      ['Instructions'],
+      ['Enter one row per trainee faculty. TRAINEE NAME, EMAIL ID and SUBJECT are required.'],
+      ['PROJECT contains the centre code or codes used for the trainee faculty.'],
+      ['TEST NAME may be blank; the test name entered on the Admin page will be used.'],
+      ['ATTEMPT and CORRECT are question counts. ACCURACY is calculated from correct / attempted.'],
+      ['Enter TOTAL MARKS and QUALIFICATION as QUALIFIED or NOT QUALIFIED.'],
+      ['STATUS: APPEARED, ABSENT, MEDICAL LEAVE, LEAVE or MISSING.'],
+      ['TEST DATE: YYYY-MM-DD. MAX MARKS and TOTAL QUESTIONS are optional.'],
+    ]), 'Instructions');
+    XLSX.writeFile(wb, 'Trainee-Faculty-New-Test-Template.xlsx');
+  };
   const confirm = async () => {setBusy(true);setError('');try{const result=await request('/import',{rows:preview.rows});setNotice(`${result.count} results saved. Existing matching results were updated.`);setPreview(null);await load();}catch(e){setError(e.message);}finally{setBusy(false);}};
   const template = () => {
     const profileHeaders = ['FACULTY ID','SL. NO.','TRAINEE NAME','PROJECT','SUBJECT','CONTACT DETAIL','EMAIL ID','PM NAME','MENTOR NAME','DEGREE NAME','COLLEGE NAME','YEAR OF PASSING','DATE OF JOINING CSRL'];
@@ -110,7 +168,16 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
   return <div className={uploadOnly ? undefined : 'trainee-faculty-compact'} style={{display:'grid',gap:uploadOnly?20:10}}>
     {!uploadOnly && <style>{`.trainee-faculty-compact > .card { padding: 10px 12px; border-radius: 12px; } .trainee-faculty-compact > .card h2 { font-size: 16px; margin: 0; } .trainee-faculty-compact > .card p { font-size: 11px; margin: 3px 0 0; } .trainee-faculty-compact > .card label { font-size: 12px; } .trainee-faculty-compact > .card .input.select { padding: 5px 10px; min-height: 30px; font-size: 12px; }`}</style>}
     <section className="card"><h2>{uploadOnly ? 'Import Trainee Faculty Test Data' : 'Trainee Faculty Test Analysis'}</h2>{uploadOnly && <p>Trainee Faculty results are separate from student tests. Compare all trainee faculty together by year and test.</p>}
-      {isAdmin && <div style={{display:'flex',gap:12,alignItems:'center',flexWrap:'wrap'}}><label>Import academic year <input className="input" value={importYear} onChange={e=>{setImportYear(e.target.value);setPreview(null);}} disabled={busy}/></label><label className="btn btn-primary">Upload Excel<input type="file" accept=".xlsx,.xls,.csv" onChange={upload} disabled={busy || !importYear.trim()} style={{display:'none'}}/></label><button className="btn btn-ghost" onClick={template}>Download template</button></div>}
+      {isAdmin && <div style={{display:'flex',gap:12,alignItems:'center',flexWrap:'wrap'}}><label>Import academic year <input className="input" value={importYear} onChange={e=>{setImportYear(e.target.value);setPreview(null);}} disabled={busy}/></label>{uploadMode === 'workbook' && <><label className="btn btn-primary">Upload Excel<input type="file" accept=".xlsx,.xls,.csv" onChange={upload} disabled={busy || !importYear.trim()} style={{display:'none'}}/></label><button className="btn btn-ghost" onClick={template}>Download template</button></>}</div>}
+      {isAdmin && uploadOnly && <div style={{ marginTop: 16, padding: 16, border: '1px solid #bfdbfe', borderRadius: 12, background: '#f8fbff' }}>
+        <button type="button" className="btn btn-primary" disabled={busy} onClick={() => { setUploadMode(uploadMode === 'new' ? 'workbook' : 'new'); setPreview(null); setError(''); setNotice(''); }}>{uploadMode === 'new' ? 'Back to workbook upload' : 'Add New Test'}</button>
+        {uploadMode === 'new' && <div style={{ display: 'flex', gap: 12, alignItems: 'end', flexWrap: 'wrap', marginTop: 12 }}>
+          <label>New test name<input className="input" placeholder="e.g. CMT03" value={newTestName} disabled={busy} onChange={event => { setNewTestName(event.target.value); setPreview(null); }} /></label>
+          <button type="button" className="btn btn-ghost" onClick={newTestTemplate}>Download new test template</button>
+          <label className="btn btn-primary">Upload New Test Excel<input type="file" accept=".xlsx,.xls,.csv" onChange={upload} disabled={busy || loading || !importYear.trim() || !normalizeTestName(newTestName) || newTestExists} style={{ display: 'none' }} /></label>
+          {newTestExists && <p role="alert" style={{ color: '#b91c1c', width: '100%' }}>This test already exists for {importYear}. Use workbook upload to update an existing test.</p>}
+        </div>}
+      </div>}
       {notice && <p role="status">{notice}</p>}{error && <p role="alert" style={{color:'#b91c1c'}}>{error} <button className="btn btn-ghost" onClick={load}>Retry loading</button></p>}
       {preview && <div><h3>Import preview — {preview.rows.length} results</h3><p>Confirming replaces matching year/email/test/subject results. Other tests remain unchanged. Blank future-test groups are skipped.</p>{preview.warnings.map((w,i)=><p key={i} style={{color:'#92400e'}}>{w}</p>)}<div style={{overflowX:'auto',maxHeight:300}}><table className="table"><thead><tr>{['Name','Email (required)','Test','Subject','Attempted','Correct','Marks','Status'].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{preview.rows.map((r,i)=><tr key={i}><td>{r.name}</td><td><input aria-label={`Email for ${r.name}`} value={r.email} onChange={e=>{const email=e.target.value;setPreview(p=>({...p,rows:p.rows.map(x=>x.name===r.name?{...x,email}:x)}));}} /></td><td>{r.test}</td><td>{r.subject}</td><td>{show(r.attempted)}</td><td>{show(r.correct)}</td><td>{show(r.marks)}</td><td>{r.status}</td></tr>)}</tbody></table></div><button className="btn btn-primary" disabled={busy || preview.rows.some(r=>!r.email.includes('@'))} onClick={confirm}>{busy?'Saving…':'Confirm import'}</button> <button className="btn btn-ghost" disabled={busy} onClick={()=>setPreview(null)}>Cancel</button></div>}
     </section>
