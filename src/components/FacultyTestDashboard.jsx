@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom';
 import FacultyManagementCharts from './FacultyManagementCharts';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx/xlsx.mjs';
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line, Legend } from 'recharts';
 import { parseFacultyRows } from '../services/facultyImport';
 const API = 'https://csrl-app-backed-1.onrender.com/api/faculty-tests';
@@ -93,7 +93,16 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
     try {
       if (uploadMode === 'new' && (!normalizeTestName(newTestName) || newTestExists)) throw new Error('Enter a new test name for this academic year.');
       const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
-      let grid = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: null });
+      const normalizeHeader = value => String(value ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toUpperCase().replace(/\s+/g, ' ');
+      const candidates = wb.SheetNames.map(name => ({
+        name,
+        grid: XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null, range: 0 }),
+      }));
+      const source = candidates.find(sheet => sheet.grid.some(row => row.some(value => ['TRAINEE NAME', 'FACULTY NAME'].includes(normalizeHeader(value)))));
+      if (!source) throw new Error('Trainee name header not found in any worksheet. Include a TRAINEE NAME column in the results sheet.');
+      let grid = source.grid;
+      const headerRow = grid.findIndex(row => row.some(value => ['TRAINEE NAME', 'FACULTY NAME'].includes(normalizeHeader(value))));
+      grid = grid.map((row, index) => index === headerRow ? row.map(normalizeHeader) : row);
       if (uploadMode === 'new') {
         const norm = value => String(value || '').trim().toUpperCase();
         const hi = grid.findIndex(row => row.some(value => ['TRAINEE NAME', 'FACULTY NAME'].includes(norm(value))));
