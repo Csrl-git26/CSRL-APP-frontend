@@ -15,10 +15,12 @@ import { usePortalPresence } from './usePortalPresence';
 //   stream:     only set for STUDENT ('JEE' | 'NEET')
 // ============================================================
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 export const TOKEN_KEY = 'csrl_token';
 const USER_KEY  = 'csrl_user';
+const ACTIVITY_KEY = 'csrl_last_activity';
+const IDLE_TIMEOUT = 10 * 60 * 1000;
 
 const AuthContext = createContext(null);
 
@@ -78,11 +80,14 @@ export const AuthProvider = ({ children }) => {
 
     localStorage.setItem(TOKEN_KEY, data.token);
     localStorage.setItem(USER_KEY,  JSON.stringify(userState));
+    localStorage.setItem(ACTIVITY_KEY, String(Date.now()));
     setUser(userState);
     return userState;
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
+    // A stale tab must not clear a newer login from another tab.
+    if (localStorage.getItem(TOKEN_KEY) !== user?.token) { setUser(null); return; }
     if (user?.portalSessionId) {
       fetch(`${API_BASE}/portal-login-tracking/logout`, {
         method: 'POST', keepalive: true,
@@ -92,8 +97,58 @@ export const AuthProvider = ({ children }) => {
     }
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(ACTIVITY_KEY);
     setUser(null);
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user?.token) return;
+    let stopped = false;
+    let timer;
+    const readActivity = () => Number(localStorage.getItem(ACTIVITY_KEY)) || 0;
+    // Existing sessions get a starting timestamp once; refreshes preserve it.
+    if (!readActivity()) localStorage.setItem(ACTIVITY_KEY, String(Date.now()));
+    const check = () => {
+      if (stopped) return false;
+      if (localStorage.getItem(TOKEN_KEY) !== user.token) {
+        stopped = true; clearTimeout(timer); setUser(null); return false;
+      }
+      const remaining = IDLE_TIMEOUT - (Date.now() - readActivity());
+      if (remaining <= 0) {
+        stopped = true; clearTimeout(timer); logout(); return false;
+      }
+      clearTimeout(timer);
+      timer = window.setTimeout(check, remaining);
+      return true;
+    };
+    const activity = () => {
+      // Check expiry before accepting input, including after device sleep.
+      if (document.visibilityState !== 'visible' || !check()) return;
+      const now = Date.now();
+      if (now - readActivity() >= 1000) {
+        localStorage.setItem(ACTIVITY_KEY, String(now));
+        check();
+      }
+    };
+    const storage = event => {
+      if ([ACTIVITY_KEY, TOKEN_KEY, USER_KEY, null].includes(event.key)) check();
+    };
+    const events = ['pointerdown', 'pointermove', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(event => window.addEventListener(event, activity, { passive: true, capture: true }));
+    window.addEventListener('storage', storage);
+    window.addEventListener('focus', check);
+    window.addEventListener('pageshow', check);
+    document.addEventListener('visibilitychange', check);
+    check();
+    return () => {
+      stopped = true; clearTimeout(timer);
+      events.forEach(event => window.removeEventListener(event, activity, true));
+      window.removeEventListener('storage', storage);
+      window.removeEventListener('focus', check);
+      window.removeEventListener('pageshow', check);
+      document.removeEventListener('visibilitychange', check);
+    };
+  }, [user, logout]);
 
   // Show nothing while reading localStorage (avoids flash of login page)
   if (user === undefined) return null;
