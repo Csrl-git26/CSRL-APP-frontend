@@ -9,6 +9,12 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
   const [chartMetric, setChartMetric] = useState('MARKS');
   const [chartSubjects, setChartSubjects] = useState(['Physics', 'Chemistry', 'Math', 'Botany', 'Zoology', 'Total']);
 
+  const formatMetricValue = value => {
+    if (chartMetric === 'ACCURACY') return value === null || value === undefined || value === '' ? '—' : `${formatOneDecimal(value)}%`;
+    if (chartMetric === 'ATTEMPTED' || (isCentre && chartMetric === 'MARKS')) return formatOneDecimal(value);
+    return value ?? '—';
+  };
+
   const subjects = (streamCfg?.subjects || []).filter((sub) => (chartData || []).some((row) => 
     row[sub] !== undefined && row[sub] !== null
   ));
@@ -57,14 +63,14 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
           <LineChart data={chartData} margin={{ top: 15, right: 15, left: 0, bottom: 70 }}>
             <CartesianGrid strokeDasharray="4 6" vertical={false} stroke="#e2e8f020" />
             <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--gray-700)', fontWeight: 700 }} interval={0} angle={-35} textAnchor="end" />
-            <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={35} />
+            <YAxis reversed={chartMetric === 'RANK'} domain={chartMetric === 'RANK' ? [1, 'dataMax'] : [0, 'dataMax']} axisLine={{ stroke: 'var(--gray-300)' }} tickLine={false} tick={{ fill: 'var(--gray-500)', fontSize: 11 }} width={35} tickFormatter={chartMetric === 'ACCURACY' || chartMetric === 'ATTEMPTED' ? formatOneDecimal : undefined} />
             <Tooltip
               formatter={(value, name) => {
                 const isTotal = name.startsWith('Total');
                 const subName = isTotal ? 'Total' : name.split('_')[0];
                 if (chartMetric === 'MARKS') return [isCentre ? formatOneDecimal(value) : value ?? '—', isTotal ? `Total / ${streamCfg.maxTotal}` : `${subName} / ${getMaxMarksForSubject(streamCfg, subName)}`];
-                if (chartMetric === 'ACCURACY') return [value !== undefined && value !== null ? `${value}%` : '—', `${subName} Accuracy`];
-                if (chartMetric === 'ATTEMPTED') return [value ?? '—', `${subName} Attempted`];
+                if (chartMetric === 'ACCURACY') return [formatMetricValue(value), `${subName} Accuracy`];
+                if (chartMetric === 'ATTEMPTED') return [formatMetricValue(value), `${subName} Attempted`];
                 if (chartMetric === 'CORRECT') return [value ?? '—', `${subName} Correct`];
                 if (chartMetric === 'RANK') return [value ?? '—', `${subName} Rank`];
                 return [value ?? '—', name];
@@ -94,7 +100,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                   isAnimationActive={true}
                   animationDuration={800}
                   animationEasing="ease-in-out"
-                  label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : isCentre && chartMetric === 'MARKS' ? formatOneDecimal(val) : val }}
+                  label={{ position: 'top', fill: SUBJECT_COLORS[i % SUBJECT_COLORS.length], fontSize: 10, fontWeight: 700, formatter: formatMetricValue }}
                 />
               );
             })}
@@ -111,7 +117,7 @@ export default function PerformanceChart({ chartData, streamCfg, noCard, height 
                 isAnimationActive={true}
                 animationDuration={1000}
                 animationEasing="ease-in-out"
-                label={{ position: 'top', fill: '#8b5cf6', fontSize: 10, fontWeight: 700, formatter: (val) => chartMetric === 'ACCURACY' && val !== null && val !== undefined ? `${val}%` : isCentre && chartMetric === 'MARKS' ? formatOneDecimal(val) : val }}
+                label={{ position: 'top', fill: '#8b5cf6', fontSize: 10, fontWeight: 700, formatter: formatMetricValue }}
               />
             )}
           </LineChart>
