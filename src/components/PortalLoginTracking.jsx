@@ -49,6 +49,7 @@ export default function PortalLoginTracking() {
   const { user } = useAuth();
   const [from, setFrom] = useState(() => `${todayIST()}T00:00`);
   const [to, setTo] = useState(() => `${todayIST()}T23:59`);
+  const [centre, setCentre] = useState('');
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -85,9 +86,10 @@ export default function PortalLoginTracking() {
   }, [selected]);
   const [allHistory, setAllHistory] = useState(false);
   const [detailPage, setDetailPage] = useState(1);
+  const centreOptions = useTracking(user.token, { view: 'centres' }, refresh);
   const invalid = !from || !to || from > to;
-  const { data, loading, error } = useTracking(user.token, invalid ? null : { view: 'users', from, to, page: String(page) }, refresh);
-  const details = useTracking(user.token, selected && !invalid ? { userId: selected.userId, from: allHistory ? '' : from, to: allHistory ? '' : to, page: String(detailPage) } : null, refresh);
+  const { data, loading, error } = useTracking(user.token, invalid ? null : { view: 'users', from, to, centre, page: String(page) }, refresh);
+  const details = useTracking(user.token, selected && !invalid ? { userId: selected.userId, centre, from: allHistory ? '' : from, to: allHistory ? '' : to, page: String(detailPage) } : null, refresh);
   const changeFilter = setter => e => { setter(e.target.value); setPage(1); setSelected(null); };
   const openUser = row => { setSelected(row); setDetailPage(1); setAllHistory(false); };
   const currentData = invalid ? null : data;
@@ -96,7 +98,7 @@ export default function PortalLoginTracking() {
     setExporting(true); setExportError('');
     try {
       const rows = await collectTrackingUsers(async exportPage => {
-        const params = new URLSearchParams({ view: 'users', from, to, page: String(exportPage) });
+        const params = new URLSearchParams({ view: 'users', from, to, centre, page: String(exportPage) });
         const res = await fetch(`${API_BASE}/portal-login-tracking?${params}`, { headers: { Authorization: `Bearer ${user.token}` } });
         const result = await res.json();
         if (!res.ok) throw new Error(result.message || 'Unable to export login tracking.');
@@ -112,9 +114,14 @@ export default function PortalLoginTracking() {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'end', marginTop: 20 }}>
         <label>From date and time (IST)<input type="datetime-local" disabled={exporting} className="input" value={from} onChange={changeFilter(setFrom)} style={{ display: 'block', marginTop: 6 }} /></label>
         <label>To date and time (IST)<input type="datetime-local" disabled={exporting} className="input" value={to} onChange={changeFilter(setTo)} style={{ display: 'block', marginTop: 6 }} /></label>
+        <label>Centre / Office<select className="input" value={centre} disabled={exporting || centreOptions.loading} onChange={changeFilter(setCentre)} style={{ display: 'block', marginTop: 6, minWidth: 160 }}>
+          <option value="">All centres / offices</option>
+          {(centreOptions.data?.centres || []).map(value => <option key={value} value={value}>{value.replace(/[.\s]/g, '').toUpperCase() === 'HO' ? 'HO' : value}</option>)}
+        </select></label>
         <button className="btn btn-primary" disabled={invalid || loading} onClick={() => setRefresh(v => v + 1)}>Refresh</button>
         <button className="btn btn-success" disabled={invalid || exporting} onClick={exportExcel}>{exporting ? 'Exporting…' : 'Export Excel'}</button>
       </div>
+      {centreOptions.error && <p role="alert" style={{ color: '#b91c1c' }}>Unable to load centres. Click Refresh to retry.</p>}
       {exportError && <p role="alert" style={{ color: '#b91c1c' }}>{exportError}</p>}
       {invalid && <p role="alert" style={{ color: '#b91c1c' }}>Select a valid start and end time. The end must not be before the start.</p>}
     </div>
