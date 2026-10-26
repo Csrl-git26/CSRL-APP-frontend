@@ -18,6 +18,15 @@ const testOrder = value => {
 };
 const compareFacultyTests = (a,b) => a.year.localeCompare(b.year,undefined,{numeric:true}) || testOrder(a.test)-testOrder(b.test) || (a.date && b.date ? a.date.localeCompare(b.date) : 0) || a.test.localeCompare(b.test,undefined,{numeric:true});
 
+// Marks-only uploads may omit profile details; use the latest populated value in this faculty's filtered history.
+const latestProfileValue = (history, key) => {
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const value = history[i][key];
+    if (value !== null && value !== undefined && String(value).trim() !== '') return value;
+  }
+  return '';
+};
+
 export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = false }) {
   const [rows,setRows] = useState([]), [loading,setLoading] = useState(true), [error,setError] = useState('');
   const [year,setYear] = useState('ALL'), [test,setTest] = useState('ALL'), [centre,setCentre] = useState('ALL'), [faculty,setFaculty] = useState('');
@@ -238,7 +247,7 @@ export default function FacultyTestDashboard({ isAdmin = false, uploadOnly = fal
         </div>
         {history.length > 0 ? <>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,210px),1fr))',gap:12,padding:16,background:'rgba(248,250,255,.5)',borderRadius:14,border:'1px solid #e2e8f0',marginBottom:20}}>
-            {[['Centre',facultyCentres],...[['Trainee Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key])=>[label,history[history.length-1][key]])].map(([label,value])=><div key={label} style={{minWidth:0}}><div style={{fontSize:11,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:0.5,marginBottom:5}}>{label}</div><div style={{fontSize:14,fontWeight:600,color:'#1e293b',overflowWrap:'anywhere'}}>{value || '—'}</div></div>)}
+            {[['Centre',facultyCentres],...[['Trainee Faculty ID','facultyId'],['Contact','contact'],['Project manager','projectManager'],['Mentor','mentor'],['Degree','degree'],['College','college'],['Passing year','passingYear'],['Joining date','joiningDate']].map(([label,key])=>[label,latestProfileValue(history,key)])].map(([label,value])=><div key={label} style={{minWidth:0}}><div style={{fontSize:11,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:0.5,marginBottom:5}}>{label}</div><div style={{fontSize:14,fontWeight:600,color:'#1e293b',overflowWrap:'anywhere'}}>{value || '—'}</div></div>)}
           </div>
           <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:18}}>
             {[['Tests recorded',history.length],['Best marks',history.some(r=>Number.isFinite(r.marks))?show(Math.max(...history.filter(r=>Number.isFinite(r.marks)).map(r=>r.marks))):'—'],['Latest marks',show(history[history.length-1].marks)]].map(([label,value])=><div key={label} style={{flex:'1 1 150px',padding:'12px 16px',borderRadius:12,background:'rgba(239,246,255,.55)'}}><span style={{fontSize:12,color:'#64748b'}}>{label}</span><strong style={{display:'block',fontSize:24,color:'#1d4ed8',marginTop:4}}>{value}</strong></div>)}
