@@ -544,7 +544,7 @@ export default function AdminDashboard() {
       .then((d) => {
         setData(d);
         const rankingCols = (d.testColumns || [])
-          .filter((c) => !String(c).includes('_') && (/^(MMT|NCT|NMT|NEET)/i.test(c) === (globalStream === 'NEET')))
+          .filter((c) => !String(c).includes('_') && (/^(MMT|NCT|NMT|NRT|NEET)/i.test(c) === (globalStream === 'NEET')))
           .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
         const candidate = rankingCols[0];
         if (candidate && !selectedTestKey) setSelectedTestKey(candidate);
@@ -618,7 +618,7 @@ export default function AdminDashboard() {
 
   // Stream-filtered test options: use prefix-based detection first (same as backend).
   // NEET prefixes: NCT, MMT, NMT, NEET  /  JEE: everything else (MT, CMT, FMT, PT, JCT)
-  const NEET_TEST_PREFIX_ADMIN = /^(MMT|NCT|NMT|NEET)/i;
+  const NEET_TEST_PREFIX_ADMIN = /^(MMT|NCT|NMT|NRT|NEET)/i;
   const streamTestOptions = useMemo(() => {
     if (!globalStream || globalStream === 'ALL') return allTestOptions;
 
