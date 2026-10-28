@@ -446,7 +446,7 @@ export function buildStudentChartData(studentTests, testColumns, stream) {
 
   // Filter out cross-stream tests (e.g. NEET tests for JEE students)
   const studentStream = String(stream || (studentTests && studentTests.stream) || 'JEE').trim().toUpperCase();
-  const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+  const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NRT|NEET)/i;
   const relevantColumns = (testColumns || []).filter((col) => {
     const { testName } = parseTestColumn(col);
     const isNeetTest = NEET_TEST_PREFIX.test(testName);
