@@ -214,7 +214,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   // Also clears stale leaderboard data when no tests exist for the new stream.
   useEffect(() => {
     if (!allTestOptions || allTestOptions.length === 0) return;
-    const NEET_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+    const NEET_PREFIX = /^(MMT|NCT|NMT|NRT|NEET)/i;
     const isNeetTest = (k) => NEET_PREFIX.test(k);
     const testsForStream = allTestOptions.filter(k => {
       return globalStream === 'NEET' ? isNeetTest(k) : !isNeetTest(k);
@@ -311,7 +311,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
         // Select first total-column for the CURRENT stream as default test key.
         // Filter by stream prefix so a JEE centre doesn't accidentally default to NCT01 (NEET).
-        const NEET_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+        const NEET_PREFIX = /^(MMT|NCT|NMT|NRT|NEET)/i;
         const currentStream = globalStream || 'JEE';
         const allRankingCols = (d.testColumns || [])
           .filter((c) => !String(c).includes('_'))
@@ -483,7 +483,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   }, [activePage, selectedTestKey, selectedCenterCode, globalStream]);
 
   const rankingTestColumns = useMemo(() => {
-    const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+    const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NRT|NEET)/i;
     const cols = (data?.testColumns || [])
       .filter((c) => !String(c).includes('_'))
       .filter((c) => {
@@ -540,7 +540,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
 
   // Prefix-based NEET/JEE test detection — same logic as the backend.
   // NEET test prefixes: NCT, MMT, NMT, NEET  /  JEE: MT, CMT, FMT, PT, JCT
-  const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NEET)/i;
+  const NEET_TEST_PREFIX = /^(MMT|NCT|NMT|NRT|NEET)/i;
   const streamTestOptions = useMemo(() => {
     if (!globalStream || globalStream === 'ALL') return allTestOptions;
     // Filter by prefix — NEET gets NEET-prefixed tests, JEE gets the rest
