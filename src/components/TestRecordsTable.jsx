@@ -79,7 +79,7 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   else if (cat.includes('EWS')) overallMin = 90;
 
                   if (getExamScope().branch === 'ADVANCED'
-                    ? qualifiesAdvanced(tot, row, profile?.CATEGORY, streamCfg.maxTotal, streamCfg.maxBySubject?.Physics || 100)
+                    ? qualifiesAdvanced(tot, row, profile?.CATEGORY)
                     : tot >= overallMin) {
                     isQualified = true;
                   }

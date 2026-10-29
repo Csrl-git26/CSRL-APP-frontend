@@ -1,5 +1,5 @@
 // Portal-specific JEE Advanced thresholds supplied by CSRL.
-export function advancedCutoff(category, maxTotal = 300, maxSubject = 100) {
+export function advancedCutoff(category, maxTotal = 360, maxSubject = 120) {
   const cat = String(category || '').trim().toUpperCase();
   const tokens = cat.split(/[^A-Z]+/);
   const reserved = ['PWD','PWBD','SC','ST'].some(code => tokens.includes(code));
@@ -7,7 +7,7 @@ export function advancedCutoff(category, maxTotal = 300, maxSubject = 100) {
   const subjectPercent = reserved ? 7 : 12;
   return { totalPercent, subjectPercent, overallMin: maxTotal * totalPercent / 100, subjectMin: maxSubject * subjectPercent / 100 };
 }
-export function qualifiesAdvanced(total, scores, category, maxTotal = 300, maxSubject = 100) {
+export function qualifiesAdvanced(total, scores, category, maxTotal = 360, maxSubject = 120) {
   const { overallMin, subjectMin } = advancedCutoff(category, maxTotal, maxSubject);
   const numeric = value => value !== null && value !== undefined && String(value).trim() !== '' && Number.isFinite(Number(value));
   return numeric(total) && Number(total) >= overallMin && ['Physics','Chemistry','Math'].every(subject => {
