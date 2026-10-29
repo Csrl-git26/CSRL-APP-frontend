@@ -7,7 +7,7 @@ export function normalizeStudentChartRows(rawRows, stream) {
     };
 
     return (rawRows || []).filter(row => {
-      const isNeet = /^(MMT|NCT|NMT|NEET)/i.test(String(row.name || '').trim());
+      const isNeet = /^(MMT|NCT|NMT|NRT|NEET)/i.test(String(row.name || '').trim());
       return stream === 'NEET' ? isNeet : !isNeet;
     }).map((row) => {
       const normalized = { ...row };
