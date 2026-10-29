@@ -1,4 +1,5 @@
-import { withTestBranch, uploadExamScope } from './examScope';
+import { clearAdvancedFallback } from './advancedAttemptMetrics';
+import { withTestBranch, uploadExamScope, getExamScope } from './examScope';
 // ============================================================
 // CSRL Data Service
 //
@@ -488,7 +489,7 @@ export function buildStudentChartData(studentTests, testColumns, stream) {
     testRow.Total = vals.length ? vals.reduce((s, [, v]) => s + v, 0) : null;
   });
 
-  return sortTestRowsChronologically(Object.values(testsMap));
+  return sortTestRowsChronologically(clearAdvancedFallback(Object.values(testsMap), studentStream, getExamScope().branch));
 }
 
 /** Compute weak subject from a flat student test record. */

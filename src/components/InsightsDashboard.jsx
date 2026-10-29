@@ -1,3 +1,5 @@
+import { clearAdvancedFallback } from '../services/advancedAttemptMetrics';
+import { getExamScope } from '../services/examScope';
 import * as XLSX from 'xlsx';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
 import MobileChartPopup from './MobileChartPopup';
@@ -558,7 +560,8 @@ function buildQualificationSummary(data, centreBoard, testKey, stream) {
   const overall = { code: 'OVERALL', appeared, qualified: rows.reduce((sum, row) => sum + row.qualified, 0),
     ...aggregate([...buckets.values()].flat()),
     Total: appeared ? rows.reduce((sum, row) => sum + row.Total * row.appeared, 0) / appeared : null };
-  return { subjects, rows, overall };
+  const safeRows = clearAdvancedFallback([...rows, overall], stream, getExamScope().branch);
+  return { subjects, rows: safeRows.slice(0, -1), overall: safeRows.at(-1) };
 }
 
 function QualificationSummaryPopup({ data, centreBoard, testKey, stream, onClose }) {
