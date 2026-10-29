@@ -29,8 +29,8 @@ export default function AdvancedAttemptUpload({testOptions=[]}) {
       const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null,blankrows:false,raw:true});
       const headers=(rows[0]||[]).map(v=>String(v||'').toLowerCase().replace(/[^a-z0-9]/g,''));
       // Excel-native percentage cells store fractions; normalize to the ACC% column's 0–100 unit.
-      const acc=headers.indexOf('acc');
-      if(acc>=0){const range=XLSX.utils.decode_range(sheet['!ref']||'A1'); for(let r=range.s.r+1;r<=range.e.r;r++){const cell=sheet[XLSX.utils.encode_cell({r,c:range.s.c+acc})];if(cell&&typeof cell.v==='number'&&cell.z?.includes('%'))cell.v*=100;}
+      const accColumns=headers.map((h,i)=>h==='acc'?i:-1).filter(i=>i>=0);
+      if(accColumns.length){const range=XLSX.utils.decode_range(sheet['!ref']||'A1'); for(const acc of accColumns) for(let r=range.s.r+1;r<=range.e.r;r++){const cell=sheet[XLSX.utils.encode_cell({r,c:range.s.c+acc})];if(cell&&typeof cell.v==='number'&&cell.z?.includes('%'))cell.v*=100;}
         const normalized=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null,blankrows:false,raw:true});rows.splice(0,rows.length,...normalized);}
       const result=await api('/preview',{rows});
       if(version===generation.current){rowsRef.current=rows;setPreview(result);}
@@ -50,11 +50,11 @@ export default function AdvancedAttemptUpload({testOptions=[]}) {
   }
   return <section className="card" aria-label="JEE Advanced attempt and accuracy upload" style={{marginBottom:24,padding:24}}>
     <h3 style={{margin:'0 0 8px'}}>JEE Advanced — Attempt & Accuracy Sheet</h3>
-    <p style={{fontSize:13,color:'#475569'}}>Upload student question counts for the selected Advanced test. This sheet supplies total attempt and accuracy; marks and ranks continue to use the result sheet.</p>
+    <p style={{fontSize:13,color:'#475569'}}>Upload student question counts for the selected Advanced test. This sheet supplies total and subject-wise attempt and accuracy; marks and ranks continue to use the result sheet.</p>
     <form onSubmit={readPreview}><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16}}>
       <label style={{display:'grid',gap:6,fontSize:13,fontWeight:600}}>Advanced test<select required disabled={busy} value={tests.includes(testId)?testId:''} onChange={e=>setTestId(e.target.value)} style={inputStyle}><option value="">Select a saved Advanced test</option>{tests.map(t=><option key={t}>{t}</option>)}</select></label>
       <label style={{display:'grid',gap:6,fontSize:13,fontWeight:600}}>Attempt-count sheet<input ref={fileRef} type="file" required disabled={busy} accept=".xlsx,.xls,.csv" onChange={e=>{generation.current++;setFile(e.target.files?.[0]||null);setPreview(null);rowsRef.current=null;setError('');setNotice('');}} style={inputStyle}/></label>
-    </div><p style={{fontSize:12,color:'#64748b',overflowWrap:'anywhere'}}>Columns: name, Roll Number, stream, centre, total_questions, not_attempted, attempted, incorrect, correct, ACC% (optional).</p>
+    </div><p style={{fontSize:12,color:'#64748b',overflowWrap:'anywhere'}}>Columns: name, Roll Number, stream, centre, total_questions, not_attempted, attempted, incorrect, correct, ACC% (optional). For each subject, include physics_, chemistry_, mathematics_ columns for total, attempted, not_attempted, correct and incorrect, with its ACC% column.</p>
     <button className="btn btn-primary" disabled={busy||!file||!tests.includes(testId)} type="submit">{busy?'Please wait…':'Preview Advanced upload'}</button></form>
     {saved&&<p style={{fontSize:13,color:'#475569'}}>Current upload: {saved.filename} · {saved.count} students · {new Date(saved.uploadedAt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})} IST</p>}
     {error&&<p role="alert" style={{whiteSpace:'pre-wrap',color:'#b91c1c',background:'#fef2f2',padding:12,borderRadius:8}}>{error}</p>}
@@ -63,7 +63,8 @@ export default function AdvancedAttemptUpload({testOptions=[]}) {
       <strong>{preview.testId}: {preview.count} students · {preview.centres.length} centres · {preview.questionCounts.join(" / ")} questions per student</strong>
       {preview.questionCounts.length>1&&<p role="status" style={{color:'#92400e'}}>The sheet has different total question counts ({preview.questionCounts.join(', ')}). Each student's original counts will be preserved. Check these rows before uploading.</p>}
       <p>Average attempt: {preview.metrics.Total_Attempted.toFixed(1)} · Overall accuracy: {preview.metrics.Total_Accuracy.toFixed(1)}%</p>
-      <p style={{fontSize:13}}>Accuracy = correct ÷ attempted × 100. Centre accuracy uses total correct ÷ total attempted. This file has total counts only, so subject-wise attempt and accuracy show as unavailable.</p>
+      <p style={{fontSize:13}}>Accuracy = correct ÷ attempted × 100. Centre accuracy uses total correct ÷ total attempted. {preview.hasSubjects ? 'Physics, Chemistry and Mathematics use their uploaded subject counts.' : 'This file has total counts only, so subject-wise attempt and accuracy show as unavailable.'}</p>
+      {preview.hasSubjects&&<table style={{fontSize:13,marginBottom:12,width:'100%',textAlign:'left'}}><thead><tr><th>Subject</th><th>Average attempt</th><th>Accuracy</th></tr></thead><tbody>{['Physics','Chemistry','Math'].map(subject=><tr key={subject}><td>{subject==='Math'?'Mathematics':subject}</td><td>{preview.metrics[subject+'_Attempted']?.toFixed(1)??'—'}</td><td>{preview.metrics[subject+'_Accuracy']?.toFixed(1)??'—'}%</td></tr>)}</tbody></table>}
       <div style={{overflowX:'auto',marginBottom:12}}><table style={{width:'100%',fontSize:13,textAlign:'left'}}><thead><tr>{['Roll Number','Name','Centre','Attempted','Correct','Incorrect','Accuracy'].map(h=><th key={h} style={{padding:6}}>{h}</th>)}</tr></thead><tbody>{preview.preview.map(r=><tr key={r.roll}>{[r.roll,r.name,r.centre,r.attempted,r.correct,r.incorrect,(r.attempted?r.correct/r.attempted*100:0).toFixed(1)+'%'].map((v,i)=><td key={i} style={{padding:6}}>{v}</td>)}</tr>)}</tbody></table></div>
       <button className="btn btn-primary" type="button" disabled={busy} onClick={upload}>{preview.version?'Replace Advanced attempt sheet':'Upload Advanced attempt sheet'}</button>
     </div>}
