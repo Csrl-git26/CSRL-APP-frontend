@@ -12,7 +12,7 @@ const TEXT_FIELDS = [
   { key: 'HO Score in Final Admission', label: 'HO Score' },
   { key: 'GENDER',                  label: 'Gender' },
   { key: 'DATE OF BIRTH',           label: 'Date of Birth' },
-  { key: 'CATEGORY',                label: 'Category (GEN/OBC/SC/ST)' },
+  { key: 'CATEGORY',                label: 'Category (GEN/EWS/OBC/SC/ST/PwD)' },
   { key: 'Mobile No.',              label: 'Mobile Number' },
   { key: "FATHER'S NAME",           label: "Father's Name" },
   { key: "parent_mobile",           label: "Parent's Mobile" },
@@ -47,6 +47,12 @@ export default function StudentFormModal({ mode, student, onClose, onSubmit, loa
     }
   }, [mode, student]);
 
+  const additionalFields = mode === 'edit' ? Object.keys(form).filter(key =>
+    !TEXT_FIELDS.some(field => field.key === key) &&
+    !['stream', '_id', '__v', 'createdAt', 'updatedAt'].includes(key) &&
+    !key.startsWith('_') && (form[key] == null || ['string', 'number', 'boolean'].includes(typeof form[key]))
+  ).map(key => ({ key, label: key })) : [];
+
   const handleChange = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = (e) => {
@@ -55,17 +61,18 @@ export default function StudentFormModal({ mode, student, onClose, onSubmit, loa
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={loading ? undefined : onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title">
             {mode === 'add' ? '➕ Add New Student' : '✏️ Edit Student Profile'}
           </div>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="modal-close" onClick={loading ? undefined : onClose}>×</button>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="modal-body" style={{ maxHeight: '68vh', overflowY: 'auto' }}>
+            {mode === 'edit' && <p style={{ fontSize: 13, color: 'var(--gray-600)' }}>Roll number and centre are fixed to preserve the student's linked test records.</p>}
             <div className="form-grid">
 
               {/* Stream selector */}
@@ -90,6 +97,7 @@ export default function StudentFormModal({ mode, student, onClose, onSubmit, loa
                       <input
                         type="radio"
                         name="stream"
+                        disabled={loading}
                         value={s}
                         checked={form.stream === s}
                         onChange={() => handleChange('stream', s)}
@@ -102,7 +110,7 @@ export default function StudentFormModal({ mode, student, onClose, onSubmit, loa
               </div>
 
               {/* Standard text fields */}
-              {TEXT_FIELDS.map((f) => (
+              {[...TEXT_FIELDS, ...additionalFields].map((f) => (
                 <div key={f.key} className="form-group">
                   <label className="label">
                     {f.label}
@@ -112,8 +120,8 @@ export default function StudentFormModal({ mode, student, onClose, onSubmit, loa
                     className="input"
                     type="text"
                     required={f.required}
-                    value={form[f.key] || ''}
-                    disabled={mode === 'edit' && f.key === 'ROLL_KEY'}
+                    value={form[f.key] ?? ''}
+                    disabled={loading || (mode === 'edit' && ['ROLL_KEY', 'centerCode', 'CENTRE CODE'].includes(f.key))}
                     onChange={(e) => handleChange(f.key, e.target.value)}
                     placeholder={f.label}
                   />
@@ -123,7 +131,7 @@ export default function StudentFormModal({ mode, student, onClose, onSubmit, loa
           </div>
 
           <div className="modal-footer">
-            <button type="button" onClick={onClose} className="btn btn-outline">Cancel</button>
+            <button type="button" disabled={loading} onClick={onClose} className="btn btn-outline">Cancel</button>
             <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? '⏳ Saving...' : mode === 'add' ? '✅ Add Student' : '💾 Save Changes'}
             </button>

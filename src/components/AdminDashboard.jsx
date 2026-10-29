@@ -398,6 +398,27 @@ function pctBar(numerator, denominator) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 
+function SingleProfileEdit({ profiles, onEdit }) {
+  const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState('');
+  const keyFor = p => JSON.stringify([p.ROLL_KEY, p.centerCode]);
+  const matches = profiles.filter(p => query.trim() && [p.ROLL_KEY, p["STUDENT'S NAME"], p.centerCode].some(value => String(value || '').toLowerCase().includes(query.trim().toLowerCase())));
+  const profile = matches.find(p => keyFor(p) === selected);
+  return <div style={{ borderTop: '1px solid #e2e8f0', marginTop: 16, paddingTop: 14 }}>
+    <h3 style={{ fontSize: 14, margin: '0 0 10px' }}>Edit student profile</h3>
+    <label style={{ display: 'block', marginBottom: 10 }}>Search by name, roll number or centre
+      <input className="input" value={query} onChange={e => { setQuery(e.target.value); setSelected(''); }} placeholder="Find a student" style={{ width: '100%', marginTop: 5 }} />
+    </label>
+    {query.trim() && <label style={{ display: 'block', marginBottom: 10 }}>Select student
+      <select className="input select" value={selected} onChange={e => setSelected(e.target.value)} style={{ width: '100%', marginTop: 5 }}>
+        <option value="">Select a profile ({matches.length} found)</option>
+        {matches.map(p => <option key={keyFor(p)} value={keyFor(p)}>{p["STUDENT'S NAME"] || 'Unnamed student'} — {p.ROLL_KEY} — {p.centerCode} — {p.stream || 'JEE'}</option>)}
+      </select>
+    </label>}
+    <button type="button" className="btn btn-primary btn-sm" disabled={!profile} onClick={() => onEdit(profile)}>Edit selected profile</button>
+  </div>;
+}
+
 function SingleProfileDelete({ profiles, onDeleted }) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState('');
@@ -801,7 +822,7 @@ export default function AdminDashboard() {
     setModalLoading(true);
     try {
       const result = await updateStudentApi(null, modalStudent.ROLL_KEY, form);
-      setData((d) => ({ ...d, profiles: d.profiles.map((p) => p.ROLL_KEY === modalStudent.ROLL_KEY ? result.student : p) }));
+      setData((d) => ({ ...d, profiles: d.profiles.map((p) => p.ROLL_KEY === modalStudent.ROLL_KEY && p.centerCode === modalStudent.centerCode ? result.student : p) }));
       triggerRefresh();
       setModalMode(null);
       showToast('Student updated successfully.', 'success');
@@ -2031,6 +2052,7 @@ export default function AdminDashboard() {
           </div>
           <button type="button" className="btn btn-sm" onClick={clearAllData} style={{ background: '#ef4444', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', gap: 6, padding: '0 12px', borderRadius: 6, fontWeight: 600 }}><Trash2 size={13} /> Delete All Data</button>
         </div>
+        <SingleProfileEdit profiles={data?.profiles || []} onEdit={profile => { setModalStudent(profile); setModalMode('edit'); }} />
         <SingleProfileDelete profiles={data?.profiles || []} onDeleted={deleted => {
           setData(current => ({ ...current, profiles: current.profiles.filter(p => !(p.ROLL_KEY === deleted.ROLL_KEY && p.centerCode === deleted.centerCode)) }));
           showToast('Selected student profile deleted. Test records retained.', 'success');
