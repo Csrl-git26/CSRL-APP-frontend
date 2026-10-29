@@ -1,3 +1,4 @@
+import { qualifiesAdvanced } from '../utils/advancedQualification';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
 import FacultyTestDashboard from './FacultyTestDashboard';
 import { useExamScope, useScopeViewState } from '../context/ExamScopeContext';
@@ -84,6 +85,10 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
     const category = String(student.category || '').trim().toUpperCase();
     const cutoff = category.includes('PWD') ? 30 : category.includes('ST') ? 60 : category.includes('SC') ? 65 : category.includes('OBC') ? 85 : category.includes('EWS') ? 90 : 110;
     let status = total === null ? 'Absent' : total >= cutoff ? 'Qualified' : 'Not Qualified';
+    if (stream === 'JEE' && branch === 'ADVANCED' && total !== null) {
+      const scores = { Physics: readSubject(raw, 'Physics'), Chemistry: readSubject(raw, 'Chemistry'), Math: readSubject(raw, 'Maths') };
+      status = qualifiesAdvanced(total, scores, category) ? 'Qualified' : 'Not Qualified';
+    }
     if (stream === 'NEET' && total !== null) {
       let flag;
       for (const key of keys) {

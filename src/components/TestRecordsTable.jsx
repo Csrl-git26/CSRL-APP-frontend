@@ -1,3 +1,5 @@
+import { qualifiesAdvanced } from '../utils/advancedQualification';
+import { getExamScope } from '../services/examScope';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
 import React from 'react';
 
@@ -76,7 +78,9 @@ export default function TestRecordsTable({ chartData, streamCfg, stream, isCentr
                   else if (cat.includes('OBC')) overallMin = 85;
                   else if (cat.includes('EWS')) overallMin = 90;
 
-                  if (tot >= overallMin) {
+                  if (getExamScope().branch === 'ADVANCED'
+                    ? qualifiesAdvanced(tot, row, profile?.CATEGORY, streamCfg.maxTotal, streamCfg.maxBySubject?.Physics || 100)
+                    : tot >= overallMin) {
                     isQualified = true;
                   }
                 } else if (stream === 'NEET') {
