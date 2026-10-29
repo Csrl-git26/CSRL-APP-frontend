@@ -1,3 +1,4 @@
+import ResultNotifications from './ResultNotifications';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
 import MobileChartPopup from './MobileChartPopup';
 import PortalUserManagement from './PortalUserManagement';
@@ -2321,7 +2322,7 @@ export default function AdminDashboard() {
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} adminStream={globalStream} />}
           {activePage === 'students'    && StudentsSection()}
           {activePage === 'marks'       && <MarksSection />}
-          {activePage === 'import' && <><PortalUserManagement /><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
+          {activePage === 'import' && <><ResultNotifications stream={globalStream} branch={branch} testOptions={streamTestOptions} /><PortalUserManagement /><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
           {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'traineefaculty' && <FacultyTestDashboard isAdmin={false} />}
