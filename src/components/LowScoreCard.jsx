@@ -43,7 +43,7 @@ export default function LowScoreCard({ testKey, stream, branch, onViewStudent })
   };
   return (
     <section className="card" style={{ marginTop: 16 }}>
-      <h2 style={{ color: '#2563eb', fontSize: 16 }}>STUDENT NO. SUBJECTWISE MARKS &lt;={stream === 'NEET' ? 100 : 30}</h2>
+      <h2 style={{ color: '#2563eb', fontSize: 16 }}>STUDENT NO. SUBJECTWISE MARKS &lt;={stream === 'NEET' ? 100 : stream === 'JEE' && branch === 'ADVANCED' ? 15 : 30}</h2>
       <p style={{ color: '#64748b' }}>Test: {testKey || 'None selected'}</p>
       {!testKey ? <p>Select a test to see student counts.</p> : !current ? <p role="status">Loading student counts…</p> : current.error ? <p role="alert">{current.error}</p> : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
