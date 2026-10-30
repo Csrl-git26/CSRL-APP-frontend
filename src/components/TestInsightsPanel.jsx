@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Loader2, Trophy, BarChart3, TrendingDown, Users, AlertCircle, Search, Eye } from 'lucide-react';
 import { CENTERS } from '../config/centers';
+import { getExamScope } from '../services/examScope';
+import { advancedCutoff } from '../utils/advancedQualification';
 
 function centreLabel(code) {
   return CENTERS[code]?.name || code || '—';
@@ -51,6 +53,12 @@ export default function TestInsightsPanel({
 }
 
 function TestInsightsContent({ insights, highlightCenter, testKey, testOptions, onTestKeyChange, showStudentCard, hideSubjectAverages, onViewStudent }) {
+  const scope = getExamScope();
+  const isAdvanced = scope.stream === 'JEE' && scope.branch === 'ADVANCED';
+  const advancedCriteria = ['GEN', 'EWS', 'OBC', 'SC', 'ST', 'PWD'].map(category => {
+    const cutoff = advancedCutoff(category);
+    return `${category}: total ≥ ${cutoff.overallMin.toFixed(1)}, each subject ≥ ${cutoff.subjectMin.toFixed(1)}`;
+  }).join(' | ');
   const subjects = insights.subjects || [];
   const cut = insights.cutoffs;
   // Fix: if backend returned 'Absent' but rawScores have subject marks, compute total from subjects
@@ -372,7 +380,7 @@ function TestInsightsContent({ insights, highlightCenter, testKey, testOptions, 
 
           <div className="grid-2">
             <div className="card">
-              <div className="section-title">student no. subjectwise marks &lt;={insights?.overallTopper?.stream === 'NEET' ? '100' : '30'} - count by centre</div>
+              <div className="section-title">student no. subjectwise marks &lt;={isAdvanced ? '15' : insights?.overallTopper?.stream === 'NEET' ? '100' : '30'} - count by centre</div>
               
               <div style={{ display: 'grid', gridTemplateColumns: subjects.length === 4 ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
                 {subjects.map((sub) => (
@@ -399,7 +407,7 @@ function TestInsightsContent({ insights, highlightCenter, testKey, testOptions, 
             <div className="card">
               <div className="section-title" style={{ fontSize: 14 }}>{insights?.overallTopper?.stream === 'NEET' ? 'Total no. of students with vacant MBBS status - centrewise' : 'Not qualified (overall) — count by centre'}</div>
               {insights?.overallTopper?.stream !== 'NEET' && (
-                <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }}>Total marks criteria: GEN ≥ 110 | EWS ≥ 90 | OBC ≥ 85 | SC ≥ 65 | ST ≥ 60 | PWD ≥ 30</p>
+                <p style={{ fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }}>{isAdvanced ? `JEE Advanced qualification (360 total; 120 per subject): ${advancedCriteria}. Both total and all three subject cutoffs must be met.` : 'Total marks criteria: GEN ≥ 110 | EWS ≥ 90 | OBC ≥ 85 | SC ≥ 65 | ST ≥ 60 | PWD ≥ 30'}</p>
               )}
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.8 }}>
                 {Object.entries(insights.notQualifiedOverall || {})
