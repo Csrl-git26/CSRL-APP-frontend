@@ -57,7 +57,7 @@ function TestInsightsContent({ insights, highlightCenter, testKey, testOptions, 
   const isAdvanced = scope.stream === 'JEE' && scope.branch === 'ADVANCED';
   const advancedCriteria = ['GEN', 'EWS', 'OBC', 'SC', 'ST', 'PWD'].map(category => {
     const cutoff = advancedCutoff(category);
-    return `${category}: total ≥ ${cutoff.overallMin.toFixed(1)}, each subject ≥ ${cutoff.subjectMin.toFixed(1)}`;
+    return `${category}: total ≥ ${cutoff.overallMin}, each subject ≥ ${cutoff.subjectMin}`;
   }).join(' | ');
   const subjects = insights.subjects || [];
   const cut = insights.cutoffs;

@@ -5,7 +5,7 @@ export function advancedCutoff(category, maxTotal = 360, maxSubject = 120) {
   const reserved = ['PWD','PWBD','SC','ST'].some(code => tokens.includes(code));
   const totalPercent = reserved ? 20 : ['EWS','OBC'].some(code => tokens.includes(code)) ? 33 : 36;
   const subjectPercent = reserved ? 7 : 12;
-  return { totalPercent, subjectPercent, overallMin: maxTotal * totalPercent / 100, subjectMin: maxSubject * subjectPercent / 100 };
+  return { totalPercent, subjectPercent, overallMin: Math.round(maxTotal * totalPercent / 100), subjectMin: Math.round(maxSubject * subjectPercent / 100) };
 }
 export function qualifiesAdvanced(total, scores, category, maxTotal = 360, maxSubject = 120) {
   const { overallMin, subjectMin } = advancedCutoff(category, maxTotal, maxSubject);
