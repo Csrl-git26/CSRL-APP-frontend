@@ -137,6 +137,8 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
     };
   }).sort((a, b) => (b.Total ?? -Infinity) - (a.Total ?? -Infinity) || a['Roll num'].localeCompare(b['Roll num']));
   const headers = ['Rank', 'Roll num', 'Centre Name', 'Sponsor Name', 'Name', 'Category', 'Gender', ...[...subjects, 'Total'].flatMap(subject => [subject, `${subject} AT.`, `${subject} AC.`, `${subject} Rank`]), 'STATUS'];
+  const visibleHeaders = headers.filter(header => !['Centre Name', 'Sponsor Name'].includes(header));
+  const shortSubject = subject => ({ Physics: 'PHY', Chemistry: 'CHEM', Maths: 'MATH', Botany: 'BOT', Zoology: 'ZOO', Total: 'TOTAL' }[subject] || subject);
   const exportDetails = () => {
     if (!records.length) return;
     const sheet = XLSX.utils.json_to_sheet(records, { header: headers });
@@ -169,9 +171,16 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
       <p style={{ fontSize: 12, color: '#64748b' }}>AT. = Attempted questions · AC. = Accuracy (%) · Subject and total ranks are portal-wide for the selected test. — = unavailable.</p>
       {!testKey ? <p>Select a test to view student details.</p> : !current ? <p role="status">Loading student details…</p> : current.error ? <p role="alert">{current.error}</p> : (
         <div className="table-wrap" style={{ overflowX: 'auto' }}>
-          <table className="table table-compact">
-            <thead><tr>{headers.map(header => <th key={header} style={{ whiteSpace: 'nowrap' }}>{header}</th>)}</tr></thead>
-            <tbody>{records.map(row => <tr key={row['Roll num']}>{headers.map(header => <td key={header} style={{ whiteSpace: 'nowrap', fontWeight: header === 'STATUS' || header === 'Total' ? 700 : undefined }}>{row[header] == null ? '—' : / (AT\.|AC\.)$/.test(header) ? formatOneDecimal(row[header]) : row[header]}</td>)}</tr>)}</tbody>
+          <table className="table table-compact" style={{ width: '100%', fontSize: 12 }}>
+            <thead>
+              <tr>
+                {['Rank', 'Roll num', 'Name', 'Category', 'Gender'].map(header => <th key={header} rowSpan={2} style={{ padding: '6px 5px', whiteSpace: 'nowrap' }}>{header === 'Category' ? 'Cat.' : header === 'Roll num' ? 'Roll No.' : header}</th>)}
+                {[...subjects, 'Total'].map(subject => <th key={subject} colSpan={4} style={{ padding: '6px 5px', textAlign: 'center', borderLeft: '1px solid #dbe5f1' }}>{shortSubject(subject)}</th>)}
+                <th rowSpan={2} style={{ padding: '6px 5px' }}>STATUS</th>
+              </tr>
+              <tr>{[...subjects, 'Total'].flatMap(subject => ['M', 'AT.', 'AC.', 'Rank'].map(label => <th key={`${subject}-${label}`} style={{ padding: '4px 5px', textAlign: 'center', whiteSpace: 'nowrap' }}>{label}</th>))}</tr>
+            </thead>
+            <tbody>{records.map(row => <tr key={row['Roll num']}>{visibleHeaders.map(header => <td key={header} style={{ padding: '6px 5px', whiteSpace: header === 'Name' || header === 'STATUS' ? 'normal' : 'nowrap', maxWidth: header === 'Name' ? 150 : undefined, textAlign: header.includes(' AT.') || header.includes(' AC.') || header.includes(' Rank') || subjects.includes(header) || header === 'Total' ? 'center' : undefined, fontWeight: header === 'STATUS' || header === 'Total' ? 700 : undefined }}>{row[header] == null ? '—' : / (AT\.|AC\.)$/.test(header) ? formatOneDecimal(row[header]) : row[header]}</td>)}</tr>)}</tbody>
           </table>
           {!records.length && <p>No students found for the selected centre and test.</p>}
         </div>
