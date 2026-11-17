@@ -354,8 +354,9 @@ export async function fetchOverview(_token, centerCode, stream) {
   return apiFetch(`/api/analytics/overview${qs}`);
 }
 
-export async function fetchRankings(_token, { testKey, centerCode, limit = 30, order = 'desc', stream } = {}) {
+export async function fetchRankings(_token, { testKey, centerCode, limit = 30, order = 'desc', stream, studentDetails = false } = {}) {
   const params = new URLSearchParams({ testKey, limit, order });
+  if (studentDetails) params.set('studentDetails', '1');
   if (centerCode) params.set('centerCode', centerCode);
   if (stream && stream !== 'ALL') params.set('stream', stream);
   return apiFetch(`/api/analytics/rankings?${params}`);

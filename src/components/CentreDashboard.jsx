@@ -57,27 +57,8 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
     let cancelled = false;
     setResult(null);
     if (!testKey) return;
-    fetchRankings(null, { testKey, centerCode: centre, stream, limit: Math.max(1000, profiles.length), order: 'desc' })
-      .then(async data => {
-        const rows = data.ranked || [];
-        if (cancelled) return;
-        setResult({ scope, rows, metricsLoading: true });
-        let next = 0;
-        let failed = false;
-        const enriched = [...rows];
-        // Limit concurrent requests and reuse the same metrics as Complete Test Records.
-        await Promise.all(Array.from({ length: Math.min(3, rows.length) }, async () => {
-          while (!cancelled && next < rows.length) {
-            const index = next++;
-            const student = rows[index];
-            try {
-              const response = await fetchStudentChart(null, student.roll, student.center || centre, stream);
-              enriched[index] = { ...student, detailMetrics: (response.chartData || []).find(row => row.name === testKey) };
-            } catch { failed = true; }
-          }
-        }));
-        if (!cancelled) setResult({ scope, rows: enriched, metricsFailed: failed });
-      })
+    fetchRankings(null, { testKey, centerCode: centre, stream, studentDetails: true, limit: Math.max(1000, profiles.length), order: 'desc' })
+      .then(data => { if (!cancelled) setResult({ scope, rows: data.ranked || [] }); })
       .catch(error => { if (!cancelled) setResult({ scope, error: error.message || 'Unable to load student details.' }); });
     return () => { cancelled = true; };
   }, [scope, centre, testKey, stream, branch, profiles.length]);
