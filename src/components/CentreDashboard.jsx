@@ -1,3 +1,5 @@
+import { QualificationSummaryPopup } from './InsightsDashboard';
+import { fetchQualificationSummary } from '../services/dataService';
 import { qualifiesAdvanced } from '../utils/advancedQualification';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
 import FacultyTestDashboard from './FacultyTestDashboard';
@@ -209,6 +211,11 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
   }, [adminViewCenterCode]);
 
   const [showTestStudents, setShowTestStudents] = useState(false);
+  const [qualificationSummary, setQualificationSummary] = useState(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState('');
+  const summaryRequest = useRef(0);
+
   useEffect(() => { setShowTestStudents(false); }, [activePage, selectedCenterCode]);
 
   const [data,             setData]             = useState(null);
@@ -600,6 +607,18 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
     return fallback ? [fallback] : [];
   }, [selectedLeaderboardTestKeys, streamTestOptions, allTestOptions, globalStream]);
 
+  const summaryTestKey = activeLeaderboardKeys.join(',');
+  useEffect(() => { summaryRequest.current++; setQualificationSummary(null); setSummaryLoading(false); setSummaryError(''); }, [summaryTestKey, globalStream, branch, activePage]);
+  const openQualificationSummary = async () => {
+    const request = ++summaryRequest.current;
+    setSummaryLoading(true); setSummaryError('');
+    try {
+      const summary = await fetchQualificationSummary(summaryTestKey, globalStream);
+      if (request === summaryRequest.current) setQualificationSummary(summary);
+    } catch (error) { if (request === summaryRequest.current) setSummaryError(error.message); }
+    finally { if (request === summaryRequest.current) setSummaryLoading(false); }
+  };
+
   // Fetch again when asynchronously loaded test options change the effective selection.
   const leaderboardRequestKey = activeLeaderboardKeys.map(k =>
     selectedSubject === 'Total' || selectedSubject === 'Qualification' ? k : `${k}_${selectedSubject}`
@@ -831,9 +850,12 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                     <strong style={{ color: '#701a75' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({formatOneDecimal(qualPct)}%)
                   </span>
                 )}
+                <button type="button" className="btn btn-primary" onClick={openQualificationSummary} disabled={summaryLoading || !summaryTestKey} style={{ borderRadius: 12, padding: '10px 14px', whiteSpace: 'nowrap' }}><BarChart3 size={18} />{summaryLoading ? 'Loading…' : 'Centre Qualification Summary'}</button>
               </div>
             )}
           </div>
+          {summaryError && <p role="alert">{summaryError}</p>}
+          {qualificationSummary && <QualificationSummaryPopup summary={qualificationSummary} testKey={summaryTestKey} stream={globalStream} onClose={() => setQualificationSummary(null)} />}
         </div>
         <div className="centre-ranking-filters" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>

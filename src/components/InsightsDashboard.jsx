@@ -564,8 +564,8 @@ function buildQualificationSummary(data, centreBoard, testKey, stream) {
   return { subjects, rows: safeRows.slice(0, -1), overall: safeRows.at(-1) };
 }
 
-function QualificationSummaryPopup({ data, centreBoard, testKey, stream, onClose }) {
-  const base = useMemo(() => buildQualificationSummary(data, centreBoard, testKey, stream), [data, centreBoard, testKey, stream]);
+export function QualificationSummaryPopup({ data, centreBoard, testKey, stream, onClose, summary }) {
+  const base = useMemo(() => summary || buildQualificationSummary(data, centreBoard, testKey, stream), [summary, data, centreBoard, testKey, stream]);
   const [rawMetrics, setRawMetrics] = useState(null);
   const [metricsError, setMetricsError] = useState('');
   const [contentBounds, setContentBounds] = useState({ left: 0, top: 80 });

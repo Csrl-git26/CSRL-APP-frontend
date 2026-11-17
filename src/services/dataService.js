@@ -588,3 +588,7 @@ export async function fetchQualificationMetrics(testKey, stream) {
   const params = new URLSearchParams({ testKey, stream });
   return apiFetch(`/api/analytics/qualification-metrics?${params}`);
 }
+
+export function fetchQualificationSummary(testKey, stream) {
+  return apiFetch(`/api/analytics/qualification-summary?${new URLSearchParams({testKey, stream})}`);
+}
