@@ -58,7 +58,26 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
     setResult(null);
     if (!testKey) return;
     fetchRankings(null, { testKey, centerCode: centre, stream, limit: Math.max(1000, profiles.length), order: 'desc' })
-      .then(data => { if (!cancelled) setResult({ scope, rows: data.ranked || [] }); })
+      .then(async data => {
+        const rows = data.ranked || [];
+        if (cancelled) return;
+        setResult({ scope, rows, metricsLoading: true });
+        let next = 0;
+        let failed = false;
+        const enriched = [...rows];
+        // Limit concurrent requests and reuse the same metrics as Complete Test Records.
+        await Promise.all(Array.from({ length: Math.min(3, rows.length) }, async () => {
+          while (!cancelled && next < rows.length) {
+            const index = next++;
+            const student = rows[index];
+            try {
+              const response = await fetchStudentChart(null, student.roll, student.center || centre, stream);
+              enriched[index] = { ...student, detailMetrics: (response.chartData || []).find(row => row.name === testKey) };
+            } catch { failed = true; }
+          }
+        }));
+        if (!cancelled) setResult({ scope, rows: enriched, metricsFailed: failed });
+      })
       .catch(error => { if (!cancelled) setResult({ scope, error: error.message || 'Unable to load student details.' }); });
     return () => { cancelled = true; };
   }, [scope, centre, testKey, stream, branch, profiles.length]);
@@ -100,21 +119,34 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
     return {
       Rank: student.rank,
       'Roll num': String(student.roll),
-      LOCATION: student.center,
-      Sponsor: student.sponsor || '',
+      'Centre Name': CENTERS[student.center]?.name || student.center,
+      'Sponsor Name': student.sponsor || '',
       Name: student.name || 'Name unavailable',
       Category: student.category || '',
       Gender: student.gender || '',
       ...Object.fromEntries(subjects.map(subject => [subject, readSubject(raw, subject)])),
+      ...Object.fromEntries([...subjects, 'Total'].flatMap(subject => {
+        const key = subject === 'Maths' ? 'Math' : subject;
+        return ['AT.', 'AC.', 'Rank'].map((label, index) => [
+          `${subject} ${label}`,
+          numeric(student.detailMetrics?.[`${key}_${['Attempted', 'Accuracy', 'Rank'][index]}`]),
+        ]);
+      })),
       Total: total,
       STATUS: status,
     };
   }).sort((a, b) => (b.Total ?? -Infinity) - (a.Total ?? -Infinity) || a['Roll num'].localeCompare(b['Roll num']));
-  const headers = ['Rank', 'Roll num', 'LOCATION', 'Sponsor', 'Name', 'Category', 'Gender', ...subjects, 'Total', 'STATUS'];
+  const headers = ['Rank', 'Roll num', 'Centre Name', 'Sponsor Name', 'Name', 'Category', 'Gender', ...[...subjects, 'Total'].flatMap(subject => [subject, `${subject} AT.`, `${subject} AC.`, `${subject} Rank`]), 'STATUS'];
   const exportDetails = () => {
     if (!records.length) return;
     const sheet = XLSX.utils.json_to_sheet(records, { header: headers });
-    sheet['!cols'] = headers.map(header => ({ wch: header === 'Name' ? 32 : header === 'Sponsor' ? 24 : 16 }));
+    sheet['!cols'] = headers.map(header => ({ wch: header === 'Name' ? 32 : header === 'Sponsor Name' ? 24 : 16 }));
+    for (const [index, header] of headers.entries()) {
+      if (/ (AT\.|AC\.)$/.test(header)) for (let row = 1; row <= records.length; row++) {
+        const cell = sheet[XLSX.utils.encode_cell({ r: row, c: index })];
+        if (cell?.t === 'n') cell.z = '0.0';
+      }
+    }
     if (sheet['!ref']) sheet['!autofilter'] = { ref: sheet['!ref'] };
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, sheet, 'Student Details');
@@ -129,14 +161,17 @@ function CentreTestStudentDetails({ centre, testKey, stream, branch, profiles, t
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button type="button" className="btn btn-ghost" onClick={onBack}><ArrowLeft size={16} /> Back</button>
-          <button type="button" className="btn btn-primary" disabled={!records.length} onClick={exportDetails}><Download size={16} /> Export Excel</button>
+          <button type="button" className="btn btn-primary" disabled={!records.length || current?.metricsLoading} onClick={exportDetails}><Download size={16} /> Export Excel</button>
         </div>
       </div>
+      {current?.metricsLoading && <p role="status">Loading attempt, accuracy and rank…</p>}
+      {current?.metricsFailed && <p role="alert">Some student metrics could not load. Go back and reopen this table to retry.</p>}
+      <p style={{ fontSize: 12, color: '#64748b' }}>AT. = Attempted questions · AC. = Accuracy (%) · Subject and total ranks are portal-wide for the selected test. — = unavailable.</p>
       {!testKey ? <p>Select a test to view student details.</p> : !current ? <p role="status">Loading student details…</p> : current.error ? <p role="alert">{current.error}</p> : (
         <div className="table-wrap" style={{ overflowX: 'auto' }}>
           <table className="table table-compact">
             <thead><tr>{headers.map(header => <th key={header} style={{ whiteSpace: 'nowrap' }}>{header}</th>)}</tr></thead>
-            <tbody>{records.map(row => <tr key={row['Roll num']}>{headers.map(header => <td key={header} style={{ whiteSpace: 'nowrap', fontWeight: header === 'STATUS' || header === 'Total' ? 700 : undefined }}>{row[header] === null ? '—' : row[header]}</td>)}</tr>)}</tbody>
+            <tbody>{records.map(row => <tr key={row['Roll num']}>{headers.map(header => <td key={header} style={{ whiteSpace: 'nowrap', fontWeight: header === 'STATUS' || header === 'Total' ? 700 : undefined }}>{row[header] == null ? '—' : / (AT\.|AC\.)$/.test(header) ? formatOneDecimal(row[header]) : row[header]}</td>)}</tr>)}</tbody>
           </table>
           {!records.length && <p>No students found for the selected centre and test.</p>}
         </div>
