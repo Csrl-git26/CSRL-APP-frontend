@@ -1,3 +1,4 @@
+import ResultWorkbook from './ResultWorkbook';
 import { QualificationSummaryPopup } from './InsightsDashboard';
 import { fetchQualificationSummary } from '../services/dataService';
 import { qualifiesAdvanced } from '../utils/advancedQualification';
@@ -850,7 +851,7 @@ export default function CentreDashboard({ adminViewCenterCode, adminTestKey, adm
                     <strong style={{ color: '#701a75' }}>{totalQualified}</strong> {globalStream === 'NEET' ? 'MBBS' : 'Qualified'} ({formatOneDecimal(qualPct)}%)
                   </span>
                 )}
-                <button type="button" className="btn btn-primary" onClick={openQualificationSummary} disabled={summaryLoading || !summaryTestKey} style={{ borderRadius: 12, padding: '10px 14px', whiteSpace: 'nowrap' }}><BarChart3 size={18} />{summaryLoading ? 'Loading…' : 'Centre Qualification Summary'}</button>
+                <button type="button" className="btn btn-primary" onClick={openQualificationSummary} disabled={summaryLoading || !summaryTestKey} style={{ borderRadius: 12, padding: '10px 14px', whiteSpace: 'nowrap' }}><BarChart3 size={18} />{summaryLoading ? 'Loading…' : 'Centre Qualification Summary'}</button><ResultWorkbook stream={globalStream} branch={branch} testKey={summaryTestKey} />
               </div>
             )}
           </div>

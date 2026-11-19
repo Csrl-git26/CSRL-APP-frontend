@@ -1,3 +1,4 @@
+import ResultWorkbook from './ResultWorkbook';
 import AdvancedAttemptUpload from './AdvancedAttemptUpload';
 import ResultNotifications from './ResultNotifications';
 import { formatOneDecimal } from '../utils/formatOneDecimal';
@@ -2345,7 +2346,7 @@ export default function AdminDashboard() {
           {activePage === 'centre-overview' && <CentreDashboard adminViewCenterCode={filterCenter} adminTestKey={selectedTestKey} adminStream={globalStream} />}
           {activePage === 'students'    && StudentsSection()}
           {activePage === 'marks'       && <MarksSection />}
-          {activePage === 'import' && <>{globalStream === 'JEE' && branch === 'ADVANCED' && <AdvancedAttemptUpload testOptions={streamTestOptions} />}<ResultNotifications stream={globalStream} branch={branch} testOptions={streamTestOptions} /><PortalUserManagement /><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
+          {activePage === 'import' && <>{globalStream === 'JEE' && branch === 'ADVANCED' && <AdvancedAttemptUpload testOptions={streamTestOptions} />}<ResultWorkbook admin stream={globalStream} branch={branch} testOptions={streamTestOptions} /><ResultNotifications stream={globalStream} branch={branch} testOptions={streamTestOptions} /><PortalUserManagement /><ImportExportSection /><FacultyTestDashboard isAdmin={true} uploadOnly={true} /></>}
           {activePage === 'ranking'     && RankingsSection()}
           {activePage === 'pastyear'    && <PastYearDataTab isAdmin={true} />}
           {activePage === 'traineefaculty' && <FacultyTestDashboard isAdmin={false} />}
