@@ -10,7 +10,11 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
   const { user } = useAuth();
   const [testKey,setTestKey] = useState('');
   const [testDate,setTestDate] = useState('');
-  const [audience,setAudience] = useState('all');
+  const [audience,setAudience] = useState('centre');
+  const [users,setUsers] = useState([]);
+  const [selectedEmails,setSelectedEmails] = useState([]);
+  const [usersLoading,setUsersLoading] = useState(false);
+  const [usersError,setUsersError] = useState('');
   const [history,setHistory] = useState([]);
   const [preview,setPreview] = useState(null);
   const [configured,setConfigured] = useState(false);
@@ -27,7 +31,16 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
     if (!response.ok) throw new Error(result.message || 'Unable to load notifications. Please retry.');
     return result;
   }
-  useEffect(() => { generation.current++; setPreview(null); setReviewed(false); setError(''); setNotice(''); setBusy(false); }, [stream,branch,testKey,testDate,audience]);
+  useEffect(() => { generation.current++; setPreview(null); setReviewed(false); setError(''); setNotice(''); setBusy(false); }, [stream,branch,testKey,testDate,audience,selectedEmails]);
+  useEffect(() => {
+    const controller = new AbortController();
+    setUsers([]); setSelectedEmails([]); setUsersLoading(true); setUsersError('');
+    request('/recipients?audience='+audience, 'GET', undefined, controller.signal)
+      .then(data => { if (!controller.signal.aborted) setUsers(data.recipients); })
+      .catch(e => { if (!controller.signal.aborted) setUsersError(e.message); })
+      .finally(() => { if (!controller.signal.aborted) setUsersLoading(false); });
+    return () => controller.abort();
+  }, [audience,user.token]);
   useEffect(() => {
     const controller = new AbortController();
     let pending = false;
@@ -56,7 +69,7 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
   }
   const makePreview = event => {
     event.preventDefault(); setReviewed(false);
-    action(() => request('/preview','POST',{ testKey, stream, branch, testDate, audience }));
+    action(() => request('/preview','POST',{ testKey, stream, branch, testDate, audience, selectedEmails }));
   };
   const send = () => {
     if (!active || !reviewed || !window.confirm(`Send ${active.selection.testKey} results to ${active.recipients.length} recipients from ajaya.kumar@csrl.in?`)) return;
@@ -84,9 +97,21 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 14 }}>
         <label style={field}>Test<select required disabled={busy} value={tests.includes(testKey) ? testKey : ''} onChange={e => setTestKey(e.target.value)} style={control}><option value="">Select a saved test</option>{tests.map(t => <option key={t} value={t}>{t}</option>)}</select></label>
         <label style={field}>Test date<input required type="date" disabled={busy} value={testDate} onChange={e => setTestDate(e.target.value)} style={control}/></label>
-        <label style={field}>Recipients<select disabled={busy} value={audience} onChange={e => setAudience(e.target.value)} style={control}><option value="all">All portal users</option><option value="centre">Centre users</option><option value="admin">CSRL Management users</option></select></label>
+        <label style={field}>Recipients<select disabled={busy} value={audience} onChange={e => setAudience(e.target.value)} style={control}><option value="centre">Centre users</option><option value="admin">CSRL Management users</option></select></label>
       </div>
-      <button type="submit" disabled={busy || !tests.includes(testKey) || !testDate} style={{ ...button, marginTop: 16, opacity: busy ? .6 : 1 }}><Eye size={16}/>{busy ? 'Please wait…' : 'Preview email & report'}</button>
+      <div style={{ marginTop: 14, border: '1px solid #cbd5e1', borderRadius: 8, padding: 12 }}>
+        <strong>Select users ({selectedEmails.length} selected)</strong>
+        {usersLoading && <p>Loading users…</p>}
+        {usersError && <p role="alert">{usersError}</p>}
+        {!usersLoading && !usersError && !users.length && <p>No users with valid email addresses in this group.</p>}
+        <div style={{ maxHeight: 220, overflow: 'auto', marginTop: 8 }}>
+          {users.map(r => <label key={r.email} style={{ display: 'flex', gap: 10, padding: 8, alignItems: 'center' }}>
+            <input type="checkbox" disabled={busy} checked={selectedEmails.includes(r.email)} onChange={e => setSelectedEmails(list => e.target.checked ? [...list,r.email] : list.filter(email => email !== r.email))}/>
+            <span>{r.name} — {r.email}</span>
+          </label>)}
+        </div>
+      </div>
+      <button type="submit" disabled={busy || usersLoading || !selectedEmails.length || !tests.includes(testKey) || !testDate} style={{ ...button, marginTop: 16, opacity: busy ? .6 : 1 }}><Eye size={16}/>{busy ? 'Please wait…' : 'Preview email & report'}</button>
     </form>
     {!configured && <p role="status" style={{ background: '#fffbeb', color: '#92400e', borderRadius: 8, padding: 12, fontSize: 13 }}>Email sending is not enabled. Verify csrl.in in Resend and configure RESEND_API_KEY and RESULT_EMAIL_ENABLED=true on Render. You can preview the email and download its report before enabling sending.</p>}
     {(error || loadError) && <p role="alert" style={{ color: '#b91c1c' }}>{error || loadError}</p>}
