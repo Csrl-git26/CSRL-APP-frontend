@@ -1,5 +1,6 @@
 import {useState,useEffect} from 'react';
 import * as XLSX from 'xlsx';
+import ResultWorkbookGrid from './ResultWorkbookGrid';
 import {useAuth} from '../context/AuthContext';
 const API='https://csrl-app-backed-1.onrender.com/api/result-workbooks';
 export default function ResultWorkbook({stream,branch,testKey,testOptions=[],admin=false}){
@@ -23,10 +24,10 @@ export default function ResultWorkbook({stream,branch,testKey,testOptions=[],adm
   <button type="button" className="btn btn-primary" style={{borderRadius:12,padding:'10px 14px'}} disabled={busy||!selected||selected.includes(',')||selected==='ALL_FMT'||(admin&&!file)} onClick={run}>{busy?'Loading…':admin?'Upload Result Excel':'Result Excel'}</button>
   {message&&<p role="status">{message}</p>}
   {book&&<div role="dialog" aria-modal="true" aria-label="Result Excel" style={{position:'fixed',inset:'8vh 2vw 4vh max(80px, 8vw)',zIndex:10000,background:'#fff',borderRadius:16,padding:20,boxShadow:'0 0 0 100vmax #0006',display:'flex',flexDirection:'column',gap:12}}>
-   <div><strong>Result Excel — {selected}</strong> <button onClick={download}>Download original Excel</button> <button onClick={()=>setBook(null)}>Close</button></div>
-   <div>{book.SheetNames.map(n=><button key={n} onClick={()=>setSheet(n)} style={{fontWeight:n===sheet?'bold':'normal'}}>{n}</button>)}</div>
-   <p style={{margin:0,fontSize:12}}>Workbook preview. Download the original Excel to retain its exact formatting.</p>
-   <iframe title={sheet} sandbox="" style={{flex:1,width:'100%',border:'1px solid #ddd'}} srcDoc={XLSX.utils.sheet_to_html(book.Sheets[sheet])}/>
+   <div className="result-workbook-header"><strong>Result Excel — {selected}</strong> <button onClick={download}>Download original Excel</button> <button onClick={()=>setBook(null)}>Close</button></div>
+   <div className="result-workbook-tabs">{book.SheetNames.map(n=><button key={n} aria-selected={n===sheet} onClick={()=>setSheet(n)} style={{fontWeight:n===sheet?'bold':'normal'}}>{n}</button>)}</div>
+   <p style={{margin:0,fontSize:12}}>Filter or sort columns below. Download original Excel for the complete workbook, including charts and Excel features.</p>
+   <ResultWorkbookGrid book={book} sheet={sheet} original={original}/>
   </div>}
  </div>;
 }
