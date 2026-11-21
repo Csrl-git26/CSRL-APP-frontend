@@ -17,6 +17,9 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
   const [usersError,setUsersError] = useState('');
   const [history,setHistory] = useState([]);
   const [preview,setPreview] = useState(null);
+  const [gmail,setGmail] = useState(null);
+  const [sender,setSender] = useState('');
+  const [connecting,setConnecting] = useState(false);
   const [configured,setConfigured] = useState(false);
   const [reviewed,setReviewed] = useState(false);
   const [busy,setBusy] = useState(false);
@@ -51,12 +54,14 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
         const result = await fetch(API, { signal: controller.signal, headers: { Authorization: `Bearer ${user.token}` } });
         const data = await result.json();
         if (!result.ok) throw new Error(data.message || 'Unable to load notifications.');
-        if (!controller.signal.aborted) { setHistory(data.campaigns); setConfigured(data.configured); setLoadError(''); }
+        if (!controller.signal.aborted) { setHistory(data.campaigns); setSender(data.sender); setConfigured(data.configured); setLoadError(''); }
       } catch(e) { if (!controller.signal.aborted) setLoadError(e.message); }
       finally { pending = false; }
     };
+    const loadGmail=async()=>{try{const r=await fetch(API.replace('result-notifications','gmail/status'),{signal:controller.signal,headers:{Authorization:`Bearer ${user.token}`}});if(r.ok&&!controller.signal.aborted)setGmail(await r.json());}catch{}};
+    loadGmail(); const gmailTimer=setInterval(loadGmail,5000);
     load(); const timer = setInterval(load,5000);
-    return () => { controller.abort(); clearInterval(timer); };
+    return () => { controller.abort(); clearInterval(timer); clearInterval(gmailTimer); };
   }, [user.token]);
   const active = preview ? { ...preview, ...history.find(c => c.id === preview.id), html: preview.html } : null;
   async function action(fn) {
@@ -72,7 +77,7 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
     action(() => request('/preview','POST',{ testKey, stream, branch, testDate, audience, selectedEmails }));
   };
   const send = () => {
-    if (!active || !reviewed || !window.confirm(`Send ${active.selection.testKey} results to ${active.recipients.length} recipients from ajaya.kumar@csrl.in?`)) return;
+    if (!active || !reviewed || !window.confirm(`Send ${active.selection.testKey} results to ${active.recipients.length} recipients from ${sender}?`)) return;
     action(async () => { const result = await request(`/${active.id}/send`,'POST',{ confirm: 'SEND' }); setNotice('Notification queued. You can leave this page; progress is saved.'); return result; });
   };
   const retry = () => {
@@ -91,7 +96,14 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
   return <section aria-label="Result email notifications" style={{ background: '#fff', border: '1px solid #dbeafe', borderRadius: 16, padding: 24, marginBottom: 24, boxShadow: '0 4px 18px rgba(15,23,42,.06)' }}>
     <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20 }}>
       <span style={{ padding: 12, background: '#eff6ff', borderRadius: 12, color: '#1d4ed8' }}><Mail size={26}/></span>
-      <div><h3 style={{ margin: 0, fontSize: 20 }}>Send Result Notification — प्रगति</h3><p style={{ margin: '5px 0 0', color: '#64748b', fontSize: 13 }}>From: ajaya.kumar@csrl.in · {stream}{stream === 'JEE' ? ` / ${branch}` : ''}</p></div>
+      <div><h3 style={{ margin: 0, fontSize: 20 }}>Send Result Notification — प्रगति</h3><p style={{ margin: '5px 0 0', color: '#64748b', fontSize: 13 }}>From: {sender || 'Loading…'} · {stream}{stream === 'JEE' ? ` / ${branch}` : ''}</p></div>
+    </div>
+    <div style={{marginBottom:16,padding:12,background:'#eff6ff',borderRadius:8}}>
+      <strong>{gmail?.connected ? 'Gmail connected: '+gmail.sender : 'Connect Gmail for result notifications'}</strong>
+      <button type="button" disabled={connecting||!gmail?.ready} style={{...button,marginLeft:12}} onClick={async()=>{setConnecting(true);setError('');try{const r=await fetch(API.replace('result-notifications','gmail/connect'),{method:'POST',headers:{Authorization:`Bearer ${user.token}`}});const data=await r.json();if(!r.ok)throw Error(data.message);window.location.assign(data.url);}catch(e){setError(e.message);}finally{setConnecting(false);}}}>{connecting?'Connecting…':gmail?.connected?'Reconnect Gmail':'Connect Gmail'}</button>
+      {gmail&&!gmail.ready&&<p>Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GMAIL_SENDER_EMAIL in Render.</p>}
+      {gmail?.ready&&!gmail.connected&&<p>Add this Authorized redirect URI to your Google OAuth client: <code style={{overflowWrap:'anywhere'}}>{gmail.redirectUri}</code></p>}
+      {gmail?.connected&&!gmail.enabled&&<p>Set RESULT_EMAIL_ENABLED=true in Render to enable sending.</p>}
     </div>
     <form onSubmit={makePreview}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 14 }}>
@@ -113,7 +125,7 @@ export default function ResultNotifications({ stream, branch, testOptions = [] }
       </div>
       <button type="submit" disabled={busy || usersLoading || !selectedEmails.length || !tests.includes(testKey) || !testDate} style={{ ...button, marginTop: 16, opacity: busy ? .6 : 1 }}><Eye size={16}/>{busy ? 'Please wait…' : 'Preview email & report'}</button>
     </form>
-    {!configured && <p role="status" style={{ background: '#fffbeb', color: '#92400e', borderRadius: 8, padding: 12, fontSize: 13 }}>Email sending is not enabled. Verify csrl.in in Resend and configure RESEND_API_KEY and RESULT_EMAIL_ENABLED=true on Render. You can preview the email and download its report before enabling sending.</p>}
+    {!configured && <p role="status" style={{ background: '#fffbeb', color: '#92400e', borderRadius: 8, padding: 12, fontSize: 13 }}>Email sending is not enabled. Connect Gmail above and set RESULT_EMAIL_ENABLED=true in Render. You can still preview emails and download reports.</p>}
     {(error || loadError) && <p role="alert" style={{ color: '#b91c1c' }}>{error || loadError}</p>}
     {notice && <p role="status" style={{ color: '#166534' }}>{notice}</p>}
     {active && <div style={{ marginTop: 22, borderTop: '1px solid #e2e8f0', paddingTop: 18 }}>
